@@ -205,3 +205,51 @@ def test_phase8_build_city_scene_uses_original_city_art_and_core() -> None:
     # City rules remain in build_city.cpp, not duplicated in the Butano renderer.
     for forbidden in ("19000", "2200", "TARGET_HEIGHTS", "placement_capability"):
         assert forbidden not in scene
+
+
+def test_phase9_build_city_uses_dedicated_tower_construction_scene_and_roof_assets() -> None:
+    root = _root()
+    header_path = root / "gba" / "include" / "tb" / "tower_construction_scene.h"
+    source_path = root / "gba" / "src" / "tower_construction_scene.cpp"
+    assert header_path.is_file()
+    assert source_path.is_file()
+
+    header = header_path.read_text()
+    source = source_path.read_text()
+    main = (root / "gba" / "src" / "main.cpp").read_text()
+
+    assert "TowerConstruction _construction" in header
+    assert "BuildCityConstructionRequest" in header
+    assert "TowerConstructionSnapshot" in source
+    assert "generated::meshes" in source
+    assert "normal_floor_mesh_id" in source
+    assert "30 +" in source or "normal_roof_mesh_id" in source
+    assert "40 +" in source or "trophy_roof_mesh_id" in source
+    assert "snapshot.roof_phase" in source
+    assert "result.roof" in source or "roof_result" in source
+    assert "QuickGame _game" not in header
+    assert "QuickGame _game" not in source
+    assert "mesh_id = 20" not in source
+
+    assert "TowerConstructionScene" in main
+    assert "construction.active()" in main
+    assert "build_city.construction_request()" in main
+    assert "build_city.clear_construction_request()" in main
+    assert "build_city.accept_constructed_tower" in main
+
+
+def test_phase9_construction_handoff_does_not_persist_until_city_placement() -> None:
+    root = _root()
+    main = (root / "gba" / "src" / "main.cpp").read_text()
+    scene = (root / "gba" / "src" / "tower_construction_scene.cpp").read_text()
+
+    assert "TowerConstructionScene construction" in main
+    assert "if(construction.active())" in main
+    assert "TowerConstructionSceneUpdateResult result = construction.update(input)" in main
+    assert "build_city.accept_constructed_tower(result.building_type, result.population, result.roof)" in main
+    assert "build_city.clear_construction_request()" in main
+    assert "construction.start(request, controller.language())" in main
+    assert "store_save" not in scene
+
+    construction_branch = main.split("if(construction.active())", 1)[1].split("else if(quick_game.active())", 1)[0]
+    assert "store_save(save)" not in construction_branch

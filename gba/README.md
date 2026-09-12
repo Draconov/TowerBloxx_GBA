@@ -2,6 +2,13 @@
 
 This directory is the native GBA half of the faithful Tower Bloxx port. The runtime targets **Butano 21.7.1** on **devkitARM**.
 
+
+## GitHub Actions ROM builds
+
+The repository now includes `.github/workflows/gba-release.yml`. Every push and pull request runs the host parity suite and builds the GBA project in the official devkitPro `devkitarm` container with Butano 21.7.1. Successful runs upload `TowerBloxx.gba` plus `TowerBloxx.gba.sha256` as a workflow artifact.
+
+Pushing a version tag such as `v0.1.0` additionally creates or updates a GitHub Release and attaches the same two files. See `docs/GITHUB_RELEASES.md` for the exact workflow and download/release steps.
+
 ## External toolchain
 
 1. Install devkitPro's GBA Development package / `gba-dev` group so `DEVKITARM` and the ARM compiler are available.
@@ -86,3 +93,19 @@ This checkpoint intentionally stops at the **construction handoff boundary**. Se
 The host replay starts from an empty city, places and replaces towers using the public placement API, crosses the 75/250/400/800/2200 progression points, unlocks 10/20/30/40-floor construction requests, and exercises the original column `-1` discard selector without mutating a saved city tile. Trace SHA-256:
 
 `691a92771e2c6a4c0e08c477dfa7b0dc93555328f8e31e445ccec0b961b2b055`
+
+## Phase-9 Build City finite construction and roofs
+
+Build City construction is now a dedicated finite runtime rather than a Quick Game wrapper. Residential, Commercial, Office and Luxury use their recovered 10/20/30/40-floor targets, family-specific crane progression, three-miss budget and separate roof state. A target height of `N` means `N-1` ordinary floors followed by the roof as floor `N`.
+
+The city-level trophy flag remains provisional until the tower itself reaches the recovered pre-roof population threshold: 70/250/550/1000 for the four families. Falling short downgrades the final roof to the normal roof. Normal roof population is `(128 - abs(offset)) / (5 - type)`; trophy roof population is `(128 - abs(offset)) * type / 2`, using Java integer truncation.
+
+The Butano scene uses ordinary M3G mesh IDs 10..13, normal roofs 30..33 and trophy roofs 40..43. Mesh IDs 20..23 remain unassigned because the recovered code selects them through a separate `999` marker and does not prove them to be Build City roof states.
+
+Manual B cancels construction and returns to Build City without fabricating a result. A successful roof or a third miss waits the recovered 2000 ms terminal delay and returns `{building type, tower population, roof result}` to the existing city placement flow. `roof=0` is the original failed/no-roof tower and can still be placed. SRAM is not written when construction ends; persistence still occurs only after the player commits the returned tower to a city sector.
+
+### Phase-9 deterministic construction replay
+
+The public-input replay naturally completes a Residential tower with a trophy roof, and independently exercises a roof miss followed by a successful retry. No host-only landing hooks are used. Trace SHA-256:
+
+`ef2404e1ca0adee0067ccde3a4e11ea49d1b5803f7c87402471c96177da5842c`

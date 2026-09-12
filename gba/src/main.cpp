@@ -5,6 +5,7 @@
 #include "tb/build_city_scene.h"
 #include "tb/quick_game_scene.h"
 #include "tb/save_store.h"
+#include "tb/tower_construction_scene.h"
 #include "tb/ui_controller.h"
 #include "tb/ui_shell.h"
 
@@ -35,12 +36,21 @@ int main()
     tb::UiShell ui;
     tb::QuickGameScene quick_game;
     tb::BuildCityScene build_city(save);
+    tb::TowerConstructionScene construction;
 
     while(true)
     {
         const tb::InputFrame input = app.update_input(held_keys());
 
-        if(quick_game.active())
+        if(construction.active())
+        {
+            const tb::TowerConstructionSceneUpdateResult result = construction.update(input);
+            if(result.completed)
+            {
+                build_city.accept_constructed_tower(result.building_type, result.population, result.roof);
+            }
+        }
+        else if(quick_game.active())
         {
             const tb::QuickGameSceneUpdateResult result = quick_game.update(input, save);
             if(result.save_dirty)
@@ -58,6 +68,15 @@ int main()
             if(result.save_dirty)
             {
                 tb::store_save(save);
+            }
+            if(result.construction_requested)
+            {
+                const tb::BuildCityConstructionRequest request = build_city.construction_request();
+                if(request.pending)
+                {
+                    build_city.clear_construction_request();
+                    construction.start(request, controller.language());
+                }
             }
             if(result.exit)
             {

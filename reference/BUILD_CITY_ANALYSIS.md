@@ -47,3 +47,25 @@ The GBA UI exporter therefore emits 16 individual building-frame composites (`ci
 ## Phase-8 replay
 
 The deterministic host replay reaches population 2200/milestone 10/city level 4, observes construction targets 10, 20, 30 and 40 at the original unlock boundaries, and confirms the column `-1` discard path leaves all 25 persisted tiles unchanged. Its trace SHA-256 is `691a92771e2c6a4c0e08c477dfa7b0dc93555328f8e31e445ccec0b961b2b055`.
+
+## Phase 9: finite construction and roof result contract
+
+The Build City tower run is a distinct finite mode (`B == 3`) and is not Quick Game with a target bolted on. Building family `L` is 1..4 and selects target heights 10/20/30/40. A target-height `N` tower contains `N-1` ordinary floors; when `Q == J - 1` the game enters roof state (`K == 1`) and the next successful landing is the roof as floor `N`.
+
+Construction starts with three misses, `R=0` tower population, `O=0` roof result, and the same 128/64 initial crane amplitudes. Initial swing period is `m[L]`, giving 1700/1650/1600/1550 ms for the four families. After ordinary placements, `House.l(int)` applies the construction-only progression:
+
+- `period = m[L] - Q * (m[L] - m[L+2]) / J`
+- `swingX = min(k[L], k[1] + Q * (k[L] - k[1]) / (J >> 1))`
+- `swingY = min(l[L], l[1] + Q * (l[L] - l[1]) / (J >> 1))`
+- `verticalBias = -min(128, Q * 256 / 100)`
+
+with `k=[213,256,298,341,384]`, `l=[85,106,128,149,170]`, and `m=[1670,1700,1650,1600,1550,1500,1450]`, using Java integer truncation.
+
+The city-level trophy flag is provisional. Immediately before roof state, the constructed tower must also have at least 70/250/550/1000 population for Residential/Commercial/Office/Luxury; otherwise trophy eligibility is revoked. A successful roof does not receive the ordinary 1/2/3/4 accuracy population. Instead, with `e = abs(offset)`:
+
+- normal roof (`O=1`): `(128-e) / (5-L)`
+- trophy roof (`O=2`): `(128-e) * L / 2`
+
+A roof miss leaves `O=0` and consumes one of the same three construction chances. If chances remain, the roof is retried. Exhausting all chances anywhere in construction enters terminal state `K=2`; a successful roof does the same after reaching `Q==J`. After 2000 ms, the game calls the city handoff with `(L, R, O)`.
+
+M3G mesh selection is also code-proven: user IDs 10..13 are the ordinary family floors, 30..33 are the normal roofs, and 40..43 are the trophy roofs. IDs 20..23 are selected by a separate `999` render marker and are not assigned an invented role in the Phase-9 port.
