@@ -13,6 +13,15 @@ SaveData load_save()
         return save;
     }
 
+    LegacySaveDataV2 legacy_v2{};
+    bn::sram::read(legacy_v2);
+    if(valid_legacy_v2_save(legacy_v2))
+    {
+        save = migrate_legacy_v2_save(legacy_v2);
+        bn::sram::write(save);
+        return save;
+    }
+
     LegacySaveDataV1 legacy{};
     bn::sram::read(legacy);
     if(valid_legacy_save(legacy))

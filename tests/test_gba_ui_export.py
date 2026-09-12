@@ -46,7 +46,13 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert tuple(manifest_a["utf8_characters"]) == EXPECTED_EXTENDED
     assert EXTENDED_CHARACTERS == EXPECTED_EXTENDED
     assert manifest_a["font_character_count"] == 95 + len(EXPECTED_EXTENDED)
-    assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10}
+    assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10, "city_buildings": [24, 25, 26, 27], "city_lot": 28}
+
+    city_records = manifest_a["city_assets"]
+    assert len(city_records["buildings"]) == 16
+    assert len(city_records["lots"]) == 5
+    assert {record["name"] for record in city_records["buildings"]} >= {"city_building_1_f0", "city_building_4_f3"}
+    assert {record["name"] for record in city_records["lots"]} == {f"city_lot_f{index}" for index in range(5)}
 
     font_bmp = a / "gba/graphics/ui/tower_font.bmp"
     assert _bmp_geometry(font_bmp) == ((95 + len(EXPECTED_EXTENDED)) * 8, 16, 4)

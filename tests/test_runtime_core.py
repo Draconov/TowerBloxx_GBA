@@ -11,6 +11,7 @@ def test_runtime_core_compiles_and_runs(tmp_path: Path) -> None:
         "g++", "-std=c++20", "-Wall", "-Wextra", "-Werror", "-pedantic", "-DTB_HOST_TEST",
         "-I", str(root / "gba" / "include"),
         str(root / "gba" / "src" / "app_state.cpp"),
+        str(root / "gba" / "src" / "build_city.cpp"),
         str(root / "gba" / "src" / "save_data.cpp"),
         str(root / "gba" / "src" / "ui_controller.cpp"),
         str(root / "gba" / "src" / "quick_game.cpp"),

@@ -1,6 +1,7 @@
 #ifndef TB_QUICK_GAME_SCENE_H
 #define TB_QUICK_GAME_SCENE_H
 
+#include "bn_sprite_affine_mat_ptr.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
@@ -39,7 +40,9 @@ private:
 
     QuickGame _game;
     QuickRecordFlags _record_flags;
+    bn::sprite_affine_mat_ptr _current_affine_mat;
     bn::sprite_text_generator _text_generator;
+    bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;
     bn::vector<bn::sprite_ptr, 4> _current_sprites;
     bn::vector<bn::sprite_ptr, 3> _crane_top_sprites;

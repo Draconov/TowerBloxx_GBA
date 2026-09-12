@@ -138,3 +138,141 @@ def combo_drain_ms(delta_ms: int, combo_count: int) -> int:
     if delta_ms < 0 or combo_count <= 0:
         raise ValueError("expected a non-negative delta and positive combo count")
     return delta_ms + (combo_count - 1) * delta_ms // 6
+
+
+def java_div(numerator: int, denominator: int) -> int:
+    """Java integer division (truncate toward zero) for signed presentation math."""
+
+    if denominator == 0:
+        raise ZeroDivisionError("division by zero")
+    sign = -1 if (numerator < 0) != (denominator < 0) else 1
+    return sign * (abs(numerator) // abs(denominator))
+
+
+def tower_sway_state(floor_offsets: tuple[int, ...], phase_tenths: int) -> dict[str, int]:
+    """Reproduce the Quick Game ``House.l(int)`` + ``House.f(int)`` sway state.
+
+    ``phase_tenths`` is the recovered ``U`` accumulator in tenths of a degree
+    (0..3599). Only the last five floor offsets contribute to ``aL``.
+    """
+
+    if phase_tenths < 0:
+        raise ValueError("phase_tenths must be non-negative")
+
+    floor_count = len(floor_offsets)
+    last_five = floor_offsets[max(0, floor_count - 5):]
+    instability = sum(abs(value) for value in last_five) // 5
+    instability = min(java_div(floor_count * instability, 20), 100)
+
+    cumulative_offset = sum(floor_offsets)
+    base = floor_count // 2 + abs(cumulative_offset) // 20
+    amplitude = min(base, java_div(floor_count * base, 6))
+
+    phase = phase_tenths % 3600
+    wave = java_cos_u15(phase // 10)
+    global_x = java_div(-wave * amplitude, 10000)
+    return {
+        "instability": instability,
+        "amplitude": amplitude,
+        "wave": wave,
+        "global_x": global_x,
+    }
+
+
+def top_settle_angle(
+    *, base_angle: int, offset: int, elapsed_ms: int, cached_angle: int
+) -> tuple[int, int]:
+    """Reproduce the top-floor 0..800ms settling branch inside ``House.q()``."""
+
+    if elapsed_ms < 0:
+        raise ValueError("elapsed_ms must be non-negative")
+
+    if elapsed_ms < 100:
+        angle = java_div(base_angle, 8) + java_div(offset, 6)
+        angle += java_div(elapsed_ms * offset, 600)
+        return angle, cached_angle
+
+    if elapsed_ms < 500:
+        angle = java_div(base_angle, 8) + java_div(offset, 6)
+        angle += java_div((500 - elapsed_ms) * offset, 2400)
+        return angle, angle
+
+    if elapsed_ms < 800:
+        angle = cached_angle - java_div((cached_angle - base_angle) * (elapsed_ms - 500), 300)
+        return angle, cached_angle
+
+    return base_angle, cached_angle
+
+
+def _sway_floor_correction(instability: int, offset: int, wave: int) -> int:
+    if wave > 0:
+        if offset < 0:
+            return java_div(instability * offset * wave, 29491200)
+        return java_div(-instability * offset * wave, 58982400)
+
+    if offset > 0:
+        return java_div(-instability * offset * wave, 29491200)
+    return java_div(instability * offset * wave, 58982400)
+
+
+def tower_pose_deltas(
+    floor_offsets: tuple[int, ...],
+    phase_tenths: int,
+    *,
+    settle_elapsed_ms: int | None = None,
+    cached_top_angle: int = 0,
+) -> list[dict[str, int]]:
+    """Return GBA-friendly deltas for the up-to-five floors rendered by ``House.q()``.
+
+    The original routine builds absolute transforms from its own rolling base.
+    The port already stores collision-accurate absolute floor coordinates, so
+    this helper returns only the recovered sway/rocking displacement and Z angle
+    to layer on top of those coordinates.
+    """
+
+    if not floor_offsets:
+        return []
+
+    state = tower_sway_state(floor_offsets, phase_tenths)
+    instability = state["instability"]
+    wave = state["wave"]
+    delta_x = state["global_x"]
+    delta_y = 0
+    running_angle = 0
+    first_visible = max(0, len(floor_offsets) - 5)
+    output: list[dict[str, int]] = []
+
+    for floor_index in range(first_visible, len(floor_offsets)):
+        offset = floor_offsets[floor_index]
+        is_top = floor_index == len(floor_offsets) - 1
+        if is_top and settle_elapsed_ms is not None:
+            running_angle, cached_top_angle = top_settle_angle(
+                base_angle=running_angle,
+                offset=offset,
+                elapsed_ms=settle_elapsed_ms,
+                cached_angle=cached_top_angle,
+            )
+
+        running_angle += _sway_floor_correction(instability, offset, wave)
+        delta_x += 2 * running_angle
+        half_angle = running_angle >> 1
+        delta_y += half_angle if wave > 0 else -half_angle
+
+        output.append({
+            "floor_index": floor_index,
+            "angle": 0 if floor_index == 0 else running_angle,
+            "dx": delta_x,
+            "dy": delta_y,
+        })
+
+    return output
+
+
+def camera_impact_offset(random_0_63: int, *, elapsed_ms: int) -> int:
+    """Reproduce the 800ms ``y += 32 - a(64)`` camera-impact branch in ``House.p()``."""
+
+    if random_0_63 < 0 or random_0_63 > 63:
+        raise ValueError("random_0_63 must be in 0..63")
+    if elapsed_ms < 0:
+        raise ValueError("elapsed_ms must be non-negative")
+    return 32 - random_0_63 if elapsed_ms < 800 else 0

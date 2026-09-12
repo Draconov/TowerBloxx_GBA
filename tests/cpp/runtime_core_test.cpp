@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "tb/app_state.h"
+#include "tb/build_city.h"
 #include "tb/save_data.h"
 #include "tb/quick_game.h"
 #include "tb/ui_controller.h"
@@ -46,6 +47,49 @@ int main()
     assert(save.quick_best_population == 0);
     assert(save.quick_best_height == 0);
     assert(save.quick_best_combo == 0);
+    for(const auto& tile : save.city_tiles)
+    {
+        assert(tile.type == 0);
+        assert(tile.population == 0);
+        assert(tile.roof == 0);
+    }
+    for(uint8_t flag : save.city_tutorial_flags)
+    {
+        assert(flag == 0);
+    }
+
+    tb::SaveData city_round_trip = tb::make_default_save();
+    city_round_trip.city_tiles[12].type = 3;
+    city_round_trip.city_tiles[12].population = 987;
+    city_round_trip.city_tiles[12].roof = 2;
+    city_round_trip.city_tutorial_flags[45] = 1;
+    assert(! tb::valid_save(city_round_trip));
+    tb::finalize_save(city_round_trip);
+    assert(tb::valid_save(city_round_trip));
+    assert(city_round_trip.city_tiles[12].type == 3);
+    assert(city_round_trip.city_tiles[12].population == 987);
+    assert(city_round_trip.city_tiles[12].roof == 2);
+    assert(city_round_trip.city_tutorial_flags[45] == 1);
+
+    tb::LegacySaveDataV2 legacy_v2{};
+    legacy_v2.language = 4;
+    legacy_v2.sound_enabled = 0;
+    legacy_v2.quick_best_population = 222;
+    legacy_v2.quick_best_height = 33;
+    legacy_v2.quick_best_combo = 7;
+    tb::finalize_legacy_v2_save_for_test(legacy_v2);
+    assert(tb::valid_legacy_v2_save(legacy_v2));
+    const tb::SaveData migrated_v2 = tb::migrate_legacy_v2_save(legacy_v2);
+    assert(migrated_v2.version == tb::save_version);
+    assert(migrated_v2.language == 4);
+    assert(migrated_v2.sound_enabled == 0);
+    assert(migrated_v2.quick_best_population == 222);
+    assert(migrated_v2.quick_best_height == 33);
+    assert(migrated_v2.quick_best_combo == 7);
+    assert(migrated_v2.city_tiles[12].type == 0);
+    assert(migrated_v2.city_tiles[12].population == 0);
+    assert(migrated_v2.city_tiles[12].roof == 0);
+    assert(tb::valid_save(migrated_v2));
 
     save.quick_best_population = 123456;
     assert(! tb::valid_save(save));
@@ -208,12 +252,19 @@ int main()
     assert(quick_snapshot.swing_period_ms == 1550);
     assert(quick_snapshot.swing_amplitude_x == 128);
     assert(quick_snapshot.swing_amplitude_y == 64);
+    assert(quick_snapshot.presentation_camera_y == 512);
+    assert(quick_snapshot.tower_phase_tenths == 0);
+    assert(quick_snapshot.tower_sway_amplitude == 0);
+    assert(quick_snapshot.current_z_angle_degrees == 0);
+    assert(! quick_snapshot.camera_impact_active);
 
     quick.update(25, {});
     quick_snapshot = quick.snapshot();
     assert(quick_snapshot.rope_length == 16);
     assert(quick_snapshot.current_x == 20);
     assert(quick_snapshot.current_y == 2480);
+    assert(quick_snapshot.tower_phase_tenths == 25);
+    assert(quick_snapshot.presentation_camera_y == quick_snapshot.camera_y);
 
     for(int index = 1; index < 104; ++index)
     {
@@ -297,6 +348,49 @@ int main()
     assert(edge_failure.floor_count() == 0);
     assert(edge_failure.snapshot().block_state == tb::QuickBlockState::Slipping);
     assert(edge_failure.snapshot().last_accuracy == tb::QuickAccuracyBand::None);
+    edge_failure.update(25, {});
+    assert(edge_failure.snapshot().current_z_angle_degrees == -2);
+
+    // Presentation pose is deterministic and layered on top of collision coordinates only.
+    tb::QuickGame rocking;
+    rocking.debug_resolve_landing_for_test(0);
+    rocking.debug_resolve_landing_for_test(10);
+    rocking.debug_resolve_landing_for_test(20);
+    rocking.debug_resolve_landing_for_test(-30);
+    rocking.debug_resolve_landing_for_test(60);
+    auto rocking_snapshot = rocking.snapshot();
+    assert(rocking_snapshot.floor_count == 5);
+    assert(rocking_snapshot.tower_sway_amplitude == 4);
+    assert(rocking_snapshot.tower_global_x == 13);
+    const tb::QuickFloorRenderPose initial_top_pose = rocking.floor_render_pose(4);
+    assert(initial_top_pose.x_delta == 33);
+    assert(initial_top_pose.y_delta == -5);
+    assert(initial_top_pose.z_angle_degrees == -10);
+    assert(rocking.floor(4).x == 60);
+    assert(rocking.floor(4).y == 1152);
+
+    rocking.update(25, {});
+    rocking_snapshot = rocking.snapshot();
+    assert(rocking_snapshot.tower_phase_tenths == 25);
+    const tb::QuickFloorRenderPose moving_top_pose = rocking.floor_render_pose(4);
+    assert(moving_top_pose.x_delta == 37);
+    assert(moving_top_pose.y_delta == -6);
+    assert(moving_top_pose.z_angle_degrees == -12);
+    assert(rocking.floor(4).x == 60);  // presentation must not mutate collision state
+
+    // Miss impact shakes only presentation camera and expires after the original 800 ms window.
+    tb::QuickGame impact;
+    impact.debug_set_falling_state_for_test(500, -500, 0, 0);
+    impact.update(25, {});
+    assert(impact.snapshot().camera_impact_active);
+    const int impact_delta = impact.snapshot().presentation_camera_y - impact.snapshot().camera_y;
+    assert(impact_delta >= -31 && impact_delta <= 32);
+    for(int index = 0; index < 32; ++index)
+    {
+        impact.update(25, {});
+    }
+    assert(! impact.snapshot().camera_impact_active);
+    assert(impact.snapshot().presentation_camera_y == impact.snapshot().camera_y);
 
     // Quick Game uses the recovered non-Build-City endless difficulty branch (L=4).
     tb::QuickGame progression;
@@ -418,7 +512,15 @@ int main()
     assert(game_over.floor_count() == 0);
     assert(game_over.snapshot().chances_left == 0);
     assert(game_over.snapshot().status == tb::QuickGameStatus::GameOver);
-    for(int index = 0; index < 79; ++index)
+    assert(game_over.snapshot().camera_impact_active);
+    assert(game_over.snapshot().tower_sway_wave == 0);
+    for(int index = 0; index < 32; ++index)
+    {
+        game_over.update(25, {});
+    }
+    assert(! game_over.snapshot().camera_impact_active);
+    assert(game_over.snapshot().presentation_camera_y == game_over.snapshot().camera_y);
+    for(int index = 32; index < 79; ++index)
     {
         game_over.update(25, {});
     }
@@ -453,6 +555,119 @@ int main()
     assert(result_stats.population == 6);
     assert(result_stats.height == 1);
     assert(result_stats.longest_combo == 0);
+
+    // Build City: empty city starts at the canonical center and Residential is available.
+    tb::SaveData city_save = tb::make_default_save();
+    tb::BuildCity city(city_save);
+    auto city_snapshot = city.snapshot();
+    assert(city_snapshot.mode == tb::BuildCityMode::Browse);
+    assert(city_snapshot.total_population == 0);
+    assert(city_snapshot.milestone == 0);
+    assert(city_snapshot.city_level == 0);
+    assert(city_snapshot.max_unlocked_building_type == 1);
+    assert(city_snapshot.max_trophy_building_type == 0);
+    assert(city_snapshot.selected_building_type == 1);
+    assert(city_snapshot.cursor_column == 2);
+    assert(city_snapshot.cursor_row == 2);
+
+    // Browse selection can inspect all four types, but locked types cannot launch construction.
+    city.update(16, fresh(tb::Key::Down), city_save);
+    assert(city.snapshot().selected_building_type == 2);
+    auto city_update = city.update(16, fresh(tb::Key::A), city_save);
+    assert(! city_update.save_dirty);
+    assert(! city.construction_request().pending);
+    city.update(16, fresh(tb::Key::Up), city_save);
+    city.update(16, fresh(tb::Key::A), city_save);
+    auto construction = city.construction_request();
+    assert(construction.pending);
+    assert(construction.building_type == 1);
+    assert(construction.target_height == 10);
+    assert(! construction.trophy_eligible);
+    city.clear_construction_request();
+
+    // Exact unlock and trophy thresholds are derived from saved population.
+    tb::SaveData unlocked_save = tb::make_default_save();
+    unlocked_save.city_tiles[0].type = 1;
+    unlocked_save.city_tiles[0].population = 1400;
+    tb::BuildCity unlocked_city(unlocked_save);
+    assert(unlocked_city.snapshot().milestone == 8);
+    assert(unlocked_city.snapshot().max_unlocked_building_type == 3);
+    assert(unlocked_city.snapshot().max_trophy_building_type == 1);
+    assert(unlocked_city.snapshot().selected_building_type == 3);
+    unlocked_city.update(16, fresh(tb::Key::Up), unlocked_save);
+    unlocked_city.update(16, fresh(tb::Key::Up), unlocked_save);
+    unlocked_city.update(16, fresh(tb::Key::A), unlocked_save);
+    construction = unlocked_city.construction_request();
+    assert(construction.pending);
+    assert(construction.building_type == 1);
+    assert(construction.target_height == 10);
+    assert(construction.trophy_eligible);
+
+    // A constructed Residential tower enters placement at (2,2) and commits after 3000 ms.
+    tb::SaveData placement_save = tb::make_default_save();
+    tb::BuildCity placement(placement_save);
+    placement.accept_constructed_tower(1, 100, 1);
+    assert(placement.snapshot().mode == tb::BuildCityMode::Placement);
+    assert(placement.snapshot().cursor_column == 2);
+    assert(placement.snapshot().cursor_row == 2);
+    assert(placement.snapshot().placement_valid);
+    city_update = placement.update(16, fresh(tb::Key::A), placement_save);
+    assert(! city_update.save_dirty);
+    assert(placement.snapshot().placement_committing);
+    placement.update(2999, {}, placement_save);
+    assert(placement.snapshot().mode == tb::BuildCityMode::Placement);
+    city_update = placement.update(2, {}, placement_save);
+    assert(city_update.save_dirty);
+    assert(placement.snapshot().mode == tb::BuildCityMode::Browse);
+    assert(placement_save.city_tiles[12].type == 1);
+    assert(placement_save.city_tiles[12].population == 100);
+    assert(placement_save.city_tiles[12].roof == 1);
+    assert(placement.snapshot().total_population == 100);
+
+    // Replacement is legal and population changes by new minus old.
+    placement.accept_constructed_tower(1, 40, 2);
+    placement.update(16, fresh(tb::Key::A), placement_save);
+    assert(placement.snapshot().last_population_delta == -60);
+    city_update = placement.update(3001, {}, placement_save);
+    assert(city_update.save_dirty);
+    assert(placement_save.city_tiles[12].population == 40);
+    assert(placement_save.city_tiles[12].roof == 2);
+    assert(placement.snapshot().total_population == 40);
+
+    // Commercial requires a cardinal Residential neighbor; a diagonal does not count.
+    tb::SaveData rules_save = tb::make_default_save();
+    rules_save.city_tiles[11].type = 1;  // left of center
+    rules_save.city_tiles[11].population = 250;
+    tb::BuildCity rules(rules_save);
+    rules.accept_constructed_tower(2, 75, 1);
+    assert(rules.snapshot().placement_valid);
+    rules.update(16, fresh(tb::Key::Right), rules_save); // (3,2): center is empty, left center isn't type 1
+    assert(! rules.snapshot().placement_valid);
+
+    // Left from column 0 enters the original demolition/discard selector at row 4.
+    tb::BuildCity discard(rules_save);
+    discard.accept_constructed_tower(1, 999, 1);
+    discard.update(16, fresh(tb::Key::Left), rules_save);
+    discard.update(16, fresh(tb::Key::Left), rules_save);
+    discard.update(16, fresh(tb::Key::Left), rules_save);
+    assert(discard.snapshot().cursor_column == -1);
+    assert(discard.snapshot().cursor_row == 4);
+    assert(discard.snapshot().placement_valid);
+    discard.update(16, fresh(tb::Key::A), rules_save);
+    city_update = discard.update(3001, {}, rules_save);
+    assert(! city_update.save_dirty);
+    assert(discard.snapshot().mode == tb::BuildCityMode::Browse);
+    assert(discard.snapshot().total_population == 250);
+
+    // City-level boundaries include the original level-zero placeholder before Tiny Town.
+    tb::SaveData mega_save = tb::make_default_save();
+    mega_save.city_tiles[0].type = 1;
+    mega_save.city_tiles[0].population = 19000;
+    tb::BuildCity mega(mega_save);
+    assert(mega.snapshot().milestone == 20);
+    assert(mega.snapshot().city_level == 9);
+    assert(mega.snapshot().max_unlocked_building_type == 4);
+    assert(mega.snapshot().max_trophy_building_type == 4);
 
     std::cout << "runtime core ok\n";
     return 0;

@@ -48,6 +48,13 @@ struct QuickGameResult
     int longest_combo = 0;
 };
 
+struct QuickFloorRenderPose
+{
+    int x_delta = 0;
+    int y_delta = 0;
+    int z_angle_degrees = 0;
+};
+
 struct QuickGameSnapshot
 {
     QuickGameStatus status = QuickGameStatus::Playing;
@@ -57,6 +64,8 @@ struct QuickGameSnapshot
     int chances_left = 3;
     int camera_y = 512;
     int camera_target_y = 512;
+    int presentation_camera_y = 512;
+    bool camera_impact_active = false;
     int current_x = 0;
     int current_y = 2432;
     int rope_length = 0;
@@ -66,6 +75,11 @@ struct QuickGameSnapshot
     int swing_amplitude_y = 64;
     int drop_velocity_x = 0;
     int drop_velocity_y = 0;
+    int current_z_angle_degrees = 0;
+    int tower_phase_tenths = 0;
+    int tower_sway_wave = 0;
+    int tower_sway_amplitude = 0;
+    int tower_global_x = 0;
     int population = 0;
     int combo_count = 0;
     int combo_bonus_pending = 0;
@@ -90,6 +104,7 @@ public:
     [[nodiscard]] QuickGameResult result() const;
     [[nodiscard]] int floor_count() const;
     [[nodiscard]] const QuickFloor& floor(int index) const;
+    [[nodiscard]] const QuickFloorRenderPose& floor_render_pose(int index) const;
 
 #ifdef TB_HOST_TEST
     void debug_resolve_landing_for_test(int offset);
@@ -98,6 +113,7 @@ public:
 
 private:
     std::array<QuickFloor, stored_floor_count> _floors{};
+    std::array<QuickFloorRenderPose, stored_floor_count> _floor_render_poses{};
     int _floor_count = 0;
     int _chances_left = 3;
     QuickGameStatus _status = QuickGameStatus::Playing;
@@ -133,15 +149,31 @@ private:
     int _drop_start_x = 0;
     int _drop_start_y = 2432;
     int _drop_start_ms = 0;
+    int _current_z_angle_degrees = 0;
+    int _slip_target_z_angle_degrees = 0;
 
     int _camera_y = 512;
     int _camera_target_y = 512;
     int _camera_transition_start_ms = 0;
+    int _presentation_camera_y = 512;
+    int _camera_impact_start_ms = -1000000;
+    uint64_t _visual_random_state = 0;
     int _transition_start_ms = 0;
+
+    int _tower_phase_tenths = 0;
+    int _tower_sway_wave = 0;
+    int _tower_sway_amplitude = 0;
+    int _tower_global_x = 0;
+    int _tower_instability = 0;
+    int _top_settle_start_ms = -1000000;
+    int _top_settle_cached_angle = 0;
 
     void _start_drop();
     void _step(int delta_ms);
     void _update_camera();
+    void _update_presentation(int delta_ms);
+    void _update_tower_poses();
+    int _next_visual_random(int bound);
     void _update_crane(int delta_ms);
     void _update_falling(int delta_ms);
     void _check_collision();

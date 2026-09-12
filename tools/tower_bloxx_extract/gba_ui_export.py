@@ -25,7 +25,14 @@ EXTENDED_CHARACTERS = (
 ASCII_CHARACTERS = tuple(chr(code) for code in range(32, 127))
 FONT_CHARACTERS = ASCII_CHARACTERS + EXTENDED_CHARACTERS
 LOCALE_ENTRIES = ("l0", "l1", "l2", "l3", "l4")
-SOURCE_RESOURCES = {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10}
+SOURCE_RESOURCES = {
+    "font_atlas": 36,
+    "font_metrics": 44,
+    "tower_logo": 7,
+    "sumea_logo": 10,
+    "city_buildings": [24, 25, 26, 27],
+    "city_lot": 28,
+}
 
 
 def _sha256(path: Path) -> str:
@@ -370,6 +377,25 @@ def _export_composite(
     }
 
 
+
+
+def _export_strip_frames(
+    image: Image.Image,
+    frame_count: int,
+    name_prefix: str,
+    graphics_dir: Path,
+) -> list[dict[str, object]]:
+    if image.width % frame_count:
+        raise ValueError(f"{name_prefix} width is not divisible by {frame_count}")
+    frame_width = image.width // frame_count
+    records: list[dict[str, object]] = []
+    for frame in range(frame_count):
+        left = frame * frame_width
+        cropped = image.crop((left, 0, left + frame_width, image.height))
+        _composite, record = _export_composite(cropped, f"{name_prefix}_f{frame}", graphics_dir)
+        records.append(record)
+    return records
+
 def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]:
     jar_path = Path(jar_path)
     project_dir = Path(project_dir)
@@ -389,6 +415,11 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         font = Font44(font_atlas, font_metrics)
         tower_logo = Image.open(BytesIO(read_resource(jar, 7))).convert("RGBA")
         sumea_logo = Image.open(BytesIO(read_resource(jar, 10))).convert("RGBA")
+        city_building_strips = tuple(
+            Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
+            for resource_id in SOURCE_RESOURCES["city_buildings"]
+        )
+        city_lot_strip = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_lot"])))).convert("RGBA")
         locales = tuple(decode_locale(jar.read(entry)) for entry in LOCALE_ENTRIES)
 
     non_ascii = tuple(sorted({
@@ -416,10 +447,18 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8},
     )
 
-    logo_records: list[dict[str, object]] = []
+    asset_records: list[dict[str, object]] = []
     _tower_composite, tower_record = _export_composite(tower_logo, "tower_bloxx_logo", graphics_dir)
     _sumea_composite, sumea_record = _export_composite(sumea_logo, "sumea_logo", graphics_dir)
-    logo_records.extend((tower_record, sumea_record))
+    asset_records.extend((tower_record, sumea_record))
+
+    city_building_records: list[dict[str, object]] = []
+    for building_index, strip in enumerate(city_building_strips, start=1):
+        records = _export_strip_frames(strip, 4, f"city_building_{building_index}", graphics_dir)
+        city_building_records.extend(records)
+        asset_records.extend(records)
+    city_lot_records = _export_strip_frames(city_lot_strip, 5, "city_lot", graphics_dir)
+    asset_records.extend(city_lot_records)
 
     adapted = {locale.code: _adapt_instructions(locale) for locale in locales}
     wrapped: dict[str, dict[str, tuple[str, ...]]] = {}
@@ -437,7 +476,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     ui_assets_header = include_dir / "tower_ui_assets.h"
     font_header.write_text(_font_header(font), encoding="utf-8", newline="\n")
     localization_header.write_text(_localization_header(locales, adapted, wrapped), encoding="utf-8", newline="\n")
-    ui_assets_header.write_text(_logo_header(logo_records), encoding="utf-8", newline="\n")
+    ui_assets_header.write_text(_logo_header(asset_records), encoding="utf-8", newline="\n")
 
     tracked_files = sorted([
         *graphics_dir.glob("*.bmp"),
@@ -476,7 +515,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             locale.code: {key: len(value) for key, value in wrapped[locale.code].items()}
             for locale in locales
         },
-        "logos": logo_records,
+        "logos": [tower_record, sumea_record],
+        "city_assets": {"buildings": city_building_records, "lots": city_lot_records},
         "files": files,
         "tree_hash": tree_digest.hexdigest(),
     }

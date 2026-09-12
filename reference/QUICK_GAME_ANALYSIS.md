@@ -136,13 +136,28 @@ Each is compared independently with strict `>` against record slots `v[3]`, `v[4
 
 ## Camera (`House.d(int)`, `House.p()`)
 
-A floor-count change starts a camera transition by storing the current gameplay clock. With more than one floor the target moves upward by the requested fixed amount; the opening case establishes the canonical 512 baseline. The current camera approaches the target over **500 ms**. The Java code also applies a short random camera shake after particular events; Phase 5 deliberately omits that cosmetic randomness so replay state stays deterministic. It does not affect placement/collision rules.
+A floor-count change starts a camera transition by storing the current gameplay clock. With more than one floor the target moves upward by the requested fixed amount; the opening case establishes the canonical 512 baseline. The collision-authoritative camera approaches the target over **500 ms**.
 
-## Still deferred beyond Phase 6
+Phase 7 restores the presentation-only impact branch from `House.p()`: for **800 ms** after a miss, the rendered camera receives `32 - a(64)` fixed-unit jitter each simulation step. The original `a(64)` comes from an unseeded `java.util.Random`, so its exact sequence was not stable across launches. The GBA port uses a fixed Java-compatible 48-bit LCG seed for deterministic replay while preserving the original 0..63 distribution and 800 ms lifetime. Collision, crane anchor, and scoring continue to use the unshaken camera.
+When game state reaches `K=2`, `House.f(int)` stops advancing the normal sway oscillator and forces `aH=0`; Phase 7 mirrors that terminal-state behavior while allowing the camera-impact window to expire normally during the 2000 ms result delay.
 
-- dynamic five-floor tower sway/rocking presentation,
-- exact 3D tumble/tilt pose rendering for slips,
-- random cosmetic camera shake,
+## Tower sway and top-floor settle (`House.l(int)`, `House.f(int)`, `House.q()`)
+
+Only the **last five floors** participate in the original tower presentation loop. `House.l(int)` derives instability from the mean absolute placement error of those five floors, then derives sway amplitude from floor count plus cumulative horizontal drift. `House.f(int)` advances the recovered 0..3599 oscillator and computes the global X displacement. `House.q()` accumulates an additional signed per-floor rotation/displacement correction, with Java integer truncation preserved exactly.
+
+A newly placed top floor has its own **0..800 ms** settle wobble. The piecewise windows are 0..100 ms, 100..500 ms, and 500..800 ms; after 800 ms the top converges back to the base running tower angle. These transforms are exposed by the native core as `QuickFloorRenderPose` values. They are render-only: stored `QuickFloor` coordinates remain the collision/scoring source of truth.
+
+The Butano scene matches the Java five-floor visibility window. Each recovered floor mesh is a four-OBJ composite; all pieces of one floor share one `sprite_affine_mat_ptr`, and their part centers are rotated around the recovered mesh origin before screen placement so the composite behaves as one object rather than four independently spinning chunks.
+
+## Slip/tumble presentation (`House.b(int)`, `House.h(int)`)
+
+A failed landing still begins with the recovered horizontal velocity `direction * 500`, vertical velocity `50`, and Quick Game fall divisor `/200`. Phase 7 also restores the visible Z tumble: target rotation is `-direction * 45` degrees and the current angle approaches that target using the original elapsed-time interpolation.
+
+The Java M3G object also interpolates a secondary Y-axis target of random **+60/-60 degrees**. The current GBA asset path is pre-rendered 2D, so a true perspective-changing Y-axis rotation requires additional M3G view renders rather than a 2D affine approximation. Phase 7 deliberately does not fake that axis; Z tumble is exact, while the secondary 3D tilt remains an explicit future asset-generation parity item.
+
+## Still deferred beyond Phase 7
+
+- pre-rendered secondary Y-axis slip/tumble viewpoints,
 - Build City-specific construction/progression logic.
 
-Phase 6 now includes Quick Game population, combo timing/settlement, three persistent records, the 2000 ms terminal delay, and the localized result flow.
+Phase 7 adds deterministic five-floor sway, top-floor settle, Z tumble, and impact-camera presentation on top of the Phase-6 population/combo/results/save behavior.

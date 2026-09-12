@@ -14,16 +14,21 @@ void emit(const tb::QuickGame& game, int tick)
     const tb::QuickGameSnapshot snapshot = game.snapshot();
     std::cout << tick << ',' << int(snapshot.status) << ',' << int(snapshot.block_state) << ','
               << snapshot.floor_count << ',' << snapshot.chances_left << ','
-              << snapshot.camera_y << ',' << snapshot.camera_target_y << ',' << snapshot.current_x << ','
+              << snapshot.camera_y << ',' << snapshot.camera_target_y << ',' << snapshot.presentation_camera_y << ','
+              << int(snapshot.camera_impact_active) << ',' << snapshot.current_x << ','
               << snapshot.current_y << ',' << snapshot.rope_length << ',' << snapshot.swing_phase_ms << ','
               << snapshot.swing_period_ms << ',' << snapshot.swing_amplitude_x << ',' << snapshot.swing_amplitude_y
               << ',' << snapshot.drop_velocity_x << ',' << snapshot.drop_velocity_y << ','
               << int(snapshot.last_accuracy) << ',' << snapshot.population << ',' << snapshot.combo_count << ','
-              << snapshot.combo_bonus_pending << ',' << snapshot.combo_meter_ms << ',' << snapshot.longest_combo;
+              << snapshot.combo_bonus_pending << ',' << snapshot.combo_meter_ms << ',' << snapshot.longest_combo << ','
+              << snapshot.current_z_angle_degrees << ',' << snapshot.tower_phase_tenths << ','
+              << snapshot.tower_sway_wave << ',' << snapshot.tower_sway_amplitude << ',' << snapshot.tower_global_x;
     for(int index = 0; index < game.floor_count(); ++index)
     {
         const tb::QuickFloor& floor = game.floor(index);
-        std::cout << ';' << floor.x << ':' << floor.y << ':' << floor.offset;
+        const tb::QuickFloorRenderPose& pose = game.floor_render_pose(index);
+        std::cout << ';' << floor.x << ':' << floor.y << ':' << floor.offset << ':'
+                  << pose.x_delta << ':' << pose.y_delta << ':' << pose.z_angle_degrees;
     }
     std::cout << '\n';
 }

@@ -151,3 +151,57 @@ def test_phase6_quick_game_hud_results_and_record_persistence_are_wired() -> Non
     assert "snapshot.target_floors" not in scene
     assert "floors_text.append('/')" not in scene
     assert "store_save(save)" in main
+
+
+def test_phase7_quick_game_scene_applies_group_affine_presentation_pose() -> None:
+    root = _root()
+    scene_h = (root / "gba" / "include" / "tb" / "quick_game_scene.h").read_text()
+    scene = (root / "gba" / "src" / "quick_game_scene.cpp").read_text()
+
+    assert 'bn_sprite_affine_mat_ptr.h' in scene_h
+    assert "bn::sprite_affine_mat_ptr" in scene_h
+    assert "_floor_affine_mats" in scene_h
+    assert "_current_affine_mat" in scene_h
+    assert "max_visible_floors = 5" in scene
+    assert "floor_render_pose" in scene
+    assert "presentation_camera_y" in scene
+    assert "current_z_angle_degrees" in scene
+    assert "set_affine_mat" in scene
+    assert "set_rotation_angle" in scene
+    assert "degrees_lut_sin_and_cos_safe" in scene
+
+    # Recovered presentation fields are consumed only by rendering; physics constants stay in the core.
+    for forbidden in ("29491200", "58982400", "_tower_instability", "camera_impact_ms"):
+        assert forbidden not in scene
+
+
+def test_phase8_build_city_scene_uses_original_city_art_and_core() -> None:
+    root = _root()
+    scene_h = root / "gba" / "include" / "tb" / "build_city_scene.h"
+    scene_cpp = root / "gba" / "src" / "build_city_scene.cpp"
+    assert scene_h.is_file()
+    assert scene_cpp.is_file()
+
+    header = scene_h.read_text()
+    scene = scene_cpp.read_text()
+    main = (root / "gba" / "src" / "main.cpp").read_text()
+
+    assert 'generated/tower_ui_assets.h' in header
+    assert "BuildCity _city" in header
+    assert "BuildCitySnapshot" in scene
+    assert "generated::city_building_1_f0" in scene
+    assert "generated::city_building_4_f3" in scene
+    assert "generated::city_lot_f" in scene
+    assert "localized_strings[_language][82]" in scene  # Population
+    assert "localized_strings[_language][83" in scene or "localized_strings[_language][83 +" in scene
+    assert "localized_strings[_language][71" in scene or "localized_strings[_language][71 +" in scene
+    assert "placement_valid" in scene
+    assert "_show_composite(*lot_assets[0], x, y)" not in scene
+    assert "construction_request" in scene
+    assert "BuildCityScene" in main
+    assert "GameRequest::BuildCity" in main
+    assert "build_city.update" in main
+
+    # City rules remain in build_city.cpp, not duplicated in the Butano renderer.
+    for forbidden in ("19000", "2200", "TARGET_HEIGHTS", "placement_capability"):
+        assert forbidden not in scene

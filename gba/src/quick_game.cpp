@@ -19,6 +19,11 @@ constexpr int next_block_delay_ms = 400;
 constexpr int camera_transition_ms = 500;
 constexpr int view_height_fixed = (256 * 160) / 22;
 constexpr int view_half_fixed = view_height_fixed / 2;
+constexpr int camera_impact_ms = 800;
+constexpr uint64_t java_random_multiplier = 0x5DEECE66DULL;
+constexpr uint64_t java_random_addend = 0xBULL;
+constexpr uint64_t java_random_mask = (uint64_t(1) << 48) - 1;
+constexpr uint64_t visual_random_seed = (0x544F574552ULL ^ java_random_multiplier) & java_random_mask;
 
 constexpr std::array<int, 360> make_sine_table()
 {
@@ -73,6 +78,11 @@ constexpr int max_value(int left, int right)
     return left > right ? left : right;
 }
 
+constexpr int java_shift_right_one(int value)
+{
+    return value >= 0 ? value / 2 : -((-value + 1) / 2);
+}
+
 constexpr QuickAccuracyBand accuracy_for_offset(int offset)
 {
     const int absolute = abs_value(offset);
@@ -100,6 +110,7 @@ QuickGame::QuickGame()
 void QuickGame::reset()
 {
     _floors = {};
+    _floor_render_poses = {};
     _floor_count = 0;
     _chances_left = 3;
     _status = QuickGameStatus::Playing;
@@ -135,11 +146,24 @@ void QuickGame::reset()
     _drop_start_x = 0;
     _drop_start_y = 2432;
     _drop_start_ms = 0;
+    _current_z_angle_degrees = 0;
+    _slip_target_z_angle_degrees = 0;
 
     _camera_y = 512;
     _camera_target_y = 512;
     _camera_transition_start_ms = 0;
+    _presentation_camera_y = 512;
+    _camera_impact_start_ms = -1000000;
+    _visual_random_state = visual_random_seed;
     _transition_start_ms = 0;
+
+    _tower_phase_tenths = 0;
+    _tower_sway_wave = java_cos(0);
+    _tower_sway_amplitude = 0;
+    _tower_global_x = 0;
+    _tower_instability = 0;
+    _top_settle_start_ms = -1000000;
+    _top_settle_cached_angle = 0;
 }
 
 void QuickGame::update(int delta_ms, const InputFrame& input)
@@ -163,6 +187,7 @@ void QuickGame::update(int delta_ms, const InputFrame& input)
         if(_status == QuickGameStatus::GameOver)
         {
             _clock_ms += step_ms;
+            _update_presentation(step_ms);
             if(_clock_ms - _transition_start_ms >= 2000)
             {
                 _status = QuickGameStatus::Results;
@@ -185,6 +210,8 @@ QuickGameSnapshot QuickGame::snapshot() const
     result.chances_left = _chances_left;
     result.camera_y = _camera_y;
     result.camera_target_y = _camera_target_y;
+    result.presentation_camera_y = _presentation_camera_y;
+    result.camera_impact_active = _clock_ms - _camera_impact_start_ms < camera_impact_ms;
     result.current_x = _current_x;
     result.current_y = _current_y;
     result.rope_length = _rope_length;
@@ -194,6 +221,11 @@ QuickGameSnapshot QuickGame::snapshot() const
     result.swing_amplitude_y = _swing_amplitude_y;
     result.drop_velocity_x = _drop_velocity_x;
     result.drop_velocity_y = _drop_velocity_y;
+    result.current_z_angle_degrees = _current_z_angle_degrees;
+    result.tower_phase_tenths = _tower_phase_tenths;
+    result.tower_sway_wave = _tower_sway_wave;
+    result.tower_sway_amplitude = _tower_sway_amplitude;
+    result.tower_global_x = _tower_global_x;
     result.population = _population;
     result.combo_count = _combo_count;
     result.combo_bonus_pending = _combo_bonus_pending;
@@ -218,6 +250,13 @@ const QuickFloor& QuickGame::floor(int index) const
     const int first_stored = max_value(0, _floor_count - stored_floor_count);
     assert(index >= first_stored && index < _floor_count);
     return _floors[index % stored_floor_count];
+}
+
+const QuickFloorRenderPose& QuickGame::floor_render_pose(int index) const
+{
+    const int first_stored = max_value(0, _floor_count - stored_floor_count);
+    assert(index >= first_stored && index < _floor_count);
+    return _floor_render_poses[index % stored_floor_count];
 }
 
 #ifdef TB_HOST_TEST
@@ -277,6 +316,7 @@ void QuickGame::_step(int delta_ms)
     }
 
     _update_combo(delta_ms);
+    _update_presentation(delta_ms);
 }
 
 void QuickGame::_update_camera()
@@ -295,6 +335,121 @@ void QuickGame::_update_camera()
     }
 
     _world_anchor_y = _camera_y + 1792 + 128;
+}
+
+void QuickGame::_update_presentation(int delta_ms)
+{
+    if(_status == QuickGameStatus::GameOver)
+    {
+        // House.f(int) forces aH=0 while K==2 instead of advancing U.
+        _tower_sway_wave = 0;
+    }
+    else
+    {
+        _tower_phase_tenths = (_tower_phase_tenths + delta_ms) % 3600;
+        _tower_sway_wave = java_cos(_tower_phase_tenths / 10);
+    }
+    _update_tower_poses();
+
+    _presentation_camera_y = _camera_y;
+    const int impact_elapsed = _clock_ms - _camera_impact_start_ms;
+    if(impact_elapsed >= 0 && impact_elapsed < camera_impact_ms)
+    {
+        _presentation_camera_y += 32 - _next_visual_random(64);
+    }
+}
+
+void QuickGame::_update_tower_poses()
+{
+    if(_floor_count == 0)
+    {
+        _tower_instability = 0;
+        _tower_sway_amplitude = 0;
+        _tower_global_x = 0;
+        return;
+    }
+
+    const int first_visible = max_value(0, _floor_count - 5);
+    int absolute_sum = 0;
+    for(int index = first_visible; index < _floor_count; ++index)
+    {
+        absolute_sum += abs_value(floor(index).offset);
+    }
+    const int average_offset = absolute_sum / 5;
+    _tower_instability = min_value((_floor_count * average_offset) / 20, 100);
+
+    const int cumulative_offset = floor(_floor_count - 1).x;
+    const int base_amplitude = _floor_count / 2 + abs_value(cumulative_offset) / 20;
+    _tower_sway_amplitude = min_value(base_amplitude, (_floor_count * base_amplitude) / 6);
+    _tower_global_x = (-_tower_sway_wave * _tower_sway_amplitude) / 10000;
+
+    int delta_x = _tower_global_x;
+    int delta_y = 0;
+    int running_angle = 0;
+    const int settle_elapsed = _clock_ms - _top_settle_start_ms;
+
+    for(int index = first_visible; index < _floor_count; ++index)
+    {
+        const int offset = floor(index).offset;
+        if(index == _floor_count - 1 && settle_elapsed >= 0)
+        {
+            if(settle_elapsed < 100)
+            {
+                running_angle = running_angle / 8 + offset / 6 + (settle_elapsed * offset) / 600;
+            }
+            else if(settle_elapsed < 500)
+            {
+                running_angle = running_angle / 8 + offset / 6 + ((500 - settle_elapsed) * offset) / 2400;
+                _top_settle_cached_angle = running_angle;
+            }
+            else if(settle_elapsed < 800)
+            {
+                running_angle = _top_settle_cached_angle -
+                        ((_top_settle_cached_angle - running_angle) * (settle_elapsed - 500)) / 300;
+            }
+        }
+
+        int sway_correction = 0;
+        if(_tower_sway_wave > 0)
+        {
+            if(offset < 0)
+            {
+                sway_correction = (_tower_instability * offset * _tower_sway_wave) / 29491200;
+            }
+            else
+            {
+                sway_correction = (-_tower_instability * offset * _tower_sway_wave) / 58982400;
+            }
+        }
+        else if(offset > 0)
+        {
+            sway_correction = (-_tower_instability * offset * _tower_sway_wave) / 29491200;
+        }
+        else
+        {
+            sway_correction = (_tower_instability * offset * _tower_sway_wave) / 58982400;
+        }
+
+        running_angle += sway_correction;
+        delta_x += 2 * running_angle;
+        const int half_angle = java_shift_right_one(running_angle);
+        delta_y += _tower_sway_wave > 0 ? half_angle : -half_angle;
+
+        QuickFloorRenderPose& pose = _floor_render_poses[index % stored_floor_count];
+        pose.x_delta = delta_x;
+        pose.y_delta = delta_y;
+        pose.z_angle_degrees = index == 0 ? 0 : -running_angle;
+    }
+}
+
+int QuickGame::_next_visual_random(int bound)
+{
+    assert(bound > 0);
+    _visual_random_state = (_visual_random_state * java_random_multiplier + java_random_addend) & java_random_mask;
+    const uint32_t raw = uint32_t(_visual_random_state >> 16);
+    const int32_t signed_raw = int32_t(raw);
+    const int remainder = signed_raw % bound;
+    return remainder < 0 ? -remainder : remainder;
 }
 
 void QuickGame::_update_crane(int delta_ms)
@@ -331,6 +486,24 @@ void QuickGame::_update_falling(int delta_ms)
     const int elapsed_ms = _clock_ms - _drop_start_ms;
     _current_x += (_drop_velocity_x * delta_ms) / 512;
     _current_y = _drop_start_y + (_drop_velocity_y * elapsed_ms) / 256 - (elapsed_ms * elapsed_ms) / 200;
+
+    if(_block_state == QuickBlockState::Slipping)
+    {
+        if(_current_z_angle_degrees < _slip_target_z_angle_degrees)
+        {
+            _current_z_angle_degrees = min_value(
+                    _slip_target_z_angle_degrees,
+                    _current_z_angle_degrees +
+                            (elapsed_ms * (_slip_target_z_angle_degrees - _current_z_angle_degrees)) / 500);
+        }
+        else if(_current_z_angle_degrees > _slip_target_z_angle_degrees)
+        {
+            _current_z_angle_degrees = max_value(
+                    _slip_target_z_angle_degrees,
+                    _current_z_angle_degrees -
+                            (elapsed_ms * (_current_z_angle_degrees - _slip_target_z_angle_degrees)) / 500);
+        }
+    }
 
     if(_current_y < _camera_y - view_half_fixed)
     {
@@ -420,6 +593,8 @@ void QuickGame::_begin_slip(int offset)
     _drop_start_ms = _clock_ms;
     _drop_velocity_x = direction * 500;
     _drop_velocity_y = 50;
+    _current_z_angle_degrees = 0;
+    _slip_target_z_angle_degrees = -direction * 45;
 }
 
 void QuickGame::_register_miss()
@@ -441,6 +616,7 @@ void QuickGame::_register_miss()
 
     _last_accuracy = QuickAccuracyBand::None;
     _block_state = QuickBlockState::Missed;
+    _camera_impact_start_ms = _clock_ms;
     _transition_start_ms = _clock_ms;
 
     if(_chances_left == 0)
@@ -507,6 +683,8 @@ void QuickGame::_add_floor(int offset)
     floor_record.offset = offset;
     _floors[_floor_count % stored_floor_count] = floor_record;
     ++_floor_count;
+    _top_settle_start_ms = _clock_ms;
+    _top_settle_cached_angle = 0;
 
     _current_x = floor_record.x;
     _current_y = floor_record.y;
@@ -524,6 +702,7 @@ void QuickGame::_add_floor(int offset)
         _camera_target_y = 512;
     }
 
+    _update_tower_poses();
 }
 
 void QuickGame::_update_difficulty()
@@ -563,5 +742,7 @@ void QuickGame::_spawn_next_block()
     _current_y = _crane_y;
     _drop_velocity_x = 0;
     _drop_velocity_y = 0;
+    _current_z_angle_degrees = 0;
+    _slip_target_z_angle_degrees = 0;
 }
 }

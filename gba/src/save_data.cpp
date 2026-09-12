@@ -41,11 +41,30 @@ bool valid_save(const SaveData& save)
            save.checksum == checksum_for(save);
 }
 
+bool valid_legacy_v2_save(const LegacySaveDataV2& save)
+{
+    return save.magic == save_magic &&
+           save.version == legacy_save_version_v2 &&
+           save.checksum == checksum_for(save);
+}
+
 bool valid_legacy_save(const LegacySaveDataV1& save)
 {
     return save.magic == save_magic &&
            save.version == legacy_save_version &&
            save.checksum == checksum_for(save);
+}
+
+SaveData migrate_legacy_v2_save(const LegacySaveDataV2& legacy)
+{
+    SaveData save{};
+    save.language = legacy.language;
+    save.sound_enabled = legacy.sound_enabled;
+    save.quick_best_population = legacy.quick_best_population;
+    save.quick_best_height = legacy.quick_best_height;
+    save.quick_best_combo = legacy.quick_best_combo;
+    finalize_save(save);
+    return save;
 }
 
 SaveData migrate_legacy_save(const LegacySaveDataV1& legacy)
@@ -80,6 +99,11 @@ QuickRecordFlags apply_quick_result(SaveData& save, const QuickGameResult& resul
 }
 
 #ifdef TB_HOST_TEST
+void finalize_legacy_v2_save_for_test(LegacySaveDataV2& save)
+{
+    save.checksum = checksum_for(save);
+}
+
 void finalize_legacy_save_for_test(LegacySaveDataV1& save)
 {
     save.checksum = checksum_for(save);

@@ -2,6 +2,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
+#include "bn_math.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
 
@@ -12,7 +13,7 @@ namespace tb
 {
 namespace
 {
-constexpr int max_visible_floors = 8;
+constexpr int max_visible_floors = 5;
 constexpr int floor_mesh_id = 10;
 constexpr int crane_top_mesh_id = 9;
 constexpr int crane_hook_mesh_id = 8;
@@ -48,6 +49,19 @@ void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::i
     {
         sprites[index].set_position(x + mesh.parts[index].x, y + mesh.parts[index].y);
     }
+}
+
+void position_rotated_mesh_part(
+        const generated::MeshPartAsset& part, int x, int y, int angle_degrees,
+        bn::sprite_affine_mat_ptr& affine_mat, bn::sprite_ptr& sprite)
+{
+    const bn::fixed safe_angle = bn::safe_degrees_angle(angle_degrees);
+    affine_mat.set_rotation_angle(safe_angle);
+    const bn::pair<bn::fixed, bn::fixed> sin_and_cos = bn::degrees_lut_sin_and_cos_safe(safe_angle);
+    const bn::fixed rotated_x = part.x * sin_and_cos.second - part.y * sin_and_cos.first;
+    const bn::fixed rotated_y = part.x * sin_and_cos.first + part.y * sin_and_cos.second;
+    sprite.set_affine_mat(affine_mat);
+    sprite.set_position(bn::fixed(x) + rotated_x, bn::fixed(y) + rotated_y);
 }
 
 bn::string<64> format_result_line(bn::string_view template_text, int value)
@@ -97,6 +111,7 @@ int combo_bucket(const QuickGameSnapshot& snapshot)
 }
 
 QuickGameScene::QuickGameScene() :
+    _current_affine_mat(bn::sprite_affine_mat_ptr::create()),
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
@@ -120,6 +135,7 @@ void QuickGameScene::start(int language)
     _last_hud_status = QuickGameStatus::GameOver;
     _active = true;
 
+    _floor_affine_mats.clear();
     _floor_sprites.clear();
     _hud_sprites.clear();
     _ensure_current_sprites();
@@ -192,6 +208,7 @@ bool QuickGameScene::active() const
 void QuickGameScene::_stop()
 {
     _active = false;
+    _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
     _crane_top_sprites.clear();
@@ -201,6 +218,7 @@ void QuickGameScene::_stop()
 
 void QuickGameScene::_rebuild_floor_sprites()
 {
+    _floor_affine_mats.clear();
     _floor_sprites.clear();
     _rendered_floor_count = _game.floor_count();
     _visible_floor_start = _rendered_floor_count > max_visible_floors ? _rendered_floor_count - max_visible_floors : 0;
@@ -208,9 +226,13 @@ void QuickGameScene::_rebuild_floor_sprites()
     const generated::MeshAsset& mesh = mesh_by_id(floor_mesh_id);
     for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
+        bn::sprite_affine_mat_ptr affine_mat = bn::sprite_affine_mat_ptr::create();
+        _floor_affine_mats.push_back(affine_mat);
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            _floor_sprites.push_back(mesh.parts[part_index].item->create_sprite(0, 0));
+            bn::sprite_ptr sprite = mesh.parts[part_index].item->create_sprite(0, 0);
+            sprite.set_affine_mat(affine_mat);
+            _floor_sprites.push_back(sprite);
         }
     }
 }
@@ -220,6 +242,10 @@ void QuickGameScene::_ensure_current_sprites()
     if(_current_sprites.empty())
     {
         create_mesh_sprites(mesh_by_id(floor_mesh_id), _current_sprites);
+        for(bn::sprite_ptr& sprite : _current_sprites)
+        {
+            sprite.set_affine_mat(_current_affine_mat);
+        }
     }
 }
 
@@ -241,17 +267,22 @@ void QuickGameScene::_update_world_positions()
     const generated::MeshAsset& floor_mesh = mesh_by_id(floor_mesh_id);
 
     int sprite_index = 0;
+    int affine_index = 0;
     for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
         const QuickFloor& floor = _game.floor(floor_index);
-        const int x = _screen_x(floor.x);
-        const int y = _screen_y(floor.y, snapshot.camera_y);
+        const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
+        const int x = _screen_x(floor.x + pose.x_delta);
+        const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
+        bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
         for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
         {
-            const generated::MeshPartAsset& part = floor_mesh.parts[part_index];
-            _floor_sprites[sprite_index].set_position(x + part.x, y + part.y);
+            position_rotated_mesh_part(
+                    floor_mesh.parts[part_index], x, y, pose.z_angle_degrees, affine_mat,
+                    _floor_sprites[sprite_index]);
             ++sprite_index;
         }
+        ++affine_index;
     }
 
     const bool current_visible = snapshot.status == QuickGameStatus::Playing &&
@@ -263,9 +294,14 @@ void QuickGameScene::_update_world_positions()
     }
     if(current_visible)
     {
-        position_mesh_sprites(
-                floor_mesh, _screen_x(snapshot.current_x), _screen_y(snapshot.current_y, snapshot.camera_y),
-                _current_sprites);
+        const int x = _screen_x(snapshot.current_x);
+        const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+        for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
+        {
+            position_rotated_mesh_part(
+                    floor_mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, _current_affine_mat,
+                    _current_sprites[part_index]);
+        }
     }
 
     const bool crane_visible = snapshot.status == QuickGameStatus::Playing;
@@ -282,7 +318,7 @@ void QuickGameScene::_update_world_positions()
         position_mesh_sprites(mesh_by_id(crane_top_mesh_id), 0, -68, _crane_top_sprites);
         position_mesh_sprites(
                 mesh_by_id(crane_hook_mesh_id), _screen_x(snapshot.current_x),
-                _screen_y(snapshot.current_y, snapshot.camera_y) - 34, _crane_hook_sprites);
+                _screen_y(snapshot.current_y, snapshot.presentation_camera_y) - 34, _crane_hook_sprites);
     }
 }
 

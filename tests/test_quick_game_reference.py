@@ -136,3 +136,67 @@ def test_population_and_combo_helpers_match_house_k_r_and_update() -> None:
     assert combo_drain_ms(25, 1) == 25
     assert combo_drain_ms(25, 2) == 29
     assert combo_drain_ms(25, 4) == 37
+
+
+def test_tower_sway_amplitude_and_phase_match_house_l_and_f() -> None:
+    from tools.tower_bloxx_extract.quick_game_reference import tower_sway_state
+
+    # Five offsets with cumulative lean 60. House.l(int) divides the last-five
+    # absolute offset sum by 5, scales it by Q/20, then derives T from Q and M.
+    state = tower_sway_state((0, 10, 20, -30, 60), phase_tenths=0)
+    assert state == {
+        "instability": 6,
+        "amplitude": 4,
+        "wave": -32771,
+        "global_x": 13,
+    }
+
+    quarter = tower_sway_state((0, 10, 20, -30, 60), phase_tenths=900)
+    assert quarter["wave"] == 0
+    assert quarter["global_x"] == 0
+
+
+def test_top_floor_settle_wobble_matches_house_q_piecewise_windows() -> None:
+    from tools.tower_bloxx_extract.quick_game_reference import top_settle_angle
+
+    # Use a non-zero base angle to prove the 500..800 ms branch interpolates
+    # back toward the normal tower angle rather than toward zero.
+    angle, cache = top_settle_angle(base_angle=12, offset=60, elapsed_ms=50, cached_angle=0)
+    assert (angle, cache) == (12 // 8 + 60 // 6 + (50 * 60) // 600, 0)
+
+    angle, cache = top_settle_angle(base_angle=12, offset=60, elapsed_ms=100, cached_angle=0)
+    assert (angle, cache) == (12 // 8 + 60 // 6 + (400 * 60) // 2400, 21)
+
+    angle, cache = top_settle_angle(base_angle=12, offset=60, elapsed_ms=475, cached_angle=21)
+    assert (angle, cache) == (12 // 8 + 60 // 6 + (25 * 60) // 2400, 11)
+
+    angle, cache = top_settle_angle(base_angle=12, offset=60, elapsed_ms=650, cached_angle=11)
+    assert (angle, cache) == (11, 11)
+
+    assert top_settle_angle(base_angle=12, offset=60, elapsed_ms=800, cached_angle=11) == (12, 11)
+
+
+def test_tower_pose_deltas_accumulate_rotation_displacement_like_house_q() -> None:
+    from tools.tower_bloxx_extract.quick_game_reference import tower_pose_deltas
+
+    poses = tower_pose_deltas((0, 32, -48, 24, 60), phase_tenths=1800)
+    assert len(poses) == 5
+    # Foundation is the Java special sentinel (-999): no visible Z rotation.
+    assert poses[0]["angle"] == 0
+    # Every later X pose includes twice the running angle; Y accumulates half
+    # the running angle with sign selected by the sway wave.
+    assert poses == [
+        {"floor_index": 0, "angle": 0, "dx": -13, "dy": 0},
+        {"floor_index": 1, "angle": 0, "dx": -13, "dy": 0},
+        {"floor_index": 2, "angle": 0, "dx": -13, "dy": 0},
+        {"floor_index": 3, "angle": 0, "dx": -13, "dy": 0},
+        {"floor_index": 4, "angle": 0, "dx": -13, "dy": 0},
+    ]
+
+
+def test_camera_impact_jitter_matches_house_p_range_and_window() -> None:
+    from tools.tower_bloxx_extract.quick_game_reference import camera_impact_offset
+
+    assert camera_impact_offset(0, elapsed_ms=0) == 32
+    assert camera_impact_offset(63, elapsed_ms=799) == -31
+    assert camera_impact_offset(17, elapsed_ms=800) == 0

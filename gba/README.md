@@ -57,14 +57,32 @@ Population uses the recovered OK/Good/Great/Perfect values 1/2/3/4 plus the orig
 
 After the third miss the runtime waits the recovered 2000 ms, then shows the original localized result fields: **Population**, **Tower height**, and **Longest combo**. The three records persist independently in SRAM using strict-greater comparisons and localized `New record!` markers. Save format v2 migrates the Phase-5 v1 language/sound settings and old Quick high score into best population. Obsolete Mobile League/network submission is omitted.
 
-The Butano scene still uses recovered M3G-derived GBA OBJ composites for the crane and floor. Dynamic tower sway, exact tumble pose atlases, random cosmetic camera shake, and Build City remain later fidelity work rather than invented substitutes.
+The Butano scene uses the recovered M3G-derived GBA OBJ composites for the crane and floor. Phase 7 restores the original **five-floor** tower presentation window, Java-integer sway/rocking, the 0..800 ms top-floor settle wobble, the recovered ±45-degree Z tumble for slipping blocks, and the 800 ms miss camera-impact shake. Presentation transforms are kept separate from collision coordinates, so visual lean never changes a placement result.
+
+Each four-OBJ floor composite shares one Butano affine matrix and rotates its part centers around the recovered mesh origin. The original M3G slip path also used a secondary random ±60-degree Y-axis rotation; that perspective-changing axis cannot be represented faithfully by the current single-view 2D floor assets, so it remains explicitly deferred until alternate M3G viewpoints are generated rather than approximated with fake 2D squash.
 
 The GBA's fixed 60 Hz loop feeds the Java-style millisecond simulation with deterministic `16,17,17` ms cadence. The simulation retains the original 25 ms accumulator gate and 150 ms frame-delta clamp.
 
-### Phase-6 deterministic replay
+### Phase-7 deterministic replay
 
-A host replay using public gameplay input stacks ten floors, then naturally misses three drops and reaches the delayed Results state. Its final result is population 118, height 10, longest combo 8, and its complete serialized trace is pinned at SHA-256:
+A host replay using public gameplay input stacks ten floors, then naturally misses three drops and reaches the delayed Results state. Its gameplay result remains population 118, height 10, longest combo 8. The serialized trace now also includes presentation camera, sway, floor-pose and tumble fields; its SHA-256 is:
 
-`ca98e5317125c3d7ee1b0da9c456eec550bca3dd694d13d386f3fc713abea74a`
+`7ba74aa0820973f49e12eebb87308d976f4b529790b7d38913a78d0ccb6f795b`
 
 The checkpoint environment still lacks `arm-none-eabi-g++`, `grit`, and a local Butano checkout, so this phase remains source/host verified rather than claiming an unbuilt `.gba`.
+
+## Phase-8 Build City management and persistence
+
+The `Build City` menu entry now opens the native 5x5 city-management scene backed by the bytecode-recovered `BuildCity` core. Save format v3 preserves all 25 city tile records plus the original 46 tutorial flags while retaining Phase-6 Quick Game records and migrating valid v2/v1 saves.
+
+The core uses the exact 21 population milestones, the original building unlocks (Residential 0, Commercial 250, Office 800, Luxury 2200), the nine named city levels through Megalopolis at 19000, and the four-cardinal-neighbor placement rules. Construction requests expose the recovered 10/20/30/40 floor targets and trophy eligibility thresholds; completed construction results enter the original placement/replacement flow through the public `accept_constructed_tower` handoff.
+
+The city renderer uses the original resource 24–27 four-frame building strips, with the saved roof value selecting the frame exactly as `m.class` does. Resource 28 is used only as the placement/validity outline; empty sectors are not filled with it. Population, city level, building names and placement messages use the original localized Nokia strings and reconstructed bitmap font.
+
+This checkpoint intentionally stops at the **construction handoff boundary**. Selecting an unlocked building produces the exact construction request, but the 10/20/30/40-floor Build City construction run and trophy-roof scoring are not fabricated from Quick Game rules; that is the next recovery slice.
+
+### Phase-8 deterministic city replay
+
+The host replay starts from an empty city, places and replaces towers using the public placement API, crosses the 75/250/400/800/2200 progression points, unlocks 10/20/30/40-floor construction requests, and exercises the original column `-1` discard selector without mutating a saved city tile. Trace SHA-256:
+
+`691a92771e2c6a4c0e08c477dfa7b0dc93555328f8e31e445ccec0b961b2b055`

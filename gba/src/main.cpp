@@ -2,6 +2,7 @@
 #include "bn_keypad.h"
 
 #include "tb/app_state.h"
+#include "tb/build_city_scene.h"
 #include "tb/quick_game_scene.h"
 #include "tb/save_store.h"
 #include "tb/ui_controller.h"
@@ -33,6 +34,7 @@ int main()
     tb::UiController controller(save);
     tb::UiShell ui;
     tb::QuickGameScene quick_game;
+    tb::BuildCityScene build_city(save);
 
     while(true)
     {
@@ -41,6 +43,18 @@ int main()
         if(quick_game.active())
         {
             const tb::QuickGameSceneUpdateResult result = quick_game.update(input, save);
+            if(result.save_dirty)
+            {
+                tb::store_save(save);
+            }
+            if(result.exit)
+            {
+                ui.update(controller, input);
+            }
+        }
+        else if(build_city.active())
+        {
+            const tb::BuildCitySceneUpdateResult result = build_city.update(input, save);
             if(result.save_dirty)
             {
                 tb::store_save(save);
@@ -63,6 +77,12 @@ int main()
                 controller.clear_game_request();
                 ui.hide();
                 quick_game.start(controller.language());
+            }
+            else if(controller.pending_game_request() == tb::GameRequest::BuildCity)
+            {
+                controller.clear_game_request();
+                ui.hide();
+                build_city.start(save, controller.language());
             }
             else
             {
