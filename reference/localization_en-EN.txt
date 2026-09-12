@@ -1,0 +1,134 @@
+000: Tower Bloxx(TM)
+001: Tower Bloxx(TM)\nv.1.5.22\n\nCopyright 2005-2006 Digital Chocolate, Inc.\nAll Rights Reserved.\nDigitalChocolate.com\n\nimg=10\n\nDeveloped by Sumea\nwww.sumea.com\n\nThis software is provided without warranty of any kind. Digital Chocolate, Inc. will not be liable for any consequential or incidental damages relating to your use of this software. All use of this software is subject to the terms and conditions at DigitalChocolate.com.\n\nFor more information or help, please visit DigitalChocolate.com.
+002: Build as high and as stable a building as possible.\n\nAt the bottom you'll see the current height of the building, how many tries you have left, and the current population of the building.\n\nPress 5 to drop the block. The higher your building the more people you'll get for each placed block. The amount of people also depends on how well the block is placed.\n\nCentering a block perfectly on top of another will fill the combo meter. Placing more blocks before the meter empties will add to the combo, and perfect drops will refill the meter. Every block that's placed while a combo is active will increase the combo score. The combo score is added to the population score after the combo ends.
+003: Your goal is to create a Megalopolis! Build towers and place them wisely in the city grid to reach the goal. Increasing your city's population and level will unlock new building types. You can see the current city level and the population of the city at the top of the screen. The top right corner shows the population of the tower you have just built and the population of the existing tower it may replace.\n\nIn tower building mode you are aiming to reach a target height. The target height is shown in the lower left corner. The better you place the roof the more bonus you'll get. You have three chances to finish the tower, if you fail, the building can also be placed in the city without a roof.\n\nAfter finishing a tower, you can choose a location on one of the blinking tiles on the City Grid and place the tower with 5. Move the tower with 4, 6, 2 and 8. Old buildings can be replaced with new ones. An unwanted tower can be destroyed at the demolishing lot on the left.
+004: Select
+005: OK
+006: Menu
+007: Back
+008: Cancel
+009: Yes
+010: No
+011: Enable sounds?
+012: Options
+013: On
+014: Off
+015: Continue game
+016: Debugger
+017: New game
+018: Settings
+019: Instructions
+020: Placeholde text
+021: About
+022: Exit
+023: Exit
+024: Sound:
+025: Vibration:
+026: Backlight:
+027: Language
+028: Please restart the application to make your language choice effective.
+029: Get More Games
+030: Get the newest games from Digital Chocolate now! To browse our selection over the air, select OK.
+031: Exit game?
+032: Tell your friend about your achievements by sending an SMS!
+033: Can you build a better tower than me? I doubt it! Try to beat my quick game record of %0U, or my population of %1U! Download Tower Bloxx mobile game now.
+034: Build a tower with as many occupants as possible! Press 5 to drop the apartment blocks. Only %U misses allowed!
+035: You started a combo by centering a block precisely on the one below it! As long as the combo meter at the top stays active you'll get more people for each placed block! Precise drops will refill the combo meter.
+036: You've bought yourself a piece of land to fulfill your dream of building a thriving metropolis!
+037: Your investors have supplied a crane and building materials for you to create blue Residential Towers!
+038: Press 5 to select the blue Residential Tower on the left.
+039: Place the tower anywhere on the map. Move the tower with 4, 6, 2, 8 and place it with 5.
+040: The meter on top shows the current city population.
+041: First milestone reached! More than %U citizens have settled in your city! Your main goal is to build as crowded a city as possible through the 20 milestones. See your progress by looking at the milestone counter on the upper left corner.
+042: The orange horizontal line above the city map shows how many people you need for the next city level.
+043: More than %U citizens have moved in!
+044: Congratulations! Your %0U is now a %1U!
+045: Your city is now a Tiny Town!
+046: The comparison icons at the top right corner of the screen show how many people you have in your new building and the building you are about to replace.
+047: Tax money flows in and you can now afford a new tower type! Use 2 and 8 to select between blue Residential Towers and red Commerce Towers!
+048: Buildings have specific rules as to where they can be placed. The red towers may only be placed next to a blue tower. The flashing city tiles show where they can be placed.
+049: You can now afford Green Industry towers! A green Tower needs to have a red and a blue neighbor. 
+050: Congratulations! You can now afford the highest building! The yellow Luxury Towers require a red, blue and green neighbor before they can be placed.
+051: Special roofs for %U are available! You'll get a special roof if you build the tower well enough!
+052: Congratulations! Your city has reached the final level due to your amazing construction and management skills! Thank you for playing!
+053: All sectors in your %U are full! Citizens arrange a parade for you!
+054: Now it's time to do some serious thinking and reach for the ultimate goal: to create a city of %U people!
+055: Press 5 to drop the apartments. You're allowed %U misses before the construction is cancelled. The better you build the more people will move in. Good luck!
+056: You ran out of retries before you reached the target height!
+057: Excellent! You've built with such skill that this tower will be awarded with a trophy roof! A trophy roof gives a population bonus for the tower it's on!
+058: More than %U citizens have moved in! Your city has received a lot of recognition in the national news!
+059: More than %U citizens have settled in! Your city has been voted as the greatest place to live in a national poll!
+060: The people of your city have built a statue in your honor! Congratulations!
+061: %0U \n%1U floors
+062: %0U \nTrophy roof: %1U population 
+063: Get more than %U population to unlock this tower type.
+064: Press 5 to demolish the current building.
+065: Press 5 to place the tower here.
+066: You can't place the tower here.
+067: Population increased by %U citizens!
+068: The new building had no effect on overall population.
+069: Population decreased by %U citizens.
+070: No place to build this type of Tower!
+071: Tiny Town
+072: Small Town
+073: Town
+074: Small City
+075: Medium City
+076: Big City
+077: Capital
+078: Metropolis
+079: Megalopolis
+080: Height
+081: Reset City
+082: Population
+083: Residential Tower
+084: Commercial Tower
+085: Office Tower
+086: Luxury Tower
+087: Residential Towers
+088: Commercial Towers
+089: Office Towers
+090: Luxury Towers
+091: Quick Game
+092: Build City
+093: Population: %U
+094: Tower height: %U
+095: Longest combo: %U
+096: New record!
+097: Would you like to log on or join the Mobile League and let the world know about your achievements?
+098: Are you sure you want to reset the progress and population score in your city?
+099: Can be placed anywhere.
+100: Required neighbor:\nBlue Tower
+101: Required neighbors:\nBlue and Red Tower
+102: Required neighbors:\nBlue, Red and Green Tower
+103: Cancel License
+104: Cancel License
+105: Cancel License?
+106: Game Lobby
+107: Buy license?
+108: This software requires a license. Pay a fee of %U
+109: \n\nIn order to pay the license, you need to accept to sending the payment messages.
+110: Please wait...
+111: The license will be valid for one week.
+112: The license will be valid for one day.
+113: You only need to buy the license once.
+114: Sorry!
+115: Unfortunately the license of this application cannot be purchased with your operator.
+116: Start playing?
+117: This application has a one-day free trial period. To continue using this application after the trial period has expired requires that you purchase a licence. Do you want to start your trial period now?
+118: Starting a new game may end your current game. Are you sure?
+119: Done
+120: Discard
+121: Congratulations, you reached position %U.
+122: Unfortunately you didn't make it to the top %U!
+123: Your score is %U
+124: , which ranks %U in your personal Hall of Fame.
+125: Clear
+126: Select High Score Table
+127: Clear High Scores
+128: Enter name
+129: Name
+130: Are you sure?
+131: Please wait ...
+132: Clear
+133: High Scores

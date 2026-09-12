@@ -1,0 +1,134 @@
+000: Tower Bloxx(TM)
+001: Tower Bloxx(TM)\nv.1.5.22\n\nCopyright 2005-2006 Digital Chocolate, Inc.\nTous droits réservés.\nDigitalChocolate.com\n\nimg=10\n\nDéveloppé par Sumea\nwww.sumea.com\n\nCe logiciel est fourni sans garantie d'aucune sorte. Digital Chocolate, Inc. ne peut être tenu pour responsable des dommages ou incidents consécutifs à l'utilisation de ce logiciel. L'utilisation de ce logiciel est soumise aux conditions disponibles sur DigitalChocolate.com\n\nPour toute aide ou information, rends-toi sur DigitalChocolate.com.
+002: Construis une tour aussi haute et stable que possible.\n\nEn bas de l'écran sont affichés la taille actuelle de la tour, le nombre d'essais restants et la population de la tour.\n\nAppuie sur 5 pour faire tomber un bloc. Plus la tour est haute, plus chaque bloc ajouté augmente la population. L'augmentation de la population dépend également de la qualité avec laquelle le bloc est placé.\n\nUn bloc parfaitement placé sur un autre remplit le combomètre. Ajouter d'autres blocs avant que la jauge ne se vide augmente le combo, et les blocs parfaitement placés remplissent le combomètre. Tous les blocs placés quand le combo est actif augmentent le score du combo. Le score du combo s'ajoute à celui de la population quand le combo se termine.
+003: Ton but est de créer une mégalopole ! Construis des tours et place-les au mieux sur la carte pour atteindre ton but. En augmentant ta population et ton niveau, tu débloqueras de nouveaux types de tours. Le niveau de ta ville et sa population actuelle sont affichés en haut de l'écran. La population de la tour que tu viens de construire et la population d'une tour existante que tu peux remplacer sont affichées en haut à droite de l'écran.\n\nEn mode construction, l'objectif est d'atteindre une hauteur donnée. L'objectif de hauteur est affiché en bas à gauche. Plus le toit est placé correctement, plus tu gagnes de points. Tu disposes de trois essais. En cas d'échec, tu peux quand même placer la tour sans toit dans ta ville.\n\nUne fois la tour terminée, tu peux choisir une des cases clignotantes de la carte pour la placer avec 5. Déplace-la avec 4, 6, 2 et 8. Les anciens bâtiments peuvent être remplacés par de nouveaux. Pour te débarrasser d'une tour, pose-la dans l'espace de démolition à gauche.
+004: Sélectionner
+005: OK
+006: Menu
+007: Retour
+008: Annuler
+009: Oui
+010: Non
+011: Activer le son ?
+012: Options
+013: Activé
+014: Désactivé
+015: Continuer
+016: Débogueur
+017: Nouvelle partie
+018: Paramètres
+019: Instructions
+020: Placeholde text
+021: A propos de
+022: Quitter
+023: Quitter
+024: Son :
+025: Vibration:
+026: Rétroéclairage:
+027: Langue
+028: Relancer l'application pour réinitialiser la langue.
+029: Plus de jeux
+030: Plus de jeux Digital Chocolate dès maintenant ! Pour parcourir notre sélection, choisis OK.
+031: Quitter le jeu ?
+032: Annonce tes résultats à tes amis par SMS !
+033: Peux-tu construire une plus belle tour que la mienne ? Bats mon record de %0U en partie rapide ou ma population de %1U! Télécharge Tower Bloxx !
+034: Construis une tour avec le plus d'habitants possible ! Appuie sur 5 pour larguer les blocs d'appartements. Tu n'as droit qu'à %U coups manqués !
+035: Tu as déclenché un combo en réussissant à placer parfaitement un bloc sur le précédent. Tant que le combomètre en haut reste actif, tu obtiendras une population plus élevée pour chaque bloc mis en place ! Les positionnements parfaits rechargent le combomètre.
+036: Tu viens d'acheter un terrain pour construire la mégalopole de tes rêves !
+037: Tes investisseurs te fournissent une grue et des matériaux de construction pour que tu crées des tours résidentielles bleues !
+038: Appuie sur 5 pour sélectionner la tour résidentielle bleue à gauche de l'écran.
+039: Place la tour où tu le souhaites sur la carte. Déplace-la avec 4, 6, 2 et 8 et dépose-la avec 5.
+040: Le compteur en haut indique la population actuelle de ta ville.
+041: Premier niveau atteint ! Plus de %U citoyens se sont installés dans ta ville ! Ton but est de créer une ville aussi peuplée que possible en 20 étapes. Contrôle ta progression en vérifiant le compteur en haut à gauche.
+042: La ligne orange horizontale au-dessus de la carte indique combien d'habitants sont requis pour atteindre le niveau suivant.
+043: Plus de %U personnes se sont installées !
+044: Félicitations ! Ta %0U est désormais une %1U !
+045: Ta ville est devenue une Mini Bourgade !
+046: Les icônes en haut à droite de l'écran indiquent combien de résidents se trouvent dans ta nouvelle tour et dans celle que tu vas remplacer, si ton choix est de remplacer une tour.
+047: Les loyers remplissent les caisses ! Tu as les moyens de construire un nouveau type de tour ! Utilise 2 et 8 pour choisir entre les tours résidentielles bleues et les tours commerciales rouges.
+048: Chaque type de tour a ses propres règles de placement. Les tours rouges ne peuvent être posées qu'à côté d'une tour bleue. Les cases clignotantes indiquent où elles peuvent être posées.
+049: Tu peux maintenant construire des tours industrielles vertes ! Les tours vertes doivent avoir une voisine bleue et une voisine rouge.
+050: Félicitations ! Tu as maintenant accès aux plus hautes tours ! Les tours de grand luxe jaunes doivent être placées à côté d'une bleue, d'une rouge et d'une verte.
+051: Les toits trophées pour %U sont disponibles ! Pour obtenir un toit trophée, il faut construire une belle tour !
+052: Félicitations ! Ta ville a atteint le niveau le plus élevé grâce à tes compétences exceptionnelles de construction et de gestion ! Merci d'avoir joué !
+053: Tous les secteurs de ta %U sont complets ! Les citoyens organisent une fête en ton honneur !
+054: Maintenant, il est temps de se concentrer pour atteindre le but ultime : créer une ville de %U habitants !
+055: Appuie sur 5 pour larguer les blocs. Tu as droit à %U échecs avant que la construction ne soit annulée. Meilleure est la construction, plus les gens viennent s'installer. Bonne chance !
+056: Tu as utilisé toutes tes tentatives avant d'atteindre la hauteur nécessaire !
+057: Excellent ! Ta tour est si bien construite qu'elle a reçu un toit trophée ! Un toit trophée donne un bonus de population à la tour qui en est ornée !
+058: Plus de %U personnes se sont installées ! Les médias parlent beaucoup de ta ville !
+059: Plus de %U personnes se sont installées ! Un sondage a élu ta ville comme la plus agréable à vivre du pays !
+060: Les habitants de ta ville ont construit une statue en ton honneur ! Félicitations !
+061: %0U \n%1U étages
+062: %0U \nToit trophée : %1U habitants
+063: Pour débloquer ce type de tour, il faut %U habitants.
+064: Appuie sur 5 pour démolir la tour sélectionnée.
+065: Appuie sur 5 pour placer la tour ici.
+066: Tu ne peux pas placer la tour à cet endroit.
+067: La population augmente de %U habitants !
+068: La nouvelle tour n'a pas augmenté la population.
+069: Population réduite de %U personnes.
+070: Il n'y a pas de place pour construire ce type de tour !
+071: Mini bourgade
+072: Petite bourgade
+073: Bourgade
+074: Petite ville
+075: Ville moyenne
+076: Grande ville
+077: Capitale
+078: Métropole
+079: Mégalopole
+080: Hauteur
+081: Effacer la ville
+082: Population
+083: Tour résidentielle
+084: Tour commerciale
+085: Tour industrielle
+086: Tour de grand luxe
+087: Tours résidentielles
+088: Tours commerciales
+089: Tours industrielles
+090: Tours de grand luxe
+091: Partie rapide
+092: Construire une ville
+093: Population : %U
+094: Hauteur de la tour : %U
+095: Combo le plus long : %U
+096: Nouveau record !
+097: Veux-tu te connecter à la Mobile League si tu es déjà membre ou t'y inscrire pour que tout le monde connaisse tes résultats ?
+098: Es-tu sûr(e) de vouloir effacer ta ville et sa population ?
+099: Peut être placée n'importe où.
+100: Voisine requise :\nTour bleue
+101: Voisines requises :\nTour bleue et tour rouge
+102: Voisines requises :\nTour bleue, rouge et verte
+103: text not translated
+104: text not translated
+105: text not translated
+106: text not translated
+107: Acheter la licence ?
+108: Ce logiciel exige un code de licence. Veuillez payer le montant de %U
+109: \n\nPour rendre le paiement effectif, vous devez confirmer l'envoi des messages de paiement.
+110: Patiente...
+111: La licence sera valable une semaine.
+112: La licence sera valable un jour.
+113: Vous devez acheter la licence une seule fois.
+114: Désolé !
+115: Malheureusement, la licence de ce logiciel ne peut être achetée avec cet opérateur.
+116: Commencer à jouer ?
+117: Cette application est une version d'essai valable un jour. Pour continuer à l'utiliser après l'expiration de cette période d'essai, vous devez acheter une licence. Voulez-vous démarrer votre période d'essai maintenant ?
+118: no translation
+119: no translation
+120: no translation
+121: Félicitations ! Ton classement : %U.
+122: Désolé, tu n'es pas classé dans le top %U!
+123: Ton score est de %U
+124: , ce qui te classe N° %U dans tes records personnels
+125: Effacer
+126: Choisir le tableau des scores
+127: Effacer les meilleurs scores
+128: Saisis ton nom
+129: Nom
+130: Confirmer ?
+131: Patientez...
+132: Effacer
+133: Meilleurs scores

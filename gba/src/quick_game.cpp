@@ -1,0 +1,567 @@
+#include "tb/quick_game.h"
+
+#include <array>
+#include <cassert>
+#include <cstdint>
+
+namespace tb
+{
+namespace
+{
+constexpr std::array<int, 5> swing_x_table = {213, 256, 298, 341, 384};
+constexpr std::array<int, 5> swing_y_table = {85, 106, 128, 149, 170};
+constexpr std::array<int, 7> period_table = {1670, 1700, 1650, 1600, 1550, 1500, 1450};
+constexpr int max_rope_length = 1664;
+constexpr int fixed_floor_height = 256;
+constexpr int first_floor_center_y = 128;
+constexpr int landing_max_abs_offset = 127;
+constexpr int next_block_delay_ms = 400;
+constexpr int camera_transition_ms = 500;
+constexpr int view_height_fixed = (256 * 160) / 22;
+constexpr int view_half_fixed = view_height_fixed / 2;
+
+constexpr std::array<int, 360> make_sine_table()
+{
+    std::array<int, 360> result{};
+    int sin_value = 0;
+    int cos_value = 32768;
+    constexpr int64_t step = (int64_t(32768) * 31416 * 2) / 3600000;
+
+    for(int index = 0; index < 360; ++index)
+    {
+        result[index] = sin_value;
+        cos_value = int(int64_t(cos_value) - ((int64_t(sin_value) * step) >> 15));
+        sin_value = int(int64_t(sin_value) + ((int64_t(cos_value) * step) >> 15));
+    }
+
+    return result;
+}
+
+constexpr auto sine_table = make_sine_table();
+
+constexpr int java_sin(int angle)
+{
+    return angle < 0 ? -sine_table[-angle] : sine_table[angle];
+}
+
+constexpr int java_cos(int angle)
+{
+    return java_sin(angle - 90);
+}
+
+constexpr int clamp_frame_delta(int delta_ms)
+{
+    if(delta_ms < 0)
+    {
+        return 0;
+    }
+    return delta_ms > 150 ? 150 : delta_ms;
+}
+
+constexpr int abs_value(int value)
+{
+    return value < 0 ? -value : value;
+}
+
+constexpr int min_value(int left, int right)
+{
+    return left < right ? left : right;
+}
+
+constexpr int max_value(int left, int right)
+{
+    return left > right ? left : right;
+}
+
+constexpr QuickAccuracyBand accuracy_for_offset(int offset)
+{
+    const int absolute = abs_value(offset);
+    if(absolute < 25)
+    {
+        return QuickAccuracyBand::Perfect;
+    }
+    if(absolute < 50)
+    {
+        return QuickAccuracyBand::Great;
+    }
+    if(absolute < 80)
+    {
+        return QuickAccuracyBand::Good;
+    }
+    return QuickAccuracyBand::Ok;
+}
+}
+
+QuickGame::QuickGame()
+{
+    reset();
+}
+
+void QuickGame::reset()
+{
+    _floors = {};
+    _floor_count = 0;
+    _chances_left = 3;
+    _status = QuickGameStatus::Playing;
+    _block_state = QuickBlockState::Raising;
+    _last_accuracy = QuickAccuracyBand::None;
+    _population = 0;
+    _combo_count = 0;
+    _combo_bonus_pending = 0;
+    _combo_meter_ms = -2000;
+    _longest_combo = 0;
+    _last_population_award = 0;
+
+    _accumulator_ms = 0;
+    _clock_ms = 0;
+    _swing_phase_ms = 2000;
+    _swing_period_ms = period_table[4];
+    _swing_amplitude_x = 128;
+    _swing_amplitude_y = 64;
+    _vertical_swing_bias = 0;
+    _world_anchor_y = 2432;
+    _rope_length = 0;
+
+    _crane_x = 0;
+    _crane_y = 2432;
+    _previous_crane_x = 0;
+    _previous_crane_y = 2432;
+    _current_x = 0;
+    _current_y = 2432;
+    _velocity_x = 0;
+    _velocity_y = 0;
+    _drop_velocity_x = 0;
+    _drop_velocity_y = 0;
+    _drop_start_x = 0;
+    _drop_start_y = 2432;
+    _drop_start_ms = 0;
+
+    _camera_y = 512;
+    _camera_target_y = 512;
+    _camera_transition_start_ms = 0;
+    _transition_start_ms = 0;
+}
+
+void QuickGame::update(int delta_ms, const InputFrame& input)
+{
+    if(_status == QuickGameStatus::Results)
+    {
+        return;
+    }
+
+    if(_status == QuickGameStatus::Playing &&
+       input.pressed(Key::A) && _block_state == QuickBlockState::Attached && _camera_y == _camera_target_y)
+    {
+        _start_drop();
+    }
+
+    _accumulator_ms += clamp_frame_delta(delta_ms);
+    if(_accumulator_ms >= 25)
+    {
+        const int step_ms = _accumulator_ms;
+        _accumulator_ms = 0;
+        if(_status == QuickGameStatus::GameOver)
+        {
+            _clock_ms += step_ms;
+            if(_clock_ms - _transition_start_ms >= 2000)
+            {
+                _status = QuickGameStatus::Results;
+            }
+        }
+        else
+        {
+            _step(step_ms);
+        }
+    }
+}
+
+QuickGameSnapshot QuickGame::snapshot() const
+{
+    QuickGameSnapshot result;
+    result.status = _status;
+    result.block_state = _block_state;
+    result.last_accuracy = _last_accuracy;
+    result.floor_count = _floor_count;
+    result.chances_left = _chances_left;
+    result.camera_y = _camera_y;
+    result.camera_target_y = _camera_target_y;
+    result.current_x = _current_x;
+    result.current_y = _current_y;
+    result.rope_length = _rope_length;
+    result.swing_phase_ms = _swing_phase_ms;
+    result.swing_period_ms = _swing_period_ms;
+    result.swing_amplitude_x = _swing_amplitude_x;
+    result.swing_amplitude_y = _swing_amplitude_y;
+    result.drop_velocity_x = _drop_velocity_x;
+    result.drop_velocity_y = _drop_velocity_y;
+    result.population = _population;
+    result.combo_count = _combo_count;
+    result.combo_bonus_pending = _combo_bonus_pending;
+    result.combo_meter_ms = _combo_meter_ms;
+    result.longest_combo = _longest_combo;
+    result.last_population_award = _last_population_award;
+    return result;
+}
+
+QuickGameResult QuickGame::result() const
+{
+    return QuickGameResult{_population, _floor_count, _longest_combo};
+}
+
+int QuickGame::floor_count() const
+{
+    return _floor_count;
+}
+
+const QuickFloor& QuickGame::floor(int index) const
+{
+    const int first_stored = max_value(0, _floor_count - stored_floor_count);
+    assert(index >= first_stored && index < _floor_count);
+    return _floors[index % stored_floor_count];
+}
+
+#ifdef TB_HOST_TEST
+void QuickGame::debug_resolve_landing_for_test(int offset)
+{
+    const int floor_x = _floor_count == 0 ? 0 : floor(_floor_count - 1).x;
+    _current_x = floor_x + offset;
+    _current_y = _floor_count == 0 ? 0 : floor(_floor_count - 1).y + 1;
+    _block_state = QuickBlockState::Falling;
+    _resolve_landing(_floor_count - 1, floor_x);
+}
+
+void QuickGame::debug_set_falling_state_for_test(int x, int y, int velocity_x, int velocity_y)
+{
+    _block_state = QuickBlockState::Falling;
+    _current_x = x;
+    _current_y = y;
+    _drop_start_x = x;
+    _drop_start_y = y;
+    _drop_velocity_x = velocity_x;
+    _drop_velocity_y = velocity_y;
+    _drop_start_ms = _clock_ms;
+}
+#endif
+
+void QuickGame::_start_drop()
+{
+    _block_state = QuickBlockState::Falling;
+    _drop_start_x = _current_x;
+    _drop_start_y = _current_y;
+    _drop_start_ms = _clock_ms;
+    _drop_velocity_x = _velocity_x;
+    _drop_velocity_y = _velocity_y;
+}
+
+void QuickGame::_step(int delta_ms)
+{
+    _clock_ms += delta_ms;
+    _update_camera();
+    _update_crane(delta_ms);
+
+    if(_block_state == QuickBlockState::Raising || _block_state == QuickBlockState::Attached)
+    {
+        _current_x = _crane_x;
+        _current_y = _crane_y;
+    }
+    else if(_block_state == QuickBlockState::Falling || _block_state == QuickBlockState::Slipping)
+    {
+        _update_falling(delta_ms);
+    }
+    else if(_block_state == QuickBlockState::Settled || _block_state == QuickBlockState::Missed)
+    {
+        if(_clock_ms - _transition_start_ms >= next_block_delay_ms)
+        {
+            _spawn_next_block();
+        }
+    }
+
+    _update_combo(delta_ms);
+}
+
+void QuickGame::_update_camera()
+{
+    if(_camera_y < _camera_target_y)
+    {
+        const int elapsed = _clock_ms - _camera_transition_start_ms;
+        const int candidate = _camera_target_y + ((elapsed - camera_transition_ms) * 256) / camera_transition_ms;
+        _camera_y = min_value(_camera_target_y, candidate);
+    }
+    else if(_camera_y > _camera_target_y)
+    {
+        const int elapsed = _clock_ms - _camera_transition_start_ms;
+        const int candidate = _camera_target_y - ((elapsed - camera_transition_ms) * 256) / camera_transition_ms;
+        _camera_y = max_value(_camera_target_y, candidate);
+    }
+
+    _world_anchor_y = _camera_y + 1792 + 128;
+}
+
+void QuickGame::_update_crane(int delta_ms)
+{
+    _swing_phase_ms += delta_ms;
+
+    if(_block_state == QuickBlockState::Raising)
+    {
+        _rope_length += (2 * delta_ms) / 3;
+        if(_rope_length >= max_rope_length)
+        {
+            _rope_length = max_rope_length;
+            _block_state = QuickBlockState::Attached;
+        }
+    }
+
+    const int angle = ((200 * _swing_phase_ms) / _swing_period_ms) % 360;
+    _crane_x = (_swing_amplitude_x * java_cos(angle)) >> 15;
+    const int vertical_component = -((_swing_amplitude_y * java_sin(angle)) >> 15);
+    _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length + vertical_component;
+
+    if(_block_state == QuickBlockState::Attached)
+    {
+        _velocity_x = ((_crane_x - _previous_crane_x) * 256) / delta_ms;
+        _velocity_y = ((_crane_y - _previous_crane_y) * 256) / delta_ms;
+    }
+
+    _previous_crane_x = _crane_x;
+    _previous_crane_y = _crane_y;
+}
+
+void QuickGame::_update_falling(int delta_ms)
+{
+    const int elapsed_ms = _clock_ms - _drop_start_ms;
+    _current_x += (_drop_velocity_x * delta_ms) / 512;
+    _current_y = _drop_start_y + (_drop_velocity_y * elapsed_ms) / 256 - (elapsed_ms * elapsed_ms) / 200;
+
+    if(_current_y < _camera_y - view_half_fixed)
+    {
+        _register_miss();
+        return;
+    }
+
+    if(_block_state == QuickBlockState::Falling)
+    {
+        _check_collision();
+    }
+}
+
+void QuickGame::_check_collision()
+{
+    if(_floor_count == 0)
+    {
+        if(_current_y > -256 && _current_y < 256 && _current_x > -256 && _current_x < 256)
+        {
+            _resolve_landing(-1, 0);
+        }
+        return;
+    }
+
+    const int first_index = max_value(0, _floor_count - 5);
+    for(int index = _floor_count - 1; index >= first_index; --index)
+    {
+        const QuickFloor& candidate = floor(index);
+        if(_current_y > candidate.y - 256 && _current_y < candidate.y + 256 &&
+           _current_x > candidate.x - 256 && _current_x < candidate.x + 256)
+        {
+            if(index == _floor_count - 1)
+            {
+                _resolve_landing(index, candidate.x);
+            }
+            else
+            {
+                _begin_slip(_current_x - candidate.x);
+            }
+            return;
+        }
+    }
+}
+
+void QuickGame::_resolve_landing(int, int floor_x)
+{
+    const int offset = _current_x - floor_x;
+    if(abs_value(offset) > landing_max_abs_offset)
+    {
+        _begin_slip(offset);
+        return;
+    }
+
+    _last_accuracy = accuracy_for_offset(offset);
+
+    if(_combo_count == 0)
+    {
+        _combo_bonus_pending = 0;
+        ++_combo_count;
+    }
+    else if(_combo_meter_ms > 0)
+    {
+        ++_combo_count;
+    }
+
+    if(_combo_count > 1)
+    {
+        _longest_combo = max_value(_longest_combo, _combo_count);
+    }
+
+    if(_last_accuracy == QuickAccuracyBand::Perfect)
+    {
+        _combo_meter_ms = 6000;
+    }
+
+    _award_population(int(_last_accuracy));
+    _add_floor(offset);
+}
+
+void QuickGame::_begin_slip(int offset)
+{
+    const int direction = offset < 0 ? -1 : 1;
+    _block_state = QuickBlockState::Slipping;
+    _last_accuracy = QuickAccuracyBand::None;
+    _drop_start_x = _current_x;
+    _drop_start_y = _current_y;
+    _drop_start_ms = _clock_ms;
+    _drop_velocity_x = direction * 500;
+    _drop_velocity_y = 50;
+}
+
+void QuickGame::_register_miss()
+{
+    if(_block_state == QuickBlockState::Missed || _status != QuickGameStatus::Playing)
+    {
+        return;
+    }
+
+    if(_combo_meter_ms > 0)
+    {
+        _settle_combo();
+    }
+
+    if(_chances_left > 0)
+    {
+        --_chances_left;
+    }
+
+    _last_accuracy = QuickAccuracyBand::None;
+    _block_state = QuickBlockState::Missed;
+    _transition_start_ms = _clock_ms;
+
+    if(_chances_left == 0)
+    {
+        _status = QuickGameStatus::GameOver;
+    }
+}
+
+void QuickGame::_award_population(int accuracy_points)
+{
+    if(accuracy_points <= 0)
+    {
+        return;
+    }
+
+    if(_combo_meter_ms > 0)
+    {
+        _combo_bonus_pending += _combo_count * (2 + 2 * (_floor_count / 10));
+    }
+
+    const int award = (_floor_count / 10) + accuracy_points;
+    _population += award;
+    _last_population_award = award;
+}
+
+void QuickGame::_settle_combo()
+{
+    _population += _combo_bonus_pending;
+    _last_population_award = _combo_bonus_pending;
+    _combo_count = 0;
+    _combo_meter_ms = 0;
+}
+
+void QuickGame::_update_combo(int delta_ms)
+{
+    if(_combo_meter_ms > 0)
+    {
+        _combo_meter_ms -= delta_ms + ((_combo_count - 1) * delta_ms) / 6;
+        if(_combo_meter_ms <= 0)
+        {
+            _settle_combo();
+        }
+    }
+    else if(_combo_meter_ms > -2000)
+    {
+        _combo_meter_ms -= delta_ms;
+    }
+}
+
+void QuickGame::_add_floor(int offset)
+{
+    QuickFloor floor_record;
+    if(_floor_count == 0)
+    {
+        floor_record.x = offset;
+        floor_record.y = first_floor_center_y;
+    }
+    else
+    {
+        const QuickFloor& previous = floor(_floor_count - 1);
+        floor_record.x = previous.x + offset;
+        floor_record.y = previous.y + fixed_floor_height;
+    }
+    floor_record.offset = offset;
+    _floors[_floor_count % stored_floor_count] = floor_record;
+    ++_floor_count;
+
+    _current_x = floor_record.x;
+    _current_y = floor_record.y;
+    _block_state = QuickBlockState::Settled;
+    _transition_start_ms = _clock_ms;
+    _update_difficulty();
+
+    _camera_transition_start_ms = _clock_ms;
+    if(_floor_count > 1)
+    {
+        _camera_target_y += fixed_floor_height;
+    }
+    else
+    {
+        _camera_target_y = 512;
+    }
+
+}
+
+void QuickGame::_update_difficulty()
+{
+    constexpr int mode = 4;
+    _swing_amplitude_x = min_value(
+            swing_x_table[mode],
+            swing_x_table[0] + (_floor_count * (swing_x_table[mode] - swing_x_table[0])) / 60);
+    _swing_amplitude_y = min_value(
+            swing_y_table[mode],
+            swing_y_table[0] + (_floor_count * (swing_y_table[mode] - swing_y_table[0])) / 60);
+
+    if(_floor_count < 100)
+    {
+        _vertical_swing_bias = -min_value(128, (_floor_count * 256) / 200);
+        _swing_period_ms = max_value(
+                period_table[mode + 2],
+                period_table[0] - (_floor_count * (period_table[0] - period_table[mode + 2])) / 100);
+    }
+    else
+    {
+        _swing_period_ms = period_table[mode + 1] - ((_floor_count - 100) * 100) / 150;
+        _vertical_swing_bias = -min_value(256, 128 + ((_floor_count - 100) * 256) / 300);
+    }
+}
+
+void QuickGame::_spawn_next_block()
+{
+    if(_status != QuickGameStatus::Playing)
+    {
+        return;
+    }
+
+    _rope_length = max_rope_length;
+    _block_state = QuickBlockState::Attached;
+    _current_x = _crane_x;
+    _current_y = _crane_y;
+    _drop_velocity_x = 0;
+    _drop_velocity_y = 0;
+}
+}

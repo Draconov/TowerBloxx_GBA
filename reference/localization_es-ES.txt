@@ -1,0 +1,134 @@
+000: Tower Bloxx(TM)
+001: Tower Bloxx(TM)\nv.1.5.22\n\nCopyright 2005-2006 Digital Chocolate, Inc.\nReservados todos los derechos.\nDigitalChocolate.com\n\nimg=10\n\nDesarrollado por Sumea.\nwww.sumea.com\n\nEste programa no tiene garantía de ningún tipo. Digital Chocolate, Inc. no será responsable de ningún daño resultante del uso de este programa. Cualquier uso de este programa está sujeto a los términos y condiciones disponibles en DigitalChocolate.com.\n\nSi deseas más información visita DigitalChocolate.com.
+002: Construye un edificio tan alto y estable como puedas.\n\nEn la parte inferior se muestra la altura del edificio, sus ocupantes actuales y cuántos intentos te quedan.\n\nPulsa 5 para colocar el bloque de ladrillos. Cuanto más alto sea el edificio, más personas conseguirás por cada bloque que coloques. La cantidad de personas también depende de lo bien colocados que estén los bloques.\n\nSi centras perfectamente un bloque encima de otro, se activará el medidor de combos. Si depositas más bloques antes de que el medidor se agote, se acumularán combos, y si los centras perfectamente, se volverá a llenar el medidor. Cada bloque que deposites mientras el combo está activo aumentará la puntuación de combos. La puntuación de combos se suma a la puntuación de población cuando el combo se desactiva.
+003: ¡Tu objetivo es crear una Megalópolis! Construye rascacielos y sitúalos adecuadamente en la cuadrícula de la ciudad para conseguir tu objetivo. Aumenta la población de tu ciudad y se desbloquearán nuevos tipos de edificios. Puedes consultar el nivel actual de la ciudad y su población en la parte superior de la pantalla. En la esquina superior derecha se muestra la población del rascacielos que acabas de construir y la del edificio al que va a sustituir.\n\nEn el modo construcción debes alcanzar la altura objetivo. La altura objetivo se muestra en la esquina inferior izquierda. Cuanto mejor coloques el tejado, mayor bonificación recibirás. Tienes tres oportunidades para terminar el rascacielos, si no lo consigues, puedes colocar el edificio sin terminar en la ciudad.\n\nCentra y coloca el rascacielos con 5. Mueve el edificio con 4, 6, 2, 8. Los edificios antiguos pueden ser sustituidos por edificios nuevos. Si no quieres un rascacielos, lo puedes destruir en el icono de demoloción, a la izquierda.
+004: Seleccionar
+005: OK
+006: Menú
+007: Atrás
+008: Cancelar
+009: Sí
+010: No
+011: ¿Activar sonidos?
+012: Opciones
+013: Sí
+014: No
+015: Continuar partida
+016: Depurador
+017: Partida nueva
+018: Configuración
+019: Instrucciones
+020: Placeholde text
+021: Acerca de
+022: Salir
+023: Salir
+024: Sonido:
+025: Vibración:
+026: Iluminación:
+027: Idioma
+028: Reinicia el programa para activar el idioma elegido.
+029: Consigue más juegos
+030: ¡Consigue los juegos más actuales de Digital Chocolate! Selecciona OK para ver nuestro catálogo.
+031: ¿Salir del juego?
+032: ¡Cuéntales a tus amigos tus avances enviándoles un mensaje!
+033: ¿Puedes construir un rascacielos mejor? ¡Lo dudo! Intenta batir mi récord de partida rápida de %0U, o mi población de %1U. Descarga ya Tower Bloxx para móvil.
+034: ¡Construye un rascacielos con tantos habitantes como puedas! Pulsa 5 para colocar los bloques de apartamentos. ¡Solo puedes fallar %U veces!
+035: ¡Has activado un combo al centrar perfectamente un bloque de ladrillos encima de otro! Mientras el medidor de combos de la parte superior esté activo, conseguirás más personas por cada bloque que coloques. Si depositas los bloques con precisión se volverá a llenar el medidor de combos.
+036: ¡Has comprado un solar para realizar tu sueño de construir una próspera metrópolis!
+037: ¡Tus inversores te han proporcionado una grúa y materiales de construcción para que construyas edificios residenciales azules!
+038: Pulsa 5 para seleccionar el edificio residencial azul de la izquierda.
+039: Coloca el rascacielos en cualquier parte del mapa. Mueve el edificio con 4, 6, 2, 8 y colócalo con 5.
+040: El medidor de la parte superior muestra la población actual de la ciudad.
+041: ¡Primer nivel de ciudad conseguido! ¡Ya viven en tu ciudad más de %U ciudadanos! Tu objetivo principal es construir ciudades tan pobladas como te sea posible y superar los 20 niveles de ciudad. Consulta tu progreso en el indicador de niveles de ciudad en la esquina superior izquierda.
+042: La línea naranja horizontal encima del mapa de la ciudad muestra qué población necesitas para alcanzar el siguiente nivel de ciudad.
+043: ¡Ya han llegado más de %U personas a la ciudad!
+044: ¡Enhorabuena! Tu %0U ahora es %1U.
+045: ¡Tu ciudad es por ahora una Pequeña Aldea!
+046: Los iconos de la esquina superior derecha de la pantalla comparan qué población hay en tu nuevo edificio y en el edificio que vas a sustituir.
+047: ¡Los impuestos han bajado y ahora puedes permitirte un nuevo tipo de edificio! Utiliza 2 y 8 para elegir entre los edificios residenciales azules o los edificios comerciales rojos.
+048: La construcción sigue unas pautas, como el lugar donde deben ser colocados los edificios. Las torres rojas solo pueden colocarse cerca de las torres azules. Los cuadros de ciudad que parpadean indican dónde se pueden colocar.
+049: ¡Ya te puedes permitir los edificios industriales verdes! Los edificios verdes necesitan estar cerca de un edificio rojo y otro azul. 
+050: ¡Enhorabuena! ¡Ya te puedes permitir el edificio más alto! Los rascacielos de lujo amarillos requieren estar cerca de un edificio rojo, uno azul y uno verde.
+051: ¡Están disponibles los tejados especiales para %U! Conseguirás un tejado especial si construyes el edificio lo suficientemente bien.
+052: ¡Enhorabuena! Tu ciudad ha alcanzado el último nivel gracias a tu sorprendente construcción y habilidades de gestión. ¡Gracias por jugar!
+053: ¡Todos los sectores de %U están construidos! ¡Los ciudadanos han organizado un desfile en tu honor!
+054: Ha llegado el momento de hacer cosas importantes e ir a por el último objetivo: ¡crear una ciudad de %U ciudadanos!
+055: Pulsa 5 para depositar los bloques de apartamentos. Puedes fallar %U veces antes de parar la construcción. Cuanto mejor la construyas, más gente se vendrá a vivir a ella. ¡Buena suerte!
+056: ¡Has agotado los intentos antes de conseguir la altura necesaria!
+057: ¡Excelente! ¡Has construido con tanta maestría que este rascacielos será premiado con un tejado especial! Un tejado especial supone una bonificación de población para el edificio en el que lo coloques.
+058: ¡Se han venido a vivir más de %U ciudadanos! ¡Tu ciudad ha obtenido un gran reconocimiento en las noticias nacionales!
+059: ¡Se han venido a vivir más de %U ciudadanos! ¡Tu ciudad ha sido elegida como el mejor lugar para vivir en una encuesta nacional!
+060: ¡Los habitantes de tu ciudad han erigido una estatua en tu honor! ¡Enhorabuena!
+061: %0U \n%1U pisos
+062: %0U \nTejado especial: %1U habitantes 
+063: Consigue más de %U habitantes para desbloquear este tipo de edificio.
+064: Pulsa 5 para demoler este edificio.
+065: Pulsa 5 para colocar el rascacielos aquí.
+066: No puedes colocar el edificio aquí.
+067: ¡La población aumenta en %U ciudadanos!
+068: El nuevo edificio no afecta al nivel de población de la ciudad.
+069: ¡La población disminuye en %U ciudadanos!
+070: ¡No hay espacio para construir este tipo de torre!
+071: Pequeña aldea
+072: Pueblecito
+073: Pueblo
+074: Ciudad pequeña
+075: Ciudad mediana
+076: Ciudad grande
+077: Capital
+078: Metrópolis
+079: Megalópolis
+080: Altura
+081: Reiniciar ciudad
+082: Población
+083: Edificio residencial
+084: Edificio comercial
+085: Edificio industrial
+086: Edifico de lujo
+087: Edificios residenciales
+088: Edificios comerciales
+089: Edificios industriales
+090: Edificos de lujo
+091: Partida rápida
+092: Construir ciudad
+093: Población: %U
+094: Altura del rascacielos: %U
+095: Combo más largo: %U
+096: ¡Nuevo récord!
+097: ¿Te gustaría conectarte o unirte a Mobile League y que todo el mundo conozca tus progresos?
+098: ¿Estás seguro de que quieres reiniciar los progresos y la puntuación de población de tu ciudad?
+099: Se puede situar en cualquier lugar.
+100: Requiere cerca:\nedificio azul
+101: Requiere cerca:\nedificios azul y rojo
+102: Requiere cerca:\nedificios azul, rojo y verde
+103: text not translated
+104: text not translated
+105: text not translated
+106: text not translated
+107: ¿Comprar licencia?
+108: Este software requiere una licencia. Paga el precio de %U
+109: \n\nPara su compra, es necesario que aceptes el envío de los mensajes de pago.
+110: Espera...
+111: Esta licencia será válida durante una semana.
+112: Esta licencia será válida durante un día.
+113: Sólo necesitas comprar esta licencia una vez.
+114: ¡Error! 
+115: Desafortunadamente, la licencia para esta applicación no puede ser comprada desde tu operador.
+116: ¿Comenzar el juego?
+117: Esta aplicación es válida durante un periodo de prueba de un día. Para poder utilizar la aplicación tras el periodo de prueba, necesitas adquirir una licencia. ¿Quieres empezar el periodo de prueba ahora?
+118: no translation
+119: no translation
+120: no translation
+121: Enhorabuena, has quedado %U.
+122: No has quedado entre los %U mejores.
+123: Tu puntuación es %U
+124: , lo que te coloca %U en tu Sala de la Fama.
+125: Borrar
+126: Seleccionar mejores puntuaciones
+127: Borrar mejores puntuaciones
+128: Introducir nombre
+129: Nombre
+130: ¿Seguro?
+131: Espera...
+132: Borrar
+133: Récords
