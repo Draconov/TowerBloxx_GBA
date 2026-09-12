@@ -23,6 +23,14 @@ def test_workflow_runs_host_tests_and_arm_builds_on_push_pr_and_manual_dispatch(
     assert "devkitpro/devkitarm" in text
 
 
+
+def test_workflow_adds_devkitarm_bin_to_github_path_before_tool_verification():
+    text = _workflow_text()
+    path_line = 'echo "$DEVKITARM/bin" >> "$GITHUB_PATH"'
+    assert path_line in text
+    assert 'test -d "$DEVKITARM/bin"' in text
+    assert text.index(path_line) < text.index('command -v arm-none-eabi-g++')
+
 def test_workflow_pins_butano_and_builds_existing_gba_makefile():
     text = _workflow_text()
     assert "21.7.1" in text

@@ -43,6 +43,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure devkitARM PATH
+        run: |
+          test -d "$DEVKITARM/bin"
+          echo "$DEVKITARM/bin" >> "$GITHUB_PATH"
+
       - name: Verify devkitARM tools
         run: |
           command -v arm-none-eabi-g++
