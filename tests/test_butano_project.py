@@ -15,7 +15,7 @@ def test_butano_makefile_is_pinned_and_has_gba_metadata() -> None:
     assert "LIBBUTANO       ?= ../../butano/butano" in makefile
     assert "ROMTITLE" in makefile and "TOWER BLOXX" in makefile
     assert "ROMCODE" in makefile and "TBGA" in makefile
-    assert "GRAPHICS" in makefile and "graphics/generated" in makefile
+    assert "GRAPHICS" in makefile and "graphics/gameplay" in makefile
     assert "graphics/ui" in makefile
     assert "include $(LIBBUTANOABS)/butano.mak" in makefile
 
@@ -275,3 +275,31 @@ def test_playability_backdrops_are_scene_owned_and_never_boot_black() -> None:
     assert "set_gameplay_backdrop();" in quick
     assert "set_city_backdrop();" in city
     assert "set_gameplay_backdrop();" in construction
+
+
+def test_playability_gameplay_uses_runtime_mesh_ids_and_camera_center_projection() -> None:
+    root = _root()
+    quick = (root / "gba/src/quick_game_scene.cpp").read_text()
+    construction = (root / "gba/src/tower_construction_scene.cpp").read_text()
+
+    # Quick Game bytecode forces L=4, so its ordinary block mesh is user ID 13.
+    assert "constexpr int floor_mesh_id = 13;" in quick
+
+    # Mesh 9 is the world/base platform, not a crane-top sprite. Mesh 8 is the
+    # normal translated crane line/hook object.
+    for source in (quick, construction):
+        assert "constexpr int platform_mesh_id = 9;" in source
+        assert "constexpr int crane_hook_mesh_id = 8;" in source
+        assert "crane_top_mesh_id" not in source
+        assert "world_screen_baseline_y = 0" in source
+        assert "_platform_sprites" in source
+
+    for header_name in ("quick_game_scene.h", "tower_construction_scene.h"):
+        header = (root / "gba/include/tb" / header_name).read_text()
+        assert "bn::vector<bn::sprite_ptr, 4> _platform_sprites;" in header
+
+
+def test_playability_makefile_compiles_gameplay_assets_not_inspection_renders() -> None:
+    makefile = (_root() / "gba/Makefile").read_text()
+    assert "GRAPHICS        := graphics/gameplay graphics/ui" in makefile
+    assert "graphics/generated graphics/ui" not in makefile

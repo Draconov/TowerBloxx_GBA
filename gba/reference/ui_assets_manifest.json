@@ -648,8 +648,8 @@
     },
     {
       "path": "gba/graphics/ui/tower_font.bmp",
-      "sha256": "d03723b8f816fd43c455eab57e2cb61582f35c12ce1ea05d5c45663466d47f3e",
-      "size": 7670
+      "sha256": "6daf191225449f02541fb6e0e91cb4cb5605c41810c9563c23dbe3b0cdcba21a",
+      "size": 7606
     },
     {
       "path": "gba/graphics/ui/tower_font.json",
@@ -658,8 +658,8 @@
     },
     {
       "path": "gba/include/generated/tower_font.h",
-      "sha256": "5f16169a6f4a405f81c57de2566df0aa451d360a54b76fbfe281c1f38797037b",
-      "size": 1942
+      "sha256": "2ce79d674c7bb03d3cee57e02b7d3fdff41fc2fef8354c13b4b2b452a16e3f17",
+      "size": 1976
     },
     {
       "path": "gba/include/generated/tower_localization.h",
@@ -673,6 +673,7 @@
     }
   ],
   "font_character_count": 118,
+  "font_graphics_count": 117,
   "font_line_height": 11,
   "font_space_between_characters": 1,
   "locale_codes": [
@@ -751,7 +752,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "8ee90776124c02138e4bd7103b4e5db74ad2720778854c1a345152f59e772111",
+  "tree_hash": "6c8fb10fff4c3e5de81d916be47727e4dc1a232ac86ff722090313371ecb3aa7",
   "utf8_characters": [
     "¡",
     "°",

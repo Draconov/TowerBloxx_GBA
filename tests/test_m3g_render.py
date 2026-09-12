@@ -15,6 +15,7 @@ from tower_bloxx_extract.m3g_geometry import (
 from tower_bloxx_extract.m3g_render import (
     TextureRGBA,
     class_n_camera_transform,
+    house_gameplay_camera_distance,
     identity_matrix,
     post_rotate,
     post_translate,
@@ -88,6 +89,14 @@ def test_runtime_camera_uses_bytecode_proven_gba_projection_adaptation():
     assert x == pytest.approx(120.0)
     assert y == pytest.approx(80.0)
     assert depth == pytest.approx(20.0)
+
+
+def test_house_gameplay_camera_distance_matches_bytecode_fit_loop():
+    # House starts at 128, advances by 100, projects (0,-384,128), and
+    # stops when the projected Y offset is <= 33 pixels.
+    assert house_gameplay_camera_distance(240, 160) == 2328
+    assert house_gameplay_camera_distance(240, 320) == 2528
+    assert house_gameplay_camera_distance(176, 208) == 1928
 
 
 def test_nearest_texture_sampling_clamps_and_preserves_alpha():

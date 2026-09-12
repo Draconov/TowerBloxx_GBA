@@ -1,720 +1,242 @@
 {
+  "base_fov": 55.0,
   "butano_version": "21.7.1",
+  "camera_z": 2328,
   "files": [
     {
-      "path": "gba/graphics/generated/tb_mesh_007_p0.bmp",
-      "sha256": "aa91b8314dbd4e9e208c564e983dbd3d7096ca843505ebae8fcc2752361e93cd",
-      "size": 2166
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_007_p0.json",
-      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_007_p1.bmp",
-      "sha256": "072fecbd55189e0a1170a3cdf632185efcdea2784d5d9de6b1143909640ae77a",
-      "size": 2166
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_007_p1.json",
-      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_008_p0.bmp",
-      "sha256": "10d5de643ac7dde72c005587f7ff520215125e3c534781a92c86442856010218",
+      "path": "gba/graphics/gameplay/tb_mesh_007_p0.bmp",
+      "sha256": "f75fb472b1f628276bb284051d04bdb961364ce7b644b87f2702467049fa4132",
       "size": 1142
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_008_p0.json",
+      "path": "gba/graphics/gameplay/tb_mesh_007_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_008_p1.bmp",
-      "sha256": "5ccce11088f5f02421dca27f0dfbed2896b10588ab2f8086afd2c86f20df1559",
+      "path": "gba/graphics/gameplay/tb_mesh_008_p0.bmp",
+      "sha256": "841dc5638cb6988fe8ce3c7d4a7419c0d86c7cd3bd7cd427c11c822d60de837b",
       "size": 1142
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_008_p1.json",
+      "path": "gba/graphics/gameplay/tb_mesh_008_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_009_p0.bmp",
-      "sha256": "45c264e710e00859b8541b3696ba5cc91867ba81949d460436ddf7fae938658d",
-      "size": 2166
+      "path": "gba/graphics/gameplay/tb_mesh_008_p1.bmp",
+      "sha256": "69326d151993479d40ecf9feae67cba8be0fb7aeca8e658ff214e54a7bda4aab",
+      "size": 246
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_009_p0.json",
+      "path": "gba/graphics/gameplay/tb_mesh_008_p1.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_009_p1.bmp",
-      "sha256": "0ef0b908ea807dd0eae8898a86362ce835086de63758b97025e67e5c5ad64c33",
-      "size": 2166
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_009_p1.json",
-      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_009_p2.bmp",
-      "sha256": "6f864c3a8480e72fb322ea8e3d68a678712bad703561d2b2b7ccb38444797b56",
+      "path": "gba/graphics/gameplay/tb_mesh_009_p0.bmp",
+      "sha256": "f5161bf15ce3f3c6cb074762aa893948bf9cc4182d66210d60de8fbf3fae0754",
       "size": 1142
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_009_p2.json",
+      "path": "gba/graphics/gameplay/tb_mesh_009_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p0.bmp",
-      "sha256": "1167b2c44c07fd4a14efcb8f6f6a316bfd3e4caa2a3301da3827a30884455b80",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_009_p1.bmp",
+      "sha256": "6d6564f5206795f17557cc2abf3b4d8f9724b47ae78064beedbdcc099acf8abd",
+      "size": 1142
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p0.json",
+      "path": "gba/graphics/gameplay/tb_mesh_009_p1.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_009_p2.bmp",
+      "sha256": "455f662aad6a6a166a8d0604d42c59dca15d0c83f6094c17dd8ce3f91f55e3b6",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_009_p2.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_009_p3.bmp",
+      "sha256": "383318d2a7fd0c4ac0a1666c439f1d7d3466136d85bc5bec2d41c49d2f223335",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_009_p3.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_010_p0.bmp",
+      "sha256": "93a7835e3abb99d4c3c5115369c28a5144bfb399f12cd0d6e97cf7bee655029a",
+      "size": 2102
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_010_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p1.bmp",
-      "sha256": "493c611aead7cad017f9bfcd8e98b3443db7363dcccb8a3d0869afe234789aa5",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_011_p0.bmp",
+      "sha256": "104d0ae97ecb76410e8ecf1d4968defb9d9cf112847e421d96599ba277baf329",
+      "size": 630
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p1.json",
+      "path": "gba/graphics/gameplay/tb_mesh_011_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_012_p0.bmp",
+      "sha256": "746eca1c8bfae7d667053dec7296229909e98c25d0bd402c148cb4ab942cc154",
+      "size": 2102
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_012_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p2.bmp",
-      "sha256": "ca6be08499c56d651c334dc31ecb50e5063bb2164f6571f9d0813e1d9d38038c",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_013_p0.bmp",
+      "sha256": "15cd3f1c36d1e2ddeaf9624dc307d0dc4d498fac6a2c47c94750f59128a7e3c8",
+      "size": 2102
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p2.json",
+      "path": "gba/graphics/gameplay/tb_mesh_013_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p3.bmp",
-      "sha256": "af2f349d934f26b7e44b0eda6aec9e0695199617658398e4e5cdcfc8b6253047",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_020_p0.bmp",
+      "sha256": "d8c8e925fb634d7effa99e3a60d4c9bd240d9825073fe90a9e2443cc142d1eb9",
+      "size": 630
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_010_p3.json",
+      "path": "gba/graphics/gameplay/tb_mesh_020_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_021_p0.bmp",
+      "sha256": "02b441ce4afb61626d0ee9e0f3b6cf1c918082e6f75e7be667c23bd46fac4310",
+      "size": 2102
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_021_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p0.bmp",
-      "sha256": "9aa185192f5ff18b6ff943119dbaa7fd571b3ded7da98bd8fac2676fcf5ea4d3",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_022_p0.bmp",
+      "sha256": "6102fcaa73d4b2cb5cac91cdc3a6eafdcebd6bd0a06fcdcd3048ff9444075953",
+      "size": 2102
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p0.json",
+      "path": "gba/graphics/gameplay/tb_mesh_022_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p1.bmp",
-      "sha256": "3d3128b1879a6bc842257c750065fd4655d2e68f352734c1acfa1fbeeea81580",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_023_p0.bmp",
+      "sha256": "46fb42e3c4f9975d3ef1afa9ca5a6c1811f36d017799acb9d724835239da7234",
+      "size": 2102
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p1.json",
+      "path": "gba/graphics/gameplay/tb_mesh_023_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p2.bmp",
-      "sha256": "54c7875771e47eabda2ee8ef5f1b57e73f93be3dfc8a8e37cc49efec53a45041",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_030_p0.bmp",
+      "sha256": "4fcba7a87f07a0ea1c5024cc9b9cd18d804ec25db2b4eba335c042ccea83c46e",
+      "size": 2102
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p2.json",
+      "path": "gba/graphics/gameplay/tb_mesh_030_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p3.bmp",
-      "sha256": "9415ed1d857bffc7afc815055c1cb6c3c4e76e124b242537ac5d2a343151d01f",
-      "size": 5174
+      "path": "gba/graphics/gameplay/tb_mesh_031_p0.bmp",
+      "sha256": "b3c5ec8e84dca37e0cae2f0a375eef10372fe3a142082508cdd4e72e3d459260",
+      "size": 1142
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_011_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
+      "path": "gba/graphics/gameplay/tb_mesh_031_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_012_p0.bmp",
-      "sha256": "c620068327e6d5546e7128e075864e70dc443fd4d340dd31944ee10dc574a1f5",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p1.bmp",
-      "sha256": "2d2750632aebbc403a19d64c0b229caf746381372d34c18d0851154f941684f2",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p2.bmp",
-      "sha256": "3ddf7e6a49dbdf6733b2ec5bff3c8be4d2e614bd3aa6c5ad9235687075887857",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p3.bmp",
-      "sha256": "4088cfd33948b2a1105fa5ee831f5cc0bb65355c50fc48e00d69e7db7b825436",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_012_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p0.bmp",
-      "sha256": "bafc214f0ec9402d33f325d2231e7af23c8a1de3befa3ab59173f8dc45661a9c",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p1.bmp",
-      "sha256": "bdc57882698294c169da4f93763ff0c2d3738a69ffae6543c8705f436cfeb815",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p2.bmp",
-      "sha256": "7ac5d3a5f80db0344300f573738ac32ef1f2fc534c7df332f817ae3699140de1",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p3.bmp",
-      "sha256": "5baa4c007b50944a45e70b0afffc3425e9209f087716255d3e76586fda381cf4",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_013_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p0.bmp",
-      "sha256": "d63a84d1b5db20218c747f7f0acdffd163e1d1c3c1b611250df4e9a303a7ed33",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p1.bmp",
-      "sha256": "fd443963397cb94a81c13498007d2c58c859a9609253e147015f7d827bd87908",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p2.bmp",
-      "sha256": "d056c3a4972088e013d3a3b15c683875ded80f27f91cae1729dc3e752e24ce4b",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p3.bmp",
-      "sha256": "4f47db3b64b8ed1a5cd902679cdbf6a58939adbc469778cecdc98e0bd016c6e0",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_020_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p0.bmp",
-      "sha256": "814559c10ec4fae7ac972de2e5803c2b8c9f9b2d88f775eb66c4696e8f45e39a",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p1.bmp",
-      "sha256": "2e4b2d3f1894874d36567ba1150bf29ba2ac849eff4cc43ab642636b92618267",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p2.bmp",
-      "sha256": "983f42e5915d385d83395b8f8d8ab01400b0a8c73b29346bf266d980f891ad1f",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p3.bmp",
-      "sha256": "8ed1f0fd6ccd6823ff6bfc587a5f24b8cae83d52d917f7ea8c31bcf8f90cdc65",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_021_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p0.bmp",
-      "sha256": "93b396eeeb0962b8d0a136bab53812424aafc07dded25d63bed9d702feaa050d",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p1.bmp",
-      "sha256": "c084b60b626f9bf79353f3d78d87b3314b89356ea8bae6d057158ce6effdcf38",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p2.bmp",
-      "sha256": "66c66f4223c3552b4d855fbcbba778fe1d03b08943566d2b1560333ed4d7d079",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p3.bmp",
-      "sha256": "9e0309b08b0e368d7ccab0bd7a42b1af97de5641f0a372f9823070287c824dbb",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_022_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p0.bmp",
-      "sha256": "9bc8e9d3e69f90b11d5174a66181206f2be5fe5d12128a2e9e720bc652bec3c2",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p1.bmp",
-      "sha256": "dab4623f6d5f8525ee8ff806fb2c58265bf54c510bf09a6559c455a6ec850239",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p2.bmp",
-      "sha256": "5bf870347896729e8fff19a091dc6926f79dba0f22df33420a03608c73ac38f9",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p3.bmp",
-      "sha256": "ceceaf6ebbbe994937d4533ad9e21d13a81d992c1c0e3877c9a9e2042ae60e01",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_023_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_030_p0.bmp",
-      "sha256": "390bb2eabae0312bb2531f1317d9eceea9f7384a03cb1f7b960a3ea2149226b4",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_030_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_030_p1.bmp",
-      "sha256": "7196f31954d769278c282c9f8f85f661cbaa2c69dfcaa871fc28fb61432dcbe1",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_030_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_030_p2.bmp",
-      "sha256": "70b5964a861d524934186b161c1e794352e2d294cb47155146b7d1b79f701ca5",
+      "path": "gba/graphics/gameplay/tb_mesh_032_p0.bmp",
+      "sha256": "8bfe00d2961ca78a86a2e2c7edbd68cf3dd305f86a28711a05cb43ffb91332d0",
       "size": 3126
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_030_p2.json",
+      "path": "gba/graphics/gameplay/tb_mesh_032_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_030_p3.bmp",
-      "sha256": "8ddbaf7ec8e3789428c5a755bedc33b40f1f06c5a462a40a70bf096fa23855e4",
+      "path": "gba/graphics/gameplay/tb_mesh_033_p0.bmp",
+      "sha256": "0f67b6a4248e2c377279513a0bfed0aad8a54ee735fc2380b2b54a23e4132509",
       "size": 3126
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_030_p3.json",
+      "path": "gba/graphics/gameplay/tb_mesh_033_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_031_p0.bmp",
-      "sha256": "26f3500d08e32a80c2b5213c154b3850dc4ecf4ba627a38c3cdc54dc80cae325",
+      "path": "gba/graphics/gameplay/tb_mesh_040_p0.bmp",
+      "sha256": "5b2f93213627b561ac4aa447e695ed59073c8f3c00ba098435cb10e2e2c94a76",
+      "size": 3126
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_040_p0.json",
+      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_041_p0.bmp",
+      "sha256": "f8f9d8345b0069e25e039a93d6fd25750df6004dd5f0c7543c9ac79e8c2521a6",
+      "size": 3126
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_041_p0.json",
+      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_042_p0.bmp",
+      "sha256": "7c307f49bcfeef43a09b5ffd5a78e567330aa6f51123bdad9aa15d2371b049df",
+      "size": 3126
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_042_p0.json",
+      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/gameplay/tb_mesh_043_p0.bmp",
+      "sha256": "f69abc92a107c808a44c1fd046a4ae5bf14bbbfde752741c328cd44d51aa7a0b",
       "size": 5174
     },
     {
-      "path": "gba/graphics/generated/tb_mesh_031_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p1.bmp",
-      "sha256": "ef94cc379c89b100dcc8e0c60ac2abf1a9f0638f9f4da0aae7b30f0acdfe153a",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p2.bmp",
-      "sha256": "4a9f293b0188f028619e7ce23354fa6387877454309435e42993a8021d46757d",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p3.bmp",
-      "sha256": "9223ac65df36f557379477341f2e89415dfb4a1fb80619e0866b68436c7813f5",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_031_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p0.bmp",
-      "sha256": "49584b85bff4bad2d0a18e1a34a72f7b115e9cde488dd179819d98310bd8a01f",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p1.bmp",
-      "sha256": "75abfb6902a5ee42aa652285e75ca36764e63cdc1ac0e88d41e3c7ef71dedc00",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p2.bmp",
-      "sha256": "3c78bb01ec210e8e2fa5bd652d69d7a717dfc9aa8e91d9320e5ef065cdc53a41",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p3.bmp",
-      "sha256": "b88a72aae8f99a00317593dbf3831c9056bd926bdee4fee6e4985f549a231030",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_032_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p0.bmp",
-      "sha256": "dc57c0a14692c25442af66eb2775262ebb0b45e7fbd2f6413ef557e03f1fff49",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p1.bmp",
-      "sha256": "d68c7facc5bf293bae6f41b00c3cd15e8451a58f1c6468c1bddcf72cd7595c70",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p2.bmp",
-      "sha256": "d7b0366739ce5737573c9ccbd76f1ceb96106850c1bc3b50bbd68096fd6a3cc2",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p3.bmp",
-      "sha256": "41667d53eb89ee8f480862d619eadf60133e18457658b72c2760863d1b09f1a7",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_033_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p0.bmp",
-      "sha256": "944af9bafc7ab75b637da2880371ee944b6dd1228de57e6b84df7ee83388a72a",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p1.bmp",
-      "sha256": "e21b819b5cb0b463fa3d9db7884dbb5610073c9389c03b03fbcb4bcff1faa6b9",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p2.bmp",
-      "sha256": "fdc9ac57b3ce8d29bd8278e76d3a563330e1b5613e1cafbbf13c25ebc5e56195",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p3.bmp",
-      "sha256": "2245c3ba9e21cf96e1d8081917068c4f60303c861719def2fd8283baa033fdc0",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_040_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p0.bmp",
-      "sha256": "5f8b377a490ddbf41b926529015872750d9adfe42ccbabec0069c9ce31a39c69",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p1.bmp",
-      "sha256": "00257ec60e6e69ad3e7f958bcb3cdc9feb0d1c5410a9c84e89d26c4fd1b3124c",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p2.bmp",
-      "sha256": "54c57074e25a75352676e3bb3c49c8f2fa905119d0945d04a9620f95843a4088",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p3.bmp",
-      "sha256": "5b13d748fed41358a208f0c8fab56d728d85f19f941f7be586bbed127097b4d8",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_041_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p0.bmp",
-      "sha256": "cf27a7c4c688f96b6310a5f1e15baaf4797898289f24b2924874ff88f1d7edf5",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p1.bmp",
-      "sha256": "e6de53bb2b39a529df0542827ffe4c44e36c39b7b72102a2fda982bc358d0c3b",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p2.bmp",
-      "sha256": "0a5654f78adef5a0d7e366740bd22466842adde1c8cfb49fb186a11ded658669",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p3.bmp",
-      "sha256": "a5bd9a9a71d2bb08d3c990688e5767cb6943178f34cb58f7dbe4d1ada648646b",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_042_p3.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p0.bmp",
-      "sha256": "455ffd074970a0cf22b5aa642c7809c37b38f39bf7142c166a072cb6086806a3",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p1.bmp",
-      "sha256": "25d28517b8c765461e876c03a2a72cbc889b452bb550a9e5891274206a0ad24f",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p1.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p2.bmp",
-      "sha256": "e9233849d7376d5716ecc621c0328eec2a3c6627a94d45840aebfb738d55b956",
-      "size": 5174
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p2.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p3.bmp",
-      "sha256": "ceec3d6de6544230a04f8d0d46b6ec6d5cfd43816fc672767d64a535cb8f7e31",
-      "size": 3126
-    },
-    {
-      "path": "gba/graphics/generated/tb_mesh_043_p3.json",
+      "path": "gba/graphics/gameplay/tb_mesh_043_p0.json",
       "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
       "size": 46
     },
     {
       "path": "gba/include/generated/tower_mesh_assets.h",
-      "sha256": "569d9d5c2e5a80fbcff2b7bbea55774adc4095ad41f7b69c7233776a7d9d86ee",
-      "size": 8780
+      "sha256": "eb5871adf0d7cf15f7f7af3f91e5b463a5214f0ba8fd40fd1e6681c281ffd868",
+      "size": 4140
     }
   ],
   "mesh_count": 19,
@@ -742,10 +264,10 @@
   "meshes": [
     {
       "bbox": [
-        101,
-        21,
-        143,
-        137
+        109,
+        30,
+        131,
+        75
       ],
       "bpp": 4,
       "mesh_id": 7,
@@ -754,29 +276,20 @@
         {
           "asset": "tb_mesh_007_p0",
           "height": 64,
-          "screen_x": 13,
-          "screen_y": -27,
-          "source_x": 101,
-          "source_y": 21,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_007_p1",
-          "height": 64,
-          "screen_x": 13,
-          "screen_y": 37,
-          "source_x": 101,
-          "source_y": 85,
-          "width": 64
+          "screen_x": 5,
+          "screen_y": -18,
+          "source_x": 109,
+          "source_y": 30,
+          "width": 32
         }
       ]
     },
     {
       "bbox": [
-        115,
-        14,
+        114,
+        0,
         126,
-        135
+        75
       ],
       "bpp": 4,
       "mesh_id": 8,
@@ -785,29 +298,29 @@
         {
           "asset": "tb_mesh_008_p0",
           "height": 64,
-          "screen_x": 11,
-          "screen_y": -34,
-          "source_x": 115,
-          "source_y": 14,
+          "screen_x": 10,
+          "screen_y": -48,
+          "source_x": 114,
+          "source_y": 0,
           "width": 32
         },
         {
           "asset": "tb_mesh_008_p1",
-          "height": 64,
-          "screen_x": 11,
-          "screen_y": 30,
-          "source_x": 115,
-          "source_y": 78,
-          "width": 32
+          "height": 16,
+          "screen_x": 2,
+          "screen_y": -8,
+          "source_x": 114,
+          "source_y": 64,
+          "width": 16
         }
       ]
     },
     {
       "bbox": [
-        60,
-        68,
-        193,
-        105
+        0,
+        80,
+        240,
+        96
       ],
       "bpp": 4,
       "mesh_id": 9,
@@ -815,28 +328,59 @@
       "parts": [
         {
           "asset": "tb_mesh_009_p0",
-          "height": 64,
-          "screen_x": -28,
-          "screen_y": 20,
-          "source_x": 60,
-          "source_y": 68,
+          "height": 32,
+          "screen_x": -88,
+          "screen_y": 16,
+          "source_x": 0,
+          "source_y": 80,
           "width": 64
         },
         {
           "asset": "tb_mesh_009_p1",
-          "height": 64,
-          "screen_x": 36,
-          "screen_y": 20,
-          "source_x": 124,
-          "source_y": 68,
+          "height": 32,
+          "screen_x": -24,
+          "screen_y": 16,
+          "source_x": 64,
+          "source_y": 80,
           "width": 64
         },
         {
           "asset": "tb_mesh_009_p2",
-          "height": 64,
-          "screen_x": 84,
-          "screen_y": 20,
-          "source_x": 188,
+          "height": 32,
+          "screen_x": 40,
+          "screen_y": 16,
+          "source_x": 128,
+          "source_y": 80,
+          "width": 64
+        },
+        {
+          "asset": "tb_mesh_009_p3",
+          "height": 32,
+          "screen_x": 104,
+          "screen_y": 16,
+          "source_x": 192,
+          "source_y": 80,
+          "width": 64
+        }
+      ]
+    },
+    {
+      "bbox": [
+        107,
+        68,
+        133,
+        92
+      ],
+      "bpp": 8,
+      "mesh_id": 10,
+      "palette_entries": 26,
+      "parts": [
+        {
+          "asset": "tb_mesh_010_p0",
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
           "source_y": 68,
           "width": 32
         }
@@ -844,788 +388,335 @@
     },
     {
       "bbox": [
-        58,
-        38,
-        177,
-        142
+        107,
+        68,
+        133,
+        92
       ],
-      "bpp": 8,
-      "mesh_id": 10,
-      "palette_entries": 62,
-      "parts": [
-        {
-          "asset": "tb_mesh_010_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_010_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_010_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_010_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        58,
-        38,
-        177,
-        142
-      ],
-      "bpp": 8,
+      "bpp": 4,
       "mesh_id": 11,
-      "palette_entries": 35,
+      "palette_entries": 13,
       "parts": [
         {
           "asset": "tb_mesh_011_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_011_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_011_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_011_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
         }
       ]
     },
     {
       "bbox": [
-        58,
-        38,
-        177,
-        142
+        107,
+        68,
+        133,
+        92
       ],
       "bpp": 8,
       "mesh_id": 12,
-      "palette_entries": 42,
+      "palette_entries": 17,
       "parts": [
         {
           "asset": "tb_mesh_012_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_012_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_012_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_012_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
         }
       ]
     },
     {
       "bbox": [
-        58,
-        38,
-        177,
-        142
+        107,
+        68,
+        133,
+        92
       ],
       "bpp": 8,
       "mesh_id": 13,
-      "palette_entries": 99,
-      "parts": [
-        {
-          "asset": "tb_mesh_013_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_013_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_013_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_013_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        58,
-        38,
-        177,
-        142
-      ],
-      "bpp": 8,
-      "mesh_id": 20,
       "palette_entries": 48,
       "parts": [
         {
-          "asset": "tb_mesh_020_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_020_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_020_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_020_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
+          "asset": "tb_mesh_013_p0",
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
         }
       ]
     },
     {
       "bbox": [
-        58,
-        38,
-        177,
-        142
+        107,
+        68,
+        133,
+        92
+      ],
+      "bpp": 4,
+      "mesh_id": 20,
+      "palette_entries": 13,
+      "parts": [
+        {
+          "asset": "tb_mesh_020_p0",
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
+        }
+      ]
+    },
+    {
+      "bbox": [
+        107,
+        68,
+        133,
+        92
       ],
       "bpp": 8,
       "mesh_id": 21,
-      "palette_entries": 41,
+      "palette_entries": 18,
       "parts": [
         {
           "asset": "tb_mesh_021_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_021_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_021_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_021_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
+          "height": 32,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
         }
       ]
     },
     {
       "bbox": [
-        58,
-        38,
-        177,
-        142
+        107,
+        68,
+        133,
+        92
       ],
       "bpp": 8,
       "mesh_id": 22,
-      "palette_entries": 45,
-      "parts": [
-        {
-          "asset": "tb_mesh_022_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_022_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_022_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_022_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        58,
-        38,
-        177,
-        142
-      ],
-      "bpp": 8,
-      "mesh_id": 23,
-      "palette_entries": 69,
-      "parts": [
-        {
-          "asset": "tb_mesh_023_p0",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": -10,
-          "source_x": 58,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_023_p1",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": -10,
-          "source_x": 122,
-          "source_y": 38,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_023_p2",
-          "height": 64,
-          "screen_x": -30,
-          "screen_y": 54,
-          "source_x": 58,
-          "source_y": 102,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_023_p3",
-          "height": 64,
-          "screen_x": 34,
-          "screen_y": 54,
-          "source_x": 122,
-          "source_y": 102,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        62,
-        45,
-        173,
-        136
-      ],
-      "bpp": 8,
-      "mesh_id": 30,
-      "palette_entries": 25,
-      "parts": [
-        {
-          "asset": "tb_mesh_030_p0",
-          "height": 64,
-          "screen_x": -26,
-          "screen_y": -3,
-          "source_x": 62,
-          "source_y": 45,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_030_p1",
-          "height": 64,
-          "screen_x": 38,
-          "screen_y": -3,
-          "source_x": 126,
-          "source_y": 45,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_030_p2",
-          "height": 32,
-          "screen_x": -26,
-          "screen_y": 45,
-          "source_x": 62,
-          "source_y": 109,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_030_p3",
-          "height": 32,
-          "screen_x": 38,
-          "screen_y": 45,
-          "source_x": 126,
-          "source_y": 109,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        62,
-        46,
-        173,
-        132
-      ],
-      "bpp": 8,
-      "mesh_id": 31,
-      "palette_entries": 19,
-      "parts": [
-        {
-          "asset": "tb_mesh_031_p0",
-          "height": 64,
-          "screen_x": -26,
-          "screen_y": -2,
-          "source_x": 62,
-          "source_y": 46,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_031_p1",
-          "height": 64,
-          "screen_x": 38,
-          "screen_y": -2,
-          "source_x": 126,
-          "source_y": 46,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_031_p2",
-          "height": 32,
-          "screen_x": -26,
-          "screen_y": 46,
-          "source_x": 62,
-          "source_y": 110,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_031_p3",
-          "height": 32,
-          "screen_x": 38,
-          "screen_y": 46,
-          "source_x": 126,
-          "source_y": 110,
-          "width": 64
-        }
-      ]
-    },
-    {
-      "bbox": [
-        66,
-        47,
-        170,
-        127
-      ],
-      "bpp": 8,
-      "mesh_id": 32,
       "palette_entries": 20,
       "parts": [
         {
-          "asset": "tb_mesh_032_p0",
-          "height": 64,
-          "screen_x": -22,
-          "screen_y": -1,
-          "source_x": 66,
-          "source_y": 47,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_032_p1",
-          "height": 64,
-          "screen_x": 42,
-          "screen_y": -1,
-          "source_x": 130,
-          "source_y": 47,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_032_p2",
+          "asset": "tb_mesh_022_p0",
           "height": 32,
-          "screen_x": -22,
-          "screen_y": 47,
-          "source_x": 66,
-          "source_y": 111,
-          "width": 64
-        },
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
+        }
+      ]
+    },
+    {
+      "bbox": [
+        107,
+        68,
+        133,
+        92
+      ],
+      "bpp": 8,
+      "mesh_id": 23,
+      "palette_entries": 18,
+      "parts": [
         {
-          "asset": "tb_mesh_032_p3",
+          "asset": "tb_mesh_023_p0",
           "height": 32,
-          "screen_x": 42,
-          "screen_y": 47,
-          "source_x": 130,
-          "source_y": 111,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 107,
+          "source_y": 68,
+          "width": 32
+        }
+      ]
+    },
+    {
+      "bbox": [
+        104,
+        66,
+        136,
+        92
+      ],
+      "bpp": 8,
+      "mesh_id": 30,
+      "palette_entries": 17,
+      "parts": [
+        {
+          "asset": "tb_mesh_030_p0",
+          "height": 32,
+          "screen_x": 0,
+          "screen_y": 2,
+          "source_x": 104,
+          "source_y": 66,
+          "width": 32
+        }
+      ]
+    },
+    {
+      "bbox": [
+        103,
+        69,
+        137,
+        92
+      ],
+      "bpp": 4,
+      "mesh_id": 31,
+      "palette_entries": 16,
+      "parts": [
+        {
+          "asset": "tb_mesh_031_p0",
+          "height": 32,
+          "screen_x": 15,
+          "screen_y": 5,
+          "source_x": 103,
+          "source_y": 69,
           "width": 64
         }
       ]
     },
     {
       "bbox": [
-        81,
-        28,
-        156,
-        146
+        103,
+        69,
+        137,
+        92
+      ],
+      "bpp": 8,
+      "mesh_id": 32,
+      "palette_entries": 21,
+      "parts": [
+        {
+          "asset": "tb_mesh_032_p0",
+          "height": 32,
+          "screen_x": 15,
+          "screen_y": 5,
+          "source_x": 103,
+          "source_y": 69,
+          "width": 64
+        }
+      ]
+    },
+    {
+      "bbox": [
+        104,
+        58,
+        136,
+        92
       ],
       "bpp": 8,
       "mesh_id": 33,
-      "palette_entries": 27,
+      "palette_entries": 23,
       "parts": [
         {
           "asset": "tb_mesh_033_p0",
           "height": 64,
-          "screen_x": -7,
-          "screen_y": -20,
-          "source_x": 81,
-          "source_y": 28,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_033_p1",
-          "height": 64,
-          "screen_x": 41,
-          "screen_y": -20,
-          "source_x": 145,
-          "source_y": 28,
-          "width": 32
-        },
-        {
-          "asset": "tb_mesh_033_p2",
-          "height": 64,
-          "screen_x": -7,
-          "screen_y": 44,
-          "source_x": 81,
-          "source_y": 92,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_033_p3",
-          "height": 64,
-          "screen_x": 41,
-          "screen_y": 44,
-          "source_x": 145,
-          "source_y": 92,
+          "screen_x": 0,
+          "screen_y": 10,
+          "source_x": 104,
+          "source_y": 58,
           "width": 32
         }
       ]
     },
     {
       "bbox": [
-        71,
-        35,
-        166,
-        142
+        105,
+        53,
+        135,
+        92
       ],
       "bpp": 8,
       "mesh_id": 40,
-      "palette_entries": 32,
+      "palette_entries": 22,
       "parts": [
         {
           "asset": "tb_mesh_040_p0",
           "height": 64,
-          "screen_x": -17,
-          "screen_y": -13,
-          "source_x": 71,
-          "source_y": 35,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_040_p1",
-          "height": 64,
-          "screen_x": 31,
-          "screen_y": -13,
-          "source_x": 135,
-          "source_y": 35,
-          "width": 32
-        },
-        {
-          "asset": "tb_mesh_040_p2",
-          "height": 64,
-          "screen_x": -17,
-          "screen_y": 51,
-          "source_x": 71,
-          "source_y": 99,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_040_p3",
-          "height": 64,
-          "screen_x": 31,
-          "screen_y": 51,
-          "source_x": 135,
-          "source_y": 99,
+          "screen_x": 1,
+          "screen_y": 5,
+          "source_x": 105,
+          "source_y": 53,
           "width": 32
         }
       ]
     },
     {
       "bbox": [
-        77,
-        32,
-        160,
-        145
+        107,
+        54,
+        133,
+        92
       ],
       "bpp": 8,
       "mesh_id": 41,
-      "palette_entries": 34,
+      "palette_entries": 28,
       "parts": [
         {
           "asset": "tb_mesh_041_p0",
           "height": 64,
-          "screen_x": -11,
-          "screen_y": -16,
-          "source_x": 77,
-          "source_y": 32,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_041_p1",
-          "height": 64,
-          "screen_x": 37,
-          "screen_y": -16,
-          "source_x": 141,
-          "source_y": 32,
-          "width": 32
-        },
-        {
-          "asset": "tb_mesh_041_p2",
-          "height": 64,
-          "screen_x": -11,
-          "screen_y": 48,
-          "source_x": 77,
-          "source_y": 96,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_041_p3",
-          "height": 64,
-          "screen_x": 37,
-          "screen_y": 48,
-          "source_x": 141,
-          "source_y": 96,
+          "screen_x": 3,
+          "screen_y": 6,
+          "source_x": 107,
+          "source_y": 54,
           "width": 32
         }
       ]
     },
     {
       "bbox": [
-        79,
-        29,
-        158,
-        142
+        106,
+        49,
+        134,
+        92
       ],
       "bpp": 8,
       "mesh_id": 42,
-      "palette_entries": 25,
+      "palette_entries": 20,
       "parts": [
         {
           "asset": "tb_mesh_042_p0",
           "height": 64,
-          "screen_x": -9,
-          "screen_y": -19,
-          "source_x": 79,
-          "source_y": 29,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_042_p1",
-          "height": 64,
-          "screen_x": 39,
-          "screen_y": -19,
-          "source_x": 143,
-          "source_y": 29,
-          "width": 32
-        },
-        {
-          "asset": "tb_mesh_042_p2",
-          "height": 64,
-          "screen_x": -9,
-          "screen_y": 45,
-          "source_x": 79,
-          "source_y": 93,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_042_p3",
-          "height": 64,
-          "screen_x": 39,
-          "screen_y": 45,
-          "source_x": 143,
-          "source_y": 93,
+          "screen_x": 2,
+          "screen_y": 1,
+          "source_x": 106,
+          "source_y": 49,
           "width": 32
         }
       ]
     },
     {
       "bbox": [
-        79,
-        37,
-        159,
-        139
+        102,
+        51,
+        138,
+        92
       ],
       "bpp": 8,
       "mesh_id": 43,
-      "palette_entries": 23,
+      "palette_entries": 22,
       "parts": [
         {
           "asset": "tb_mesh_043_p0",
           "height": 64,
-          "screen_x": -9,
-          "screen_y": -11,
-          "source_x": 79,
-          "source_y": 37,
+          "screen_x": 14,
+          "screen_y": 3,
+          "source_x": 102,
+          "source_y": 51,
           "width": 64
-        },
-        {
-          "asset": "tb_mesh_043_p1",
-          "height": 64,
-          "screen_x": 39,
-          "screen_y": -11,
-          "source_x": 143,
-          "source_y": 37,
-          "width": 32
-        },
-        {
-          "asset": "tb_mesh_043_p2",
-          "height": 64,
-          "screen_x": -9,
-          "screen_y": 53,
-          "source_x": 79,
-          "source_y": 101,
-          "width": 64
-        },
-        {
-          "asset": "tb_mesh_043_p3",
-          "height": 64,
-          "screen_x": 39,
-          "screen_y": 53,
-          "source_x": 143,
-          "source_y": 101,
-          "width": 32
         }
       ]
     }
   ],
-  "tree_hash": "5ac0e22a6229ff047340e7fdca85b7a55f262fb0515b3fa3c20100bd2261dd7c"
+  "render_pose": "house_gameplay_240x160",
+  "tree_hash": "50cff7fa25fbd06a85300b7dc84815d4094e9756875e50f1a308be9d1fdcd245"
 }

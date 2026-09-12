@@ -46,6 +46,9 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert tuple(manifest_a["utf8_characters"]) == EXPECTED_EXTENDED
     assert EXTENDED_CHARACTERS == EXPECTED_EXTENDED
     assert manifest_a["font_character_count"] == 95 + len(EXPECTED_EXTENDED)
+    # Butano reserves space as a width-only character. Graphics start at '!'
+    # and continue through '~', followed by the UTF-8 extension glyphs.
+    assert manifest_a["font_graphics_count"] == 94 + len(EXPECTED_EXTENDED)
     assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10, "city_buildings": [24, 25, 26, 27], "city_lot": 28}
 
     city_records = manifest_a["city_assets"]
@@ -55,7 +58,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert {record["name"] for record in city_records["lots"]} == {f"city_lot_f{index}" for index in range(5)}
 
     font_bmp = a / "gba/graphics/ui/tower_font.bmp"
-    assert _bmp_geometry(font_bmp) == ((95 + len(EXPECTED_EXTENDED)) * 8, 16, 4)
+    assert _bmp_geometry(font_bmp) == ((94 + len(EXPECTED_EXTENDED)) * 8, 16, 4)
     font_meta = json.loads((a / "gba/graphics/ui/tower_font.json").read_text())
     assert font_meta == {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8}
 
@@ -72,6 +75,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     font_header = (a / "gba/include/generated/tower_font.h").read_text(encoding="utf-8")
     assert "bn::sprite_items::tower_font" in font_header
     assert "space_between_characters" in font_header
+    assert "tower_font_character_widths,\n        space_between_characters);" in font_header
 
     assert manifest_a["adapted_instructions"]["en-EN"]["quick"].find("Press A") >= 0
     assert "Press 5" not in manifest_a["adapted_instructions"]["en-EN"]["quick"]

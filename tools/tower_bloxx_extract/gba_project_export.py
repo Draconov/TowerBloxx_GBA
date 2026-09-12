@@ -5,13 +5,22 @@ import json
 from pathlib import Path
 import shutil
 import struct
-import tempfile
+import zipfile
 
 from PIL import Image
 
 from .gba_assets import SpriteComposite, slice_sprite
-from .m3g_export import export_m3g_reference
-from .m3g_geometry import GAME_MESH_USER_IDS
+from .m3g import parse_m3g
+from .m3g_geometry import GAME_MESH_USER_IDS, decode_image_rgba, resolve_mesh
+from .m3g_render import (
+    TextureRGBA,
+    class_n_camera_transform,
+    house_gameplay_camera_distance,
+    identity_matrix,
+    render_mesh_reference,
+    runtime_camera,
+)
+from .resources import read_resource
 
 BUTANO_VERSION = "21.7.1"
 
@@ -143,49 +152,74 @@ def _header(composites: list[SpriteComposite]) -> str:
 def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, object]:
     jar_path = Path(jar_path)
     project_dir = Path(project_dir)
-    graphics_dir = project_dir / "gba" / "graphics" / "generated"
+    graphics_dir = project_dir / "gba" / "graphics" / "gameplay"
     include_dir = project_dir / "gba" / "include" / "generated"
     reference_dir = project_dir / "gba" / "reference"
-    for directory in (graphics_dir, include_dir):
-        if directory.exists():
-            shutil.rmtree(directory)
-        directory.mkdir(parents=True, exist_ok=True)
+    if graphics_dir.exists():
+        shutil.rmtree(graphics_dir)
+    graphics_dir.mkdir(parents=True, exist_ok=True)
+    # Generated headers share this directory with the font/localization/UI
+    # exporter. Never remove siblings that belong to another asset pipeline.
+    include_dir.mkdir(parents=True, exist_ok=True)
     reference_dir.mkdir(parents=True, exist_ok=True)
 
     composites: list[SpriteComposite] = []
     mesh_records: list[dict[str, object]] = []
-    with tempfile.TemporaryDirectory(prefix="tower-bloxx-m3g-") as tmp:
-        m3g_dir = Path(tmp) / "m3g"
-        export_m3g_reference(jar_path, m3g_dir)
-        for mesh_id in GAME_MESH_USER_IDS:
-            render = Image.open(m3g_dir / "renders" / f"mesh_{mesh_id:03d}.png").convert("RGBA")
-            composite = slice_sprite(render, mesh_id)
-            composites.append(composite)
-            part_records: list[dict[str, object]] = []
-            for part_index, part in enumerate(composite.parts):
-                name = _asset_name(mesh_id, part_index)
-                bmp_path = graphics_dir / f"{name}.bmp"
-                json_path = graphics_dir / f"{name}.json"
-                _write_indexed_bmp(
-                    bmp_path, part.width, part.height, part.indices, composite.palette_bgr555, composite.bpp
-                )
-                _write_json(json_path, {"bpp_mode": f"bpp_{composite.bpp}", "type": "sprite"})
-                part_records.append({
-                    "asset": name,
-                    "source_x": part.source_x,
-                    "source_y": part.source_y,
-                    "width": part.width,
-                    "height": part.height,
-                    "screen_x": part.source_x + part.width // 2 - composite.canvas_width // 2,
-                    "screen_y": part.source_y + part.height // 2 - composite.canvas_height // 2,
-                })
-            mesh_records.append({
-                "mesh_id": mesh_id,
-                "bbox": list(composite.bbox),
-                "bpp": composite.bpp,
-                "palette_entries": len(composite.palette_bgr555),
-                "parts": part_records,
+    camera_z = house_gameplay_camera_distance(240, 160)
+    camera = runtime_camera(
+        240,
+        160,
+        base_fov=55.0,
+        transform=class_n_camera_transform(
+            position=(0.0, 0.0, float(camera_z)),
+            direction=(0.0, 0.0, -1.0),
+            up=(0.0, 1.0, 0.0),
+        ),
+    )
+
+    with zipfile.ZipFile(jar_path) as jar:
+        scene = parse_m3g(read_resource(jar, 45))
+
+    for mesh_id in GAME_MESH_USER_IDS:
+        mesh = resolve_mesh(scene, mesh_id)
+        textures: dict[int, TextureRGBA] = {}
+        for submesh in mesh.submeshes:
+            image_index = submesh.image_index
+            if image_index is not None and image_index not in textures:
+                width, height, rgba = decode_image_rgba(scene, image_index)
+                textures[image_index] = TextureRGBA(width, height, rgba)
+
+        frame = render_mesh_reference(
+            mesh, camera=camera, textures=textures, draw_transform=identity_matrix()
+        )
+        render = Image.frombytes("RGBA", (camera.width, camera.height), frame.rgba)
+        composite = slice_sprite(render, mesh_id)
+        composites.append(composite)
+        part_records: list[dict[str, object]] = []
+        for part_index, part in enumerate(composite.parts):
+            name = _asset_name(mesh_id, part_index)
+            bmp_path = graphics_dir / f"{name}.bmp"
+            json_path = graphics_dir / f"{name}.json"
+            _write_indexed_bmp(
+                bmp_path, part.width, part.height, part.indices, composite.palette_bgr555, composite.bpp
+            )
+            _write_json(json_path, {"bpp_mode": f"bpp_{composite.bpp}", "type": "sprite"})
+            part_records.append({
+                "asset": name,
+                "source_x": part.source_x,
+                "source_y": part.source_y,
+                "width": part.width,
+                "height": part.height,
+                "screen_x": part.source_x + part.width // 2 - composite.canvas_width // 2,
+                "screen_y": part.source_y + part.height // 2 - composite.canvas_height // 2,
             })
+        mesh_records.append({
+            "mesh_id": mesh_id,
+            "bbox": list(composite.bbox),
+            "bpp": composite.bpp,
+            "palette_entries": len(composite.palette_bgr555),
+            "parts": part_records,
+        })
 
     header_path = include_dir / "tower_mesh_assets.h"
     header_path.write_text(_header(composites), encoding="utf-8", newline="\n")
@@ -213,6 +247,9 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
     manifest: dict[str, object] = {
         "butano_version": BUTANO_VERSION,
         "mesh_count": len(composites),
+        "render_pose": "house_gameplay_240x160",
+        "camera_z": camera_z,
+        "base_fov": 55.0,
         "mesh_ids": list(GAME_MESH_USER_IDS),
         "meshes": mesh_records,
         "files": files,

@@ -242,6 +242,27 @@ def runtime_camera(
     )
 
 
+def house_gameplay_camera_distance(width: int, height: int) -> int:
+    """Recover ``House.aA`` for a target screen size.
+
+    The Java constructor starts at 128, advances the camera by 100 world units,
+    projects the probe point ``(0, -384, 128)``, and repeats until the projected
+    Y offset from screen center is at most 33 pixels.  The setup camera still
+    uses class ``n``'s default 60 degree base FOV; gameplay later switches the
+    same camera to 55 degrees.
+    """
+    camera_z = 128
+    projected_offset = height
+    setup_camera = runtime_camera(width, height, base_fov=60.0)
+    while projected_offset > 33:
+        camera_z += 100
+        _screen_x, screen_y, _depth = project_camera_point(
+            setup_camera, (0.0, -384.0, 128.0 - camera_z)
+        )
+        projected_offset = int(screen_y - height * 0.5)
+    return camera_z
+
+
 def project_camera_point(camera: RuntimeCamera, point: tuple[float, float, float]) -> tuple[float, float, float]:
     x, y, z = point
     depth = -z

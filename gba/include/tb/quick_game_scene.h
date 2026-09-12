@@ -45,7 +45,7 @@ private:
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;
     bn::vector<bn::sprite_ptr, 4> _current_sprites;
-    bn::vector<bn::sprite_ptr, 3> _crane_top_sprites;
+    bn::vector<bn::sprite_ptr, 4> _platform_sprites;
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     int _language = 0;

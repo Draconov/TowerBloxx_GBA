@@ -16,12 +16,12 @@ namespace tb
 namespace
 {
 constexpr int max_visible_floors = 5;
-constexpr int floor_mesh_id = 10;
-constexpr int crane_top_mesh_id = 9;
+constexpr int floor_mesh_id = 13;
+constexpr int platform_mesh_id = 9;
 constexpr int crane_hook_mesh_id = 8;
 constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
-constexpr int world_screen_baseline_y = 50;
+constexpr int world_screen_baseline_y = 0;
 constexpr int combo_meter_segments = 8;
 
 const generated::MeshAsset& mesh_by_id(int mesh_id)
@@ -214,7 +214,7 @@ void QuickGameScene::_stop()
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
-    _crane_top_sprites.clear();
+    _platform_sprites.clear();
     _crane_hook_sprites.clear();
     _hud_sprites.clear();
 }
@@ -254,9 +254,9 @@ void QuickGameScene::_ensure_current_sprites()
 
 void QuickGameScene::_ensure_crane_sprites()
 {
-    if(_crane_top_sprites.empty())
+    if(_platform_sprites.empty())
     {
-        create_mesh_sprites(mesh_by_id(crane_top_mesh_id), _crane_top_sprites);
+        create_mesh_sprites(mesh_by_id(platform_mesh_id), _platform_sprites);
     }
     if(_crane_hook_sprites.empty())
     {
@@ -307,21 +307,28 @@ void QuickGameScene::_update_world_positions()
         }
     }
 
-    const bool crane_visible = snapshot.status == QuickGameStatus::Playing;
-    for(bn::sprite_ptr& sprite : _crane_top_sprites)
+    const bool platform_visible = snapshot.floor_count <= 5;
+    for(bn::sprite_ptr& sprite : _platform_sprites)
     {
-        sprite.set_visible(crane_visible);
+        sprite.set_visible(platform_visible);
     }
+    if(platform_visible)
+    {
+        position_mesh_sprites(
+                mesh_by_id(platform_mesh_id), _screen_x(0),
+                _screen_y(0, snapshot.presentation_camera_y), _platform_sprites);
+    }
+
+    const bool crane_visible = snapshot.status == QuickGameStatus::Playing;
     for(bn::sprite_ptr& sprite : _crane_hook_sprites)
     {
         sprite.set_visible(crane_visible);
     }
     if(crane_visible)
     {
-        position_mesh_sprites(mesh_by_id(crane_top_mesh_id), 0, -68, _crane_top_sprites);
         position_mesh_sprites(
                 mesh_by_id(crane_hook_mesh_id), _screen_x(snapshot.current_x),
-                _screen_y(snapshot.current_y, snapshot.presentation_camera_y) - 34, _crane_hook_sprites);
+                _screen_y(snapshot.current_y, snapshot.presentation_camera_y), _crane_hook_sprites);
     }
 }
 

@@ -37,8 +37,16 @@ def test_export_gba_project_assets_is_complete_and_deterministic(tower_bloxx_jar
     assert manifest_a["butano_version"] == "21.7.1"
     assert manifest_a["mesh_ids"] == EXPECTED_MESH_IDS
     assert manifest_a["mesh_count"] == 19
+    assert manifest_a["render_pose"] == "house_gameplay_240x160"
+    assert manifest_a["camera_z"] == 2328
+    assert manifest_a["base_fov"] == 55.0
 
-    graphics = a / "gba" / "graphics" / "generated"
+    by_id = {record["mesh_id"]: record for record in manifest_a["meshes"]}
+    assert by_id[10]["bbox"] == [107, 68, 133, 92]
+    assert by_id[13]["bbox"] == [107, 68, 133, 92]
+    assert by_id[9]["bbox"] == [0, 80, 240, 96]
+
+    graphics = a / "gba" / "graphics" / "gameplay"
     bmps = sorted(graphics.glob("*.bmp"))
     json_files = sorted(graphics.glob("*.json"))
     assert bmps
@@ -60,3 +68,16 @@ def test_export_gba_project_assets_is_complete_and_deterministic(tower_bloxx_jar
     on_disk = json.loads(manifest_path.read_text())
     assert on_disk == manifest_a
     assert len(on_disk["files"]) == len(bmps) * 2 + 1  # BMP+JSON plus generated header.
+
+
+def test_mesh_export_preserves_other_generated_headers(tower_bloxx_jar: Path, tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    include_dir = project / "gba" / "include" / "generated"
+    include_dir.mkdir(parents=True)
+    sentinel = include_dir / "tower_font.h"
+    sentinel.write_text("// preserve me\n", encoding="utf-8")
+
+    export_gba_project_assets(tower_bloxx_jar, project)
+
+    assert sentinel.read_text(encoding="utf-8") == "// preserve me\n"
+    assert (include_dir / "tower_mesh_assets.h").is_file()

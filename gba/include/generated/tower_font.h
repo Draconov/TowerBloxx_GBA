@@ -166,7 +166,8 @@ inline constexpr auto tower_font_utf8_characters_map =
 inline constexpr bn::sprite_font tower_font(
         bn::sprite_items::tower_font,
         tower_font_utf8_characters_map.reference(),
-        tower_font_character_widths);
+        tower_font_character_widths,
+        space_between_characters);
 }
 
 #endif

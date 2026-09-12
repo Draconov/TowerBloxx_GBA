@@ -24,6 +24,8 @@ EXTENDED_CHARACTERS = (
 
 ASCII_CHARACTERS = tuple(chr(code) for code in range(32, 127))
 FONT_CHARACTERS = ASCII_CHARACTERS + EXTENDED_CHARACTERS
+# Butano stores space only in the variable-width table; tile set 0 is '!'.
+FONT_GRAPHICS_CHARACTERS = ASCII_CHARACTERS[1:] + EXTENDED_CHARACTERS
 LOCALE_ENTRIES = ("l0", "l1", "l2", "l3", "l4")
 SOURCE_RESOURCES = {
     "font_atlas": 36,
@@ -168,7 +170,8 @@ def _font_header(font: Font44) -> str:
         "inline constexpr bn::sprite_font tower_font(",
         "        bn::sprite_items::tower_font,",
         "        tower_font_utf8_characters_map.reference(),",
-        "        tower_font_character_widths);",
+        "        tower_font_character_widths,",
+        "        space_between_characters);",
         "}",
         "",
         "#endif",
@@ -437,7 +440,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     if non_ascii != EXTENDED_CHARACTERS:
         raise ValueError(f"unexpected localized character set: {non_ascii!r}")
 
-    font_sheet = font.render_font_sheet(FONT_CHARACTERS)
+    font_sheet = font.render_font_sheet(FONT_GRAPHICS_CHARACTERS)
     font_indices, font_palette = _indexed_rgba(font_sheet)
     _write_indexed_bmp(
         graphics_dir / "tower_font.bmp",
@@ -513,6 +516,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "locale_names": [locale.display_name for locale in locales],
         "utf8_characters": list(EXTENDED_CHARACTERS),
         "font_character_count": len(FONT_CHARACTERS),
+        "font_graphics_count": len(FONT_GRAPHICS_CHARACTERS),
         "font_space_between_characters": font.space_between_characters,
         "font_line_height": font.line_height,
         "adapted_instructions": adapted,
