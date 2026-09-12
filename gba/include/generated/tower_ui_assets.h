@@ -9,6 +9,21 @@
 #include "bn_sprite_items_menu_highlight_p1.h"
 #include "bn_sprite_items_menu_highlight_p2.h"
 #include "bn_sprite_items_menu_highlight_p3.h"
+#include "bn_sprite_items_menu_continue_icon_p0.h"
+#include "bn_sprite_items_menu_build_city_icon_p0.h"
+#include "bn_sprite_items_menu_quick_game_icon_p0.h"
+#include "bn_sprite_items_menu_settings_icon_p0.h"
+#include "bn_sprite_items_menu_exit_icon_p0.h"
+#include "bn_sprite_items_menu_worker_f0_p0.h"
+#include "bn_sprite_items_menu_worker_f1_p0.h"
+#include "bn_sprite_items_menu_worker_f2_p0.h"
+#include "bn_sprite_items_menu_worker_f3_p0.h"
+#include "bn_sprite_items_menu_worker_f4_p0.h"
+#include "bn_sprite_items_menu_worker_f5_p0.h"
+#include "bn_sprite_items_menu_worker_f6_p0.h"
+#include "bn_sprite_items_menu_worker_f7_p0.h"
+#include "bn_sprite_items_menu_worker_f8_p0.h"
+#include "bn_sprite_items_menu_worker_f9_p0.h"
 #include "bn_sprite_items_city_building_1_f0_p0.h"
 #include "bn_sprite_items_city_building_1_f1_p0.h"
 #include "bn_sprite_items_city_building_1_f2_p0.h"
@@ -64,6 +79,81 @@ inline const UiSpritePartAsset menu_highlight_parts[] = {
     { &bn::sprite_items::menu_highlight_p3, 109, 8 },
 };
 inline const UiCompositeAsset menu_highlight = { menu_highlight_parts, 4 };
+
+inline const UiSpritePartAsset menu_continue_icon_parts[] = {
+    { &bn::sprite_items::menu_continue_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset menu_continue_icon = { menu_continue_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_build_city_icon_parts[] = {
+    { &bn::sprite_items::menu_build_city_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset menu_build_city_icon = { menu_build_city_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_quick_game_icon_parts[] = {
+    { &bn::sprite_items::menu_quick_game_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset menu_quick_game_icon = { menu_quick_game_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_settings_icon_parts[] = {
+    { &bn::sprite_items::menu_settings_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset menu_settings_icon = { menu_settings_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_exit_icon_parts[] = {
+    { &bn::sprite_items::menu_exit_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset menu_exit_icon = { menu_exit_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f0_parts[] = {
+    { &bn::sprite_items::menu_worker_f0_p0, 1, 3 },
+};
+inline const UiCompositeAsset menu_worker_f0 = { menu_worker_f0_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f1_parts[] = {
+    { &bn::sprite_items::menu_worker_f1_p0, 9, 7 },
+};
+inline const UiCompositeAsset menu_worker_f1 = { menu_worker_f1_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f2_parts[] = {
+    { &bn::sprite_items::menu_worker_f2_p0, 2, 5 },
+};
+inline const UiCompositeAsset menu_worker_f2 = { menu_worker_f2_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f3_parts[] = {
+    { &bn::sprite_items::menu_worker_f3_p0, 3, 5 },
+};
+inline const UiCompositeAsset menu_worker_f3 = { menu_worker_f3_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f4_parts[] = {
+    { &bn::sprite_items::menu_worker_f4_p0, 0, 6 },
+};
+inline const UiCompositeAsset menu_worker_f4 = { menu_worker_f4_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f5_parts[] = {
+    { &bn::sprite_items::menu_worker_f5_p0, -1, 7 },
+};
+inline const UiCompositeAsset menu_worker_f5 = { menu_worker_f5_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f6_parts[] = {
+    { &bn::sprite_items::menu_worker_f6_p0, 4, 0 },
+};
+inline const UiCompositeAsset menu_worker_f6 = { menu_worker_f6_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f7_parts[] = {
+    { &bn::sprite_items::menu_worker_f7_p0, 4, 0 },
+};
+inline const UiCompositeAsset menu_worker_f7 = { menu_worker_f7_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f8_parts[] = {
+    { &bn::sprite_items::menu_worker_f8_p0, 1, -2 },
+};
+inline const UiCompositeAsset menu_worker_f8 = { menu_worker_f8_parts, 1 };
+
+inline const UiSpritePartAsset menu_worker_f9_parts[] = {
+    { &bn::sprite_items::menu_worker_f9_p0, 6, -2 },
+};
+inline const UiCompositeAsset menu_worker_f9 = { menu_worker_f9_parts, 1 };
 
 inline const UiSpritePartAsset city_building_1_f0_parts[] = {
     { &bn::sprite_items::city_building_1_f0_p0, 1, 2 },

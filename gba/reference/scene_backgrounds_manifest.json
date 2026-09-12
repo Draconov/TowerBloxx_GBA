@@ -5,7 +5,8 @@
   ],
   "assets": [
     "construction_bg",
-    "city_bg"
+    "city_bg",
+    "menu_bg"
   ],
   "construction_ground_line": 105,
   "files": [
@@ -26,6 +27,16 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_bg.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    },
+    {
+      "path": "gba/graphics/backgrounds/menu_bg.bmp",
+      "sha256": "e7ba4bbf77d9bac44717081c887e588ec13a0e81be1e71b88caa6b06d45a3c60",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/menu_bg.json",
       "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
       "size": 44
     }

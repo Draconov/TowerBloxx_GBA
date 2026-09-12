@@ -4,6 +4,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
+#include "bn_regular_bg_items_menu_bg.h"
 
 #include "generated/tower_font.h"
 #include "generated/tower_localization.h"
@@ -17,6 +18,12 @@ constexpr int main_menu_indices[] = {17, 18, 19, 21};
 constexpr int new_game_indices[] = {91, 92};
 constexpr int instructions_indices[] = {91, 92};
 constexpr int lines_per_page = generated::instruction_lines_per_page;
+constexpr const generated::UiCompositeAsset* menu_worker_frames[] = {
+    &generated::menu_worker_f0, &generated::menu_worker_f1, &generated::menu_worker_f2,
+    &generated::menu_worker_f3, &generated::menu_worker_f4, &generated::menu_worker_f5,
+    &generated::menu_worker_f6, &generated::menu_worker_f7, &generated::menu_worker_f8,
+    &generated::menu_worker_f9,
+};
 
 int page_count(int lines)
 {
@@ -35,6 +42,8 @@ UiShell::UiShell() :
 void UiShell::hide()
 {
     _sprites.clear();
+    _background.reset();
+    _menu_worker_tick = 0;
     _first_update = true;
 }
 
@@ -71,10 +80,27 @@ void UiShell::update(const UiController& controller, const InputFrame& input)
         }
     }
 
+    bool worker_advanced = false;
+    if(scene == UiScene::MainMenu)
+    {
+        ++_menu_worker_tick;
+        if(_menu_worker_tick >= 6)
+        {
+            _menu_worker_tick = 0;
+            _menu_worker_frame = (_menu_worker_frame + 1) % 10;
+            worker_advanced = true;
+        }
+    }
+    else
+    {
+        _menu_worker_tick = 0;
+        _menu_worker_frame = 1;
+    }
+
     const int language = int(controller.language());
     const int sound = controller.sound_enabled() ? 1 : 0;
-    if(_first_update || page_changed || scene != _last_scene || controller.selection() != _last_selection ||
-       language != _last_language || sound != _last_sound)
+    if(_first_update || page_changed || worker_advanced || scene != _last_scene ||
+       controller.selection() != _last_selection || language != _last_language || sound != _last_sound)
     {
         _rebuild(controller);
         _first_update = false;
@@ -88,6 +114,10 @@ void UiShell::update(const UiController& controller, const InputFrame& input)
 void UiShell::_rebuild(const UiController& controller)
 {
     _sprites.clear();
+    if(controller.scene() != UiScene::MainMenu && controller.scene() != UiScene::NewGameMenu)
+    {
+        _background.reset();
+    }
     switch(controller.scene())
     {
     case UiScene::Title:
@@ -143,9 +173,9 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
         const int y = top + index * 24;
         if(index == selection)
         {
-            // Canonical J2ME generic-menu treatment: a light-blue filled row
-            // behind white text. Higher z order is drawn first, so the band
-            // remains behind the selected glyph sprites.
+            // Default k.b(Graphics) branch from the captured v1.5.22 JAR:
+            // yellow b[6] row behind dark-red b[7] selected glyphs. Higher
+            // z order is drawn first, so the band stays behind the text.
             _show_composite(generated::menu_highlight, 0, y, 100);
             _selected_text_generator.generate(0, y, labels[index], _sprites);
         }
@@ -158,6 +188,12 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
 
 void UiShell::_show_main_menu(const UiController& controller)
 {
+    if(! _background)
+    {
+        _background = bn::regular_bg_items::menu_bg.create_bg(0, 0);
+        _background->set_priority(3);
+    }
+
     const int language = controller.language();
     const char* labels[4] = {
         generated::localized_strings[language][main_menu_indices[0]],
@@ -165,17 +201,31 @@ void UiShell::_show_main_menu(const UiController& controller)
         generated::localized_strings[language][main_menu_indices[2]],
         generated::localized_strings[language][main_menu_indices[3]],
     };
+
+    _show_composite(generated::tower_bloxx_logo, 0, -64);
     _show_menu(labels, 4, controller.selection());
+    _show_composite(generated::menu_settings_icon, -100, 6);
+    _show_composite(*menu_worker_frames[_menu_worker_frame], 72, -18);
 }
+
 
 void UiShell::_show_new_game_menu(const UiController& controller)
 {
+    if(! _background)
+    {
+        _background = bn::regular_bg_items::menu_bg.create_bg(0, 0);
+        _background->set_priority(3);
+    }
+
     const int language = controller.language();
     const char* labels[2] = {
         generated::localized_strings[language][new_game_indices[0]],
         generated::localized_strings[language][new_game_indices[1]],
     };
+    _show_composite(generated::tower_bloxx_logo, 0, -64);
     _show_menu(labels, 2, controller.selection());
+    _show_composite(generated::menu_quick_game_icon, -100, -6);
+    _show_composite(generated::menu_build_city_icon, -100, 18);
 }
 
 void UiShell::_show_settings(const UiController& controller)

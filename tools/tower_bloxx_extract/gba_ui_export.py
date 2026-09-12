@@ -32,6 +32,8 @@ SOURCE_RESOURCES = {
     "font_metrics": 44,
     "tower_logo": 7,
     "sumea_logo": 10,
+    "menu_icons": [2, 3, 4, 5, 6],
+    "menu_worker": 11,
     "city_buildings": [24, 25, 26, 27],
     "city_lot": 28,
 }
@@ -430,6 +432,13 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         font = Font44(font_atlas, font_metrics)
         tower_logo = Image.open(BytesIO(read_resource(jar, 7))).convert("RGBA")
         sumea_logo = Image.open(BytesIO(read_resource(jar, 10))).convert("RGBA")
+        menu_icons = tuple(
+            Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
+            for resource_id in SOURCE_RESOURCES["menu_icons"]
+        )
+        menu_worker_strip = Image.open(
+            BytesIO(read_resource(jar, int(SOURCE_RESOURCES["menu_worker"])))
+        ).convert("RGBA")
         city_building_strips = tuple(
             Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
             for resource_id in SOURCE_RESOURCES["city_buildings"]
@@ -462,9 +471,10 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8},
     )
 
-    # The original generic menu swaps selected text to white. Keep the exact
-    # source glyph alpha/mask, changing only opaque glyph color.
-    selected_font_sheet = Image.new("RGBA", font_sheet.size, (255, 255, 255, 0))
+    # k.b(Graphics) uses palette entry b[7] (0xA50003) for selected text in
+    # the default branch visible in the captured v1.5.22 JAR. Preserve the
+    # exact source glyph alpha/mask and change only the opaque glyph color.
+    selected_font_sheet = Image.new("RGBA", font_sheet.size, (165, 0, 3, 0))
     selected_font_sheet.putalpha(font_sheet.getchannel("A"))
     selected_font_indices, selected_font_palette = _indexed_rgba(selected_font_sheet)
     _write_indexed_bmp(
@@ -484,14 +494,29 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     _tower_composite, tower_record = _export_composite(tower_logo, "tower_bloxx_logo", graphics_dir)
     _sumea_composite, sumea_record = _export_composite(sumea_logo, "sumea_logo", graphics_dir)
 
-    # k.b(Graphics) in the canonical J2ME menu paints the selected row with
-    # RGB 0x90C0D6 and five-pixel horizontal margins. At 240 px GBA width the
-    # equivalent band is 230 px wide. It is procedural in the source game, too.
-    menu_highlight_image = Image.new("RGBA", (230, 16), (144, 192, 214, 255))
+    # k.b(Graphics) palette entry b[6] is 0xFFDD46 in the default branch shown
+    # by the reference JAR capture. Keep the source five-pixel side margins
+    # scaled to the 240px GBA viewport (230px-wide band).
+    menu_highlight_image = Image.new("RGBA", (230, 16), (255, 221, 70, 255))
     _menu_highlight_composite, menu_highlight_record = _export_composite(
         menu_highlight_image, "menu_highlight", graphics_dir
     )
     asset_records.extend((tower_record, sumea_record, menu_highlight_record))
+
+    menu_icon_names = (
+        "menu_continue_icon",
+        "menu_build_city_icon",
+        "menu_quick_game_icon",
+        "menu_settings_icon",
+        "menu_exit_icon",
+    )
+    menu_icon_records: list[dict[str, object]] = []
+    for image, name in zip(menu_icons, menu_icon_names, strict=True):
+        _composite, record = _export_composite(image, name, graphics_dir)
+        menu_icon_records.append(record)
+        asset_records.append(record)
+    menu_worker_records = _export_strip_frames(menu_worker_strip, 10, "menu_worker", graphics_dir)
+    asset_records.extend(menu_worker_records)
 
     city_building_records: list[dict[str, object]] = []
     for building_index, strip in enumerate(city_building_strips, start=1):
@@ -560,6 +585,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "logos": [tower_record, sumea_record],
         "procedural_assets": ["menu_highlight"],
         "menu_highlight": menu_highlight_record,
+        "menu_assets": {"icons": menu_icon_records, "worker_frames": menu_worker_records},
         "city_assets": {"buildings": city_building_records, "lots": city_lot_records},
         "files": files,
         "tree_hash": tree_digest.hexdigest(),

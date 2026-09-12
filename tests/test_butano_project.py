@@ -63,15 +63,25 @@ def test_phase4_ui_shell_uses_original_assets_and_localization() -> None:
         assert token not in shell
 
 
-def test_main_menu_uses_canonical_selection_band_instead_of_placeholder_arrow() -> None:
+def test_main_menu_uses_reference_jar_compositor_instead_of_placeholder_shell() -> None:
     root = _root()
     shell_h = (root / "gba/include/tb/ui_shell.h").read_text()
     shell = (root / "gba/src/ui_shell.cpp").read_text()
 
-    # The canonical J2ME generic menu is white and marks selection with a filled
-    # row band plus white selected text; the far-left '>' was a GBA placeholder.
+    # The captured v1.5.22 JAR menu is a composed sky scene: logo, yellow
+    # selection band/red text, source icons and the blue worker animation.
     assert "_selected_text_generator" in shell_h
+    assert "bn::optional<bn::regular_bg_ptr> _background" in shell_h
+    assert "bn_regular_bg_items_menu_bg.h" in shell
+    assert "bn::regular_bg_items::menu_bg.create_bg" in shell
+    assert "generated::tower_bloxx_logo" in shell
     assert "generated::menu_highlight" in shell
+    assert "generated::menu_build_city_icon" in shell
+    assert "generated::menu_quick_game_icon" in shell
+    assert "generated::menu_settings_icon" in shell
+    assert "generated::menu_worker_f0" in shell
+    assert "menu_worker_frames" in shell
+    assert "_menu_worker_frame" in shell_h
     assert 'generate(-96, y, ">"' not in shell
 
 
@@ -277,7 +287,7 @@ def test_playability_backdrops_are_scene_owned_and_never_boot_black() -> None:
 
     assert backdrop.is_file()
     backdrop_text = backdrop.read_text()
-    assert "bn::color(31, 31, 31)" in backdrop_text
+    assert "bn::color(19, 25, 29)" in backdrop_text
     assert "bn::color(22, 26, 30)" in backdrop_text
 
     for scene in (ui, quick, city, construction):

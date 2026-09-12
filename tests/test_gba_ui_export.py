@@ -49,7 +49,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     # Butano reserves space as a width-only character. Graphics start at '!'
     # and continue through '~', followed by the UTF-8 extension glyphs.
     assert manifest_a["font_graphics_count"] == 94 + len(EXPECTED_EXTENDED)
-    assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10, "city_buildings": [24, 25, 26, 27], "city_lot": 28}
+    assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10, "menu_icons": [2, 3, 4, 5, 6], "menu_worker": 11, "city_buildings": [24, 25, 26, 27], "city_lot": 28}
 
     city_records = manifest_a["city_assets"]
     assert len(city_records["buildings"]) == 16
@@ -94,6 +94,14 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert logo_files
     assert sumea_files
     assert manifest_a["procedural_assets"] == ["menu_highlight"]
+    assert {record["name"] for record in manifest_a["menu_assets"]["icons"]} == {
+        "menu_continue_icon", "menu_build_city_icon", "menu_quick_game_icon",
+        "menu_settings_icon", "menu_exit_icon",
+    }
+    assert len(manifest_a["menu_assets"]["worker_frames"]) == 10
+    assert {record["name"] for record in manifest_a["menu_assets"]["worker_frames"]} == {
+        f"menu_worker_f{index}" for index in range(10)
+    }
     highlight = manifest_a["menu_highlight"]
     assert highlight["name"] == "menu_highlight"
     assert highlight["width"] == 230
@@ -101,6 +109,13 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert highlight["parts"]
     ui_assets_header = (a / "gba/include/generated/tower_ui_assets.h").read_text(encoding="utf-8")
     assert "menu_highlight_parts" in ui_assets_header
+    assert "menu_build_city_icon_parts" in ui_assets_header
+    assert "menu_worker_f0_parts" in ui_assets_header
+
+    # Default k.b(Graphics) palette branch used by the captured JAR: yellow
+    # selection band (0xFFDD46) and dark-red selected glyphs (0xA50003).
+    assert _bmp_palette_entry(a / "gba/graphics/ui/menu_highlight_p0.bmp", 1)[:3] == (248, 216, 64)
+    assert _bmp_palette_entry(selected_font_bmp, 1)[:3] == (160, 0, 0)
 
 
 def _bmp_palette_entry(path: Path, index: int) -> tuple[int, int, int, int]:

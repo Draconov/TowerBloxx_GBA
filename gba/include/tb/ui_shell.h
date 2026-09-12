@@ -1,6 +1,8 @@
 #ifndef TB_UI_SHELL_H
 #define TB_UI_SHELL_H
 
+#include "bn_optional.h"
+#include "bn_regular_bg_ptr.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
@@ -35,12 +37,15 @@ private:
 
     bn::sprite_text_generator _text_generator;
     bn::sprite_text_generator _selected_text_generator;
+    bn::optional<bn::regular_bg_ptr> _background;
     bn::vector<bn::sprite_ptr, 128> _sprites;
     UiScene _last_scene = UiScene::TowerGallery;
     int _last_selection = -1;
     int _last_language = -1;
     int _last_sound = -1;
     int _content_page = 0;
+    int _menu_worker_frame = 1;
+    int _menu_worker_tick = 0;
     bool _first_update = true;
 };
 }

@@ -126,7 +126,7 @@ The Java ME bitmap font is now reconstructed byte-for-byte from PNG resource 36 
 
 For GBA output these source glyphs are placed losslessly after BGR555 conversion into 8x16 4bpp cells. Resource 7 is the 109x26 Tower Bloxx logo and resource 10 is the 41x10 Sumea logo; both fit losslessly into 4bpp OBJ composites.
 
-The main shell uses the original localized string indices proven by the JAR: 17/18/19/21 (`New game`, `Settings`, `Instructions`, `About` in English), 91/92 (`Quick Game`, `Build City`), 24 (`Sound:`), 27 (`Language`), and 13/14 (`On`/`Off`). The five original locale tables remain unmodified. Separate display-only instruction copies adapt keypad controls to GBA (`5` to A and `4/6/2/8` to D-pad) and are pre-wrapped using the recovered bitmap-font widths.
+The native GBA shell currently uses localized indices 17/18/19/21 (`New game`, `Settings`, `Instructions`, `About` in English), then 91/92 (`Quick Game`, `Build City`) in its simplified hierarchy. Those strings are genuine JAR strings, but the four-item root hierarchy is a GBA implementation choice rather than proof of the complete J2ME menu descriptor. Played-JAR reference captures show the richer conditional root menu and expose the exact compositor branch. See `reference/MENU_COMPOSITOR_ANALYSIS.md` for the corrected palette, sky, icon and worker evidence. The five original locale tables remain unmodified. Separate display-only instruction copies adapt keypad controls to GBA (`5` to A and `4/6/2/8` to D-pad) and are pre-wrapped using the recovered bitmap-font widths.
 
 Phone-only vibration/backlight controls and network/SMS/licensing/game-lobby flows are deliberately omitted from the native GBA menu. They are not gameplay and have no meaningful GBA equivalent.
 

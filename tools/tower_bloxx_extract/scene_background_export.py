@@ -18,9 +18,9 @@ VISIBLE_HEIGHT = 160
 ASSET_SIZE = 256
 # House.<clinit> t[] palette, recovered directly from the canonical bytecode.
 SKY_COLORS = (
-    0xB2D6F2, 0x9AC8EA, 0x80BBE7, 0x66B7E4, 0x519724, 0x407AFE,
+    0xB2D6F2, 0x9AC8EA, 0x80BBE7, 0x66AFE4, 0x518EE4, 0x407ABE,
     0x1C5B96, 0x0C3F7C, 0x13306A, 0x34204C, 0x372C51, 0x2D4B4B,
-    0x4A6842, 0x674723, 0x532773, 0x80266B, 0x51126F,
+    0x4A6742, 0x674723, 0x532733, 0x802A2B, 0x511A2F,
 )
 GROUND_EDGE = 0x463C14
 GROUND_FILL = 0x1E190F
@@ -64,6 +64,19 @@ def _draw_java_sky(image: Image.Image, camera_y: int = 512) -> None:
              center + half_width - 1, horizon + y_delta + height - 1),
             fill=_rgb(middle),
         )
+
+
+def render_menu_background() -> Image.Image:
+    """Render the sky composition visible behind the v1.5.22 main menu.
+
+    The reference JAR capture lands on House sky band 1. Solving the recovered
+    House.a(Graphics, int, boolean) horizon math for the observed 11px cap gives
+    camera_y=3264, so this uses the same recovered renderer rather than a
+    screenshot-derived bitmap.
+    """
+    image = Image.new("RGBA", (VISIBLE_WIDTH, VISIBLE_HEIGHT), _rgb(SKY_COLORS[1]))
+    _draw_java_sky(image, camera_y=3264)
+    return image
 
 
 def _construction_ground_line() -> int:
@@ -215,6 +228,7 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
     assets = {
         "construction_bg": render_construction_background(jar_path),
         "city_bg": render_city_background(),
+        "menu_bg": render_menu_background(),
     }
     files: list[dict[str, object]] = []
     for name, visible in assets.items():

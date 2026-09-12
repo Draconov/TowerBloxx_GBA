@@ -7,10 +7,29 @@ from pathlib import Path
 from PIL import Image
 
 from tower_bloxx_extract.scene_background_export import (
+    SKY_COLORS,
     export_scene_backgrounds,
     render_city_background,
     render_construction_background,
+    render_menu_background,
 )
+
+
+
+def test_menu_background_matches_reference_jar_sky_band() -> None:
+    # House.<clinit> t[] recovered from the canonical v1.5.22 bytecode.
+    assert SKY_COLORS == (
+        0xB2D6F2, 0x9AC8EA, 0x80BBE7, 0x66AFE4, 0x518EE4, 0x407ABE,
+        0x1C5B96, 0x0C3F7C, 0x13306A, 0x34204C, 0x372C51, 0x2D4B4B,
+        0x4A6742, 0x674723, 0x532733, 0x802A2B, 0x511A2F,
+    )
+
+    image = render_menu_background()
+    assert image.size == (240, 160)
+    assert image.mode == "RGBA"
+    # The captured JAR menu is sky band 1 with an 11px band-2 cap.
+    assert image.getpixel((0, 0))[:3] == (0x80, 0xBB, 0xE7)
+    assert image.getpixel((0, 20))[:3] == (0x9A, 0xC8, 0xEA)
 
 
 def test_construction_background_uses_recovered_nokia_layers(tower_bloxx_jar: Path) -> None:
@@ -49,7 +68,7 @@ def test_export_scene_backgrounds_writes_butano_regular_bg_assets(
     manifest = export_scene_backgrounds(tower_bloxx_jar, tmp_path)
     assert manifest["visible_size"] == [240, 160]
     assert manifest["asset_size"] == [256, 256]
-    assert manifest["assets"] == ["construction_bg", "city_bg"]
+    assert manifest["assets"] == ["construction_bg", "city_bg", "menu_bg"]
 
     graphics = tmp_path / "gba" / "graphics" / "backgrounds"
     for name in manifest["assets"]:

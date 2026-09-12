@@ -6,10 +6,11 @@
 
 namespace tb
 {
-// Original Nokia menu renderer clears to white before drawing bitmap text.
+// The captured v1.5.22 menu uses House sky band 1 (#9AC8EA), not the
+// device-specific plain-white fallback path. Quantized to GBA 5-bit channels.
 inline void set_ui_backdrop()
 {
-    bn::bg_palettes::set_transparent_color(bn::color(31, 31, 31));
+    bn::bg_palettes::set_transparent_color(bn::color(19, 25, 29));
 }
 
 // House sky starts at #B2D6F2. Quantized to the GBA's 5-bit channels.
