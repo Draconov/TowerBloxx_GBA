@@ -1,5 +1,7 @@
 #include "tb/tower_construction_scene.h"
 
+#include "tb/scene_backdrop.h"
+
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_math.h"
@@ -76,11 +78,11 @@ TowerConstructionScene::TowerConstructionScene() :
 {
     _text_generator.set_center_alignment();
     _text_generator.set_z_order(-100);
-    bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
 }
 
 void TowerConstructionScene::start(const BuildCityConstructionRequest& request, int language)
 {
+    set_gameplay_backdrop();
     _request = request;
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _construction.start(request.building_type, request.target_height, request.trophy_eligible);
@@ -108,6 +110,7 @@ void TowerConstructionScene::start(const BuildCityConstructionRequest& request, 
 
 TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input)
 {
+    set_gameplay_backdrop();
     TowerConstructionSceneUpdateResult result;
     if(! _active)
     {

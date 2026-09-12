@@ -253,3 +253,25 @@ def test_phase9_construction_handoff_does_not_persist_until_city_placement() -> 
 
     construction_branch = main.split("if(construction.active())", 1)[1].split("else if(quick_game.active())", 1)[0]
     assert "store_save(save)" not in construction_branch
+
+
+def test_playability_backdrops_are_scene_owned_and_never_boot_black() -> None:
+    root = _root()
+    ui = (root / "gba/src/ui_shell.cpp").read_text()
+    quick = (root / "gba/src/quick_game_scene.cpp").read_text()
+    city = (root / "gba/src/build_city_scene.cpp").read_text()
+    construction = (root / "gba/src/tower_construction_scene.cpp").read_text()
+    backdrop = root / "gba/include/tb/scene_backdrop.h"
+
+    assert backdrop.is_file()
+    backdrop_text = backdrop.read_text()
+    assert "bn::color(31, 31, 31)" in backdrop_text
+    assert "bn::color(22, 26, 30)" in backdrop_text
+
+    for scene in (ui, quick, city, construction):
+        assert "set_transparent_color(bn::color(0, 0, 0))" not in scene
+
+    assert "set_ui_backdrop();" in ui
+    assert "set_gameplay_backdrop();" in quick
+    assert "set_city_backdrop();" in city
+    assert "set_gameplay_backdrop();" in construction

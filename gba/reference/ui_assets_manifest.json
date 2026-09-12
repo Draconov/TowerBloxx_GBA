@@ -648,7 +648,7 @@
     },
     {
       "path": "gba/graphics/ui/tower_font.bmp",
-      "sha256": "1ecebc2903a9f215853f99bdb0948736a02f2b5c8386b47f61af96133a13c223",
+      "sha256": "d03723b8f816fd43c455eab57e2cb61582f35c12ce1ea05d5c45663466d47f3e",
       "size": 7670
     },
     {
@@ -751,7 +751,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "332b1d21bddfc4d64621132e977d0cab4734d8f8033ecdd27cfe7e9ecf5398fd",
+  "tree_hash": "8ee90776124c02138e4bd7103b4e5db74ad2720778854c1a345152f59e772111",
   "utf8_characters": [
     "¡",
     "°",

@@ -1,5 +1,7 @@
 #include "tb/quick_game_scene.h"
 
+#include "tb/scene_backdrop.h"
+
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_math.h"
@@ -116,11 +118,11 @@ QuickGameScene::QuickGameScene() :
 {
     _text_generator.set_center_alignment();
     _text_generator.set_z_order(-100);
-    bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
 }
 
 void QuickGameScene::start(int language)
 {
+    set_gameplay_backdrop();
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _game.reset();
     _record_flags = {};
@@ -148,6 +150,7 @@ void QuickGameScene::start(int language)
 
 QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveData& save)
 {
+    set_gameplay_backdrop();
     QuickGameSceneUpdateResult result;
     if(! _active)
     {

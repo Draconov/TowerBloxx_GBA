@@ -82,3 +82,23 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     sumea_files = [record["path"] for record in manifest_a["files"] if "sumea_logo" in record["path"]]
     assert logo_files
     assert sumea_files
+
+
+def _bmp_palette_entry(path: Path, index: int) -> tuple[int, int, int, int]:
+    data = path.read_bytes()
+    offset = 14 + 40 + index * 4
+    blue, green, red, reserved = data[offset:offset + 4]
+    return red, green, blue, reserved
+
+
+def test_ui_export_keeps_opaque_near_black_distinct_from_transparency(tower_bloxx_jar: Path, tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    export_gba_ui_assets(tower_bloxx_jar, project)
+
+    font_bmp = project / "gba/graphics/ui/tower_font.bmp"
+    transparent = _bmp_palette_entry(font_bmp, 0)
+    opaque_dark = _bmp_palette_entry(font_bmp, 1)
+
+    assert transparent == (0, 0, 0, 0)
+    assert opaque_dark != transparent
+    assert opaque_dark[:3] == (8, 8, 8)

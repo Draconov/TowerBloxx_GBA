@@ -1,5 +1,7 @@
 #include "tb/ui_shell.h"
 
+#include "tb/scene_backdrop.h"
+
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 
@@ -26,7 +28,6 @@ UiShell::UiShell() :
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
-    bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
 }
 
 void UiShell::hide()
@@ -37,6 +38,7 @@ void UiShell::hide()
 
 void UiShell::update(const UiController& controller, const InputFrame& input)
 {
+    set_ui_backdrop();
     const UiScene scene = controller.scene();
     bool page_changed = false;
     if(scene != _last_scene)

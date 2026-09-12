@@ -59,6 +59,11 @@ def _indexed_rgba(image: Image.Image) -> tuple[bytes, tuple[int, ...]]:
         if alpha != 255:
             raise ValueError("GBA UI export requires binary alpha")
         color = _bgr555(red, green, blue)
+        # GBA OBJ palette index 0 is transparent. Preserve opaque near-black
+        # source pixels by lifting an otherwise-zero BGR555 color to the
+        # darkest representable non-zero neutral gray.
+        if color == 0:
+            color = 0x0421
         palette_index = color_to_index.get(color)
         if palette_index is None:
             palette_index = len(palette)

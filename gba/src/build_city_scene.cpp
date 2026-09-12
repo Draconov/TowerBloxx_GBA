@@ -1,5 +1,7 @@
 #include "tb/build_city_scene.h"
 
+#include "tb/scene_backdrop.h"
+
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_string.h"
@@ -73,11 +75,11 @@ BuildCityScene::BuildCityScene(const SaveData& save) :
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
-    bn::bg_palettes::set_transparent_color(bn::color(0, 0, 0));
 }
 
 void BuildCityScene::start(const SaveData& save, int language)
 {
+    set_city_backdrop();
     _city.reset_from_save(save);
     _language = language;
     _frame_phase = 0;
@@ -88,6 +90,7 @@ void BuildCityScene::start(const SaveData& save, int language)
 
 BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveData& save)
 {
+    set_city_backdrop();
     BuildCitySceneUpdateResult result;
     if(! _active)
     {
