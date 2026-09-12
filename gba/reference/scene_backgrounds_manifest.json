@@ -1,0 +1,37 @@
+{
+  "asset_size": [
+    256,
+    256
+  ],
+  "assets": [
+    "construction_bg",
+    "city_bg"
+  ],
+  "construction_ground_line": 105,
+  "files": [
+    {
+      "path": "gba/graphics/backgrounds/city_bg.bmp",
+      "sha256": "c9fbaab139ff49475d1ac000ae462db70e5f8a5a6c290e070d686bf03f82d818",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    },
+    {
+      "path": "gba/graphics/backgrounds/construction_bg.bmp",
+      "sha256": "3c0dbb72ba65d0d4c74dbf033942cead6a615c5f92f223cf5ceb7c81c282c71b",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/construction_bg.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    }
+  ],
+  "visible_size": [
+    240,
+    160
+  ]
+}

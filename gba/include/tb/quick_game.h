@@ -76,6 +76,7 @@ struct QuickGameSnapshot
     int drop_velocity_x = 0;
     int drop_velocity_y = 0;
     int current_z_angle_degrees = 0;
+    int crane_angle_degrees = 0;
     int tower_phase_tenths = 0;
     int tower_sway_wave = 0;
     int tower_sway_amplitude = 0;

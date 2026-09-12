@@ -241,6 +241,7 @@ TowerConstructionSnapshot TowerConstruction::snapshot() const
     result.drop_velocity_x = _drop_velocity_x;
     result.drop_velocity_y = _drop_velocity_y;
     result.current_z_angle_degrees = _current_z_angle_degrees;
+    result.crane_angle_degrees = ((_crane_x >> 4) * 2) / 3;
     result.combo_count = _combo_count;
     result.combo_bonus_pending = _combo_bonus_pending;
     result.combo_meter_ms = _combo_meter_ms;

@@ -5,6 +5,7 @@
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_string.h"
+#include "bn_regular_bg_items_city_bg.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_ui_assets.h"
@@ -146,6 +147,9 @@ BuildCityConstructionRequest BuildCityScene::construction_request() const
 void BuildCityScene::clear_construction_request()
 {
     _city.clear_construction_request();
+    _sprites.clear();
+    _background.reset();
+    _has_snapshot = false;
 }
 
 void BuildCityScene::accept_constructed_tower(uint8_t building_type, int population, uint8_t roof)
@@ -157,6 +161,7 @@ void BuildCityScene::accept_constructed_tower(uint8_t building_type, int populat
 void BuildCityScene::_stop()
 {
     _active = false;
+    _background.reset();
     _sprites.clear();
     _has_snapshot = false;
 }
@@ -234,6 +239,11 @@ void BuildCityScene::_show_status(const BuildCitySnapshot& snapshot)
 
 void BuildCityScene::_rebuild(const SaveData& save)
 {
+    if(! _background)
+    {
+        _background = bn::regular_bg_items::city_bg.create_bg(0, 0);
+        _background->set_priority(3);
+    }
     _sprites.clear();
     const BuildCitySnapshot snapshot = _city.snapshot();
     _show_city_tiles(save, snapshot);

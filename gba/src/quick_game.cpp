@@ -222,6 +222,7 @@ QuickGameSnapshot QuickGame::snapshot() const
     result.drop_velocity_x = _drop_velocity_x;
     result.drop_velocity_y = _drop_velocity_y;
     result.current_z_angle_degrees = _current_z_angle_degrees;
+    result.crane_angle_degrees = ((_crane_x >> 4) * 2) / 3;
     result.tower_phase_tenths = _tower_phase_tenths;
     result.tower_sway_wave = _tower_sway_wave;
     result.tower_sway_amplitude = _tower_sway_amplitude;

@@ -7,6 +7,7 @@
 #include "bn_math.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
+#include "bn_regular_bg_items_construction_bg.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -114,6 +115,7 @@ int combo_bucket(const QuickGameSnapshot& snapshot)
 
 QuickGameScene::QuickGameScene() :
     _current_affine_mat(bn::sprite_affine_mat_ptr::create()),
+    _crane_affine_mat(bn::sprite_affine_mat_ptr::create()),
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
@@ -136,6 +138,8 @@ void QuickGameScene::start(int language)
     _last_hud_combo_bucket = -1;
     _last_hud_status = QuickGameStatus::GameOver;
     _active = true;
+    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
+    _background->set_priority(3);
 
     _floor_affine_mats.clear();
     _floor_sprites.clear();
@@ -211,6 +215,7 @@ bool QuickGameScene::active() const
 void QuickGameScene::_stop()
 {
     _active = false;
+    _background.reset();
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
@@ -326,9 +331,16 @@ void QuickGameScene::_update_world_positions()
     }
     if(crane_visible)
     {
-        position_mesh_sprites(
-                mesh_by_id(crane_hook_mesh_id), _screen_x(snapshot.current_x),
-                _screen_y(snapshot.current_y, snapshot.presentation_camera_y), _crane_hook_sprites);
+        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_hook_mesh_id);
+        const int crane_x = _screen_x(snapshot.current_x);
+        const int crane_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+        for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
+        {
+            // M3G rotates in a Y-up world; sprite coordinates are Y-down.
+            position_rotated_mesh_part(
+                    crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees,
+                    _crane_affine_mat, _crane_hook_sprites[part_index]);
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 
 #include "tb/app_state.h"
 #include "tb/build_city_scene.h"
+#include "tb/game_audio.h"
 #include "tb/quick_game_scene.h"
 #include "tb/save_store.h"
 #include "tb/tower_construction_scene.h"
@@ -37,6 +38,7 @@ int main()
     tb::QuickGameScene quick_game;
     tb::BuildCityScene build_city(save);
     tb::TowerConstructionScene construction;
+    tb::GameAudio audio;
 
     while(true)
     {
@@ -48,6 +50,7 @@ int main()
             if(result.completed)
             {
                 build_city.accept_constructed_tower(result.building_type, result.population, result.roof);
+                audio.play_construction_result(result.roof);
             }
         }
         else if(quick_game.active())
@@ -108,6 +111,17 @@ int main()
                 ui.update(controller, input);
             }
         }
+
+        tb::AudioScene audio_scene = tb::AudioScene::Menu;
+        if(construction.active() || quick_game.active())
+        {
+            audio_scene = tb::AudioScene::Tower;
+        }
+        else if(build_city.active())
+        {
+            audio_scene = tb::AudioScene::City;
+        }
+        audio.update(save.sound_enabled != 0, audio_scene);
 
         bn::core::update();
     }

@@ -303,3 +303,59 @@ def test_playability_makefile_compiles_gameplay_assets_not_inspection_renders() 
     makefile = (_root() / "gba/Makefile").read_text()
     assert "GRAPHICS        := graphics/gameplay graphics/ui" in makefile
     assert "graphics/generated graphics/ui" not in makefile
+
+
+def test_playability_fix3_uses_original_scene_background_items() -> None:
+    root = _root()
+    makefile = (root / "gba/Makefile").read_text()
+    quick_h = (root / "gba/include/tb/quick_game_scene.h").read_text()
+    quick = (root / "gba/src/quick_game_scene.cpp").read_text()
+    city_h = (root / "gba/include/tb/build_city_scene.h").read_text()
+    city = (root / "gba/src/build_city_scene.cpp").read_text()
+    construction_h = (root / "gba/include/tb/tower_construction_scene.h").read_text()
+    construction = (root / "gba/src/tower_construction_scene.cpp").read_text()
+
+    assert "graphics/backgrounds" in makefile
+    assert "bn::optional<bn::regular_bg_ptr> _background" in quick_h
+    assert "bn_regular_bg_items_construction_bg.h" in quick
+    assert "bn::regular_bg_items::construction_bg.create_bg" in quick
+    assert "bn::optional<bn::regular_bg_ptr> _background" in construction_h
+    assert "bn_regular_bg_items_construction_bg.h" in construction
+    assert "bn::regular_bg_items::construction_bg.create_bg" in construction
+    assert "bn::optional<bn::regular_bg_ptr> _background" in city_h
+    assert "bn_regular_bg_items_city_bg.h" in city
+    assert "bn::regular_bg_items::city_bg.create_bg" in city
+
+
+def test_playability_fix3_crane_uses_recovered_affine_orientation() -> None:
+    root = _root()
+    for header_name, source_name in (
+        ("quick_game_scene.h", "quick_game_scene.cpp"),
+        ("tower_construction_scene.h", "tower_construction_scene.cpp"),
+    ):
+        header = (root / "gba/include/tb" / header_name).read_text()
+        source = (root / "gba/src" / source_name).read_text()
+        assert "bn::sprite_affine_mat_ptr _crane_affine_mat" in header
+        assert "snapshot.crane_angle_degrees" in source
+        # Java M3G uses world +Z rotation with a Y-up projection. GBA sprite
+        # coordinates are Y-down, so the visible affine angle is negated.
+        assert "-snapshot.crane_angle_degrees" in source
+        assert "_crane_affine_mat" in source
+
+
+def test_playability_fix3_maxmod_audio_routing_is_wired() -> None:
+    root = _root()
+    makefile = (root / "gba/Makefile").read_text()
+    main = (root / "gba/src/main.cpp").read_text()
+    audio_h = root / "gba/include/tb/game_audio.h"
+    audio_cpp = root / "gba/src/game_audio.cpp"
+
+    assert "AUDIO           := audio" in makefile
+    assert "AUDIOBACKEND    := maxmod" in makefile
+    assert audio_h.is_file() and audio_cpp.is_file()
+    source = audio_cpp.read_text()
+    for name in ("menu_theme", "tower_theme", "city_theme", "construction_fail", "normal_roof", "trophy_roof"):
+        assert f"bn::music_items::{name}" in source
+    assert "GameAudio audio" in main
+    assert "audio.update" in main
+    assert "audio.play_construction_result" in main

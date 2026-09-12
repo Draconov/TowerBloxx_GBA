@@ -1,0 +1,73 @@
+{
+  "format": "8CHN loop music / 4-channel ProTracker jingles",
+  "module_count": 6,
+  "routes": [
+    {
+      "channels": 8,
+      "division": 480,
+      "loop": true,
+      "name": "menu_theme",
+      "note_count": 440,
+      "resource_id": 37,
+      "sha256": "7146064770d30650152dad55c3f75546cd77e89447af2662a1a65a64f0214d5c",
+      "size": 17468,
+      "tempo_bpm": 160
+    },
+    {
+      "channels": 8,
+      "division": 480,
+      "loop": true,
+      "name": "tower_theme",
+      "note_count": 951,
+      "resource_id": 38,
+      "sha256": "1c492a76668830ca5cc1df8069c4fa05b0b313e88d80a3d6bb843eb8b7f99060",
+      "size": 37948,
+      "tempo_bpm": 160
+    },
+    {
+      "channels": 8,
+      "division": 480,
+      "loop": true,
+      "name": "city_theme",
+      "note_count": 644,
+      "resource_id": 39,
+      "sha256": "85808aee52414f3d28a96f6136b100174a21959e06985b4c7ca620e11ad20953",
+      "size": 25660,
+      "tempo_bpm": 140
+    },
+    {
+      "channels": 4,
+      "division": 480,
+      "loop": false,
+      "name": "construction_fail",
+      "note_count": 45,
+      "resource_id": 40,
+      "sha256": "ac7ce261057d0bd8958ed6d076c8fc1ec119648421cb61bae11434062b0f5fa6",
+      "size": 8252,
+      "tempo_bpm": 160
+    },
+    {
+      "channels": 4,
+      "division": 480,
+      "loop": false,
+      "name": "normal_roof",
+      "note_count": 33,
+      "resource_id": 41,
+      "sha256": "563b5aacab88df9a9b75d3a0daa74b63e91d7f680c64a8af6bfb63fa7ebb15f6",
+      "size": 8252,
+      "tempo_bpm": 160
+    },
+    {
+      "channels": 4,
+      "division": 480,
+      "loop": false,
+      "name": "trophy_roof",
+      "note_count": 63,
+      "resource_id": 42,
+      "sha256": "983d7655b9bb145228c1f9e7a6a5499e3971e4d13e6e3ac5ba1fccc15f0ccec5",
+      "size": 8252,
+      "tempo_bpm": 160
+    }
+  ],
+  "timing": "one 16th-note MIDI grid step per MOD row at speed 6"
+}

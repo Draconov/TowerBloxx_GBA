@@ -36,6 +36,9 @@ int main()
     assert(snapshot.swing_period_ms == 1700);
     assert(snapshot.swing_amplitude_x == 128);
     assert(snapshot.swing_amplitude_y == 64);
+    construction.update(25, no_input());
+    snapshot = construction.snapshot();
+    assert(snapshot.crane_angle_degrees == ((snapshot.current_x >> 4) * 2) / 3);
 
     construction.start(4, 40, true);
     snapshot = construction.snapshot();

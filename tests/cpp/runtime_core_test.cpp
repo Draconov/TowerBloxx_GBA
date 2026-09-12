@@ -263,6 +263,7 @@ int main()
     assert(quick_snapshot.rope_length == 16);
     assert(quick_snapshot.current_x == 20);
     assert(quick_snapshot.current_y == 2480);
+    assert(quick_snapshot.crane_angle_degrees == ((quick_snapshot.current_x >> 4) * 2) / 3);
     assert(quick_snapshot.tower_phase_tenths == 25);
     assert(quick_snapshot.presentation_camera_y == quick_snapshot.camera_y);
 

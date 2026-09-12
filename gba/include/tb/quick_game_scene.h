@@ -2,6 +2,8 @@
 #define TB_QUICK_GAME_SCENE_H
 
 #include "bn_sprite_affine_mat_ptr.h"
+#include "bn_optional.h"
+#include "bn_regular_bg_ptr.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
@@ -39,8 +41,10 @@ private:
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
     QuickGame _game;
+    bn::optional<bn::regular_bg_ptr> _background;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
+    bn::sprite_affine_mat_ptr _crane_affine_mat;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;

@@ -1,6 +1,8 @@
 #ifndef TB_BUILD_CITY_SCENE_H
 #define TB_BUILD_CITY_SCENE_H
 
+#include "bn_optional.h"
+#include "bn_regular_bg_ptr.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
@@ -38,6 +40,7 @@ private:
     void _show_status(const BuildCitySnapshot& snapshot);
 
     BuildCity _city;
+    bn::optional<bn::regular_bg_ptr> _background;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_ptr, 128> _sprites;
     int _language = 0;
