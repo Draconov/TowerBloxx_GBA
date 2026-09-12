@@ -37,7 +37,7 @@ def test_workflow_uploads_renamed_rom_and_checksum_on_every_successful_build():
     assert "actions/upload-artifact@v4" in text
     assert "TowerBloxx.gba" in text
     assert "TowerBloxx.gba.sha256" in text
-    assert "scripts/ci/package_rom.sh" in text
+    assert 'bash scripts/ci/package_rom.sh "$GITHUB_WORKSPACE"' in text
     assert PACKAGER.exists(), "ROM packaging script is missing"
 
 
@@ -62,7 +62,7 @@ def test_package_rom_script_verifies_checksum_from_dist_directory(tmp_path):
     source_rom.write_bytes(b"tower-bloxx-ci-fixture\n")
 
     result = subprocess.run(
-        [str(PACKAGER), str(tmp_path)],
+        ["bash", str(PACKAGER), str(tmp_path)],
         cwd=ROOT,
         capture_output=True,
         text=True,
