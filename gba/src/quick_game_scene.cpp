@@ -11,6 +11,7 @@
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
+#include "generated/tower_ui_assets.h"
 
 namespace tb
 {
@@ -24,6 +25,62 @@ constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
 constexpr int combo_meter_segments = 8;
+
+constexpr const generated::UiCompositeAsset* hud_white_digit_frames[] = {
+    &generated::hud_white_digit_f0, &generated::hud_white_digit_f1, &generated::hud_white_digit_f2,
+    &generated::hud_white_digit_f3, &generated::hud_white_digit_f4, &generated::hud_white_digit_f5,
+    &generated::hud_white_digit_f6, &generated::hud_white_digit_f7, &generated::hud_white_digit_f8,
+    &generated::hud_white_digit_f9,
+};
+constexpr const generated::UiCompositeAsset* hud_brown_digit_frames[] = {
+    &generated::hud_brown_digit_f0, &generated::hud_brown_digit_f1, &generated::hud_brown_digit_f2,
+    &generated::hud_brown_digit_f3, &generated::hud_brown_digit_f4, &generated::hud_brown_digit_f5,
+    &generated::hud_brown_digit_f6, &generated::hud_brown_digit_f7, &generated::hud_brown_digit_f8,
+    &generated::hud_brown_digit_f9, &generated::hud_brown_digit_f10, &generated::hud_brown_digit_f11,
+};
+constexpr const generated::UiCompositeAsset* hud_state_indicator_frames[] = {
+    &generated::hud_state_indicator_f0, &generated::hud_state_indicator_f1,
+    &generated::hud_state_indicator_f2, &generated::hud_state_indicator_f3,
+    &generated::hud_state_indicator_f4, &generated::hud_state_indicator_f5,
+    &generated::hud_state_indicator_f6, &generated::hud_state_indicator_f7,
+    &generated::hud_state_indicator_f8, &generated::hud_state_indicator_f9,
+};
+
+void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
+                       bn::ivector<bn::sprite_ptr>& output, int z_order = -100)
+{
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(z_order);
+        output.push_back(sprite);
+    }
+}
+
+void draw_source_number(int value, int min_digits, int right_x, int top_y,
+                        const generated::UiCompositeAsset* const* digits,
+                        bn::ivector<bn::sprite_ptr>& output)
+{
+    if(value < 0)
+    {
+        value = 0;
+    }
+
+    int rendered = 0;
+    int left = right_x - 4;
+    do
+    {
+        const int digit = value % 10;
+        value /= 10;
+        // House.a/b digit helpers clip a 5x7 source cell at x=(argX-4) and
+        // then step four pixels left, deliberately overlapping by one pixel.
+        show_ui_composite(*digits[digit], left + 2 - 120, top_y + 3 - 80, output);
+        left -= 4;
+        ++rendered;
+    }
+    while(value > 0 || rendered < min_digits);
+}
 
 const generated::MeshAsset& mesh_by_id(int mesh_id)
 {
@@ -354,10 +411,9 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     _last_hud_combo_bucket = combo_bucket(snapshot);
     _last_hud_status = snapshot.status;
 
-    _text_generator.generate(0, -70, generated::localized_strings[_language][91], _hud_sprites);
-
     if(snapshot.status == QuickGameStatus::Results)
     {
+        _text_generator.generate(0, -70, generated::localized_strings[_language][91], _hud_sprites);
         const QuickGameResult final_result = _game.result();
         bn::string<64> population = format_result_line(generated::localized_strings[_language][93], final_result.population);
         bn::string<64> height = format_result_line(generated::localized_strings[_language][94], final_result.height);
@@ -376,35 +432,39 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         return;
     }
 
-    bn::string<32> floors_text(generated::localized_strings[_language][80]);
-    floors_text.append(": ");
-    floors_text.append(bn::to_string<6>(snapshot.floor_count));
-    _text_generator.generate(-72, 68, floors_text, _hud_sprites);
+    // Exact lower-left Quick Game frame from House.i(Graphics): resource 19
+    // at (au-4, c-av-28), with au=12,av=10 for the 240x160 GBA view.
+    show_ui_composite(generated::quick_counter_frame, -106, 56, _hud_sprites);
+    draw_source_number(snapshot.floor_count, 3, 20, 139, hud_white_digit_frames, _hud_sprites);
 
-    bn::string<32> population_text(generated::localized_strings[_language][82]);
-    population_text.append(": ");
-    population_text.append(bn::to_string<10>(snapshot.population));
-    _text_generator.generate(0, 52, population_text, _hud_sprites);
-
-    bn::string<8> chances_text;
-    for(int index = 0; index < 3; ++index)
+    // Resource 18 is a color-pair strip. Quick Game uses the orange pair
+    // (L=4 => base frame 6); frame 8 is the exhausted gray state. The JAR
+    // clips the four-row loop so only three 6x6 cells are visible.
+    for(int slot = 0; slot < 3; ++slot)
     {
-        chances_text.append(index < snapshot.chances_left ? '*' : '.');
+        const int required_chances = 3 - slot;
+        const int frame = snapshot.chances_left >= required_chances ? 6 : 8;
+        const int top_y = 132 + slot * 6;
+        show_ui_composite(*hud_state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
     }
-    _text_generator.generate(82, 68, chances_text, _hud_sprites);
 
-    if(snapshot.combo_meter_ms > 0)
+    // House.i clips the top 6x9 of resource 17 for the population marker and
+    // draws a five-digit resource-14 number to its right once the tower exists.
+    if(snapshot.floor_count > 0)
     {
-        bn::string<32> combo_text("x");
-        combo_text.append(bn::to_string<6>(snapshot.combo_count));
-        combo_text.append(" [");
-        const int filled = combo_bucket(snapshot);
-        for(int index = 0; index < combo_meter_segments; ++index)
-        {
-            combo_text.append(index < filled ? '#' : '-');
-        }
-        combo_text.append(']');
-        _text_generator.generate(0, -52, combo_text, _hud_sprites);
+        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
+        draw_source_number(snapshot.population, 5, 228, 141, hud_white_digit_frames, _hud_sprites);
+    }
+
+    // The source combo readout uses resource 15: cell 11 is the x marker,
+    // followed by one or two brown digits. The dynamic meter geometry itself
+    // remains a dedicated follow-up instead of being replaced by ASCII bars.
+    if(snapshot.combo_meter_ms > 0 && snapshot.combo_count > 1)
+    {
+        show_ui_composite(*hud_brown_digit_frames[11], 66, -67, _hud_sprites);
+        const int digits = snapshot.combo_count > 9 ? 2 : 1;
+        draw_source_number(snapshot.combo_count, digits, 190 + digits * 5, 10,
+                           hud_brown_digit_frames, _hud_sprites);
     }
 
     if(snapshot.status == QuickGameStatus::GameOver)

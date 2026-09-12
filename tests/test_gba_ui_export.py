@@ -49,7 +49,16 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     # Butano reserves space as a width-only character. Graphics start at '!'
     # and continue through '~', followed by the UTF-8 extension glyphs.
     assert manifest_a["font_graphics_count"] == 94 + len(EXPECTED_EXTENDED)
-    assert manifest_a["source_resources"] == {"font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10, "menu_icons": [2, 3, 4, 5, 6], "menu_worker": 11, "city_buildings": [24, 25, 26, 27], "city_lot": 28}
+    assert manifest_a["source_resources"] == {
+        "font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10,
+        "menu_icons": [2, 3, 4, 5, 6], "menu_workers": [11, 12],
+        "construction_target_badges": 13, "hud_white_digits": 14,
+        "hud_brown_digits": 15, "hud_red_digits": 16, "hud_status_graphic": 17,
+        "hud_state_indicators": 18, "quick_counter_frame": 19,
+        "city_hanging_ui": 20, "city_status_icons": 21, "city_panels": 22,
+        "city_action_icon": 23, "city_buildings": [24, 25, 26, 27], "city_lot": 28,
+        "city_effects": 29, "crane_hook_frames": 30, "accuracy_stars": 35,
+    }
 
     city_records = manifest_a["city_assets"]
     assert len(city_records["buildings"]) == 16
@@ -98,10 +107,33 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
         "menu_continue_icon", "menu_build_city_icon", "menu_quick_game_icon",
         "menu_settings_icon", "menu_exit_icon",
     }
-    assert len(manifest_a["menu_assets"]["worker_frames"]) == 10
-    assert {record["name"] for record in manifest_a["menu_assets"]["worker_frames"]} == {
-        f"menu_worker_f{index}" for index in range(10)
+    assert len(manifest_a["menu_assets"]["worker_blue_frames"]) == 10
+    assert len(manifest_a["menu_assets"]["worker_red_frames"]) == 10
+    assert {record["name"] for record in manifest_a["menu_assets"]["worker_blue_frames"]} == {
+        f"menu_worker_blue_f{index}" for index in range(10)
     }
+    assert {record["name"] for record in manifest_a["menu_assets"]["worker_red_frames"]} == {
+        f"menu_worker_red_f{index}" for index in range(10)
+    }
+
+    hud = manifest_a["hud_assets"]
+    assert len(hud["construction_target_badges"]) == 5
+    assert len(hud["white_digits"]) == 14
+    assert len(hud["brown_digits"]) == 12
+    assert len(hud["red_digits"]) == 11
+    assert hud["status_graphic"]["name"] == "hud_status_graphic"
+    assert hud["population_icon"]["name"] == "hud_population_icon"
+    assert len(hud["state_indicators"]) == 10
+    assert hud["quick_counter_frame"]["name"] == "quick_counter_frame"
+    assert len(hud["crane_hook_frames"]) == 5
+    assert len(hud["accuracy_stars"]) == 3
+
+    city_supplemental = manifest_a["city_assets"]["supplemental"]
+    assert city_supplemental["hanging_ui"]["name"] == "city_hanging_ui"
+    assert len(city_supplemental["status_icons"]) == 5
+    assert len(city_supplemental["panels"]) == 2
+    assert city_supplemental["action_icon"]["name"] == "city_action_icon"
+    assert len(city_supplemental["effects"]) == 6
     highlight = manifest_a["menu_highlight"]
     assert highlight["name"] == "menu_highlight"
     assert highlight["width"] == 230
@@ -110,7 +142,12 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     ui_assets_header = (a / "gba/include/generated/tower_ui_assets.h").read_text(encoding="utf-8")
     assert "menu_highlight_parts" in ui_assets_header
     assert "menu_build_city_icon_parts" in ui_assets_header
-    assert "menu_worker_f0_parts" in ui_assets_header
+    assert "menu_worker_blue_f0_parts" in ui_assets_header
+    assert "menu_worker_red_f0_parts" in ui_assets_header
+    assert "quick_counter_frame_parts" in ui_assets_header
+    assert "construction_target_badge_f0_parts" in ui_assets_header
+    assert "hud_white_digit_f0_parts" in ui_assets_header
+    assert "hud_state_indicator_f0_parts" in ui_assets_header
 
     # Default k.b(Graphics) palette branch used by the captured JAR: yellow
     # selection band (0xFFDD46) and dark-red selected glyphs (0xA50003).

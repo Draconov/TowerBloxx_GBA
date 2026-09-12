@@ -10,6 +10,7 @@
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
+#include "generated/tower_ui_assets.h"
 
 namespace tb
 {
@@ -21,6 +22,58 @@ constexpr int crane_hook_mesh_id = 8;
 constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
+
+constexpr const generated::UiCompositeAsset* construction_target_badge_frames[] = {
+    &generated::construction_target_badge_f0, &generated::construction_target_badge_f1,
+    &generated::construction_target_badge_f2, &generated::construction_target_badge_f3,
+    &generated::construction_target_badge_f4,
+};
+constexpr const generated::UiCompositeAsset* construction_state_indicator_frames[] = {
+    &generated::hud_state_indicator_f0, &generated::hud_state_indicator_f1,
+    &generated::hud_state_indicator_f2, &generated::hud_state_indicator_f3,
+    &generated::hud_state_indicator_f4, &generated::hud_state_indicator_f5,
+    &generated::hud_state_indicator_f6, &generated::hud_state_indicator_f7,
+    &generated::hud_state_indicator_f8, &generated::hud_state_indicator_f9,
+};
+constexpr const generated::UiCompositeAsset* construction_white_digit_frames[] = {
+    &generated::hud_white_digit_f0, &generated::hud_white_digit_f1, &generated::hud_white_digit_f2,
+    &generated::hud_white_digit_f3, &generated::hud_white_digit_f4, &generated::hud_white_digit_f5,
+    &generated::hud_white_digit_f6, &generated::hud_white_digit_f7, &generated::hud_white_digit_f8,
+    &generated::hud_white_digit_f9,
+};
+
+void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
+                       bn::ivector<bn::sprite_ptr>& output, int z_order = -100)
+{
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(z_order);
+        output.push_back(sprite);
+    }
+}
+
+void draw_source_number(int value, int min_digits, int right_x, int top_y,
+                        const generated::UiCompositeAsset* const* digits,
+                        bn::ivector<bn::sprite_ptr>& output)
+{
+    if(value < 0)
+    {
+        value = 0;
+    }
+    int rendered = 0;
+    int left = right_x - 4;
+    do
+    {
+        const int digit = value % 10;
+        value /= 10;
+        show_ui_composite(*digits[digit], left + 2 - 120, top_y + 3 - 80, output);
+        left -= 4;
+        ++rendered;
+    }
+    while(value > 0 || rendered < min_digits);
+}
 
 const generated::MeshAsset& mesh_by_id(int mesh_id)
 {
@@ -64,13 +117,6 @@ void position_rotated_mesh_part(
     sprite.set_position(bn::fixed(x) + rotated_x, bn::fixed(y) + rotated_y);
 }
 
-bn::string<40> value_line(const char* label, int value)
-{
-    bn::string<40> result(label);
-    result.append(": ");
-    result.append(bn::to_string<10>(value));
-    return result;
-}
 }
 
 TowerConstructionScene::TowerConstructionScene() :
@@ -312,17 +358,41 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     _last_hud_roof_result = snapshot.roof_result;
     _last_hud_status = snapshot.status;
 
-    _text_generator.generate(0, -70, generated::localized_strings[_language][83 + snapshot.building_type - 1], _hud_sprites);
-    _text_generator.generate(-72, 68, value_line(generated::localized_strings[_language][80], snapshot.floor_count), _hud_sprites);
-    _text_generator.generate(0, 52, value_line(generated::localized_strings[_language][82], snapshot.population), _hud_sprites);
+    int building_index = snapshot.building_type - 1;
+    if(building_index < 0)
+    {
+        building_index = 0;
+    }
+    else if(building_index > 3)
+    {
+        building_index = 3;
+    }
 
-    bn::string<24> target("/");
-    target.append(bn::to_string<4>(snapshot.target_height));
-    _text_generator.generate(-34, 68, target, _hud_sprites);
+    // Common House.i(Graphics) chance/life strip. The original clips its
+    // four-row draw loop to three visible 6x6 cells at x=25. Active cells use
+    // the building color pair; exhausted cells use resource-18 frame 8.
+    const int active_frame = building_index * 2;
+    for(int slot = 0; slot < 3; ++slot)
+    {
+        const int required_chances = 3 - slot;
+        const int frame = snapshot.chances_left >= required_chances ? active_frame : 8;
+        const int top_y = 132 + slot * 6;
+        show_ui_composite(*construction_state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
+    }
 
-    bn::string<8> chances;
-    for(int index = 0; index < 3; ++index) { chances.append(index < snapshot.chances_left ? '*' : '.'); }
-    _text_generator.generate(82, 68, chances, _hud_sprites);
+    // B==3 construction branch: resource 13 selects frame L-1 and is placed
+    // at x=au-2, y=c-av-12-2*J. J is the target floor count (10/20/30/40).
+    const int badge_top_y = 160 - 10 - 12 - 2 * snapshot.target_height;
+    show_ui_composite(*construction_target_badge_frames[building_index], -105,
+                      badge_top_y + 6 - 80, _hud_sprites);
+
+    // The population marker/digits are part of the common House HUD and only
+    // appear after at least one floor has landed.
+    if(snapshot.floor_count > 0)
+    {
+        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
+        draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
+    }
 
     if(snapshot.status == TowerConstructionStatus::Terminal)
     {

@@ -33,9 +33,23 @@ SOURCE_RESOURCES = {
     "tower_logo": 7,
     "sumea_logo": 10,
     "menu_icons": [2, 3, 4, 5, 6],
-    "menu_worker": 11,
+    "menu_workers": [11, 12],
+    "construction_target_badges": 13,
+    "hud_white_digits": 14,
+    "hud_brown_digits": 15,
+    "hud_red_digits": 16,
+    "hud_status_graphic": 17,
+    "hud_state_indicators": 18,
+    "quick_counter_frame": 19,
+    "city_hanging_ui": 20,
+    "city_status_icons": 21,
+    "city_panels": 22,
+    "city_action_icon": 23,
     "city_buildings": [24, 25, 26, 27],
     "city_lot": 28,
+    "city_effects": 29,
+    "crane_hook_frames": 30,
+    "accuracy_stars": 35,
 }
 
 
@@ -436,14 +450,29 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
             for resource_id in SOURCE_RESOURCES["menu_icons"]
         )
-        menu_worker_strip = Image.open(
-            BytesIO(read_resource(jar, int(SOURCE_RESOURCES["menu_worker"])))
-        ).convert("RGBA")
+        menu_worker_strips = tuple(
+            Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
+            for resource_id in SOURCE_RESOURCES["menu_workers"]
+        )
+        construction_target_badges = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["construction_target_badges"])))).convert("RGBA")
+        hud_white_digits = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_white_digits"])))).convert("RGBA")
+        hud_brown_digits = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_brown_digits"])))).convert("RGBA")
+        hud_red_digits = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_red_digits"])))).convert("RGBA")
+        hud_status_graphic = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_status_graphic"])))).convert("RGBA")
+        hud_state_indicators = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_state_indicators"])))).convert("RGBA")
+        quick_counter_frame = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["quick_counter_frame"])))).convert("RGBA")
+        city_hanging_ui = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_hanging_ui"])))).convert("RGBA")
+        city_status_icons = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_status_icons"])))).convert("RGBA")
+        city_panels = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_panels"])))).convert("RGBA")
+        city_action_icon = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_action_icon"])))).convert("RGBA")
         city_building_strips = tuple(
             Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
             for resource_id in SOURCE_RESOURCES["city_buildings"]
         )
         city_lot_strip = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_lot"])))).convert("RGBA")
+        city_effects = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_effects"])))).convert("RGBA")
+        crane_hook_frames = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["crane_hook_frames"])))).convert("RGBA")
+        accuracy_stars = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["accuracy_stars"])))).convert("RGBA")
         locales = tuple(decode_locale(jar.read(entry)) for entry in LOCALE_ENTRIES)
 
     non_ascii = tuple(sorted({
@@ -515,8 +544,59 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         _composite, record = _export_composite(image, name, graphics_dir)
         menu_icon_records.append(record)
         asset_records.append(record)
-    menu_worker_records = _export_strip_frames(menu_worker_strip, 10, "menu_worker", graphics_dir)
-    asset_records.extend(menu_worker_records)
+    menu_worker_blue_records = _export_strip_frames(menu_worker_strips[0], 10, "menu_worker_blue", graphics_dir)
+    menu_worker_red_records = _export_strip_frames(menu_worker_strips[1], 10, "menu_worker_red", graphics_dir)
+    asset_records.extend(menu_worker_blue_records)
+    asset_records.extend(menu_worker_red_records)
+
+    construction_target_badge_records = _export_strip_frames(
+        construction_target_badges, 5, "construction_target_badge", graphics_dir
+    )
+    hud_white_digit_records = _export_strip_frames(hud_white_digits, 14, "hud_white_digit", graphics_dir)
+    hud_brown_digit_records = _export_strip_frames(hud_brown_digits, 12, "hud_brown_digit", graphics_dir)
+    hud_red_digit_records = _export_strip_frames(hud_red_digits, 11, "hud_red_digit", graphics_dir)
+    _status_composite, hud_status_graphic_record = _export_composite(
+        hud_status_graphic, "hud_status_graphic", graphics_dir
+    )
+    # House.i(Graphics) clips the top 6x9 cell of resource 17 for the
+    # lower-right population marker in Quick Game. Export that proven clip as
+    # a first-class composite instead of forcing the GBA renderer to emulate
+    # MIDP drawImage+clip source offsets at runtime.
+    _population_icon_composite, hud_population_icon_record = _export_composite(
+        hud_status_graphic.crop((0, 0, 6, 9)), "hud_population_icon", graphics_dir
+    )
+    hud_state_indicator_records = _export_strip_frames(
+        hud_state_indicators, 10, "hud_state_indicator", graphics_dir
+    )
+    _counter_composite, quick_counter_frame_record = _export_composite(
+        quick_counter_frame, "quick_counter_frame", graphics_dir
+    )
+    _city_hanging_composite, city_hanging_ui_record = _export_composite(
+        city_hanging_ui, "city_hanging_ui", graphics_dir
+    )
+    city_status_icon_records = _export_strip_frames(city_status_icons, 5, "city_status_icon", graphics_dir)
+    city_panel_records = _export_strip_frames(city_panels, 2, "city_panel", graphics_dir)
+    _city_action_composite, city_action_icon_record = _export_composite(
+        city_action_icon, "city_action_icon", graphics_dir
+    )
+    city_effect_records = _export_strip_frames(city_effects, 6, "city_effect", graphics_dir)
+    crane_hook_frame_records = _export_strip_frames(crane_hook_frames, 5, "crane_hook_frame", graphics_dir)
+    accuracy_star_records = _export_strip_frames(accuracy_stars, 3, "accuracy_star", graphics_dir)
+    asset_records.extend(construction_target_badge_records)
+    asset_records.extend(hud_white_digit_records)
+    asset_records.extend(hud_brown_digit_records)
+    asset_records.extend(hud_red_digit_records)
+    asset_records.append(hud_status_graphic_record)
+    asset_records.append(hud_population_icon_record)
+    asset_records.extend(hud_state_indicator_records)
+    asset_records.append(quick_counter_frame_record)
+    asset_records.append(city_hanging_ui_record)
+    asset_records.extend(city_status_icon_records)
+    asset_records.extend(city_panel_records)
+    asset_records.append(city_action_icon_record)
+    asset_records.extend(city_effect_records)
+    asset_records.extend(crane_hook_frame_records)
+    asset_records.extend(accuracy_star_records)
 
     city_building_records: list[dict[str, object]] = []
     for building_index, strip in enumerate(city_building_strips, start=1):
@@ -585,8 +665,34 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "logos": [tower_record, sumea_record],
         "procedural_assets": ["menu_highlight"],
         "menu_highlight": menu_highlight_record,
-        "menu_assets": {"icons": menu_icon_records, "worker_frames": menu_worker_records},
-        "city_assets": {"buildings": city_building_records, "lots": city_lot_records},
+        "menu_assets": {
+            "icons": menu_icon_records,
+            "worker_blue_frames": menu_worker_blue_records,
+            "worker_red_frames": menu_worker_red_records,
+        },
+        "hud_assets": {
+            "construction_target_badges": construction_target_badge_records,
+            "white_digits": hud_white_digit_records,
+            "brown_digits": hud_brown_digit_records,
+            "red_digits": hud_red_digit_records,
+            "status_graphic": hud_status_graphic_record,
+            "population_icon": hud_population_icon_record,
+            "state_indicators": hud_state_indicator_records,
+            "quick_counter_frame": quick_counter_frame_record,
+            "crane_hook_frames": crane_hook_frame_records,
+            "accuracy_stars": accuracy_star_records,
+        },
+        "city_assets": {
+            "buildings": city_building_records,
+            "lots": city_lot_records,
+            "supplemental": {
+                "hanging_ui": city_hanging_ui_record,
+                "status_icons": city_status_icon_records,
+                "panels": city_panel_records,
+                "action_icon": city_action_icon_record,
+                "effects": city_effect_records,
+            },
+        },
         "files": files,
         "tree_hash": tree_digest.hexdigest(),
     }

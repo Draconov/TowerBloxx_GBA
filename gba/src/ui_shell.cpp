@@ -18,12 +18,20 @@ constexpr int main_menu_indices[] = {17, 18, 19, 21};
 constexpr int new_game_indices[] = {91, 92};
 constexpr int instructions_indices[] = {91, 92};
 constexpr int lines_per_page = generated::instruction_lines_per_page;
-constexpr const generated::UiCompositeAsset* menu_worker_frames[] = {
-    &generated::menu_worker_f0, &generated::menu_worker_f1, &generated::menu_worker_f2,
-    &generated::menu_worker_f3, &generated::menu_worker_f4, &generated::menu_worker_f5,
-    &generated::menu_worker_f6, &generated::menu_worker_f7, &generated::menu_worker_f8,
-    &generated::menu_worker_f9,
+constexpr const generated::UiCompositeAsset* menu_worker_blue_frames[] = {
+    &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1, &generated::menu_worker_blue_f2,
+    &generated::menu_worker_blue_f3, &generated::menu_worker_blue_f4, &generated::menu_worker_blue_f5,
+    &generated::menu_worker_blue_f6, &generated::menu_worker_blue_f7, &generated::menu_worker_blue_f8,
+    &generated::menu_worker_blue_f9,
 };
+constexpr const generated::UiCompositeAsset* menu_worker_red_frames[] = {
+    &generated::menu_worker_red_f0, &generated::menu_worker_red_f1, &generated::menu_worker_red_f2,
+    &generated::menu_worker_red_f3, &generated::menu_worker_red_f4, &generated::menu_worker_red_f5,
+    &generated::menu_worker_red_f6, &generated::menu_worker_red_f7, &generated::menu_worker_red_f8,
+    &generated::menu_worker_red_f9,
+};
+constexpr int menu_worker_width = 19;
+constexpr int menu_worker_height = 23;
 
 int page_count(int lines)
 {
@@ -43,7 +51,8 @@ void UiShell::hide()
 {
     _sprites.clear();
     _background.reset();
-    _menu_worker_tick = 0;
+    _menu_workers.reset();
+    _menu_worker_frame_phase = 0;
     _first_update = true;
 }
 
@@ -81,20 +90,16 @@ void UiShell::update(const UiController& controller, const InputFrame& input)
     }
 
     bool worker_advanced = false;
-    if(scene == UiScene::MainMenu)
+    if(scene == UiScene::MainMenu || scene == UiScene::NewGameMenu)
     {
-        ++_menu_worker_tick;
-        if(_menu_worker_tick >= 6)
-        {
-            _menu_worker_tick = 0;
-            _menu_worker_frame = (_menu_worker_frame + 1) % 10;
-            worker_advanced = true;
-        }
+        static constexpr int frame_deltas[] = {16, 17, 17};
+        worker_advanced = _menu_workers.update(frame_deltas[_menu_worker_frame_phase]);
+        _menu_worker_frame_phase = (_menu_worker_frame_phase + 1) % 3;
     }
     else
     {
-        _menu_worker_tick = 0;
-        _menu_worker_frame = 1;
+        _menu_workers.reset();
+        _menu_worker_frame_phase = 0;
     }
 
     const int language = int(controller.language());
@@ -186,6 +191,32 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
     }
 }
 
+void UiShell::_show_menu_workers()
+{
+    for(int index = 0; index < MenuWorkerField::worker_count; ++index)
+    {
+        const MenuWorker& worker = _menu_workers.worker(index);
+        if(worker.y_fixed >= _menu_workers.height_fixed())
+        {
+            continue;
+        }
+        const int screen_x = (22 * worker.x_fixed) >> 8;
+        const int screen_y = (22 * worker.y_fixed) >> 8;
+        if(screen_x <= -menu_worker_width || screen_x >= 240 ||
+           screen_y <= -menu_worker_height || screen_y >= 160)
+        {
+            continue;
+        }
+
+        const int frame = MenuWorkerField::display_frame(worker.animation_state);
+        const generated::UiCompositeAsset& asset = worker.variant == 1 ?
+                *menu_worker_blue_frames[frame] : *menu_worker_red_frames[frame];
+        const int center_x = screen_x - 120 + menu_worker_width / 2;
+        const int center_y = screen_y - 80 + menu_worker_height / 2;
+        _show_composite(asset, center_x, center_y, 50);
+    }
+}
+
 void UiShell::_show_main_menu(const UiController& controller)
 {
     if(! _background)
@@ -205,7 +236,7 @@ void UiShell::_show_main_menu(const UiController& controller)
     _show_composite(generated::tower_bloxx_logo, 0, -64);
     _show_menu(labels, 4, controller.selection());
     _show_composite(generated::menu_settings_icon, -100, 6);
-    _show_composite(*menu_worker_frames[_menu_worker_frame], 72, -18);
+    _show_menu_workers();
 }
 
 
@@ -226,6 +257,7 @@ void UiShell::_show_new_game_menu(const UiController& controller)
     _show_menu(labels, 2, controller.selection());
     _show_composite(generated::menu_quick_game_icon, -100, -6);
     _show_composite(generated::menu_build_city_icon, -100, 18);
+    _show_menu_workers();
 }
 
 void UiShell::_show_settings(const UiController& controller)

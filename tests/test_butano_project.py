@@ -79,9 +79,10 @@ def test_main_menu_uses_reference_jar_compositor_instead_of_placeholder_shell() 
     assert "generated::menu_build_city_icon" in shell
     assert "generated::menu_quick_game_icon" in shell
     assert "generated::menu_settings_icon" in shell
-    assert "generated::menu_worker_f0" in shell
-    assert "menu_worker_frames" in shell
-    assert "_menu_worker_frame" in shell_h
+    assert "generated::menu_worker_blue_f0" in shell
+    assert "generated::menu_worker_red_f0" in shell
+    assert "menu_worker_blue_frames" in shell
+    assert "MenuWorkerField _menu_workers" in shell_h
     assert 'generate(-96, y, ">"' not in shell
 
 
@@ -381,3 +382,38 @@ def test_playability_fix3_maxmod_audio_routing_is_wired() -> None:
     assert "GameAudio audio" in main
     assert "audio.update" in main
     assert "audio.play_construction_result" in main
+
+
+def test_fix6_menu_worker_uses_descending_reference_field_not_fixed_reel() -> None:
+    root = _root()
+    shell_h = (root / "gba/include/tb/ui_shell.h").read_text()
+    shell = (root / "gba/src/ui_shell.cpp").read_text()
+    assert 'tb/menu_workers.h' in shell_h
+    assert "MenuWorkerField _menu_workers" in shell_h
+    assert "_menu_workers.update" in shell
+    assert "generated::menu_worker_blue_f0" in shell
+    assert "generated::menu_worker_red_f0" in shell
+    assert "int _menu_worker_frame =" not in shell_h
+    assert "int _menu_worker_tick =" not in shell_h
+    assert "(_menu_worker_frame + 1) % 10" not in shell
+    assert "*menu_worker_frames" not in shell
+    assert "worker.y_fixed >= _menu_workers.height_fixed()" in shell
+
+
+def test_fix6_quick_and_construction_huds_use_reference_texture_assets() -> None:
+    root = _root()
+    quick = (root / "gba/src/quick_game_scene.cpp").read_text()
+    construction = (root / "gba/src/tower_construction_scene.cpp").read_text()
+
+    assert "generated::quick_counter_frame" in quick
+    assert "generated::hud_white_digit_f0" in quick
+    assert "generated::hud_brown_digit_f0" in quick
+    assert "generated::hud_population_icon" in quick
+    assert "generated::hud_state_indicator_f6" in quick
+    assert "floors_text" not in quick
+    assert "chances_text" not in quick
+
+    assert "generated::construction_target_badge_f0" in construction
+    assert "generated::hud_state_indicator_f0" in construction
+    assert "value_line(generated::localized_strings[_language][80]" not in construction
+    assert "bn::string<8> chances" not in construction
