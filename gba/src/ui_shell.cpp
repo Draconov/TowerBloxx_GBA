@@ -25,9 +25,11 @@ int page_count(int lines)
 }
 
 UiShell::UiShell() :
-    _text_generator(generated::tower_font)
+    _text_generator(generated::tower_font),
+    _selected_text_generator(generated::selected_tower_font)
 {
     _text_generator.set_center_alignment();
+    _selected_text_generator.set_center_alignment();
 }
 
 void UiShell::hide()
@@ -114,12 +116,14 @@ void UiShell::_rebuild(const UiController& controller)
     }
 }
 
-void UiShell::_show_composite(const generated::UiCompositeAsset& asset, int x, int y)
+void UiShell::_show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order)
 {
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        _sprites.push_back(part.item->create_sprite(x + part.x, y + part.y));
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(z_order);
+        _sprites.push_back(sprite);
     }
 }
 
@@ -137,10 +141,17 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
     for(int index = 0; index < count; ++index)
     {
         const int y = top + index * 24;
-        _text_generator.generate(0, y, labels[index], _sprites);
         if(index == selection)
         {
-            _text_generator.generate(-96, y, ">", _sprites);
+            // Canonical J2ME generic-menu treatment: a light-blue filled row
+            // behind white text. Higher z order is drawn first, so the band
+            // remains behind the selected glyph sprites.
+            _show_composite(generated::menu_highlight, 0, y, 100);
+            _selected_text_generator.generate(0, y, labels[index], _sprites);
+        }
+        else
+        {
+            _text_generator.generate(0, y, labels[index], _sprites);
         }
     }
 }

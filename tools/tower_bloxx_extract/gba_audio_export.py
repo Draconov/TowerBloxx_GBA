@@ -16,15 +16,19 @@ class AudioRoute:
     resource_id: int
     name: str
     loop: bool
+    channels: int
 
 
+# Two spare cells are reserved above the observed peak note polyphony so row
+# effects (tracker speed and tempo) never have to steal a musical voice.  The
+# largest module is still below Butano's default 16 Direct Sound music channels.
 AUDIO_ROUTES = (
-    AudioRoute(37, "menu_theme", True),
-    AudioRoute(38, "tower_theme", True),
-    AudioRoute(39, "city_theme", True),
-    AudioRoute(40, "construction_fail", False),
-    AudioRoute(41, "normal_roof", False),
-    AudioRoute(42, "trophy_roof", False),
+    AudioRoute(37, "menu_theme", True, 8),
+    AudioRoute(38, "tower_theme", True, 8),
+    AudioRoute(39, "city_theme", True, 12),
+    AudioRoute(40, "construction_fail", False, 7),
+    AudioRoute(41, "normal_roof", False, 7),
+    AudioRoute(42, "trophy_roof", False, 7),
 )
 
 
@@ -165,7 +169,7 @@ def analyze_midi(data: bytes) -> MidiAnalysis:
     )
 
 
-def _sample_wave(kind: str, length: int = 512) -> bytes:
+def _sample_wave(kind: str, length: int = 64) -> bytes:
     values: list[int] = []
     for index in range(length):
         phase = index / length
@@ -291,13 +295,24 @@ def _sample_bank() -> list[tuple[str, bytes, bool]]:
     ]
 
 
+def _mod_signature(channels: int) -> bytes:
+    if channels == 4:
+        return b"M.K."
+    if 5 <= channels <= 9:
+        return f"{channels}CHN".encode("ascii")
+    if 10 <= channels <= 16:
+        return f"{channels}CH".encode("ascii")
+    raise ValueError("MOD channel count must be between 4 and 16")
+
+
 def midi_to_mod(data: bytes, title: str, channels: int = 8) -> bytes:
-    if channels not in (4, 8):
-        raise ValueError("MOD channel count must be 4 or 8")
+    _mod_signature(channels)  # validate early
     division, events = _parse_midi(data)
-    # One tracker row is one MIDI 16th note. At speed 6 and effect Fxx BPM,
-    # MOD row duration is 15/BPM seconds, exactly matching a 16th note.
-    ticks_per_row = max(1, division // 4)
+
+    # The canonical files use PPQN 480 and many 40/80-tick note boundaries.
+    # A 40-tick row is 1/12 of a quarter note. MOD speed 2 gives a row time
+    # of 5/BPM seconds, exactly matching 40 PPQN ticks at the same MIDI BPM.
+    ticks_per_row = max(1, division // 12)
     programs = [0] * 16
     channel_volumes = [127] * 16
     active: dict[tuple[int, int], tuple[int, int]] = {}
@@ -310,10 +325,13 @@ def midi_to_mod(data: bytes, title: str, channels: int = 8) -> bytes:
     if pattern_count > 128:
         raise ValueError("MIDI is too long for MOD order table")
     cells = [[bytearray(_cell()) for _ in range(channels)] for _ in range(pattern_count * 64)]
+    global_effects: dict[int, list[int]] = {0: [2]}  # F02 tracker speed
 
     def choose_voice(row: int) -> int:
         for voice, key in enumerate(voice_key):
-            if key is None:
+            # Percussion is not held, but its cell must remain reserved for the
+            # current row so simultaneous drum hits cannot overwrite each other.
+            if key is None and voice_started[voice] != row:
                 return voice
         return min(range(channels), key=lambda voice: voice_started[voice])
 
@@ -327,10 +345,7 @@ def midi_to_mod(data: bytes, title: str, channels: int = 8) -> bytes:
             continue
         if event.kind == "tempo":
             bpm = max(32, min(255, int(round(60_000_000 / event.a))))
-            # Effect can coexist with note/sample; reserve the last voice's effect nibble.
-            existing = cells[row][channels - 1]
-            existing[2] = (existing[2] & 0xF0) | 0x0F
-            existing[3] = bpm
+            global_effects.setdefault(row, []).append(bpm)
             continue
         if event.kind == "off":
             key = (event.channel, event.a)
@@ -367,6 +382,28 @@ def midi_to_mod(data: bytes, title: str, channels: int = 8) -> bytes:
         volume = max(1, min(64, (velocity * 64 + 63) // 127))
         cells[row][voice] = bytearray(_cell(sample, _mod_period(note), 0x0C, volume))
 
+    def place_global_effect(row: int, parameter: int) -> None:
+        row_cells = cells[row]
+        # Prefer unused cells. The route channel budget intentionally leaves two
+        # spare voices at peak polyphony, so canonical rows should always land here.
+        for cell_data in row_cells:
+            if cell_data == bytearray(_cell()):
+                cell_data[2] = (cell_data[2] & 0xF0) | 0x0F
+                cell_data[3] = parameter
+                return
+        # A full-volume C40 effect is redundant because sample default volume is
+        # already 64; it is safe to reuse that effect column without changing pitch.
+        for cell_data in row_cells:
+            if (cell_data[2] & 0x0F) == 0x0C and cell_data[3] == 64:
+                cell_data[2] = (cell_data[2] & 0xF0) | 0x0F
+                cell_data[3] = parameter
+                return
+        raise ValueError(f"no MOD effect slot available at row {row}")
+
+    for row, parameters in global_effects.items():
+        for parameter in parameters:
+            place_global_effect(row, parameter)
+
     samples = _sample_bank()
     header = bytearray()
     header.extend(title.encode("ascii", "replace")[:20].ljust(20, b"\0"))
@@ -386,7 +423,7 @@ def midi_to_mod(data: bytes, title: str, channels: int = 8) -> bytes:
     header.append(pattern_count)
     header.append(0x7F)
     header.extend(bytes(range(pattern_count)).ljust(128, b"\0"))
-    header.extend(b"8CHN" if channels == 8 else b"M.K.")
+    header.extend(_mod_signature(channels))
     if len(header) != 1084:
         raise AssertionError(len(header))
 
@@ -411,7 +448,7 @@ def export_gba_audio_assets(jar_path: Path, project_dir: Path) -> dict[str, obje
         for route in AUDIO_ROUTES:
             midi = read_resource(jar, route.resource_id)
             analysis = analyze_midi(midi)
-            channels = 8 if route.loop else 4
+            channels = route.channels
             module = midi_to_mod(midi, f"TB {route.resource_id} {route.name}", channels)
             output = audio_dir / f"{route.name}.mod"
             output.write_bytes(module)
@@ -429,8 +466,10 @@ def export_gba_audio_assets(jar_path: Path, project_dir: Path) -> dict[str, obje
 
     manifest: dict[str, object] = {
         "module_count": len(routes),
-        "format": "8CHN loop music / 4-channel ProTracker jingles",
-        "timing": "one 16th-note MIDI grid step per MOD row at speed 6",
+        "format": "route-sized multichannel MOD modules",
+        "timing": "40-tick MIDI grid step per MOD row at speed 2",
+        "ticks_per_row": 40,
+        "mod_speed": 2,
         "routes": routes,
     }
     (reference_dir / "audio_manifest.json").write_text(

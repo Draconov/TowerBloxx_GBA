@@ -145,6 +145,7 @@ def _font_header(font: Font44) -> str:
         '#include "bn_sprite_font.h"',
         '#include "bn_utf8_characters_map.h"',
         '#include "bn_sprite_items_tower_font.h"',
+        '#include "bn_sprite_items_tower_font_selected.h"',
         "",
         "namespace tb::generated",
         "{",
@@ -169,6 +170,12 @@ def _font_header(font: Font44) -> str:
         "",
         "inline constexpr bn::sprite_font tower_font(",
         "        bn::sprite_items::tower_font,",
+        "        tower_font_utf8_characters_map.reference(),",
+        "        tower_font_character_widths,",
+        "        space_between_characters);",
+        "",
+        "inline constexpr bn::sprite_font selected_tower_font(",
+        "        bn::sprite_items::tower_font_selected,",
         "        tower_font_utf8_characters_map.reference(),",
         "        tower_font_character_widths,",
         "        space_between_characters);",
@@ -455,10 +462,36 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8},
     )
 
+    # The original generic menu swaps selected text to white. Keep the exact
+    # source glyph alpha/mask, changing only opaque glyph color.
+    selected_font_sheet = Image.new("RGBA", font_sheet.size, (255, 255, 255, 0))
+    selected_font_sheet.putalpha(font_sheet.getchannel("A"))
+    selected_font_indices, selected_font_palette = _indexed_rgba(selected_font_sheet)
+    _write_indexed_bmp(
+        graphics_dir / "tower_font_selected.bmp",
+        selected_font_sheet.width,
+        selected_font_sheet.height,
+        selected_font_indices,
+        selected_font_palette,
+        4,
+    )
+    _write_json(
+        graphics_dir / "tower_font_selected.json",
+        {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8},
+    )
+
     asset_records: list[dict[str, object]] = []
     _tower_composite, tower_record = _export_composite(tower_logo, "tower_bloxx_logo", graphics_dir)
     _sumea_composite, sumea_record = _export_composite(sumea_logo, "sumea_logo", graphics_dir)
-    asset_records.extend((tower_record, sumea_record))
+
+    # k.b(Graphics) in the canonical J2ME menu paints the selected row with
+    # RGB 0x90C0D6 and five-pixel horizontal margins. At 240 px GBA width the
+    # equivalent band is 230 px wide. It is procedural in the source game, too.
+    menu_highlight_image = Image.new("RGBA", (230, 16), (144, 192, 214, 255))
+    _menu_highlight_composite, menu_highlight_record = _export_composite(
+        menu_highlight_image, "menu_highlight", graphics_dir
+    )
+    asset_records.extend((tower_record, sumea_record, menu_highlight_record))
 
     city_building_records: list[dict[str, object]] = []
     for building_index, strip in enumerate(city_building_strips, start=1):
@@ -525,6 +558,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             for locale in locales
         },
         "logos": [tower_record, sumea_record],
+        "procedural_assets": ["menu_highlight"],
+        "menu_highlight": menu_highlight_record,
         "city_assets": {"buildings": city_building_records, "lots": city_lot_records},
         "files": files,
         "tree_hash": tree_digest.hexdigest(),

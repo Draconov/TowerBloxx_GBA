@@ -63,6 +63,18 @@ def test_phase4_ui_shell_uses_original_assets_and_localization() -> None:
         assert token not in shell
 
 
+def test_main_menu_uses_canonical_selection_band_instead_of_placeholder_arrow() -> None:
+    root = _root()
+    shell_h = (root / "gba/include/tb/ui_shell.h").read_text()
+    shell = (root / "gba/src/ui_shell.cpp").read_text()
+
+    # The canonical J2ME generic menu is white and marks selection with a filled
+    # row band plus white selected text; the far-left '>' was a GBA placeholder.
+    assert "_selected_text_generator" in shell_h
+    assert "generated::menu_highlight" in shell
+    assert 'generate(-96, y, ">"' not in shell
+
+
 def test_sram_access_is_centralized() -> None:
     src_dir = _root() / "gba" / "src"
     save_store = (src_dir / "save_store.cpp").read_text()

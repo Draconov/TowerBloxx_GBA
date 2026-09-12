@@ -6,6 +6,7 @@
 #include "bn_sprite_font.h"
 #include "bn_utf8_characters_map.h"
 #include "bn_sprite_items_tower_font.h"
+#include "bn_sprite_items_tower_font_selected.h"
 
 namespace tb::generated
 {
@@ -165,6 +166,12 @@ inline constexpr auto tower_font_utf8_characters_map =
 
 inline constexpr bn::sprite_font tower_font(
         bn::sprite_items::tower_font,
+        tower_font_utf8_characters_map.reference(),
+        tower_font_character_widths,
+        space_between_characters);
+
+inline constexpr bn::sprite_font selected_tower_font(
+        bn::sprite_items::tower_font_selected,
         tower_font_utf8_characters_map.reference(),
         tower_font_character_widths,
         space_between_characters);

@@ -1,5 +1,6 @@
 {
-  "format": "8CHN loop music / 4-channel ProTracker jingles",
+  "format": "route-sized multichannel MOD modules",
+  "mod_speed": 2,
   "module_count": 6,
   "routes": [
     {
@@ -9,8 +10,8 @@
       "name": "menu_theme",
       "note_count": 440,
       "resource_id": 37,
-      "sha256": "7146064770d30650152dad55c3f75546cd77e89447af2662a1a65a64f0214d5c",
-      "size": 17468,
+      "sha256": "77ecd4da1e1f51c695afe46eeb754003adc95fe6096136f12a87d813ef0fe2c4",
+      "size": 32316,
       "tempo_bpm": 160
     },
     {
@@ -20,54 +21,55 @@
       "name": "tower_theme",
       "note_count": 951,
       "resource_id": 38,
-      "sha256": "1c492a76668830ca5cc1df8069c4fa05b0b313e88d80a3d6bb843eb8b7f99060",
-      "size": 37948,
+      "sha256": "8495d11dfca87ea174ff5a7386a8287bb3a8174663e4b743f619930a81cb1c78",
+      "size": 91708,
       "tempo_bpm": 160
     },
     {
-      "channels": 8,
+      "channels": 12,
       "division": 480,
       "loop": true,
       "name": "city_theme",
       "note_count": 644,
       "resource_id": 39,
-      "sha256": "85808aee52414f3d28a96f6136b100174a21959e06985b4c7ca620e11ad20953",
-      "size": 25660,
+      "sha256": "87d32d1807d4d98ef8c77f1fb37b64ed5f1be7b068c79f45f19d6a2359e7bc19",
+      "size": 80444,
       "tempo_bpm": 140
     },
     {
-      "channels": 4,
+      "channels": 7,
       "division": 480,
       "loop": false,
       "name": "construction_fail",
       "note_count": 45,
       "resource_id": 40,
-      "sha256": "ac7ce261057d0bd8958ed6d076c8fc1ec119648421cb61bae11434062b0f5fa6",
-      "size": 8252,
+      "sha256": "191fb515d7853b08f1408b4e1489e1948e1e81a9e994f263875e815b415d4fca",
+      "size": 9020,
       "tempo_bpm": 160
     },
     {
-      "channels": 4,
+      "channels": 7,
       "division": 480,
       "loop": false,
       "name": "normal_roof",
       "note_count": 33,
       "resource_id": 41,
-      "sha256": "563b5aacab88df9a9b75d3a0daa74b63e91d7f680c64a8af6bfb63fa7ebb15f6",
-      "size": 8252,
+      "sha256": "1edb9d5c4ed04b860410de15358c9e8237793c01754cfba2461bc67fb84bb663",
+      "size": 7228,
       "tempo_bpm": 160
     },
     {
-      "channels": 4,
+      "channels": 7,
       "division": 480,
       "loop": false,
       "name": "trophy_roof",
       "note_count": 63,
       "resource_id": 42,
-      "sha256": "983d7655b9bb145228c1f9e7a6a5499e3971e4d13e6e3ac5ba1fccc15f0ccec5",
-      "size": 8252,
+      "sha256": "acc8f9cb7af71aec73b4e19b563856a3b6e9c6d3c7006d523e285d126f0fe431",
+      "size": 7228,
       "tempo_bpm": 160
     }
   ],
-  "timing": "one 16th-note MIDI grid step per MOD row at speed 6"
+  "ticks_per_row": 40,
+  "timing": "40-tick MIDI grid step per MOD row at speed 2"
 }

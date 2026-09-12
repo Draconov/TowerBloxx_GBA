@@ -617,6 +617,46 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/menu_highlight_p0.bmp",
+      "sha256": "7ac34cf0e2d3e950bab9d221719a344dc7d1ff7439a7bbad39060cf2d5821593",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p1.bmp",
+      "sha256": "7ac34cf0e2d3e950bab9d221719a344dc7d1ff7439a7bbad39060cf2d5821593",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p1.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p2.bmp",
+      "sha256": "7ac34cf0e2d3e950bab9d221719a344dc7d1ff7439a7bbad39060cf2d5821593",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p2.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p3.bmp",
+      "sha256": "eff877f2c61db75eab6627f10e3a93c4e9fab08caa770db77b4704e54067c235",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/menu_highlight_p3.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/sumea_logo_p0.bmp",
       "sha256": "5655009ce16ec9e954004827b32a34fa6e9896e61a38eff574454e8d915d7883",
       "size": 1142
@@ -657,9 +697,19 @@
       "size": 76
     },
     {
+      "path": "gba/graphics/ui/tower_font_selected.bmp",
+      "sha256": "c478441dd948c8081188f2d28c8c901de7eaacdc4c731392c12692392bc74d84",
+      "size": 7606
+    },
+    {
+      "path": "gba/graphics/ui/tower_font_selected.json",
+      "sha256": "959101abcd0eb20cfcbc49b449ea5e79cf539637965ac69f73643e1825f57791",
+      "size": 76
+    },
+    {
       "path": "gba/include/generated/tower_font.h",
-      "sha256": "2ce79d674c7bb03d3cee57e02b7d3fdff41fc2fef8354c13b4b2b452a16e3f17",
-      "size": 1976
+      "sha256": "15f0efe044f704e65e58098601161bcb46e0634f2aa1bf1d10134cb0042967db",
+      "size": 2251
     },
     {
       "path": "gba/include/generated/tower_localization.h",
@@ -668,8 +718,8 @@
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "ed9f3c7bf60e9ebbb30c5eb7dcf18a58b98083b9f630378454be6d6249436535",
-      "size": 6118
+      "sha256": "00168528f807c98435a5075e7574364bc23c48be141b85b9e19f7bb4dd5fa44f",
+      "size": 6659
     }
   ],
   "font_character_count": 118,
@@ -738,6 +788,54 @@
       "width": 41
     }
   ],
+  "menu_highlight": {
+    "bpp": 4,
+    "height": 16,
+    "name": "menu_highlight",
+    "palette_entries": 2,
+    "parts": [
+      {
+        "asset": "menu_highlight_p0",
+        "height": 32,
+        "screen_x": -83,
+        "screen_y": 8,
+        "source_x": 0,
+        "source_y": 0,
+        "width": 64
+      },
+      {
+        "asset": "menu_highlight_p1",
+        "height": 32,
+        "screen_x": -19,
+        "screen_y": 8,
+        "source_x": 64,
+        "source_y": 0,
+        "width": 64
+      },
+      {
+        "asset": "menu_highlight_p2",
+        "height": 32,
+        "screen_x": 45,
+        "screen_y": 8,
+        "source_x": 128,
+        "source_y": 0,
+        "width": 64
+      },
+      {
+        "asset": "menu_highlight_p3",
+        "height": 32,
+        "screen_x": 109,
+        "screen_y": 8,
+        "source_x": 192,
+        "source_y": 0,
+        "width": 64
+      }
+    ],
+    "width": 230
+  },
+  "procedural_assets": [
+    "menu_highlight"
+  ],
   "source_resources": {
     "city_buildings": [
       24,
@@ -752,7 +850,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "6c8fb10fff4c3e5de81d916be47727e4dc1a232ac86ff722090313371ecb3aa7",
+  "tree_hash": "ba4f5a35589e39687ccf62a51aef0edf7257cb566c9d02190b82171e89cef032",
   "utf8_characters": [
     "¡",
     "°",

@@ -58,9 +58,14 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert {record["name"] for record in city_records["lots"]} == {f"city_lot_f{index}" for index in range(5)}
 
     font_bmp = a / "gba/graphics/ui/tower_font.bmp"
+    selected_font_bmp = a / "gba/graphics/ui/tower_font_selected.bmp"
     assert _bmp_geometry(font_bmp) == ((94 + len(EXPECTED_EXTENDED)) * 8, 16, 4)
+    assert _bmp_geometry(selected_font_bmp) == ((94 + len(EXPECTED_EXTENDED)) * 8, 16, 4)
     font_meta = json.loads((a / "gba/graphics/ui/tower_font.json").read_text())
-    assert font_meta == {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8}
+    selected_font_meta = json.loads((a / "gba/graphics/ui/tower_font_selected.json").read_text())
+    expected_font_meta = {"bpp_mode": "bpp_4", "height": 16, "type": "sprite", "width": 8}
+    assert font_meta == expected_font_meta
+    assert selected_font_meta == expected_font_meta
 
     localization = (a / "gba/include/generated/tower_localization.h").read_text(encoding="utf-8")
     assert "Tower Bloxx(TM)" in localization
@@ -74,6 +79,8 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
 
     font_header = (a / "gba/include/generated/tower_font.h").read_text(encoding="utf-8")
     assert "bn::sprite_items::tower_font" in font_header
+    assert "bn::sprite_items::tower_font_selected" in font_header
+    assert "selected_tower_font" in font_header
     assert "space_between_characters" in font_header
     assert "tower_font_character_widths,\n        space_between_characters);" in font_header
 
@@ -86,6 +93,14 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     sumea_files = [record["path"] for record in manifest_a["files"] if "sumea_logo" in record["path"]]
     assert logo_files
     assert sumea_files
+    assert manifest_a["procedural_assets"] == ["menu_highlight"]
+    highlight = manifest_a["menu_highlight"]
+    assert highlight["name"] == "menu_highlight"
+    assert highlight["width"] == 230
+    assert highlight["height"] == 16
+    assert highlight["parts"]
+    ui_assets_header = (a / "gba/include/generated/tower_ui_assets.h").read_text(encoding="utf-8")
+    assert "menu_highlight_parts" in ui_assets_header
 
 
 def _bmp_palette_entry(path: Path, index: int) -> tuple[int, int, int, int]:

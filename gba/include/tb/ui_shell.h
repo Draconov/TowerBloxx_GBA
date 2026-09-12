@@ -30,10 +30,11 @@ private:
     void _show_about(const UiController& controller);
     void _show_menu(const char* const* labels, int count, int selection);
     void _show_lines(const char* const* lines, int line_count, int page);
-    void _show_composite(const generated::UiCompositeAsset& asset, int x, int y);
+    void _show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order = 0);
     [[nodiscard]] int _content_page_count(const UiController& controller) const;
 
     bn::sprite_text_generator _text_generator;
+    bn::sprite_text_generator _selected_text_generator;
     bn::vector<bn::sprite_ptr, 128> _sprites;
     UiScene _last_scene = UiScene::TowerGallery;
     int _last_selection = -1;
