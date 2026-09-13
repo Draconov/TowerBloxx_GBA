@@ -10,6 +10,7 @@
 
 #include "generated/tower_font.h"
 #include "tb/app_state.h"
+#include "tb/gameplay_workers.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
 
@@ -19,6 +20,9 @@ struct QuickGameSceneUpdateResult
 {
     bool exit = false;
     bool save_dirty = false;
+    bool suspend_requested = false;
+    bool score_ready = false;
+    uint32_t final_population = 0;
 };
 
 class QuickGameScene
@@ -29,6 +33,9 @@ public:
     void start(int language);
     [[nodiscard]] QuickGameSceneUpdateResult update(const InputFrame& input, SaveData& save);
     [[nodiscard]] bool active() const;
+    void suspend_presentation();
+    void resume_presentation();
+    void discard();
 
 private:
     void _stop();
@@ -36,11 +43,14 @@ private:
     void _ensure_current_sprites();
     void _ensure_crane_sprites();
     void _update_world_positions();
+    [[nodiscard]] GameplayWorkerWorld _worker_world(const QuickGameSnapshot& snapshot) const;
+    void _rebuild_worker_sprites(const QuickGameSnapshot& snapshot);
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
     QuickGame _game;
+    GameplayWorkerField _gameplay_workers;
     bn::optional<bn::regular_bg_ptr> _background;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
@@ -51,6 +61,7 @@ private:
     bn::vector<bn::sprite_ptr, 4> _current_sprites;
     bn::vector<bn::sprite_ptr, 4> _platform_sprites;
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
+    bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     int _language = 0;
     int _frame_phase = 0;

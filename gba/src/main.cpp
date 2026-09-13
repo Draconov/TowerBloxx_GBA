@@ -7,6 +7,7 @@
 #include "tb/quick_game_scene.h"
 #include "tb/save_store.h"
 #include "tb/tower_construction_scene.h"
+#include "tb/tower_session.h"
 #include "tb/ui_controller.h"
 #include "tb/ui_shell.h"
 
@@ -38,55 +39,111 @@ int main()
     tb::QuickGameScene quick_game;
     tb::BuildCityScene build_city(save);
     tb::TowerConstructionScene construction;
+    tb::TowerSessionCoordinator session;
     tb::GameAudio audio;
 
     while(true)
     {
         const tb::InputFrame input = app.update_input(held_keys());
+        controller.set_suspended_session_available(session.has_suspended());
 
-        if(construction.active())
+        switch(session.foreground())
         {
-            const tb::TowerConstructionSceneUpdateResult result = construction.update(input);
-            if(result.completed)
-            {
-                build_city.accept_constructed_tower(result.building_type, result.population, result.roof);
-                audio.play_construction_result(result.roof);
-            }
-        }
-        else if(quick_game.active())
+        case tb::RuntimeScene::QuickGame:
         {
             const tb::QuickGameSceneUpdateResult result = quick_game.update(input, save);
             if(result.save_dirty)
             {
                 tb::store_save(save);
             }
-            if(result.exit)
+
+            if(result.suspend_requested)
             {
-                ui.update(controller, input);
+                quick_game.suspend_presentation();
+                session.suspend_quick_game();
             }
+            else if(result.score_ready)
+            {
+                quick_game.discard();
+                session.show_ui();
+                controller.set_suspended_session_available(false);
+                controller.begin_score_submission(
+                        tb::HallTable::QuickGame,
+                        result.final_population,
+                        save,
+                        tb::ScoreFlowReturn::RootMenu);
+            }
+            else if(result.exit)
+            {
+                quick_game.discard();
+                session.show_ui();
+            }
+            break;
         }
-        else if(build_city.active())
+
+        case tb::RuntimeScene::BuildCity:
         {
             const tb::BuildCitySceneUpdateResult result = build_city.update(input, save);
             if(result.save_dirty)
             {
                 tb::store_save(save);
             }
+
             if(result.construction_requested)
             {
                 const tb::BuildCityConstructionRequest request = build_city.construction_request();
                 if(request.pending)
                 {
                     build_city.clear_construction_request();
-                    construction.start(request, controller.language());
+                    construction.start(request, controller.language(), save);
+                    session.start_construction();
                 }
             }
-            if(result.exit)
+            else if(result.placement_committed)
             {
-                ui.update(controller, input);
+                build_city.suspend_presentation();
+                controller.begin_score_submission(
+                        tb::HallTable::BuildCity,
+                        uint32_t(result.committed_total_population),
+                        save,
+                        tb::ScoreFlowReturn::BuildCity);
+                session.show_ui();
             }
+            else if(result.exit)
+            {
+                session.show_ui();
+            }
+            break;
         }
-        else
+
+        case tb::RuntimeScene::Construction:
+        {
+            const tb::TowerConstructionSceneUpdateResult result = construction.update(input, save);
+            if(result.save_dirty)
+            {
+                tb::store_save(save);
+            }
+            if(result.suspend_requested)
+            {
+                construction.suspend_presentation();
+                session.suspend_construction();
+            }
+            else if(result.completed)
+            {
+                build_city.accept_constructed_tower(result.building_type, result.population, result.roof, save);
+                build_city.resume_presentation(save);
+                audio.play_construction_result(result.roof);
+                session.return_to_build_city();
+            }
+            else if(result.exit)
+            {
+                build_city.resume_presentation(save);
+                session.return_to_build_city();
+            }
+            break;
+        }
+
+        case tb::RuntimeScene::Ui:
         {
             const tb::UiUpdateResult result = controller.update(input, save);
             if(result.save_dirty)
@@ -94,30 +151,74 @@ int main()
                 tb::store_save(save);
             }
 
-            if(controller.pending_game_request() == tb::GameRequest::QuickGame)
+            switch(result.action)
             {
-                controller.clear_game_request();
+            case tb::UiAction::StartQuickGame:
+            case tb::UiAction::StartBuildCity:
+            {
+                if(session.has_suspended())
+                {
+                    if(session.suspended_kind() == tb::SuspendedSessionKind::QuickGame)
+                    {
+                        quick_game.discard();
+                    }
+                    else if(session.suspended_kind() == tb::SuspendedSessionKind::BuildCityConstruction)
+                    {
+                        construction.discard();
+                    }
+                    session.discard_suspended();
+                }
+
                 ui.hide();
-                quick_game.start(controller.language());
+                if(result.action == tb::UiAction::StartQuickGame)
+                {
+                    quick_game.start(controller.language());
+                    session.start_quick_game();
+                }
+                else
+                {
+                    build_city.start(save, controller.language());
+                    session.start_build_city();
+                }
+                break;
             }
-            else if(controller.pending_game_request() == tb::GameRequest::BuildCity)
+
+            case tb::UiAction::ResumeSuspended:
             {
-                controller.clear_game_request();
+                const tb::SuspendedSessionKind kind = session.resume_suspended();
                 ui.hide();
-                build_city.start(save, controller.language());
+                if(kind == tb::SuspendedSessionKind::QuickGame)
+                {
+                    quick_game.resume_presentation();
+                }
+                else if(kind == tb::SuspendedSessionKind::BuildCityConstruction)
+                {
+                    construction.resume_presentation();
+                }
+                break;
             }
-            else
-            {
-                ui.update(controller, input);
+
+            case tb::UiAction::ReturnToBuildCity:
+                ui.hide();
+                build_city.resume_presentation(save);
+                session.return_to_build_city();
+                break;
+
+            case tb::UiAction::None:
+                ui.update(controller, save, input);
+                break;
             }
+            break;
+        }
         }
 
         tb::AudioScene audio_scene = tb::AudioScene::Menu;
-        if(construction.active() || quick_game.active())
+        if(session.foreground() == tb::RuntimeScene::QuickGame ||
+           session.foreground() == tb::RuntimeScene::Construction)
         {
             audio_scene = tb::AudioScene::Tower;
         }
-        else if(build_city.active())
+        else if(session.foreground() == tb::RuntimeScene::BuildCity)
         {
             audio_scene = tb::AudioScene::City;
         }

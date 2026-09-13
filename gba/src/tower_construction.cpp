@@ -160,6 +160,10 @@ void TowerConstruction::start(uint8_t building_type, int target_height, bool tro
     _drop_start_ms = 0;
     _current_z_angle_degrees = 0;
     _slip_target_z_angle_degrees = 0;
+    _current_y_angle_degrees = 0;
+    _slip_target_y_angle_degrees = 0;
+    _current_y_angle_degrees = 0;
+    _slip_target_y_angle_degrees = 0;
 
     _camera_y = 512;
     _camera_target_y = 512;
@@ -243,6 +247,7 @@ TowerConstructionSnapshot TowerConstruction::snapshot() const
     result.drop_velocity_x = _drop_velocity_x;
     result.drop_velocity_y = _drop_velocity_y;
     result.current_z_angle_degrees = _current_z_angle_degrees;
+    result.current_y_angle_degrees = _current_y_angle_degrees;
     result.crane_angle_degrees = ((_crane_x >> 4) * 2) / 3;
     result.combo_count = _combo_count;
     result.combo_bonus_pending = _combo_bonus_pending;
@@ -515,6 +520,21 @@ void TowerConstruction::_update_falling(int delta_ms)
                     _current_z_angle_degrees -
                             (elapsed_ms * (_current_z_angle_degrees - _slip_target_z_angle_degrees)) / 500);
         }
+
+        if(_current_y_angle_degrees < _slip_target_y_angle_degrees)
+        {
+            _current_y_angle_degrees = min_value(
+                    _slip_target_y_angle_degrees,
+                    _current_y_angle_degrees +
+                            (elapsed_ms * (_slip_target_y_angle_degrees - _current_y_angle_degrees)) / 500);
+        }
+        else if(_current_y_angle_degrees > _slip_target_y_angle_degrees)
+        {
+            _current_y_angle_degrees = max_value(
+                    _slip_target_y_angle_degrees,
+                    _current_y_angle_degrees -
+                            (elapsed_ms * (_current_y_angle_degrees - _slip_target_y_angle_degrees)) / 500);
+        }
     }
 
     if(_current_y < _camera_y - view_half_fixed)
@@ -616,6 +636,8 @@ void TowerConstruction::_begin_slip(int offset)
     _drop_velocity_y = 50;
     _current_z_angle_degrees = 0;
     _slip_target_z_angle_degrees = -direction * 45;
+    _current_y_angle_degrees = 0;
+    _slip_target_y_angle_degrees = (1 - 2 * _next_visual_random(2)) * 60;
 }
 
 void TowerConstruction::_register_miss()
@@ -780,6 +802,8 @@ void TowerConstruction::_spawn_next_block()
     _drop_velocity_y = 0;
     _current_z_angle_degrees = 0;
     _slip_target_z_angle_degrees = 0;
+    _current_y_angle_degrees = 0;
+    _slip_target_y_angle_degrees = 0;
 }
 
 void TowerConstruction::_enter_terminal()

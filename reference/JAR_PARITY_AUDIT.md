@@ -1,0 +1,52 @@
+# Tower Bloxx v1.5.22 JAR parity audit
+
+This audit compares the clean-room GBA port with the supplied canonical `Tower-Bloxx_v1522.jar`. It tracks player-visible game features, presentation systems, persistence and original resources. Phone/network/licensing infrastructure is listed separately because it should not be recreated on GBA.
+
+Status meanings: **complete** = the GBA port has the recovered behavior; **partial** = the core exists but original state/UI/presentation is incomplete; **missing** = original player-visible behavior is not yet present; **omit** = deliberately excluded phone/service functionality.
+
+## Current priority queue
+
+1. **Build City remaining visual subtleties** — partial. Fix 14 recovers the exact 800 ms triangular valid-lot RGB interpolation, correct resource-20 top anchors, resource-21 browse/placement semantics, resource-22 population-cell placement, and the Java2D top-right comparison boxes/badges/digit spacing. Remaining code-proven visual work is the `q/r/s` population digit-roll animation and the four `m.d/m.e` city lot palette themes selected as city progress advances, followed by emulator screenshot validation.
+2. **Original menu/support graphics** — partial. Resource 8 (7x5 down/continue arrow) is now wired into Build City and construction modals. Resource 1 (8x24 navigation/scroll strip) and resource 9 (82x32 Digital Chocolate graphic) are not yet fully wired into their original screens.
+3. **Audio state-machine parity** — partial. The six MIDI resources are converted and scene music exists, but exact JAR transitions, looping/pause/resume behavior and short result/jingle timing still need a state-by-state comparison with `o.class` and `House`.
+
+## Implemented or substantially recovered
+
+- Quick Game drop/landing simulation, misses, population/combo core and personal-best persistence.
+- Finite Build City tower construction targets 10/20/30/40, misses, roof/trophy result and population handoff.
+- Build City 25-tile save data, cardinal-neighbor placement prerequisites, population milestones/unlocks and 46 original tutorial/event flag slots.
+- Source building/lot/effect/HUD/crane resource extraction and Butano asset generation for resources 13-35 used by the current runtime.
+- Original menu logo/icons, yellow selection treatment and three moving blue/red worker actors.
+- Construction foreground resources 31-34 and recovered procedural skyline/background composition.
+- **Fix 9:** Settings now exposes localized string 81 `Reset City`; the localized string-98 confirmation dialog defaults to `No`. Confirming clears all 25 city tile records and all 46 city tutorial/event flags while preserving language, sound and Quick Game records.
+- **Fix 10:** The temporary New Game submenu is replaced by the original-style root flow: conditional `Continue game`, direct `Build City`/`Quick Game`, `High Scores`, `Settings`, and `Instructions`; Java ME `Exit` is intentionally omitted on GBA. Quick Game and Build City construction can be suspended in RAM and resumed without resetting their simulation state, and starting another tower mode uses the original overwrite warning with `No` as the safe default.
+- **Fix 10 Hall of Fame:** `j.class`'s two persistent population tables are ported with exactly three named entries each, `SUMEA / 0` defaults, strict third-place qualification/equal-score stability, last-name persistence, GBA name entry, and localized table/clear/qualification flows. Quick Game submits final population; Build City submits total city population only after a successful committed placement/replacement.
+- **Fix 10 persistence:** SRAM save version 4 adds Hall data and losslessly migrates valid v3 saves while preserving language, sound, all three Quick Game personal-best scalars, 25 city tiles and 46 tutorial/event flags. v1/v2 migration remains supported.
+- **Fix 11 Build City progression:** all 46 code-proven `citymode` event flags are now dispatched through a dedicated event controller with recovered ID/localization mapping, milestone/city-level/unlock/trophy/parade ordering, one-shot persistence, modal input blocking and interrupted-chain recovery. Existing progressed Fix-10 cities with all-zero event flags are not flooded with obsolete onboarding; Reset City restores the complete fresh-city sequence.
+- **Fix 11 construction messages:** House string 55 is persisted independently in existing v4 reserved storage, matching the separate `towermode` record; strings 56/57 are repeatable failure/trophy result modals and block construction handoff until acknowledged. Reset City deliberately preserves the construction-instruction bit.
+- **Fix 11 Build City HUD:** the source milestone progress line, pending-vs-replaced population values, 750 ms placement-entry lock/slide, resource-20 3px clips, resource-21 9+7+7+7 clips, resource-22 8px state clips and resource-8 continue arrow are wired into runtime presentation. Valid sectors follow the recovered 800 ms cadence; exact source color interpolation remains a visual-tuning item.
+- **Fix 12 gameplay workers:** Quick Game and Tower Construction now reproduce `House`'s separate 8-slot gameplay-worker layer (not the menu's three-worker field), including resource-11/12 blue/red selection, source-frame reversal rather than generic sprite flipping, 4/3/2/1 landing-quality spawn bands, curved arrival/walk/scatter/fall states, the 25 ms update gate, roof-phase spawn suppression, slot-variant preservation on scatter reuse, and suspend/resume continuity. The existing resource-31..34 construction scenery compositor remains unchanged; exact J2ME random-seed identity is intentionally replaced by deterministic cosmetic RNG.
+- **Fix 13 crane / M3G presentation:** the normal crane keeps recovered mesh 8 with House's `r / 540 * 360` Z rotation; Build City roof phase switches to unrotated mesh 7 and a separately rendered two-pixel black cable, matching the original split mesh/Java2D branch. Quick Game and Tower Construction now also recover the independent random +/-60-degree bad-placement Y target and its 500 ms interpolation. The GBA sprite renderer represents that Y rotation with affine horizontal foreshortening rather than claiming bit-identical M3G rasterization; final cable/foreshortening screenshot anchor tuning remains visual-only.
+- **Fix 14 Build City compositor correction:** valid placement sectors now use `m.class`'s continuous 800 ms triangular RGB pulse with the four exact family endpoint pairs and a shared GBA palette; resource-20 top clips are restored to y=0..22; resource-21 active-placement and neutral-browse source slices are no longer reversed; resource-22 is restored behind the five population digits with its terminal cap; and the top-right pending/replacement comparison boxes are rebuilt from their exact Java2D rectangle, badge and white-digit geometry. GBA RGB555 quantization is the only color-space adaptation.
+
+## Intentionally omitted phone/service infrastructure
+
+These are original J2ME product/platform features, not Tower Bloxx gameplay, and should remain absent unless a future GBA-native substitute is explicitly requested:
+
+- Vibration and backlight settings.
+- SMS sharing / tell-a-friend flow.
+- Mobile League/network score submission and login.
+- Game Lobby / Get More Games links.
+- License purchase, trial/payment/operator flows.
+
+## Evidence anchors
+
+- `reference/localization_en-EN.txt`: original 134 strings, including Build City events 36-60, Reset City 81/98 and Hall-of-Fame strings 121-133.
+- `reference/resource_inventory.csv`: original r0 resource dimensions/types, including resources 1, 8, 9 and gameplay/UI resources 13-35.
+- `reference/BUILD_CITY_ANALYSIS.md`: recovered city save format, thresholds, placement rules, construction handoff and compositor geometry.
+- `reference/BUILD_CITY_EVENTS.csv` / `reference/build_city_events.json`: exhaustive persistent event IDs 0-45, localization indices and recovered trigger mapping.
+- `reference/MENU_COMPOSITOR_ANALYSIS.md`: original menu rendering branch and richer root-menu evidence.
+- `reference/GAMEPLAY_WORKERS_ANALYSIS.md`: recovered 8-slot House worker storage, resources 11/12, spawn bands, state machine, transform, clipping and deterministic GBA integration.
+- `reference/CRANE_M3G_ANALYSIS.md`: recovered mesh-7/8 branch, special cable formula, +/-60-degree secondary tumble, 500 ms interpolation and the documented GBA projection adaptation.
+- `House.class`: `House.<clinit>` exposes two Hall-of-Fame table descriptors and the gameplay/menu scene state used by the port analysis.
+- `j.class`: RMS `HoF` persistence and three named entries serialized for each score table.

@@ -21,7 +21,8 @@ void emit(const tb::QuickGame& game, int tick)
               << ',' << snapshot.drop_velocity_x << ',' << snapshot.drop_velocity_y << ','
               << int(snapshot.last_accuracy) << ',' << snapshot.population << ',' << snapshot.combo_count << ','
               << snapshot.combo_bonus_pending << ',' << snapshot.combo_meter_ms << ',' << snapshot.longest_combo << ','
-              << snapshot.current_z_angle_degrees << ',' << snapshot.tower_phase_tenths << ','
+              << snapshot.current_z_angle_degrees << ',' << snapshot.current_y_angle_degrees << ','
+              << snapshot.tower_phase_tenths << ','
               << snapshot.tower_sway_wave << ',' << snapshot.tower_sway_amplitude << ',' << snapshot.tower_global_x;
     for(int index = 0; index < game.floor_count(); ++index)
     {

@@ -41,6 +41,7 @@ SOURCE_RESOURCES = {
     "hud_status_graphic": 17,
     "hud_state_indicators": 18,
     "quick_counter_frame": 19,
+    "city_continue_arrow": 8,
     "city_hanging_ui": 20,
     "city_status_icons": 21,
     "city_panels": 22,
@@ -207,6 +208,7 @@ def _localization_header(
     locales: tuple[LocalePack, ...],
     adapted: dict[str, dict[str, str]],
     wrapped: dict[str, dict[str, tuple[str, ...]]],
+    city_modal_wrapped: dict[str, tuple[tuple[str, ...], ...]],
 ) -> str:
     lines = [
         "#ifndef TB_GENERATED_TOWER_LOCALIZATION_H",
@@ -252,7 +254,12 @@ def _localization_header(
         "",
     ])
 
-    for key, cpp_name in (("quick", "quick_game_instruction_lines"), ("city", "build_city_instruction_lines"), ("about", "about_lines")):
+    for key, cpp_name in (
+        ("quick", "quick_game_instruction_lines"),
+        ("city", "build_city_instruction_lines"),
+        ("about", "about_lines"),
+        ("reset_city", "reset_city_confirmation_lines"),
+    ):
         max_lines = max(len(wrapped[locale.code][key]) for locale in locales)
         lines.append(f"inline constexpr int {cpp_name}_max_lines = {max_lines};")
         lines.append(f"inline constexpr int {cpp_name}_line_counts[locale_count] = {{")
@@ -266,6 +273,36 @@ def _localization_header(
             lines.extend('        "",' for _ in range(max_lines - len(values)))
             lines.append("    },")
         lines.extend(["};", ""])
+
+    city_modal_max_lines = max(
+        len(message_lines)
+        for locale in locales
+        for message_lines in city_modal_wrapped[locale.code]
+    )
+    lines.extend([
+        "inline constexpr int city_modal_min_string_index = 36;",
+        "inline constexpr int city_modal_max_string_index = 60;",
+        "inline constexpr int city_modal_string_count = 25;",
+        f"inline constexpr int city_modal_max_lines = {city_modal_max_lines};",
+        "inline constexpr int city_modal_line_counts[locale_count][city_modal_string_count] = {",
+    ])
+    for locale in locales:
+        lines.append("    {")
+        lines.extend(f"        {len(message_lines)}," for message_lines in city_modal_wrapped[locale.code])
+        lines.append("    },")
+    lines.extend([
+        "};",
+        f"inline constexpr const char* city_modal_lines[locale_count][city_modal_string_count][{city_modal_max_lines}] = {{",
+    ])
+    for locale in locales:
+        lines.append("    {")
+        for message_lines in city_modal_wrapped[locale.code]:
+            lines.append("        {")
+            lines.extend(f"            {_cpp_string(value)}," for value in message_lines)
+            lines.extend('            "",' for _ in range(city_modal_max_lines - len(message_lines)))
+            lines.append("        },")
+        lines.append("    },")
+    lines.extend(["};", ""])
 
     lines.extend([
         "}",
@@ -461,6 +498,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         hud_status_graphic = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_status_graphic"])))).convert("RGBA")
         hud_state_indicators = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["hud_state_indicators"])))).convert("RGBA")
         quick_counter_frame = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["quick_counter_frame"])))).convert("RGBA")
+        city_continue_arrow = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_continue_arrow"])))).convert("RGBA")
         city_hanging_ui = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_hanging_ui"])))).convert("RGBA")
         city_status_icons = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_status_icons"])))).convert("RGBA")
         city_panels = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["city_panels"])))).convert("RGBA")
@@ -530,7 +568,55 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     _menu_highlight_composite, menu_highlight_record = _export_composite(
         menu_highlight_image, "menu_highlight", graphics_dir
     )
-    asset_records.extend((tower_record, sumea_record, menu_highlight_record))
+    # m.a(Graphics, boolean) draws the city-level progress line with Java color
+    # -130816 == 0xFFFE0100 at y=12. Export an 8px segment plus exact 1..7px tails.
+    city_progress_image = Image.new("RGBA", (8, 1), (254, 1, 0, 255))
+    _city_progress_composite, city_progress_record = _export_composite(
+        city_progress_image, "city_progress_segment", graphics_dir
+    )
+    city_progress_tail_records: list[dict[str, object]] = []
+    for width in range(1, 8):
+        tail = Image.new("RGBA", (width, 1), (254, 1, 0, 255))
+        _tail_composite, tail_record = _export_composite(
+            tail, f"city_progress_tail_f{width}", graphics_dir
+        )
+        city_progress_tail_records.append(tail_record)
+
+    # m.a(Graphics, boolean) colors valid placement lots with a continuously
+    # interpolated 2px ring while preserving the 10x10 source lot center.
+    # The runtime recolors palette index 1 every frame, so export the mask as
+    # white here and keep transparency in the center.
+    city_valid_lot_ring_image = Image.new("RGBA", (14, 14), (255, 255, 255, 255))
+    city_valid_lot_ring_image.paste((0, 0, 0, 0), (2, 2, 12, 12))
+    _valid_lot_composite, city_valid_lot_ring_record = _export_composite(
+        city_valid_lot_ring_image, "city_valid_lot_ring", graphics_dir
+    )
+
+    # The comparison boxes at x=189/213 are Java2D rectangles, not resource
+    # 22.  Export their active state as a tiny reusable overlay.
+    city_comparison_panel_active_image = Image.new("RGBA", (24, 9), (226, 226, 226, 255))
+    city_comparison_panel_active_image.paste((13, 12, 12, 255), (1, 1, 23, 8))
+    _comparison_panel_composite, city_comparison_panel_active_record = _export_composite(
+        city_comparison_panel_active_image, "city_comparison_panel_active", graphics_dir
+    )
+
+    city_type_badge_records: list[dict[str, object]] = []
+    city_type_bright = ((67, 113, 215), (225, 26, 8), (17, 175, 12), (218, 159, 0))
+    city_type_dark = ((11, 45, 142), (132, 17, 17), (4, 92, 0), (80, 56, 0))
+    for building_type in range(1, 5):
+        badge = Image.new("RGBA", (4, 7), (*city_type_dark[building_type - 1], 255))
+        badge.paste((*city_type_bright[building_type - 1], 255), (0, 0, 4, 6))
+        _badge_composite, badge_record = _export_composite(
+            badge, f"city_type_badge_{building_type}", graphics_dir
+        )
+        city_type_badge_records.append(badge_record)
+
+    asset_records.extend((
+        tower_record, sumea_record, menu_highlight_record, city_progress_record,
+        city_valid_lot_ring_record, city_comparison_panel_active_record,
+    ))
+    asset_records.extend(city_progress_tail_records)
+    asset_records.extend(city_type_badge_records)
 
     menu_icon_names = (
         "menu_continue_icon",
@@ -574,6 +660,33 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     _city_hanging_composite, city_hanging_ui_record = _export_composite(
         city_hanging_ui, "city_hanging_ui", graphics_dir
     )
+    _city_continue_composite, city_continue_arrow_record = _export_composite(
+        city_continue_arrow, "city_continue_arrow", graphics_dir
+    )
+
+    city_edge_clip_records: list[dict[str, object]] = []
+    for left, name in ((0, "city_edge_top_left"), (3, "city_edge_top_right"),
+                       (6, "city_edge_bottom_left"), (9, "city_edge_bottom_right")):
+        _composite, record = _export_composite(city_hanging_ui.crop((left, 0, left + 3, 23)), name, graphics_dir)
+        city_edge_clip_records.append(record)
+
+    city_status_clip_records: list[dict[str, object]] = []
+    for left, right, name in ((0, 9, "city_population_icon"), (9, 16, "city_status_placement"),
+                              (16, 23, "city_status_browse"), (23, 30, "city_status_aux")):
+        _composite, record = _export_composite(city_status_icons.crop((left, 0, right, 9)), name, graphics_dir)
+        city_status_clip_records.append(record)
+
+    city_panel_state_records: list[dict[str, object]] = []
+    for frame in range(4):
+        panel = Image.new("RGBA", (8, 11), (0, 0, 0, 0))
+        left = frame * 8
+        source = city_panels.crop((left, 0, min(left + 8, city_panels.width), city_panels.height))
+        panel.paste(source, (0, 0), source)
+        _composite, record = _export_composite(panel, f"city_status_panel_f{frame}", graphics_dir)
+        city_panel_state_records.append(record)
+
+    # Keep the previous generic slices for compatibility with older scene code while
+    # Fix 11 migrates rendering to the recovered call-site clips above.
     city_status_icon_records = _export_strip_frames(city_status_icons, 5, "city_status_icon", graphics_dir)
     city_panel_records = _export_strip_frames(city_panels, 2, "city_panel", graphics_dir)
     _city_action_composite, city_action_icon_record = _export_composite(
@@ -591,6 +704,10 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     asset_records.extend(hud_state_indicator_records)
     asset_records.append(quick_counter_frame_record)
     asset_records.append(city_hanging_ui_record)
+    asset_records.append(city_continue_arrow_record)
+    asset_records.extend(city_edge_clip_records)
+    asset_records.extend(city_status_clip_records)
+    asset_records.extend(city_panel_state_records)
     asset_records.extend(city_status_icon_records)
     asset_records.extend(city_panel_records)
     asset_records.append(city_action_icon_record)
@@ -615,13 +732,21 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             "quick": _wrap_text(font, adapted[locale.code]["quick"]),
             "city": _wrap_text(font, adapted[locale.code]["city"]),
             "about": _wrap_text(font, about),
+            "reset_city": _wrap_text(font, locale.strings[98], max_width=208),
         }
+
+    city_modal_wrapped = {
+        locale.code: tuple(_wrap_text(font, locale.strings[index], max_width=208) for index in range(36, 61))
+        for locale in locales
+    }
 
     font_header = include_dir / "tower_font.h"
     localization_header = include_dir / "tower_localization.h"
     ui_assets_header = include_dir / "tower_ui_assets.h"
     font_header.write_text(_font_header(font), encoding="utf-8", newline="\n")
-    localization_header.write_text(_localization_header(locales, adapted, wrapped), encoding="utf-8", newline="\n")
+    localization_header.write_text(
+        _localization_header(locales, adapted, wrapped, city_modal_wrapped), encoding="utf-8", newline="\n"
+    )
     ui_assets_header.write_text(_logo_header(asset_records), encoding="utf-8", newline="\n")
 
     tracked_files = sorted([
@@ -658,13 +783,22 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "font_space_between_characters": font.space_between_characters,
         "font_line_height": font.line_height,
         "adapted_instructions": adapted,
+        "city_modal_wrapped_line_counts": {
+            locale.code: [len(lines) for lines in city_modal_wrapped[locale.code]] for locale in locales
+        },
         "wrapped_line_counts": {
             locale.code: {key: len(value) for key, value in wrapped[locale.code].items()}
             for locale in locales
         },
         "logos": [tower_record, sumea_record],
-        "procedural_assets": ["menu_highlight"],
+        "procedural_assets": [
+            "menu_highlight", "city_progress_segment", "city_valid_lot_ring",
+            "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
+            "city_type_badge_3", "city_type_badge_4",
+        ],
         "menu_highlight": menu_highlight_record,
+        "city_progress_segment": city_progress_record,
+        "city_progress_tails": city_progress_tail_records,
         "menu_assets": {
             "icons": menu_icon_records,
             "worker_blue_frames": menu_worker_blue_records,
@@ -687,10 +821,17 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             "lots": city_lot_records,
             "supplemental": {
                 "hanging_ui": city_hanging_ui_record,
+                "continue_arrow": city_continue_arrow_record,
+                "edge_clips": city_edge_clip_records,
+                "status_clips": city_status_clip_records,
+                "panel_states": city_panel_state_records,
                 "status_icons": city_status_icon_records,
                 "panels": city_panel_records,
                 "action_icon": city_action_icon_record,
                 "effects": city_effect_records,
+                "valid_lot_ring": city_valid_lot_ring_record,
+                "comparison_panel_active": city_comparison_panel_active_record,
+                "type_badges": city_type_badge_records,
             },
         },
         "files": files,

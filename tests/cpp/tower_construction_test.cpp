@@ -61,6 +61,17 @@ int main()
     assert(snapshot.crane_y != snapshot.current_y);
     assert(snapshot.crane_y != released_crane_y || snapshot.crane_x != snapshot.current_x);
 
+    // Shared House slip presentation: +/-45 degree Z plus an independent
+    // random +/-60 degree Y-axis tumble, both eased across 500 ms.
+    tb::TowerConstruction slipping;
+    slipping.start(1, 10, false);
+    slipping.debug_resolve_landing_for_test(128);
+    assert(slipping.snapshot().block_state == tb::TowerConstructionBlockState::Slipping);
+    slipping.update(25, no_input());
+    assert(slipping.snapshot().current_z_angle_degrees == -2);
+    assert(slipping.snapshot().current_y_angle_degrees == 3 ||
+           slipping.snapshot().current_y_angle_degrees == -3);
+
     construction.start(4, 40, true);
     snapshot = construction.snapshot();
     assert(snapshot.swing_period_ms == 1550);

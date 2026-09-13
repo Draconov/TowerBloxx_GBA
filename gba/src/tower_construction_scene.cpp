@@ -6,7 +6,9 @@
 #include "bn_color.h"
 #include "bn_math.h"
 #include "bn_string.h"
+#include "bn_string_view.h"
 #include "bn_regular_bg_items_construction_bg.h"
+#include "bn_sprite_items_crane_special_cable_segment.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -19,9 +21,23 @@ namespace
 constexpr int max_visible_floors = 5;
 constexpr int platform_mesh_id = 9;
 constexpr int crane_hook_mesh_id = 8;
+constexpr int special_crane_mesh_id = 7;
 constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
+
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
+    &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
+    &generated::menu_worker_blue_f2, &generated::menu_worker_blue_f3,
+    &generated::menu_worker_blue_f4, &generated::menu_worker_blue_f5,
+    &generated::menu_worker_blue_f6, &generated::menu_worker_blue_f7,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_frames[] = {
+    &generated::menu_worker_red_f0, &generated::menu_worker_red_f1,
+    &generated::menu_worker_red_f2, &generated::menu_worker_red_f3,
+    &generated::menu_worker_red_f4, &generated::menu_worker_red_f5,
+    &generated::menu_worker_red_f6, &generated::menu_worker_red_f7,
+};
 
 constexpr const generated::UiCompositeAsset* construction_target_badge_frames[] = {
     &generated::construction_target_badge_f0, &generated::construction_target_badge_f1,
@@ -75,6 +91,24 @@ void draw_source_number(int value, int min_digits, int right_x, int top_y,
     while(value > 0 || rendered < min_digits);
 }
 
+bn::string<128> format_construction_modal_line(bn::string_view text)
+{
+    bn::string<128> result;
+    for(int index = 0; index < text.size(); ++index)
+    {
+        if(text[index] == '%' && index + 1 < text.size() && text[index + 1] == 'U')
+        {
+            result.append("3");
+            ++index;
+        }
+        else
+        {
+            result.append(text[index]);
+        }
+    }
+    return result;
+}
+
 const generated::MeshAsset& mesh_by_id(int mesh_id)
 {
     for(int index = 0; index < generated::mesh_count; ++index)
@@ -105,14 +139,22 @@ void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::i
 }
 
 void position_rotated_mesh_part(
-        const generated::MeshPartAsset& part, int x, int y, int angle_degrees,
+        const generated::MeshPartAsset& part, int x, int y, int angle_degrees, int y_angle_degrees,
         bn::sprite_affine_mat_ptr& affine_mat, bn::sprite_ptr& sprite)
 {
     const bn::fixed safe_angle = bn::safe_degrees_angle(angle_degrees);
+    const bn::fixed safe_y_angle = bn::safe_degrees_angle(y_angle_degrees);
+    bn::fixed y_scale = bn::degrees_lut_sin_and_cos_safe(safe_y_angle).second;
+    if(y_scale < 0)
+    {
+        y_scale = -y_scale;
+    }
     affine_mat.set_rotation_angle(safe_angle);
+    affine_mat.set_horizontal_scale(y_scale);
     const bn::pair<bn::fixed, bn::fixed> sin_and_cos = bn::degrees_lut_sin_and_cos_safe(safe_angle);
-    const bn::fixed rotated_x = part.x * sin_and_cos.second - part.y * sin_and_cos.first;
-    const bn::fixed rotated_y = part.x * sin_and_cos.first + part.y * sin_and_cos.second;
+    const bn::fixed perspective_x = part.x * y_scale;
+    const bn::fixed rotated_x = perspective_x * sin_and_cos.second - part.y * sin_and_cos.first;
+    const bn::fixed rotated_y = perspective_x * sin_and_cos.first + part.y * sin_and_cos.second;
     sprite.set_affine_mat(affine_mat);
     sprite.set_position(bn::fixed(x) + rotated_x, bn::fixed(y) + rotated_y);
 }
@@ -128,37 +170,48 @@ TowerConstructionScene::TowerConstructionScene() :
     _text_generator.set_z_order(-100);
 }
 
-void TowerConstructionScene::start(const BuildCityConstructionRequest& request, int language)
+void TowerConstructionScene::start(
+        const BuildCityConstructionRequest& request, int language, const SaveData& save)
 {
     set_gameplay_backdrop();
     _request = request;
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _construction.start(request.building_type, request.target_height, request.trophy_eligible);
+    _gameplay_workers.reset();
     _frame_phase = 0;
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
+    _rendered_crane_mesh_id = -1;
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
+    _modal_localization_index = -1;
+    if(! construction_instructions_seen(save))
+    {
+        _modal_localization_index = 55;
+    }
+    _pending_result = {};
+    _pending_result_valid = false;
     _active = true;
     _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
     _background->set_priority(3);
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
+    _worker_sprites.clear();
     _hud_sprites.clear();
-    _ensure_crane_sprites();
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
+    _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
     _update_world_positions(snapshot);
     _rebuild_hud(snapshot);
 }
 
-TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input)
+TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input, SaveData& save)
 {
     set_gameplay_backdrop();
     TowerConstructionSceneUpdateResult result;
@@ -168,23 +221,84 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         return result;
     }
 
+    if(_modal_localization_index >= 0)
+    {
+        if(input.pressed(Key::A) || input.pressed(Key::Start))
+        {
+            if(_modal_localization_index == 55)
+            {
+                result.save_dirty = mark_construction_instructions_seen(save);
+                _modal_localization_index = -1;
+                _rebuild_hud(_construction.snapshot());
+            }
+            else if(_pending_result_valid)
+            {
+                result.exit = true;
+                result.completed = _pending_result.ready;
+                result.building_type = _pending_result.building_type;
+                result.population = _pending_result.population;
+                result.roof = _pending_result.roof;
+                _pending_result_valid = false;
+                _modal_localization_index = -1;
+                _stop();
+            }
+        }
+        return result;
+    }
+
     const TowerConstructionSnapshot before = _construction.snapshot();
     if(before.status == TowerConstructionStatus::Playing && input.pressed(Key::B))
     {
-        _stop();
-        result.exit = true;
+        result.suspend_requested = true;
         return result;
     }
 
     static constexpr int frame_deltas[] = {16, 17, 17};
     const int delta_ms = frame_deltas[_frame_phase];
     _frame_phase = (_frame_phase + 1) % 3;
+    const bool workers_advanced = _gameplay_workers.begin_frame(delta_ms);
     _construction.update(delta_ms, input);
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
+    const bool floor_added = snapshot.floor_count > before.floor_count;
+    const GameplayWorkerWorld worker_world = _worker_world(snapshot);
+    if(floor_added)
+    {
+        const TowerConstructionFloor& landed = _construction.floor(snapshot.floor_count - 1);
+        const int absolute_offset = landed.offset < 0 ? -landed.offset : landed.offset;
+        if(before.floor_count > 0)
+        {
+            _gameplay_workers.scatter_floor(before.floor_count, absolute_offset, worker_world);
+        }
+        // House.d() returns immediately during the special roof phase.
+        if(! landed.roof)
+        {
+            _gameplay_workers.spawn_for_landing(absolute_offset, worker_world);
+        }
+    }
+    if(workers_advanced)
+    {
+        _gameplay_workers.finish_frame(worker_world);
+    }
 
     if(snapshot.status == TowerConstructionStatus::Results)
     {
         const TowerConstructionResult construction_result = _construction.result();
+        if(construction_result.ready && (construction_result.roof == 0 || construction_result.roof == 2))
+        {
+            _pending_result = construction_result;
+            _pending_result_valid = true;
+            if(construction_result.roof == 0)
+            {
+                _modal_localization_index = 56;
+            }
+            else
+            {
+                _modal_localization_index = 57;
+            }
+            _rebuild_hud(snapshot);
+            return result;
+        }
+
         result.exit = true;
         result.completed = construction_result.ready;
         result.building_type = construction_result.building_type;
@@ -200,6 +314,10 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     }
     _rebuild_current_sprites(snapshot);
     _update_world_positions(snapshot);
+    if(workers_advanced || floor_added)
+    {
+        _rebuild_worker_sprites(snapshot);
+    }
 
     if(snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.roof_phase != _last_hud_roof_phase ||
@@ -215,16 +333,57 @@ bool TowerConstructionScene::active() const
     return _active;
 }
 
-void TowerConstructionScene::_stop()
+void TowerConstructionScene::suspend_presentation()
 {
-    _active = false;
     _background.reset();
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
     _platform_sprites.clear();
     _crane_hook_sprites.clear();
+    _special_cable_sprites.clear();
+    _worker_sprites.clear();
     _hud_sprites.clear();
+    _rendered_current_mesh_id = -1;
+    _rendered_crane_mesh_id = -1;
+}
+
+void TowerConstructionScene::resume_presentation()
+{
+    if(! _active)
+    {
+        return;
+    }
+    set_gameplay_backdrop();
+    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
+    _background->set_priority(3);
+    _rendered_floor_count = -1;
+    _rendered_current_mesh_id = -1;
+    _rendered_crane_mesh_id = -1;
+    _last_hud_floor_count = -1;
+    _last_hud_chances = -1;
+    _last_hud_population = -1;
+    _last_hud_roof_phase = false;
+    _last_hud_roof_result = 0;
+    _last_hud_status = TowerConstructionStatus::Results;
+    _rebuild_floor_sprites();
+    const TowerConstructionSnapshot snapshot = _construction.snapshot();
+    _ensure_crane_sprites(snapshot);
+    _rebuild_current_sprites(snapshot);
+    _update_world_positions(snapshot);
+    _rebuild_worker_sprites(snapshot);
+    _rebuild_hud(snapshot);
+}
+
+void TowerConstructionScene::discard()
+{
+    _active = false;
+    suspend_presentation();
+}
+
+void TowerConstructionScene::_stop()
+{
+    discard();
 }
 
 void TowerConstructionScene::_rebuild_floor_sprites()
@@ -267,15 +426,56 @@ void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSna
     }
 }
 
-void TowerConstructionScene::_ensure_crane_sprites()
+void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapshot& snapshot)
 {
     if(_platform_sprites.empty())
     {
         create_mesh_sprites(mesh_by_id(platform_mesh_id), _platform_sprites);
     }
-    if(_crane_hook_sprites.empty())
+    const int crane_mesh_id = snapshot.roof_phase ? special_crane_mesh_id : crane_hook_mesh_id;
+    if(_crane_hook_sprites.empty() || crane_mesh_id != _rendered_crane_mesh_id)
     {
-        create_mesh_sprites(mesh_by_id(crane_hook_mesh_id), _crane_hook_sprites);
+        create_mesh_sprites(mesh_by_id(crane_mesh_id), _crane_hook_sprites);
+        _rendered_crane_mesh_id = crane_mesh_id;
+    }
+}
+
+void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnapshot& snapshot)
+{
+    _special_cable_sprites.clear();
+    if(! snapshot.roof_phase || snapshot.status != TowerConstructionStatus::Playing)
+    {
+        return;
+    }
+
+    // House.e(Graphics) draws a two-pixel cable independently of mesh 7.
+    // Its camera-space start is just above the 240x160 viewport; segment the
+    // visible portion so we retain the original thin black cable without
+    // spending an affine matrix per segment.
+    constexpr int start_x = 0;
+    constexpr int start_y = -85;
+    const int end_x = _screen_x(snapshot.crane_x) + 5;
+    const int end_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y) - 18;
+    const int dy = end_y - start_y;
+    const int abs_dy = dy < 0 ? -dy : dy;
+    int segment_count = (abs_dy + 15) / 16;
+    if(segment_count < 1)
+    {
+        segment_count = 1;
+    }
+    if(segment_count > 16)
+    {
+        segment_count = 16;
+    }
+    for(int index = 0; index < segment_count; ++index)
+    {
+        const int numerator = index * 2 + 1;
+        const int denominator = segment_count * 2;
+        const int x = start_x + ((end_x - start_x) * numerator) / denominator;
+        const int y = start_y + (dy * numerator) / denominator;
+        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(x, y);
+        sprite.set_z_order(1);
+        _special_cable_sprites.push_back(sprite);
     }
 }
 
@@ -295,7 +495,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            position_rotated_mesh_part(mesh.parts[part_index], x, y, pose.z_angle_degrees, affine_mat,
+            position_rotated_mesh_part(mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
                                        _floor_sprites[sprite_index]);
             ++sprite_index;
         }
@@ -318,7 +518,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            position_rotated_mesh_part(mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees,
+            position_rotated_mesh_part(mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, snapshot.current_y_angle_degrees,
                                        _current_affine_mat, _current_sprites[part_index]);
         }
     }
@@ -335,19 +535,75 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     for(bn::sprite_ptr& sprite : _crane_hook_sprites) { sprite.set_visible(crane_visible); }
     if(crane_visible)
     {
-        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_hook_mesh_id);
+        const int crane_mesh_id = snapshot.roof_phase ? special_crane_mesh_id : crane_hook_mesh_id;
+        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_mesh_id);
         // The original keeps crane/hook motion independent after release.
-        // current_x/current_y become the ballistic block pose, while the crane
-        // continues to swing from its own p/q coordinates.
+        // Mesh 8 rotates with p>>4 in normal play; special roof mode switches
+        // to mesh 7 at the same p/q translation with no mesh rotation.
         const int crane_x = _screen_x(snapshot.crane_x);
         const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
-        for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
+        if(snapshot.roof_phase)
         {
-            // M3G rotates in a Y-up world; sprite coordinates are Y-down.
-            position_rotated_mesh_part(
-                    crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees,
-                    _crane_affine_mat, _crane_hook_sprites[part_index]);
+            position_mesh_sprites(crane_mesh, crane_x, crane_y, _crane_hook_sprites);
         }
+        else
+        {
+            for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
+            {
+                // M3G rotates in a Y-up world; sprite coordinates are Y-down.
+                position_rotated_mesh_part(
+                        crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
+                        _crane_affine_mat, _crane_hook_sprites[part_index]);
+            }
+        }
+    }
+    _rebuild_special_cable(snapshot);
+}
+
+GameplayWorkerWorld TowerConstructionScene::_worker_world(const TowerConstructionSnapshot& snapshot) const
+{
+    GameplayWorkerWorld world;
+    world.camera_x = 0;
+    world.camera_y = snapshot.camera_y;
+    world.floor_count = snapshot.floor_count;
+    const int slot_count = snapshot.floor_count < GameplayWorkerWorld::max_floor_slots ?
+            snapshot.floor_count : GameplayWorkerWorld::max_floor_slots;
+    world.floor_slot_count = slot_count;
+    world.first_floor_number = snapshot.floor_count - slot_count + 1;
+    for(int slot = 0; slot < slot_count; ++slot)
+    {
+        const int floor_index = world.first_floor_number + slot - 1;
+        const TowerConstructionFloor& floor = _construction.floor(floor_index);
+        world.floor_x[slot] = floor.x;
+        world.floor_y[slot] = floor.y;
+    }
+    if(snapshot.floor_count > 0)
+    {
+        world.tower_x = _construction.floor(snapshot.floor_count - 1).x;
+    }
+    return world;
+}
+
+void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnapshot& snapshot)
+{
+    _worker_sprites.clear();
+    for(int index = 0; index < GameplayWorkerField::worker_count; ++index)
+    {
+        const GameplayWorker& worker = _gameplay_workers.worker(index);
+        if(worker.state == 0)
+        {
+            continue;
+        }
+        const int frame = GameplayWorkerField::source_frame(worker);
+        if(frame < 0 || frame >= 8)
+        {
+            continue;
+        }
+        const generated::UiCompositeAsset& asset = worker.variant == 1 ?
+                *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
+        show_ui_composite(
+                asset, _screen_x(worker.x_fixed),
+                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites, 10);
     }
 }
 
@@ -397,17 +653,30 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
         draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
     }
 
-    if(snapshot.status == TowerConstructionStatus::Terminal)
+    if(_modal_localization_index >= 0)
     {
-        if(snapshot.chances_left == 0)
-        {
-            _text_generator.generate(0, 0, generated::localized_strings[_language][56], _hud_sprites);
-        }
-        else if(snapshot.roof_result == 2)
-        {
-            _text_generator.generate(0, 0, generated::localized_strings[_language][57], _hud_sprites);
-        }
+        _show_modal(_modal_localization_index);
     }
+}
+
+void TowerConstructionScene::_show_modal(int localization_index)
+{
+    const int modal_index = localization_index - generated::city_modal_min_string_index;
+    if(modal_index < 0 || modal_index >= generated::city_modal_string_count)
+    {
+        return;
+    }
+
+    const int line_count = generated::city_modal_line_counts[_language][modal_index];
+    int y = -((line_count - 1) * 10) / 2;
+    for(int line = 0; line < line_count; ++line)
+    {
+        const bn::string<128> formatted = format_construction_modal_line(
+                generated::city_modal_lines[_language][modal_index][line]);
+        _text_generator.generate(0, y, formatted, _hud_sprites);
+        y += 10;
+    }
+    show_ui_composite(generated::city_continue_arrow, 112, 72, _hud_sprites);
 }
 
 int TowerConstructionScene::_normal_floor_mesh_id() const

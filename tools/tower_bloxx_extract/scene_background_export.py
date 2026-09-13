@@ -72,10 +72,23 @@ def render_menu_background() -> Image.Image:
     The reference JAR capture lands on House sky band 1. Solving the recovered
     House.a(Graphics, int, boolean) horizon math for the observed 11px cap gives
     camera_y=3264, so this uses the same recovered renderer rather than a
-    screenshot-derived bitmap.
+    screenshot-derived bitmap.  The original menu sky also carries a pair of
+    pale cloud banks that sit behind the logo/worker scene, so keep those in
+    the clean-room backdrop instead of leaving the menu as a flat blue field.
     """
     image = Image.new("RGBA", (VISIBLE_WIDTH, VISIBLE_HEIGHT), _rgb(SKY_COLORS[1]))
     _draw_java_sky(image, camera_y=3264)
+
+    draw = ImageDraw.Draw(image)
+    cloud_color = (170, 204, 230, 255)
+    for x, y, width, height in (
+        (8, 26, 78, 30),
+        (60, 29, 74, 26),
+        (110, 25, 62, 28),
+        (156, 31, 76, 24),
+    ):
+        draw.rounded_rectangle((x, y, x + width, y + height), radius=8, fill=cloud_color)
+
     return image
 
 

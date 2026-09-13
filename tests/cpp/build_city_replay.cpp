@@ -49,12 +49,18 @@ void place(
         int column, int row)
 {
     city.accept_constructed_tower(type, population, roof);
+    city.update(750, {}, save);
     move_to(city, save, column, row);
     assert(city.snapshot().placement_valid);
     press(city, save, tb::Key::A);
     assert(city.snapshot().placement_committing);
     const tb::BuildCityUpdateResult result = city.update(3001, {}, save);
     assert(result.save_dirty);
+    assert(result.placement_committed);
+    assert(result.committed_total_population == city.snapshot().total_population);
+    const tb::BuildCityUpdateResult after_commit = city.update(16, {}, save);
+    assert(! after_commit.placement_committed);
+    assert(after_commit.committed_total_population == 0);
     assert(city.snapshot().mode == tb::BuildCityMode::Browse);
 }
 
@@ -155,11 +161,14 @@ int main()
     // The original column=-1 selector discards the newly built tower; it does not erase a saved city tile.
     const auto city_before_discard = save.city_tiles;
     city.accept_constructed_tower(4, 999, 2);
+    city.update(750, {}, save);
     move_to(city, save, -1, 4);
     assert(city.snapshot().placement_valid);
     press(city, save, tb::Key::A);
     const tb::BuildCityUpdateResult discarded = city.update(3001, {}, save);
     assert(! discarded.save_dirty);
+    assert(! discarded.placement_committed);
+    assert(discarded.committed_total_population == 0);
     for(int index = 0; index < 25; ++index)
     {
         assert(save.city_tiles[index].type == city_before_discard[index].type);

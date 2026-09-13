@@ -54,7 +54,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
         "menu_icons": [2, 3, 4, 5, 6], "menu_workers": [11, 12],
         "construction_target_badges": 13, "hud_white_digits": 14,
         "hud_brown_digits": 15, "hud_red_digits": 16, "hud_status_graphic": 17,
-        "hud_state_indicators": 18, "quick_counter_frame": 19,
+        "hud_state_indicators": 18, "quick_counter_frame": 19, "city_continue_arrow": 8,
         "city_hanging_ui": 20, "city_status_icons": 21, "city_panels": 22,
         "city_action_icon": 23, "city_buildings": [24, 25, 26, 27], "city_lot": 28,
         "city_effects": 29, "crane_hook_frames": 30, "accuracy_stars": 35,
@@ -84,7 +84,15 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert "quick_game_instruction_lines" in localization
     assert "build_city_instruction_lines" in localization
     assert "about_lines" in localization
+    assert "reset_city_confirmation_lines" in localization
+    assert "reset_city_confirmation_lines_line_counts" in localization
     assert "instruction_lines_per_page = 8" in localization
+
+    assert "city_modal_lines" in localization
+    assert "city_modal_line_counts" in localization
+    assert "city_modal_min_string_index = 36" in localization
+    assert "city_modal_max_string_index = 60" in localization
+
 
     font_header = (a / "gba/include/generated/tower_font.h").read_text(encoding="utf-8")
     assert "bn::sprite_items::tower_font" in font_header
@@ -102,7 +110,11 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     sumea_files = [record["path"] for record in manifest_a["files"] if "sumea_logo" in record["path"]]
     assert logo_files
     assert sumea_files
-    assert manifest_a["procedural_assets"] == ["menu_highlight"]
+    assert manifest_a["procedural_assets"] == [
+        "menu_highlight", "city_progress_segment", "city_valid_lot_ring",
+        "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
+        "city_type_badge_3", "city_type_badge_4",
+    ]
     assert {record["name"] for record in manifest_a["menu_assets"]["icons"]} == {
         "menu_continue_icon", "menu_build_city_icon", "menu_quick_game_icon",
         "menu_settings_icon", "menu_exit_icon",
@@ -130,6 +142,13 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
 
     city_supplemental = manifest_a["city_assets"]["supplemental"]
     assert city_supplemental["hanging_ui"]["name"] == "city_hanging_ui"
+    assert city_supplemental["continue_arrow"]["name"] == "city_continue_arrow"
+    assert city_supplemental["continue_arrow"]["width"] == 7
+    assert city_supplemental["continue_arrow"]["height"] == 5
+    assert [record["width"] for record in city_supplemental["edge_clips"]] == [3, 3, 3, 3]
+    assert [record["height"] for record in city_supplemental["edge_clips"]] == [23, 23, 23, 23]
+    assert [(record["width"], record["height"]) for record in city_supplemental["status_clips"]] == [(9, 9), (7, 9), (7, 9), (7, 9)]
+    assert [(record["width"], record["height"]) for record in city_supplemental["panel_states"]] == [(8, 11)] * 4
     assert len(city_supplemental["status_icons"]) == 5
     assert len(city_supplemental["panels"]) == 2
     assert city_supplemental["action_icon"]["name"] == "city_action_icon"
@@ -141,6 +160,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert highlight["parts"]
     ui_assets_header = (a / "gba/include/generated/tower_ui_assets.h").read_text(encoding="utf-8")
     assert "menu_highlight_parts" in ui_assets_header
+    assert "city_progress_segment_parts" in ui_assets_header
     assert "menu_build_city_icon_parts" in ui_assets_header
     assert "menu_worker_blue_f0_parts" in ui_assets_header
     assert "menu_worker_red_f0_parts" in ui_assets_header
@@ -148,6 +168,14 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert "construction_target_badge_f0_parts" in ui_assets_header
     assert "hud_white_digit_f0_parts" in ui_assets_header
     assert "hud_state_indicator_f0_parts" in ui_assets_header
+    for asset in (
+        "city_continue_arrow", "city_edge_top_left", "city_edge_top_right",
+        "city_edge_bottom_left", "city_edge_bottom_right", "city_population_icon",
+        "city_status_browse", "city_status_placement", "city_status_aux",
+        "city_status_panel_f0", "city_status_panel_f1", "city_status_panel_f2",
+        "city_status_panel_f3",
+    ):
+        assert f"{asset}_parts" in ui_assets_header
 
     # Default k.b(Graphics) palette branch used by the captured JAR: yellow
     # selection band (0xFFDD46) and dark-red selected glyphs (0xA50003).

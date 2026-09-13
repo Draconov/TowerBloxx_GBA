@@ -46,10 +46,16 @@ void BuildCity::reset_from_save(const SaveData& save)
     _cursor_row = 2;
     _placement_committing = false;
     _placement_timer_ms = -1;
+    _placement_transition_ms = 0;
+    _replacement_population = 0;
     _pending_type = 0;
     _pending_population = 0;
     _pending_roof = 0;
     _last_population_delta = 0;
+    _occupied_tiles = 0;
+    _placement_transition_ms = 0;
+    _replacement_population = 0;
+    _saved_populations.fill(0);
     _request = {};
     _selected_type = 1;
     _max_unlocked_type = 1;
@@ -89,6 +95,16 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
         else if(input.pressed(Key::B))
         {
             result.exit = true;
+        }
+        return result;
+    }
+
+    if(_placement_transition_ms > 0)
+    {
+        _placement_transition_ms -= delta_ms;
+        if(_placement_transition_ms < 0)
+        {
+            _placement_transition_ms = 0;
         }
         return result;
     }
@@ -145,6 +161,15 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
         _start_placement_commit(save);
     }
 
+    if(_cursor_column >= 0)
+    {
+        _replacement_population = _saved_populations[_cursor_row * 5 + _cursor_column];
+    }
+    else
+    {
+        _replacement_population = 0;
+    }
+
     return result;
 }
 
@@ -167,6 +192,12 @@ BuildCitySnapshot BuildCity::snapshot() const
     result.pending_population = _pending_population;
     result.pending_roof = _pending_roof;
     result.last_population_delta = _last_population_delta;
+    result.occupied_tiles = _occupied_tiles;
+    result.current_milestone_population = milestones[_milestone];
+    result.next_milestone_population = milestones[_milestone < int(milestones.size()) - 1 ? _milestone + 1 : _milestone];
+    result.placement_transition_ms = _placement_transition_ms;
+    result.replacement_population = _replacement_population;
+    result.placement_capabilities = _placement_capabilities;
     result.placement_valid = _placement_valid();
     return result;
 }
@@ -192,6 +223,8 @@ void BuildCity::accept_constructed_tower(uint8_t building_type, int population, 
     _cursor_row = 2;
     _placement_committing = false;
     _placement_timer_ms = -1;
+    _placement_transition_ms = 750;
+    _replacement_population = _saved_populations[12];
     _pending_type = building_type;
     _pending_population = population;
     _pending_roof = roof;
@@ -235,11 +268,17 @@ int BuildCity::placement_capability(const SaveData& save, int index) const
 void BuildCity::_recalculate_progress(const SaveData& save, bool select_new_unlock)
 {
     int total = 0;
+    int occupied = 0;
     for(const CityTileSave& tile : save.city_tiles)
     {
         total += tile.population;
+        if(tile.type != 0)
+        {
+            ++occupied;
+        }
     }
     _total_population = total;
+    _occupied_tiles = occupied;
     _milestone = largest_threshold_index(milestones, total);
 
     int max_unlocked_index = 0;
@@ -281,12 +320,21 @@ void BuildCity::_refresh_capabilities(const SaveData& save)
     for(int index = 0; index < 25; ++index)
     {
         _placement_capabilities[index] = uint8_t(placement_capability(save, index));
+        _saved_populations[index] = save.city_tiles[index].population;
+    }
+    if(_mode == BuildCityMode::Placement && _cursor_column >= 0)
+    {
+        _replacement_population = _saved_populations[_cursor_row * 5 + _cursor_column];
+    }
+    else
+    {
+        _replacement_population = 0;
     }
 }
 
 bool BuildCity::_placement_valid() const
 {
-    if(_mode != BuildCityMode::Placement || _placement_committing)
+    if(_mode != BuildCityMode::Placement || _placement_committing || _placement_transition_ms > 0)
     {
         return false;
     }
@@ -336,6 +384,8 @@ BuildCityUpdateResult BuildCity::_finish_placement(SaveData& save)
     {
         _recalculate_progress(save, true);
         _refresh_capabilities(save);
+        result.placement_committed = true;
+        result.committed_total_population = _total_population;
     }
     return result;
 }

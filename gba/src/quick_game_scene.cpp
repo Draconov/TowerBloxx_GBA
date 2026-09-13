@@ -26,6 +26,19 @@ constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
 constexpr int combo_meter_segments = 8;
 
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
+    &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
+    &generated::menu_worker_blue_f2, &generated::menu_worker_blue_f3,
+    &generated::menu_worker_blue_f4, &generated::menu_worker_blue_f5,
+    &generated::menu_worker_blue_f6, &generated::menu_worker_blue_f7,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_frames[] = {
+    &generated::menu_worker_red_f0, &generated::menu_worker_red_f1,
+    &generated::menu_worker_red_f2, &generated::menu_worker_red_f3,
+    &generated::menu_worker_red_f4, &generated::menu_worker_red_f5,
+    &generated::menu_worker_red_f6, &generated::menu_worker_red_f7,
+};
+
 constexpr const generated::UiCompositeAsset* hud_white_digit_frames[] = {
     &generated::hud_white_digit_f0, &generated::hud_white_digit_f1, &generated::hud_white_digit_f2,
     &generated::hud_white_digit_f3, &generated::hud_white_digit_f4, &generated::hud_white_digit_f5,
@@ -112,14 +125,22 @@ void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::i
 }
 
 void position_rotated_mesh_part(
-        const generated::MeshPartAsset& part, int x, int y, int angle_degrees,
+        const generated::MeshPartAsset& part, int x, int y, int angle_degrees, int y_angle_degrees,
         bn::sprite_affine_mat_ptr& affine_mat, bn::sprite_ptr& sprite)
 {
     const bn::fixed safe_angle = bn::safe_degrees_angle(angle_degrees);
+    const bn::fixed safe_y_angle = bn::safe_degrees_angle(y_angle_degrees);
+    bn::fixed y_scale = bn::degrees_lut_sin_and_cos_safe(safe_y_angle).second;
+    if(y_scale < 0)
+    {
+        y_scale = -y_scale;
+    }
     affine_mat.set_rotation_angle(safe_angle);
+    affine_mat.set_horizontal_scale(y_scale);
     const bn::pair<bn::fixed, bn::fixed> sin_and_cos = bn::degrees_lut_sin_and_cos_safe(safe_angle);
-    const bn::fixed rotated_x = part.x * sin_and_cos.second - part.y * sin_and_cos.first;
-    const bn::fixed rotated_y = part.x * sin_and_cos.first + part.y * sin_and_cos.second;
+    const bn::fixed perspective_x = part.x * y_scale;
+    const bn::fixed rotated_x = perspective_x * sin_and_cos.second - part.y * sin_and_cos.first;
+    const bn::fixed rotated_y = perspective_x * sin_and_cos.first + part.y * sin_and_cos.second;
     sprite.set_affine_mat(affine_mat);
     sprite.set_position(bn::fixed(x) + rotated_x, bn::fixed(y) + rotated_y);
 }
@@ -184,6 +205,7 @@ void QuickGameScene::start(int language)
     set_gameplay_backdrop();
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _game.reset();
+    _gameplay_workers.reset();
     _record_flags = {};
     _records_applied = false;
     _frame_phase = 0;
@@ -200,6 +222,7 @@ void QuickGameScene::start(int language)
 
     _floor_affine_mats.clear();
     _floor_sprites.clear();
+    _worker_sprites.clear();
     _hud_sprites.clear();
     _ensure_current_sprites();
     _ensure_crane_sprites();
@@ -222,8 +245,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     const QuickGameStatus before_status = _game.snapshot().status;
     if(before_status == QuickGameStatus::Playing && input.pressed(Key::B))
     {
-        _stop();
-        result.exit = true;
+        result.suspend_requested = true;
         return result;
     }
     if(before_status == QuickGameStatus::Results && (input.pressed(Key::A) || input.pressed(Key::B)))
@@ -237,14 +259,35 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     static constexpr int frame_deltas[] = {16, 17, 17};
     const int delta_ms = frame_deltas[_frame_phase];
     _frame_phase = (_frame_phase + 1) % 3;
+    const QuickGameSnapshot before = _game.snapshot();
+    const bool workers_advanced = _gameplay_workers.begin_frame(delta_ms);
     _game.update(delta_ms, input);
 
     const QuickGameSnapshot snapshot = _game.snapshot();
+    const bool floor_added = snapshot.floor_count > before.floor_count;
+    const GameplayWorkerWorld worker_world = _worker_world(snapshot);
+    if(floor_added)
+    {
+        const QuickFloor& landed = _game.floor(snapshot.floor_count - 1);
+        const int absolute_offset = landed.offset < 0 ? -landed.offset : landed.offset;
+        if(before.floor_count > 0)
+        {
+            _gameplay_workers.scatter_floor(before.floor_count, absolute_offset, worker_world);
+        }
+        _gameplay_workers.spawn_for_landing(absolute_offset, worker_world);
+    }
+    if(workers_advanced)
+    {
+        _gameplay_workers.finish_frame(worker_world);
+    }
     if(snapshot.status == QuickGameStatus::Results && ! _records_applied)
     {
-        _record_flags = apply_quick_result(save, _game.result());
+        const QuickGameResult game_result = _game.result();
+        _record_flags = apply_quick_result(save, game_result);
         _records_applied = true;
         result.save_dirty = _record_flags.any();
+        result.score_ready = true;
+        result.final_population = uint32_t(game_result.population);
     }
 
     if(snapshot.floor_count != _rendered_floor_count)
@@ -252,6 +295,10 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         _rebuild_floor_sprites();
     }
     _update_world_positions();
+    if(workers_advanced || floor_added)
+    {
+        _rebuild_worker_sprites(snapshot);
+    }
 
     const int current_combo_bucket = combo_bucket(snapshot);
     if(snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
@@ -269,16 +316,52 @@ bool QuickGameScene::active() const
     return _active;
 }
 
-void QuickGameScene::_stop()
+void QuickGameScene::suspend_presentation()
 {
-    _active = false;
     _background.reset();
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
     _platform_sprites.clear();
     _crane_hook_sprites.clear();
+    _worker_sprites.clear();
     _hud_sprites.clear();
+}
+
+void QuickGameScene::resume_presentation()
+{
+    if(! _active)
+    {
+        return;
+    }
+    set_gameplay_backdrop();
+    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
+    _background->set_priority(3);
+    _rendered_floor_count = -1;
+    _last_hud_floor_count = -1;
+    _last_hud_chances = -1;
+    _last_hud_population = -1;
+    _last_hud_combo_count = -1;
+    _last_hud_combo_bucket = -1;
+    _last_hud_status = QuickGameStatus::GameOver;
+    _ensure_current_sprites();
+    _ensure_crane_sprites();
+    _rebuild_floor_sprites();
+    const QuickGameSnapshot snapshot = _game.snapshot();
+    _update_world_positions();
+    _rebuild_worker_sprites(snapshot);
+    _rebuild_hud(snapshot);
+}
+
+void QuickGameScene::discard()
+{
+    _active = false;
+    suspend_presentation();
+}
+
+void QuickGameScene::_stop()
+{
+    discard();
 }
 
 void QuickGameScene::_rebuild_floor_sprites()
@@ -343,7 +426,7 @@ void QuickGameScene::_update_world_positions()
         for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
         {
             position_rotated_mesh_part(
-                    floor_mesh.parts[part_index], x, y, pose.z_angle_degrees, affine_mat,
+                    floor_mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
                     _floor_sprites[sprite_index]);
             ++sprite_index;
         }
@@ -364,7 +447,7 @@ void QuickGameScene::_update_world_positions()
         for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
         {
             position_rotated_mesh_part(
-                    floor_mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, _current_affine_mat,
+                    floor_mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, snapshot.current_y_angle_degrees, _current_affine_mat,
                     _current_sprites[part_index]);
         }
     }
@@ -398,9 +481,56 @@ void QuickGameScene::_update_world_positions()
         {
             // M3G rotates in a Y-up world; sprite coordinates are Y-down.
             position_rotated_mesh_part(
-                    crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees,
+                    crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
                     _crane_affine_mat, _crane_hook_sprites[part_index]);
         }
+    }
+}
+
+GameplayWorkerWorld QuickGameScene::_worker_world(const QuickGameSnapshot& snapshot) const
+{
+    GameplayWorkerWorld world;
+    world.camera_x = 0;
+    world.camera_y = snapshot.camera_y;
+    world.floor_count = snapshot.floor_count;
+    const int slot_count = snapshot.floor_count < GameplayWorkerWorld::max_floor_slots ?
+            snapshot.floor_count : GameplayWorkerWorld::max_floor_slots;
+    world.floor_slot_count = slot_count;
+    world.first_floor_number = snapshot.floor_count - slot_count + 1;
+    for(int slot = 0; slot < slot_count; ++slot)
+    {
+        const int floor_index = world.first_floor_number + slot - 1;
+        const QuickFloor& floor = _game.floor(floor_index);
+        world.floor_x[slot] = floor.x;
+        world.floor_y[slot] = floor.y;
+    }
+    if(snapshot.floor_count > 0)
+    {
+        world.tower_x = _game.floor(snapshot.floor_count - 1).x;
+    }
+    return world;
+}
+
+void QuickGameScene::_rebuild_worker_sprites(const QuickGameSnapshot& snapshot)
+{
+    _worker_sprites.clear();
+    for(int index = 0; index < GameplayWorkerField::worker_count; ++index)
+    {
+        const GameplayWorker& worker = _gameplay_workers.worker(index);
+        if(worker.state == 0)
+        {
+            continue;
+        }
+        const int frame = GameplayWorkerField::source_frame(worker);
+        if(frame < 0 || frame >= 8)
+        {
+            continue;
+        }
+        const generated::UiCompositeAsset& asset = worker.variant == 1 ?
+                *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
+        show_ui_composite(
+                asset, _screen_x(worker.x_fixed),
+                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites, 10);
     }
 }
 

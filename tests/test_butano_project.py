@@ -53,6 +53,11 @@ def test_phase4_ui_shell_uses_original_assets_and_localization() -> None:
     assert "quick_game_instruction_lines" in shell
     assert "build_city_instruction_lines" in shell
     assert "UiScene::Settings" in shell
+    assert "UiScene::ResetCityConfirm" in shell
+    assert "localized_strings[language][81]" in shell
+    assert "reset_city_confirmation_lines" in shell
+    assert "localized_strings[language][9]" in shell
+    assert "localized_strings[language][10]" in shell
     assert "UiScene::InstructionsPage" in shell
     assert "UiScene::About" in shell
     assert "save_dirty" in main
@@ -137,9 +142,8 @@ def test_phase5_quick_game_scene_consumes_platform_neutral_simulation() -> None:
     assert "chances" in scene.lower()
 
     assert "QuickGameScene" in main
-    assert "GameRequest::QuickGame" in main
-    assert "pending_game_request()" in main
-    assert "clear_game_request()" in main
+    assert "UiAction::StartQuickGame" in main
+    assert "TowerSessionCoordinator" in main
     assert "quick_game.update" in main
 
     # Gameplay physics remains in quick_game.cpp, not duplicated in the Butano renderer.
@@ -215,15 +219,15 @@ def test_phase8_build_city_scene_uses_original_city_art_and_core() -> None:
     assert "generated::city_building_1_f0" in scene
     assert "generated::city_building_4_f3" in scene
     assert "generated::city_lot_f" in scene
-    assert "generated::city_status_icon_f0" in scene
+    assert "generated::city_population_icon" in scene
     assert "generated::hud_brown_digit_f0" in scene
-    assert "generated::city_panel_f0" in scene
+    assert "generated::city_status_panel_f0" in scene
     assert "generated::city_effect_f0" in scene
     assert "placement_valid" in scene
     assert "_show_composite(*lot_assets[0], x, y)" not in scene
     assert "construction_request" in scene
     assert "BuildCityScene" in main
-    assert "GameRequest::BuildCity" in main
+    assert "UiAction::StartBuildCity" in main
     assert "build_city.update" in main
 
     # City rules remain in build_city.cpp, not duplicated in the Butano renderer.
@@ -256,7 +260,7 @@ def test_phase9_build_city_uses_dedicated_tower_construction_scene_and_roof_asse
     assert "mesh_id = 20" not in source
 
     assert "TowerConstructionScene" in main
-    assert "construction.active()" in main
+    assert "RuntimeScene::Construction" in main
     assert "build_city.construction_request()" in main
     assert "build_city.clear_construction_request()" in main
     assert "build_city.accept_constructed_tower" in main
@@ -268,15 +272,16 @@ def test_phase9_construction_handoff_does_not_persist_until_city_placement() -> 
     scene = (root / "gba" / "src" / "tower_construction_scene.cpp").read_text()
 
     assert "TowerConstructionScene construction" in main
-    assert "if(construction.active())" in main
-    assert "TowerConstructionSceneUpdateResult result = construction.update(input)" in main
-    assert "build_city.accept_constructed_tower(result.building_type, result.population, result.roof)" in main
+    assert "case tb::RuntimeScene::Construction:" in main
+    assert "TowerConstructionSceneUpdateResult result = construction.update(input, save)" in main
+    assert "build_city.accept_constructed_tower(result.building_type, result.population, result.roof, save)" in main
     assert "build_city.clear_construction_request()" in main
-    assert "construction.start(request, controller.language())" in main
+    assert "construction.start(request, controller.language(), save)" in main
     assert "store_save" not in scene
 
-    construction_branch = main.split("if(construction.active())", 1)[1].split("else if(quick_game.active())", 1)[0]
-    assert "store_save(save)" not in construction_branch
+    construction_branch = main.split("case tb::RuntimeScene::Construction:", 1)[1].split("case tb::RuntimeScene::Ui:", 1)[0]
+    assert "if(result.save_dirty)" in construction_branch
+    assert "store_save(save)" in construction_branch
 
 
 def test_playability_backdrops_are_scene_owned_and_never_boot_black() -> None:
@@ -437,9 +442,9 @@ def test_fix7_crane_and_build_city_use_separate_reference_state_and_compositor_a
 
     # Build City uses the recovered JAR compositor instead of the old text/placeholder shell.
     for asset in (
-        "city_status_icon_f0",
+        "city_population_icon",
         "hud_brown_digit_f0",
-        "city_panel_f0",
+        "city_status_panel_f0",
         "city_building_1_f3",
         "city_lot_f3",
         "city_effect_f0",
@@ -450,3 +455,79 @@ def test_fix7_crane_and_build_city_use_separate_reference_state_and_compositor_a
     assert "grid_spacing = 17" in city_scene
     assert "localized_strings[_language][92]" not in city_scene  # no fake Build City title over the board
     assert "value_line(generated::localized_strings[_language][82]" not in city_scene
+
+
+def test_fix11_build_city_scene_owns_event_modal_and_defers_hall_submission() -> None:
+    root = _root()
+    header = (root / "gba/include/tb/build_city_scene.h").read_text()
+    scene = (root / "gba/src/build_city_scene.cpp").read_text()
+    main = (root / "gba/src/main.cpp").read_text()
+
+    assert '#include "tb/build_city_events.h"' in header
+    assert "BuildCityEventController _events" in header
+    assert "_deferred_placement_score" in header
+    assert "_placement_score_pending" in header
+    assert "on_city_entered" in scene
+    assert "on_constructed_tower_accepted" in scene
+    assert "on_placement_committed" in scene
+    assert "_events.has_event()" in scene
+    assert "input.pressed(Key::A) || input.pressed(Key::Start)" in scene
+    assert "_events.acknowledge(save)" in scene
+    assert "result.placement_committed = true" in scene
+    assert "result.committed_total_population = _deferred_placement_score" in scene
+
+    # Construction return needs the save snapshot so event 3/38 eligibility is evaluated at the exact handoff.
+    assert "accept_constructed_tower(uint8_t building_type, int population, uint8_t roof, const SaveData& save)" in header
+    assert "build_city.accept_constructed_tower(result.building_type, result.population, result.roof, save)" in main
+
+
+def test_fix11_build_city_scene_uses_recovered_hud_modal_and_placement_animation() -> None:
+    root = _root()
+    header = (root / "gba/include/tb/build_city_scene.h").read_text()
+    scene = (root / "gba/src/build_city_scene.cpp").read_text()
+
+    assert "_show_event_modal" in header
+    assert "_placement_flash_ms" in header
+    assert "generated::city_population_icon" in scene
+    assert "generated::city_status_browse" in scene
+    assert "generated::city_status_placement" in scene
+    assert "generated::city_status_panel_f0" in scene
+    assert "generated::city_status_panel_f3" in scene
+    assert "generated::city_edge_top_left" in scene
+    assert "generated::city_edge_bottom_right" in scene
+    assert "generated::city_continue_arrow" in scene
+    assert "generated::city_progress_segment" in scene
+    assert "generated::city_modal_lines" in scene
+    assert "snapshot.current_milestone_population" in scene
+    assert "snapshot.next_milestone_population" in scene
+    assert "snapshot.replacement_population" in scene
+    assert "snapshot.placement_transition_ms" in scene
+    assert "snapshot.placement_capabilities" in scene
+    assert "% 800" in scene
+    assert "build_city_valid_lot_rgb" in scene
+    assert "_placement_flash_ms >= 400" not in scene
+
+
+def test_fix11_construction_scene_uses_house_instruction_failure_and_trophy_modals() -> None:
+    root = _root()
+    save_h = (root / "gba/include/tb/save_data.h").read_text()
+    header = (root / "gba/include/tb/tower_construction_scene.h").read_text()
+    scene = (root / "gba/src/tower_construction_scene.cpp").read_text()
+    main = (root / "gba/src/main.cpp").read_text()
+
+    assert "construction_instructions_seen_mask" in save_h
+    assert "construction_instructions_seen" in save_h
+    assert "mark_construction_instructions_seen" in save_h
+    assert "bool save_dirty" in header
+    assert "const SaveData& save" in header
+    assert "SaveData& save" in header
+    assert "_modal_localization_index" in header
+    assert "_pending_result" in header
+    assert "generated::city_modal_lines" in scene
+    assert "generated::city_continue_arrow" in scene
+    assert "_modal_localization_index = 55" in scene
+    assert "_modal_localization_index = 56" in scene
+    assert "_modal_localization_index = 57" in scene
+    assert "mark_construction_instructions_seen(save)" in scene
+    assert "construction.update(input, save)" in main
+    assert "construction.start(request, controller.language(), save)" in main

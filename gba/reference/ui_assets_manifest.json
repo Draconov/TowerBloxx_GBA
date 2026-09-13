@@ -423,6 +423,116 @@
         ],
         "width": 21
       },
+      "comparison_panel_active": {
+        "bpp": 4,
+        "height": 9,
+        "name": "city_comparison_panel_active",
+        "palette_entries": 3,
+        "parts": [
+          {
+            "asset": "city_comparison_panel_active_p0",
+            "height": 16,
+            "screen_x": 4,
+            "screen_y": 4,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 32
+          }
+        ],
+        "width": 24
+      },
+      "continue_arrow": {
+        "bpp": 4,
+        "height": 5,
+        "name": "city_continue_arrow",
+        "palette_entries": 3,
+        "parts": [
+          {
+            "asset": "city_continue_arrow_p0",
+            "height": 8,
+            "screen_x": 1,
+            "screen_y": 2,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 8
+          }
+        ],
+        "width": 7
+      },
+      "edge_clips": [
+        {
+          "bpp": 4,
+          "height": 23,
+          "name": "city_edge_top_left",
+          "palette_entries": 5,
+          "parts": [
+            {
+              "asset": "city_edge_top_left_p0",
+              "height": 16,
+              "screen_x": 3,
+              "screen_y": -3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 3
+        },
+        {
+          "bpp": 4,
+          "height": 23,
+          "name": "city_edge_top_right",
+          "palette_entries": 5,
+          "parts": [
+            {
+              "asset": "city_edge_top_right_p0",
+              "height": 16,
+              "screen_x": 3,
+              "screen_y": -3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 3
+        },
+        {
+          "bpp": 4,
+          "height": 23,
+          "name": "city_edge_bottom_left",
+          "palette_entries": 4,
+          "parts": [
+            {
+              "asset": "city_edge_bottom_left_p0",
+              "height": 32,
+              "screen_x": 3,
+              "screen_y": 5,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 3
+        },
+        {
+          "bpp": 4,
+          "height": 23,
+          "name": "city_edge_bottom_right",
+          "palette_entries": 4,
+          "parts": [
+            {
+              "asset": "city_edge_bottom_right_p0",
+              "height": 32,
+              "screen_x": 3,
+              "screen_y": 5,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 3
+        }
+      ],
       "effects": [
         {
           "bpp": 4,
@@ -551,6 +661,80 @@
         ],
         "width": 12
       },
+      "panel_states": [
+        {
+          "bpp": 4,
+          "height": 11,
+          "name": "city_status_panel_f0",
+          "palette_entries": 6,
+          "parts": [
+            {
+              "asset": "city_status_panel_f0_p0",
+              "height": 16,
+              "screen_x": 0,
+              "screen_y": 3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 8
+        },
+        {
+          "bpp": 4,
+          "height": 11,
+          "name": "city_status_panel_f1",
+          "palette_entries": 10,
+          "parts": [
+            {
+              "asset": "city_status_panel_f1_p0",
+              "height": 16,
+              "screen_x": 0,
+              "screen_y": 3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 8
+        },
+        {
+          "bpp": 4,
+          "height": 11,
+          "name": "city_status_panel_f2",
+          "palette_entries": 11,
+          "parts": [
+            {
+              "asset": "city_status_panel_f2_p0",
+              "height": 16,
+              "screen_x": 0,
+              "screen_y": 3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 8
+        },
+        {
+          "bpp": 4,
+          "height": 11,
+          "name": "city_status_panel_f3",
+          "palette_entries": 4,
+          "parts": [
+            {
+              "asset": "city_status_panel_f3_p0",
+              "height": 16,
+              "screen_x": 0,
+              "screen_y": 3,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 8
+        }
+      ],
       "panels": [
         {
           "bpp": 4,
@@ -587,6 +771,80 @@
             }
           ],
           "width": 13
+        }
+      ],
+      "status_clips": [
+        {
+          "bpp": 4,
+          "height": 9,
+          "name": "city_population_icon",
+          "palette_entries": 4,
+          "parts": [
+            {
+              "asset": "city_population_icon_p0",
+              "height": 16,
+              "screen_x": 4,
+              "screen_y": 4,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 16
+            }
+          ],
+          "width": 9
+        },
+        {
+          "bpp": 4,
+          "height": 9,
+          "name": "city_status_placement",
+          "palette_entries": 4,
+          "parts": [
+            {
+              "asset": "city_status_placement_p0",
+              "height": 8,
+              "screen_x": 1,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 1,
+              "width": 8
+            }
+          ],
+          "width": 7
+        },
+        {
+          "bpp": 4,
+          "height": 9,
+          "name": "city_status_browse",
+          "palette_entries": 2,
+          "parts": [
+            {
+              "asset": "city_status_browse_p0",
+              "height": 8,
+              "screen_x": 1,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 1,
+              "width": 8
+            }
+          ],
+          "width": 7
+        },
+        {
+          "bpp": 4,
+          "height": 9,
+          "name": "city_status_aux",
+          "palette_entries": 5,
+          "parts": [
+            {
+              "asset": "city_status_aux_p0",
+              "height": 8,
+              "screen_x": 1,
+              "screen_y": 0,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 7
         }
       ],
       "status_icons": [
@@ -680,9 +938,384 @@
           ],
           "width": 6
         }
-      ]
+      ],
+      "type_badges": [
+        {
+          "bpp": 4,
+          "height": 7,
+          "name": "city_type_badge_1",
+          "palette_entries": 3,
+          "parts": [
+            {
+              "asset": "city_type_badge_1_p0",
+              "height": 8,
+              "screen_x": 2,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 4
+        },
+        {
+          "bpp": 4,
+          "height": 7,
+          "name": "city_type_badge_2",
+          "palette_entries": 3,
+          "parts": [
+            {
+              "asset": "city_type_badge_2_p0",
+              "height": 8,
+              "screen_x": 2,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 4
+        },
+        {
+          "bpp": 4,
+          "height": 7,
+          "name": "city_type_badge_3",
+          "palette_entries": 3,
+          "parts": [
+            {
+              "asset": "city_type_badge_3_p0",
+              "height": 8,
+              "screen_x": 2,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 4
+        },
+        {
+          "bpp": 4,
+          "height": 7,
+          "name": "city_type_badge_4",
+          "palette_entries": 3,
+          "parts": [
+            {
+              "asset": "city_type_badge_4_p0",
+              "height": 8,
+              "screen_x": 2,
+              "screen_y": 1,
+              "source_x": 0,
+              "source_y": 0,
+              "width": 8
+            }
+          ],
+          "width": 4
+        }
+      ],
+      "valid_lot_ring": {
+        "bpp": 4,
+        "height": 14,
+        "name": "city_valid_lot_ring",
+        "palette_entries": 2,
+        "parts": [
+          {
+            "asset": "city_valid_lot_ring_p0",
+            "height": 16,
+            "screen_x": 1,
+            "screen_y": 1,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 16
+          }
+        ],
+        "width": 14
+      }
     }
   },
+  "city_modal_wrapped_line_counts": {
+    "de-DE": [
+      2,
+      3,
+      2,
+      3,
+      2,
+      6,
+      3,
+      1,
+      2,
+      1,
+      3,
+      5,
+      5,
+      3,
+      4,
+      3,
+      4,
+      3,
+      3,
+      4,
+      2,
+      4,
+      3,
+      3,
+      2
+    ],
+    "en-EN": [
+      2,
+      3,
+      2,
+      2,
+      2,
+      5,
+      3,
+      1,
+      1,
+      1,
+      4,
+      4,
+      4,
+      3,
+      4,
+      2,
+      3,
+      2,
+      3,
+      4,
+      2,
+      4,
+      3,
+      3,
+      2
+    ],
+    "es-ES": [
+      2,
+      3,
+      2,
+      2,
+      2,
+      6,
+      3,
+      1,
+      1,
+      1,
+      3,
+      4,
+      5,
+      3,
+      4,
+      3,
+      3,
+      3,
+      3,
+      4,
+      2,
+      5,
+      3,
+      3,
+      2
+    ],
+    "fr-FR": [
+      2,
+      3,
+      2,
+      2,
+      2,
+      5,
+      3,
+      1,
+      1,
+      1,
+      4,
+      5,
+      5,
+      3,
+      4,
+      3,
+      3,
+      2,
+      3,
+      4,
+      2,
+      3,
+      2,
+      3,
+      2
+    ],
+    "it-IT": [
+      2,
+      3,
+      2,
+      3,
+      2,
+      6,
+      3,
+      1,
+      1,
+      1,
+      4,
+      3,
+      5,
+      3,
+      4,
+      3,
+      3,
+      2,
+      2,
+      5,
+      2,
+      4,
+      2,
+      3,
+      2
+    ]
+  },
+  "city_progress_segment": {
+    "bpp": 4,
+    "height": 1,
+    "name": "city_progress_segment",
+    "palette_entries": 2,
+    "parts": [
+      {
+        "asset": "city_progress_segment_p0",
+        "height": 8,
+        "screen_x": 0,
+        "screen_y": 4,
+        "source_x": 0,
+        "source_y": 0,
+        "width": 8
+      }
+    ],
+    "width": 8
+  },
+  "city_progress_tails": [
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f1",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f1_p0",
+          "height": 8,
+          "screen_x": 4,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 1
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f2",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f2_p0",
+          "height": 8,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 2
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f3",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f3_p0",
+          "height": 8,
+          "screen_x": 3,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 3
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f4",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f4_p0",
+          "height": 8,
+          "screen_x": 2,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 4
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f5",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f5_p0",
+          "height": 8,
+          "screen_x": 2,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 5
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f6",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f6_p0",
+          "height": 8,
+          "screen_x": 1,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 6
+    },
+    {
+      "bpp": 4,
+      "height": 1,
+      "name": "city_progress_tail_f7",
+      "palette_entries": 2,
+      "parts": [
+        {
+          "asset": "city_progress_tail_f7_p0",
+          "height": 8,
+          "screen_x": 1,
+          "screen_y": 4,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 7
+    }
+  ],
   "files": [
     {
       "path": "gba/graphics/ui/accuracy_star_f0_p0.bmp",
@@ -885,6 +1518,66 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/city_comparison_panel_active_p0.bmp",
+      "sha256": "a196c15fdd4c75e571c3cfafe8ce0b70422267ce1d967c1baa97b6292d1a2d81",
+      "size": 374
+    },
+    {
+      "path": "gba/graphics/ui/city_comparison_panel_active_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_continue_arrow_p0.bmp",
+      "sha256": "cf478bb7647af8763f2024fa9373f7f33cc6ba02197ed0201e980fb5a74668af",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_continue_arrow_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_bottom_left_p0.bmp",
+      "sha256": "ef61e46139a20414ef5581517eda55f2677915e1021ef6754a91560005f9a486",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_bottom_left_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_bottom_right_p0.bmp",
+      "sha256": "6265f60086aed2f522935f94e2f17486033b716c3bab2ea7d6155256b77b0ee9",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_bottom_right_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_top_left_p0.bmp",
+      "sha256": "9e205a10d7a33a35661b69ed96c0d9cb94d5eed7e563f8575885f079e89959bd",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_top_left_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_top_right_p0.bmp",
+      "sha256": "56907c646464f794074f5b89a1cffcca34fbce2732a607f202bddcb20c01598f",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_edge_top_right_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/city_effect_f0_p0.bmp",
       "sha256": "de6b8a23cfeb0083c2ed27c7a61c96c697d3dc30b8da9eb95bb42b50f3fc3fbe",
       "size": 630
@@ -1025,6 +1718,116 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/city_population_icon_p0.bmp",
+      "sha256": "8e07283e60e8371a36ef7a8d7694813a13b9c958545a6d8ebab2902c4bc4f99e",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/city_population_icon_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_segment_p0.bmp",
+      "sha256": "554d985e43f6c8ce8b2c4f82ffa844f23279ef9608a8a363db1c9fc63d90f20c",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_segment_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f1_p0.bmp",
+      "sha256": "edade9180b326b479e59b2733839dd809c38ebbb88c80a931248c54b2deef19a",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f1_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f2_p0.bmp",
+      "sha256": "d47586f3b1cb7d0b94c4a08a958a4f95d40d02844849c6aa059ee7b8f1267102",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f2_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f3_p0.bmp",
+      "sha256": "2bdeac21319fb3a2563a6c536da1a8e18271047b22ee5493c3611df135910448",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f3_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f4_p0.bmp",
+      "sha256": "dab5aef7f9077ebd39573507de9072432460db841c9c03552393c5624bab3632",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f4_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f5_p0.bmp",
+      "sha256": "dd5362bfdc4a82b364c3820a89580dba81bde7e6a1639ebb0101f681ab7b50f5",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f5_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f6_p0.bmp",
+      "sha256": "64b8ae56fbf4af8b72a8910abb764af0b5051737b58c82b84e45ba7e3bf4fa3c",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f6_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f7_p0.bmp",
+      "sha256": "20f2b819bbe872516a7474d4388e1a8a4a2f378a45e73a1a6a0377f345b5946b",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_progress_tail_f7_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_aux_p0.bmp",
+      "sha256": "08b08b0521cf6cadd1f14234aa451f3cfb67039071afdd7b5483cb41987b695a",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_status_aux_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_browse_p0.bmp",
+      "sha256": "52c2b9915601d874078e75db17dcf33564cbdd6cb88bbf148dfb5c740a2a323b",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_status_browse_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/city_status_icon_f0_p0.bmp",
       "sha256": "dc3f55abe98f7480261d05dd83351991f88d031f2064c6b54895ef6655f8a7d9",
       "size": 182
@@ -1071,6 +1874,106 @@
     },
     {
       "path": "gba/graphics/ui/city_status_icon_f4_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f0_p0.bmp",
+      "sha256": "5c93533973dfac0ec5723cd94aed1db9b7556b5c6294d7d7071de05215e042dd",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f0_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f1_p0.bmp",
+      "sha256": "1789094c56928809355b8215f01892337ed3edc92a634a37a58dd29ad503655a",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f1_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f2_p0.bmp",
+      "sha256": "575c0325c7e5b5e99794d6b48c8c2e73a2c7621e01ad74df6067c948994f9c05",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f2_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f3_p0.bmp",
+      "sha256": "d008deb4210611d9bf303e498a3ad2283b700ad4b669840cd8077b59c441f06c",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/city_status_panel_f3_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_status_placement_p0.bmp",
+      "sha256": "5eb017075ee55a111be8d7e16fa2b80a3eec50e21404df4c9caea380abb92002",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_status_placement_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_1_p0.bmp",
+      "sha256": "23b1e329eac26cc071ccb22c131bbbbdae9c92d6de753e64ba00940760e34442",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_1_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_2_p0.bmp",
+      "sha256": "1626d852abdddbd70d366f9c40a77a4d8941f00c3b24177a043345ac514693b6",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_2_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_3_p0.bmp",
+      "sha256": "1d8fbb80ec1baf01c496c6e39767c9fa82443ce6f26eae21694355704989f739",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_3_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_4_p0.bmp",
+      "sha256": "ecccab2d0a99b4ff1f4679210411a87e326b0f8cdc8c588335543a3fb38c7643",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/city_type_badge_4_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_valid_lot_ring_p0.bmp",
+      "sha256": "559e6db65aee0f2321c71b5dcb881bca9f6b65baf3206c94e14722a0e095a232",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/city_valid_lot_ring_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
@@ -2021,13 +2924,13 @@
     },
     {
       "path": "gba/include/generated/tower_localization.h",
-      "sha256": "f6223310afb828e88ce9f5f1f195f2238f04a3fa8c581bde1499e7029345d077",
-      "size": 80382
+      "sha256": "1936e3f5eb587ad81ce6b6179fef12bca1159cc3ebdddcde3afe729301ee59e9",
+      "size": 112485
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "118be6f8b7af7ca74fbe439ed76f54bc0b0eb8c74abcb164e907ba216365fee6",
-      "size": 33397
+      "sha256": "5140c38734449276dfd0746475bdfc3d3298746aabf258475e3c6b3b553aa099",
+      "size": 40588
     }
   ],
   "font_character_count": 118,
@@ -3750,7 +4653,14 @@
     "width": 230
   },
   "procedural_assets": [
-    "menu_highlight"
+    "menu_highlight",
+    "city_progress_segment",
+    "city_valid_lot_ring",
+    "city_comparison_panel_active",
+    "city_type_badge_1",
+    "city_type_badge_2",
+    "city_type_badge_3",
+    "city_type_badge_4"
   ],
   "source_resources": {
     "accuracy_stars": 35,
@@ -3761,6 +4671,7 @@
       26,
       27
     ],
+    "city_continue_arrow": 8,
     "city_effects": 29,
     "city_hanging_ui": 20,
     "city_lot": 28,
@@ -3791,7 +4702,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "6a1758dde495bf646244958e105a0437dd45aac4e61a057c0bba2673c481da56",
+  "tree_hash": "e993738265d85a67fad2a7e3ac73e57cf2337bf8019e5f522ea79372c34347e9",
   "utf8_characters": [
     "¡",
     "°",
@@ -3821,27 +4732,32 @@
     "de-DE": {
       "about": 20,
       "city": 32,
-      "quick": 21
+      "quick": 21,
+      "reset_city": 3
     },
     "en-EN": {
       "about": 19,
       "city": 28,
-      "quick": 18
+      "quick": 18,
+      "reset_city": 2
     },
     "es-ES": {
       "about": 17,
       "city": 31,
-      "quick": 21
+      "quick": 21,
+      "reset_city": 3
     },
     "fr-FR": {
       "about": 19,
       "city": 29,
-      "quick": 20
+      "quick": 20,
+      "reset_city": 2
     },
     "it-IT": {
       "about": 19,
       "city": 32,
-      "quick": 20
+      "quick": 20,
+      "reset_city": 2
     }
   }
 }

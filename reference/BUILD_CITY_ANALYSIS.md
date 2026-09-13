@@ -84,3 +84,26 @@ The old GBA scene centered city sprites on an invented tan/green 5x5 panel and o
 - the two browse-mode top-right value boxes begin at x=189 and x=213.
 
 The native scene now consumes resources 21, 24-29 and the original brown digit strip at those recovered anchors. Resources 24-27 use their stored roof byte as the frame selector. Resource 28 remains the red placement-outline family, resource 29 is the placement effect animation, and resource 23 is used for the separate discard selector. Locked-tower help is rendered only in the original 23-pixel bottom message panel; the population threshold comes from the BuildCity core rather than being duplicated in renderer constants.
+
+## Fix 14: exact valid-lot pulse and top HUD compositor
+
+A second pass over `m.a(Graphics, boolean)` closes three earlier presentation assumptions.
+
+The placement timer `x` advances modulo 800 ms. For selected family `t=1..4`, the source uses RGB endpoint pairs from `m.f`:
+
+- Residential: `#0054A0 -> #3CC8FF`
+- Commercial: `#A00200 -> #FF6946`
+- Office: `#009800 -> #37FF37`
+- Luxury: `#935A00 -> #F0FF00`
+
+The interpolation phase is triangular: `0 -> 400 -> 1` over timer values `0..799`. Each channel uses Java integer arithmetic `start + (end-start)*phase/400`. On every valid placement sector, both the 14x14 outer lot and its 12x12 inner region receive that color, while the 10x10 center keeps the normal lot color. The GBA renderer therefore uses a transparent-center 14x14 two-pixel ring with one shared mutable sprite palette. RGB888 is reduced to native GBA 5-bit channels only at the final palette write; the recovered timing/math remains exact.
+
+Resources 20-22 also have stricter call-site meanings than the earlier Fix-11 approximation:
+
+- resource 20 top edge clips occupy y `0..22`, so their centers are `(1,11)` and `(238,11)`; the lower clips remain centered at y=148;
+- resource 21 source x `9..15` is the orange/gold active-placement glyph, while source x `16..22` is the neutral gray browse/transition glyph;
+- resource 22 is the six-cell population backing at target x `19 + 8*n`, y=0. In the static state used by the current GBA compositor, cells 0-4 use source state 0 and cell 5 uses state 3. It is not the top-right comparison panel.
+
+The two top-right comparison boxes are Java2D rectangles. Their outer bounds are `(189,1,24,9)` and `(213,1,24,9)`. Active outer/inner colors are `#E2E2E2` and `#0D0C0C`; the city background already contains the inactive `#C7BFB2/#AD9C83` boxes. Active placement also draws a 4x7 family badge whose first six rows use `#4371D7/#E11A08/#11AF0C/#DA9F00` and whose last row uses `#0B2D8E/#841111/#045C00/#503800`. White comparison digits use five-pixel glyphs at four-pixel spacing with right anchors x=211 and x=235.
+
+Two visual details are deliberately left as follow-up rather than guessed here. The JAR has a `q/r/s` population digit-roll state which selects resource-22 states 1/2 during counter animation; Fix 14 uses the proven static state 0 + state-3 cap. The static initializer also exposes four city lot palette themes (`m.d/m.e`) selected as city progress advances; the current 240x160 background still bakes the level-zero lot palette. Those require their own state/timing pass.

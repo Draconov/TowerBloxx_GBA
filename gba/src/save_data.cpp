@@ -25,6 +25,7 @@ uint32_t checksum_for(const Data& data)
 SaveData make_default_save()
 {
     SaveData save{};
+    reset_hall_of_fame(save.hall_of_fame);
     finalize_save(save);
     return save;
 }
@@ -41,6 +42,11 @@ bool valid_save(const SaveData& save)
            save.checksum == checksum_for(save);
 }
 
+bool valid_legacy_v3_save(const LegacySaveDataV3& save)
+{
+    return save.magic == save_magic && save.version == legacy_save_version_v3 && save.checksum == checksum_for(save);
+}
+
 bool valid_legacy_v2_save(const LegacySaveDataV2& save)
 {
     return save.magic == save_magic &&
@@ -55,6 +61,12 @@ bool valid_legacy_save(const LegacySaveDataV1& save)
            save.checksum == checksum_for(save);
 }
 
+SaveData migrate_legacy_v3_save(const LegacySaveDataV3& legacy)
+{
+    SaveData save{};
+    save.language = legacy.language; save.sound_enabled = legacy.sound_enabled; save.quick_best_population = legacy.quick_best_population; save.quick_best_height = legacy.quick_best_height; save.quick_best_combo = legacy.quick_best_combo; save.city_tiles = legacy.city_tiles; save.city_tutorial_flags = legacy.city_tutorial_flags; save.reserved = legacy.reserved; reset_hall_of_fame(save.hall_of_fame); finalize_save(save); return save;
+}
+
 SaveData migrate_legacy_v2_save(const LegacySaveDataV2& legacy)
 {
     SaveData save{};
@@ -63,6 +75,7 @@ SaveData migrate_legacy_v2_save(const LegacySaveDataV2& legacy)
     save.quick_best_population = legacy.quick_best_population;
     save.quick_best_height = legacy.quick_best_height;
     save.quick_best_combo = legacy.quick_best_combo;
+    reset_hall_of_fame(save.hall_of_fame);
     finalize_save(save);
     return save;
 }
@@ -73,8 +86,33 @@ SaveData migrate_legacy_save(const LegacySaveDataV1& legacy)
     save.language = legacy.language;
     save.sound_enabled = legacy.sound_enabled;
     save.quick_best_population = legacy.quick_high_score;
+    reset_hall_of_fame(save.hall_of_fame);
     finalize_save(save);
     return save;
+}
+
+bool construction_instructions_seen(const SaveData& save)
+{
+    return (save.reserved[0] & construction_instructions_seen_mask) != 0;
+}
+
+bool mark_construction_instructions_seen(SaveData& save)
+{
+    if(construction_instructions_seen(save))
+    {
+        return false;
+    }
+    save.reserved[0] |= construction_instructions_seen_mask;
+    return true;
+}
+
+void reset_city_progress(SaveData& save)
+{
+    for(CityTileSave& tile : save.city_tiles)
+    {
+        tile = {};
+    }
+    save.city_tutorial_flags.fill(0);
 }
 
 QuickRecordFlags apply_quick_result(SaveData& save, const QuickGameResult& result)
@@ -99,6 +137,9 @@ QuickRecordFlags apply_quick_result(SaveData& save, const QuickGameResult& resul
 }
 
 #ifdef TB_HOST_TEST
+void finalize_legacy_v3_save_for_test(LegacySaveDataV3& save)
+{ save.checksum = checksum_for(save); }
+
 void finalize_legacy_v2_save_for_test(LegacySaveDataV2& save)
 {
     save.checksum = checksum_for(save);

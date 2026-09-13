@@ -22,7 +22,7 @@ void emit(const char* label, const tb::TowerConstruction& construction, int tick
               << snapshot.swing_amplitude_y << ',' << snapshot.vertical_swing_bias << ',' << snapshot.drop_velocity_x
               << ',' << snapshot.drop_velocity_y << ',' << int(snapshot.last_accuracy) << ',' << snapshot.combo_count
               << ',' << snapshot.combo_bonus_pending << ',' << snapshot.combo_meter_ms << ','
-              << snapshot.current_z_angle_degrees;
+              << snapshot.current_z_angle_degrees << ',' << snapshot.current_y_angle_degrees;
 
     const int first_visible = construction.floor_count() > 5 ? construction.floor_count() - 5 : 0;
     for(int index = first_visible; index < construction.floor_count(); ++index)

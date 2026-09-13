@@ -1,0 +1,281 @@
+{
+  "source": "Tower-Bloxx_v1522.jar m.class",
+  "events": [
+    {
+      "event_id": 0,
+      "localization_index": 36,
+      "trigger": "fresh_city_entered",
+      "persistent_flag": 0
+    },
+    {
+      "event_id": 1,
+      "localization_index": 37,
+      "trigger": "fresh_city_modal_chain",
+      "persistent_flag": 1
+    },
+    {
+      "event_id": 2,
+      "localization_index": 38,
+      "trigger": "fresh_city_modal_chain",
+      "persistent_flag": 2
+    },
+    {
+      "event_id": 3,
+      "localization_index": 39,
+      "trigger": "first_construction_return",
+      "persistent_flag": 3
+    },
+    {
+      "event_id": 4,
+      "localization_index": 40,
+      "trigger": "first_placement_committed",
+      "persistent_flag": 4
+    },
+    {
+      "event_id": 5,
+      "localization_index": 41,
+      "trigger": "milestone_1",
+      "persistent_flag": 5
+    },
+    {
+      "event_id": 6,
+      "localization_index": 43,
+      "trigger": "milestone_2",
+      "persistent_flag": 6
+    },
+    {
+      "event_id": 7,
+      "localization_index": 43,
+      "trigger": "milestone_3",
+      "persistent_flag": 7
+    },
+    {
+      "event_id": 8,
+      "localization_index": 43,
+      "trigger": "milestone_4",
+      "persistent_flag": 8
+    },
+    {
+      "event_id": 9,
+      "localization_index": 58,
+      "trigger": "milestone_5",
+      "persistent_flag": 9
+    },
+    {
+      "event_id": 10,
+      "localization_index": 43,
+      "trigger": "milestone_6",
+      "persistent_flag": 10
+    },
+    {
+      "event_id": 11,
+      "localization_index": 43,
+      "trigger": "milestone_7",
+      "persistent_flag": 11
+    },
+    {
+      "event_id": 12,
+      "localization_index": 43,
+      "trigger": "milestone_8",
+      "persistent_flag": 12
+    },
+    {
+      "event_id": 13,
+      "localization_index": 43,
+      "trigger": "milestone_9",
+      "persistent_flag": 13
+    },
+    {
+      "event_id": 14,
+      "localization_index": 43,
+      "trigger": "milestone_10",
+      "persistent_flag": 14
+    },
+    {
+      "event_id": 15,
+      "localization_index": 43,
+      "trigger": "milestone_11",
+      "persistent_flag": 15
+    },
+    {
+      "event_id": 16,
+      "localization_index": 43,
+      "trigger": "milestone_12",
+      "persistent_flag": 16
+    },
+    {
+      "event_id": 17,
+      "localization_index": 43,
+      "trigger": "milestone_13",
+      "persistent_flag": 17
+    },
+    {
+      "event_id": 18,
+      "localization_index": 43,
+      "trigger": "milestone_14",
+      "persistent_flag": 18
+    },
+    {
+      "event_id": 19,
+      "localization_index": 43,
+      "trigger": "milestone_15",
+      "persistent_flag": 19
+    },
+    {
+      "event_id": 20,
+      "localization_index": 43,
+      "trigger": "milestone_16",
+      "persistent_flag": 20
+    },
+    {
+      "event_id": 21,
+      "localization_index": 59,
+      "trigger": "milestone_17",
+      "persistent_flag": 21
+    },
+    {
+      "event_id": 22,
+      "localization_index": 43,
+      "trigger": "milestone_18",
+      "persistent_flag": 22
+    },
+    {
+      "event_id": 23,
+      "localization_index": 60,
+      "trigger": "milestone_19",
+      "persistent_flag": 23
+    },
+    {
+      "event_id": 24,
+      "localization_index": 45,
+      "trigger": "city_level_1",
+      "persistent_flag": 24
+    },
+    {
+      "event_id": 25,
+      "localization_index": 44,
+      "trigger": "city_level_2",
+      "persistent_flag": 25
+    },
+    {
+      "event_id": 26,
+      "localization_index": 44,
+      "trigger": "city_level_3",
+      "persistent_flag": 26
+    },
+    {
+      "event_id": 27,
+      "localization_index": 44,
+      "trigger": "city_level_4",
+      "persistent_flag": 27
+    },
+    {
+      "event_id": 28,
+      "localization_index": 44,
+      "trigger": "city_level_5",
+      "persistent_flag": 28
+    },
+    {
+      "event_id": 29,
+      "localization_index": 44,
+      "trigger": "city_level_6",
+      "persistent_flag": 29
+    },
+    {
+      "event_id": 30,
+      "localization_index": 44,
+      "trigger": "city_level_7",
+      "persistent_flag": 30
+    },
+    {
+      "event_id": 31,
+      "localization_index": 44,
+      "trigger": "city_level_8",
+      "persistent_flag": 31
+    },
+    {
+      "event_id": 32,
+      "localization_index": 44,
+      "trigger": "city_level_9",
+      "persistent_flag": 32
+    },
+    {
+      "event_id": 33,
+      "localization_index": 42,
+      "trigger": "milestone_2_progress_line",
+      "persistent_flag": 33
+    },
+    {
+      "event_id": 34,
+      "localization_index": 47,
+      "trigger": "building_unlock_commercial",
+      "persistent_flag": 34
+    },
+    {
+      "event_id": 35,
+      "localization_index": 49,
+      "trigger": "building_unlock_office",
+      "persistent_flag": 35
+    },
+    {
+      "event_id": 36,
+      "localization_index": 50,
+      "trigger": "building_unlock_luxury",
+      "persistent_flag": 36
+    },
+    {
+      "event_id": 37,
+      "localization_index": 48,
+      "trigger": "commercial_neighbor_rule",
+      "persistent_flag": 37
+    },
+    {
+      "event_id": 38,
+      "localization_index": 46,
+      "trigger": "construction_return_at_milestone_5",
+      "persistent_flag": 38
+    },
+    {
+      "event_id": 39,
+      "localization_index": 51,
+      "trigger": "trophy_unlock_residential",
+      "persistent_flag": 39
+    },
+    {
+      "event_id": 40,
+      "localization_index": 51,
+      "trigger": "trophy_unlock_commercial",
+      "persistent_flag": 40
+    },
+    {
+      "event_id": 41,
+      "localization_index": 51,
+      "trigger": "trophy_unlock_office",
+      "persistent_flag": 41
+    },
+    {
+      "event_id": 42,
+      "localization_index": 51,
+      "trigger": "trophy_unlock_luxury",
+      "persistent_flag": 42
+    },
+    {
+      "event_id": 43,
+      "localization_index": 52,
+      "trigger": "milestone_20_final_level",
+      "persistent_flag": 43
+    },
+    {
+      "event_id": 44,
+      "localization_index": 53,
+      "trigger": "all_25_sectors_full",
+      "persistent_flag": 44
+    },
+    {
+      "event_id": 45,
+      "localization_index": 54,
+      "trigger": "after_parade_ultimate_goal",
+      "persistent_flag": 45
+    }
+  ]
+}

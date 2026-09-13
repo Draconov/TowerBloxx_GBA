@@ -31,6 +31,10 @@ def test_menu_background_matches_reference_jar_sky_band() -> None:
     assert image.getpixel((0, 0))[:3] == (0x80, 0xBB, 0xE7)
     assert image.getpixel((0, 20))[:3] == (0x9A, 0xC8, 0xEA)
 
+    # The original menu also has pale cloud banks behind the tower/logo scene.
+    assert image.getpixel((20, 40))[:3] == (170, 204, 230)
+    assert image.getpixel((180, 42))[:3] == (170, 204, 230)
+
 
 def test_construction_background_uses_recovered_nokia_layers(tower_bloxx_jar: Path) -> None:
     image = render_construction_background(tower_bloxx_jar)

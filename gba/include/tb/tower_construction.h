@@ -87,6 +87,7 @@ struct TowerConstructionSnapshot
     int drop_velocity_x = 0;
     int drop_velocity_y = 0;
     int current_z_angle_degrees = 0;
+    int current_y_angle_degrees = 0;
     int crane_angle_degrees = 0;
     int combo_count = 0;
     int combo_bonus_pending = 0;
@@ -160,6 +161,8 @@ private:
     int _drop_start_ms = 0;
     int _current_z_angle_degrees = 0;
     int _slip_target_z_angle_degrees = 0;
+    int _current_y_angle_degrees = 0;
+    int _slip_target_y_angle_degrees = 0;
 
     int _camera_y = 512;
     int _camera_target_y = 512;

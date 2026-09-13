@@ -27,6 +27,8 @@ struct BuildCityUpdateResult
 {
     bool exit = false;
     bool save_dirty = false;
+    bool placement_committed = false;
+    int committed_total_population = 0;
 };
 
 struct BuildCitySnapshot
@@ -48,6 +50,12 @@ struct BuildCitySnapshot
     int pending_population = 0;
     uint8_t pending_roof = 0;
     int last_population_delta = 0;
+    int occupied_tiles = 0;
+    int current_milestone_population = 0;
+    int next_milestone_population = 0;
+    int placement_transition_ms = 0;
+    int replacement_population = 0;
+    std::array<uint8_t, 25> placement_capabilities{};
 };
 
 class BuildCity
@@ -82,6 +90,10 @@ private:
     int _pending_population = 0;
     uint8_t _pending_roof = 0;
     int _last_population_delta = 0;
+    int _occupied_tiles = 0;
+    int _placement_transition_ms = 0;
+    int _replacement_population = 0;
+    std::array<int, 25> _saved_populations{};
     BuildCityConstructionRequest _request{};
     std::array<uint8_t, 25> _placement_capabilities{};
 

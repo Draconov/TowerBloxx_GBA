@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 
 #include "tb/app_state.h"
@@ -57,6 +58,9 @@ int main()
     {
         assert(flag == 0);
     }
+    assert(tb::save_version == 4);
+    for(const auto& table : save.hall_of_fame.tables) for(const auto& entry : table) { assert(std::strcmp(entry.name.data(), "SUMEA") == 0); assert(entry.score == 0); }
+    assert(std::strcmp(save.hall_of_fame.last_player_name.data(), "SUMEA") == 0);
 
     tb::SaveData city_round_trip = tb::make_default_save();
     city_round_trip.city_tiles[12].type = 3;
@@ -90,6 +94,7 @@ int main()
     assert(migrated_v2.city_tiles[12].population == 0);
     assert(migrated_v2.city_tiles[12].roof == 0);
     assert(tb::valid_save(migrated_v2));
+    tb::LegacySaveDataV3 legacy_v3{}; legacy_v3.language = 2; legacy_v3.sound_enabled = 0; legacy_v3.quick_best_population = 3333; legacy_v3.quick_best_height = 44; legacy_v3.quick_best_combo = 8; legacy_v3.city_tiles[0].type = 1; legacy_v3.city_tiles[0].population = 75; legacy_v3.city_tiles[0].roof = 1; legacy_v3.city_tiles[24].type = 4; legacy_v3.city_tiles[24].population = 2222; legacy_v3.city_tiles[24].roof = 2; legacy_v3.city_tutorial_flags[0] = 1; legacy_v3.city_tutorial_flags[45] = 1; tb::finalize_legacy_v3_save_for_test(legacy_v3); assert(tb::valid_legacy_v3_save(legacy_v3)); const tb::SaveData migrated_v3 = tb::migrate_legacy_v3_save(legacy_v3); assert(migrated_v3.version == tb::save_version); assert(migrated_v3.language == 2); assert(migrated_v3.sound_enabled == 0); assert(migrated_v3.quick_best_population == 3333); assert(migrated_v3.quick_best_height == 44); assert(migrated_v3.quick_best_combo == 8); assert(migrated_v3.city_tiles[0].population == 75); assert(migrated_v3.city_tiles[24].population == 2222); assert(migrated_v3.city_tutorial_flags[0] == 1); assert(migrated_v3.city_tutorial_flags[45] == 1); assert(std::strcmp(migrated_v3.hall_of_fame.tables[0][0].name.data(), "SUMEA") == 0); assert(tb::valid_save(migrated_v3));
 
     save.quick_best_population = 123456;
     assert(! tb::valid_save(save));
@@ -143,101 +148,228 @@ int main()
     tb::finalize_save(corrupt);
     assert(! tb::valid_save(corrupt));
 
+    // Reset City must match the original citymode reset boundary: all city tiles
+    // and tutorial/event flags are cleared while settings and Quick Game records survive.
+    save = tb::make_default_save();
+    save.language = 3;
+    save.sound_enabled = 0;
+    save.quick_best_population = 4321;
+    save.quick_best_height = 77;
+    save.quick_best_combo = 9;
+    save.city_tiles[0].type = 4;
+    save.city_tiles[0].population = 999;
+    save.city_tiles[0].roof = 2;
+    save.city_tiles[24].type = 2;
+    save.city_tiles[24].population = 123;
+    save.city_tutorial_flags[0] = 1;
+    save.city_tutorial_flags[45] = 1;
+    assert(! tb::construction_instructions_seen(save));
+    assert(tb::mark_construction_instructions_seen(save));
+    assert(tb::construction_instructions_seen(save));
+    assert(! tb::mark_construction_instructions_seen(save));
+    const uint8_t construction_state_before_reset = save.reserved[0];
+    tb::reset_city_progress(save);
+    assert(save.language == 3);
+    assert(save.sound_enabled == 0);
+    assert(save.quick_best_population == 4321);
+    assert(save.quick_best_height == 77);
+    assert(save.quick_best_combo == 9);
+    for(const tb::CityTileSave& tile : save.city_tiles)
+    {
+        assert(tile.type == 0);
+        assert(tile.population == 0);
+        assert(tile.roof == 0);
+    }
+    for(uint8_t flag : save.city_tutorial_flags)
+    {
+        assert(flag == 0);
+    }
+    assert(save.reserved[0] == construction_state_before_reset);
+    assert(tb::construction_instructions_seen(save));
+
+    save = tb::make_default_save();
     save = tb::make_default_save();
     tb::UiController ui(save);
     assert(ui.scene() == tb::UiScene::Title);
     assert(ui.selection() == 0);
     assert(ui.language() == 0);
     assert(ui.sound_enabled());
-    assert(ui.pending_game_request() == tb::GameRequest::None);
 
     auto result = ui.update(fresh(tb::Key::A), save);
     assert(! result.save_dirty);
+    assert(result.action == tb::UiAction::None);
     assert(ui.scene() == tb::UiScene::MainMenu);
-    assert(ui.selection() == 0);
+    assert(ui.root_menu_count() == 5);
+    assert(ui.root_menu_item(0) == tb::RootMenuItem::BuildCity);
+    assert(ui.root_menu_item(1) == tb::RootMenuItem::QuickGame);
+    assert(ui.root_menu_item(2) == tb::RootMenuItem::HighScores);
+    assert(ui.root_menu_item(3) == tb::RootMenuItem::Settings);
+    assert(ui.root_menu_item(4) == tb::RootMenuItem::Instructions);
 
-    // Main menu: New game, Settings, Instructions, About; navigation wraps.
+    // Root navigation wraps across the visible list and launches modes directly.
     ui.update(fresh(tb::Key::Up), save);
-    assert(ui.selection() == 3);
+    assert(ui.selection() == 4);
     ui.update(fresh(tb::Key::Down), save);
-    assert(ui.selection() == 0);
-
-    // New Game -> Quick Game / Build City.
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::NewGameMenu);
-    assert(ui.selection() == 0);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.pending_game_request() == tb::GameRequest::QuickGame);
-    ui.clear_game_request();
-    assert(ui.pending_game_request() == tb::GameRequest::None);
-    ui.update(fresh(tb::Key::Down), save);
-    assert(ui.selection() == 1);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.pending_game_request() == tb::GameRequest::BuildCity);
-    ui.clear_game_request();
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::MainMenu);
-    assert(ui.selection() == 0);
-
-    // Settings toggles sound and cycles exactly five languages, returning dirty state.
-    ui.update(fresh(tb::Key::Down), save);
-    assert(ui.selection() == 1);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::Settings);
     assert(ui.selection() == 0);
     result = ui.update(fresh(tb::Key::A), save);
-    assert(result.save_dirty);
-    assert(! ui.sound_enabled());
-    assert(save.sound_enabled == 0);
-    assert(! tb::valid_save(save));
-    tb::finalize_save(save);
-    assert(tb::valid_save(save));
+    assert(result.action == tb::UiAction::StartBuildCity);
+    assert(ui.scene() == tb::UiScene::MainMenu);
 
-    ui.update(fresh(tb::Key::Down), save);
-    assert(ui.selection() == 1);
+    tb::UiController quick_ui(save);
+    quick_ui.update(fresh(tb::Key::A), save);
+    quick_ui.update(fresh(tb::Key::Down), save);
+    result = quick_ui.update(fresh(tb::Key::A), save);
+    assert(result.action == tb::UiAction::StartQuickGame);
+
+    // Continue is conditional and shifts the other root items down by one row.
+    ui.set_suspended_session_available(true);
+    assert(ui.root_menu_count() == 6);
+    assert(ui.root_menu_item(0) == tb::RootMenuItem::ContinueGame);
+    assert(ui.root_menu_item(1) == tb::RootMenuItem::BuildCity);
+    assert(ui.root_menu_item(2) == tb::RootMenuItem::QuickGame);
+    assert(ui.root_menu_item(3) == tb::RootMenuItem::HighScores);
+    assert(ui.root_menu_item(4) == tb::RootMenuItem::Settings);
+    assert(ui.root_menu_item(5) == tb::RootMenuItem::Instructions);
+
+    // Continue emits a resume action.
+    while(ui.selection() != 0) ui.update(fresh(tb::Key::Up), save);
     result = ui.update(fresh(tb::Key::A), save);
+    assert(result.action == tb::UiAction::ResumeSuspended);
+
+    // Starting another tower mode while suspended requires the safe-default warning.
+    ui.update(fresh(tb::Key::Down), save); // Build City.
+    result = ui.update(fresh(tb::Key::A), save);
+    assert(result.action == tb::UiAction::None);
+    assert(ui.scene() == tb::UiScene::OverwriteGameConfirm);
+    assert(ui.selection() == 1); // No.
+    result = ui.update(fresh(tb::Key::A), save);
+    assert(result.action == tb::UiAction::None);
+    assert(ui.scene() == tb::UiScene::MainMenu);
+    assert(ui.selection() == 1);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::OverwriteGameConfirm);
+    ui.update(fresh(tb::Key::Up), save); // Yes.
+    result = ui.update(fresh(tb::Key::A), save);
+    assert(result.action == tb::UiAction::StartBuildCity);
+    assert(ui.scene() == tb::UiScene::MainMenu);
+
+    // High Scores table selector and safe clear confirmation.
+    tb::insert_hall_score(save.hall_of_fame, tb::HallTable::QuickGame, 900, "OLD");
+    tb::UiController hall_ui(save);
+    hall_ui.update(fresh(tb::Key::A), save);
+    hall_ui.update(fresh(tb::Key::Down), save);
+    hall_ui.update(fresh(tb::Key::Down), save); // High Scores.
+    hall_ui.update(fresh(tb::Key::A), save);
+    assert(hall_ui.scene() == tb::UiScene::HighScoreSelect);
+    assert(hall_ui.selection() == 0);
+    hall_ui.update(fresh(tb::Key::A), save);
+    assert(hall_ui.scene() == tb::UiScene::HighScoreTable);
+    assert(hall_ui.selected_hall_table() == tb::HallTable::BuildCity);
+    hall_ui.update(fresh(tb::Key::B), save);
+    assert(hall_ui.scene() == tb::UiScene::HighScoreSelect);
+    hall_ui.update(fresh(tb::Key::Down), save);
+    hall_ui.update(fresh(tb::Key::Down), save); // Clear High Scores.
+    hall_ui.update(fresh(tb::Key::A), save);
+    assert(hall_ui.scene() == tb::UiScene::ClearHighScoresConfirm);
+    assert(hall_ui.selection() == 1); // No.
+    hall_ui.update(fresh(tb::Key::B), save);
+    assert(hall_ui.scene() == tb::UiScene::HighScoreSelect);
+    assert(save.hall_of_fame.tables[1][0].score == 900);
+    hall_ui.update(fresh(tb::Key::Down), save);
+    hall_ui.update(fresh(tb::Key::Down), save);
+    hall_ui.update(fresh(tb::Key::A), save);
+    assert(hall_ui.scene() == tb::UiScene::ClearHighScoresConfirm);
+    hall_ui.update(fresh(tb::Key::Up), save);
+    result = hall_ui.update(fresh(tb::Key::A), save);
     assert(result.save_dirty);
-    assert(ui.language() == 1);
-    assert(save.language == 1);
-    ui.update(fresh(tb::Key::Left), save);
-    assert(ui.language() == 0);
-    ui.update(fresh(tb::Key::Left), save);
-    assert(ui.language() == 4);
-    ui.update(fresh(tb::Key::Right), save);
-    assert(ui.language() == 0);
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::MainMenu);
+    assert(hall_ui.scene() == tb::UiScene::HighScoreSelect);
+    assert(save.hall_of_fame.tables[1][0].score == 0);
+    assert(std::strcmp(save.hall_of_fame.last_player_name.data(), "SUMEA") == 0);
 
-    // Instructions -> Quick/City page and B unwinds one level at a time.
-    ui.update(fresh(tb::Key::Down), save); // Settings
-    ui.update(fresh(tb::Key::Down), save); // Instructions
-    assert(ui.selection() == 2);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::InstructionsMenu);
-    assert(ui.selection() == 0);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::InstructionsPage);
-    assert(ui.instructions_page() == 0);
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::InstructionsMenu);
-    ui.update(fresh(tb::Key::Down), save);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::InstructionsPage);
-    assert(ui.instructions_page() == 1);
-    ui.update(fresh(tb::Key::B), save);
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::MainMenu);
+    // Settings remains three rows and Reset City retains its safe confirmation behavior.
+    tb::UiController settings_ui(save);
+    settings_ui.update(fresh(tb::Key::A), save);
+    settings_ui.update(fresh(tb::Key::Down), save);
+    settings_ui.update(fresh(tb::Key::Down), save);
+    settings_ui.update(fresh(tb::Key::Down), save); // Settings.
+    settings_ui.update(fresh(tb::Key::A), save);
+    assert(settings_ui.scene() == tb::UiScene::Settings);
+    result = settings_ui.update(fresh(tb::Key::A), save);
+    assert(result.save_dirty);
+    assert(! settings_ui.sound_enabled());
+    settings_ui.update(fresh(tb::Key::Down), save);
+    settings_ui.update(fresh(tb::Key::A), save);
+    assert(settings_ui.language() == 1);
+    save.quick_best_population = 2222;
+    save.city_tiles[12].type = 3;
+    save.city_tiles[12].population = 800;
+    save.city_tutorial_flags[7] = 1;
+    settings_ui.update(fresh(tb::Key::Down), save);
+    settings_ui.update(fresh(tb::Key::A), save);
+    assert(settings_ui.scene() == tb::UiScene::ResetCityConfirm);
+    assert(settings_ui.selection() == 1);
+    settings_ui.update(fresh(tb::Key::Up), save);
+    result = settings_ui.update(fresh(tb::Key::A), save);
+    assert(result.save_dirty);
+    assert(save.city_tiles[12].type == 0);
+    assert(save.city_tutorial_flags[7] == 0);
+    assert(save.quick_best_population == 2222);
 
-    // About is the fourth main menu item, and Main B returns to Title.
-    ui.update(fresh(tb::Key::Up), save);
-    assert(ui.selection() == 3);
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::About);
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::MainMenu);
-    ui.update(fresh(tb::Key::B), save);
-    assert(ui.scene() == tb::UiScene::Title);
+    // Score submission: qualification -> name entry -> persisted table.
+    tb::UiController score_ui(save);
+    score_ui.begin_score_submission(tb::HallTable::QuickGame, 1234, save, tb::ScoreFlowReturn::RootMenu);
+    assert(score_ui.scene() == tb::UiScene::ScoreQualification);
+    assert(score_ui.pending_qualification().qualifies);
+    assert(score_ui.pending_qualification().position == 1);
+    assert(score_ui.pending_score() == 1234);
+    score_ui.update(fresh(tb::Key::A), save);
+    assert(score_ui.scene() == tb::UiScene::NameEntry);
+    assert(std::strcmp(score_ui.name_entry().data(), "SUMEA") == 0);
+    assert(score_ui.name_cursor() == 0);
+    score_ui.update(fresh(tb::Key::A), save); // First typed A replaces SUMEA.
+    assert(std::strcmp(score_ui.name_entry().data(), "A") == 0);
+    result = score_ui.update(fresh(tb::Key::Start), save);
+    assert(result.save_dirty);
+    assert(score_ui.scene() == tb::UiScene::HighScoreTable);
+    assert(save.hall_of_fame.tables[1][0].score == 1234);
+    assert(std::strcmp(save.hall_of_fame.tables[1][0].name.data(), "A") == 0);
+    assert(std::strcmp(save.hall_of_fame.last_player_name.data(), "A") == 0);
+    result = score_ui.update(fresh(tb::Key::B), save);
+    assert(result.action == tb::UiAction::None);
+    assert(score_ui.scene() == tb::UiScene::MainMenu);
 
+    // A non-qualifier never mutates the Hall table.
+    const uint32_t previous_top = save.hall_of_fame.tables[1][0].score;
+    score_ui.begin_score_submission(tb::HallTable::QuickGame, 0, save, tb::ScoreFlowReturn::RootMenu);
+    assert(score_ui.scene() == tb::UiScene::ScoreFailure);
+    result = score_ui.update(fresh(tb::Key::A), save);
+    assert(! result.save_dirty);
+    assert(score_ui.scene() == tb::UiScene::MainMenu);
+    assert(save.hall_of_fame.tables[1][0].score == previous_top);
+
+    // Build City score flow returns through an explicit runtime action.
+    score_ui.begin_score_submission(tb::HallTable::BuildCity, 5000, save, tb::ScoreFlowReturn::BuildCity);
+    score_ui.update(fresh(tb::Key::A), save);
+    score_ui.update(fresh(tb::Key::A), save);
+    result = score_ui.update(fresh(tb::Key::Start), save);
+    assert(result.save_dirty);
+    assert(score_ui.scene() == tb::UiScene::HighScoreTable);
+    result = score_ui.update(fresh(tb::Key::B), save);
+    assert(result.action == tb::UiAction::ReturnToBuildCity);
+
+    // Instructions remains directly reachable from the root, and root B returns to Title.
+    tb::UiController instructions_ui(save);
+    instructions_ui.update(fresh(tb::Key::A), save);
+    for(int index = 0; index < 4; ++index) instructions_ui.update(fresh(tb::Key::Down), save);
+    instructions_ui.update(fresh(tb::Key::A), save);
+    assert(instructions_ui.scene() == tb::UiScene::InstructionsMenu);
+    instructions_ui.update(fresh(tb::Key::A), save);
+    assert(instructions_ui.scene() == tb::UiScene::InstructionsPage);
+    instructions_ui.update(fresh(tb::Key::B), save);
+    instructions_ui.update(fresh(tb::Key::B), save);
+    assert(instructions_ui.scene() == tb::UiScene::MainMenu);
+    instructions_ui.update(fresh(tb::Key::B), save);
+    assert(instructions_ui.scene() == tb::UiScene::Title);
 
     // Quick Game: recovered Java initialization and first 25 ms swing sample.
     tb::QuickGame quick;
@@ -359,6 +491,10 @@ int main()
     assert(edge_failure.snapshot().last_accuracy == tb::QuickAccuracyBand::None);
     edge_failure.update(25, {});
     assert(edge_failure.snapshot().current_z_angle_degrees == -2);
+    // House gives every slipping block an independent random +/-60 degree
+    // Y-axis target and interpolates it over the same 500 ms window.
+    assert(edge_failure.snapshot().current_y_angle_degrees == 3 ||
+           edge_failure.snapshot().current_y_angle_degrees == -3);
 
     // Presentation pose is deterministic and layered on top of collision coordinates only.
     tb::QuickGame rocking;
@@ -622,6 +758,7 @@ int main()
     tb::SaveData placement_save = tb::make_default_save();
     tb::BuildCity placement(placement_save);
     placement.accept_constructed_tower(1, 100, 1);
+    placement.update(750, {}, placement_save);
     assert(placement.snapshot().mode == tb::BuildCityMode::Placement);
     assert(placement.snapshot().cursor_column == 2);
     assert(placement.snapshot().cursor_row == 2);
@@ -641,6 +778,7 @@ int main()
 
     // Replacement is legal and population changes by new minus old.
     placement.accept_constructed_tower(1, 40, 2);
+    placement.update(750, {}, placement_save);
     placement.update(16, fresh(tb::Key::A), placement_save);
     assert(placement.snapshot().last_population_delta == -60);
     city_update = placement.update(3001, {}, placement_save);
@@ -655,6 +793,7 @@ int main()
     rules_save.city_tiles[11].population = 250;
     tb::BuildCity rules(rules_save);
     rules.accept_constructed_tower(2, 75, 1);
+    rules.update(750, {}, rules_save);
     assert(rules.snapshot().placement_valid);
     rules.update(16, fresh(tb::Key::Right), rules_save); // (3,2): center is empty, left center isn't type 1
     assert(! rules.snapshot().placement_valid);
@@ -662,6 +801,7 @@ int main()
     // Left from column 0 enters the original demolition/discard selector at row 4.
     tb::BuildCity discard(rules_save);
     discard.accept_constructed_tower(1, 999, 1);
+    discard.update(750, {}, rules_save);
     discard.update(16, fresh(tb::Key::Left), rules_save);
     discard.update(16, fresh(tb::Key::Left), rules_save);
     discard.update(16, fresh(tb::Key::Left), rules_save);
