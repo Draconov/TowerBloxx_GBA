@@ -161,3 +161,7 @@ The Java M3G object also interpolates a secondary Y-axis target of random **+60/
 - Build City-specific construction/progression logic.
 
 Phase 7 adds deterministic five-floor sway, top-floor settle, Z tumble, and impact-camera presentation on top of the Phase-6 population/combo/results/save behavior.
+
+## Fix 7: crane and released-block render state are independent
+
+`House.e(int dt)` continues updating crane coordinates `p/q` after a release, while `House.h(int dt)` advances the falling block from its own stored start position and inherited velocity. The earlier GBA renderer exposed only the block's `current_x/current_y` and reused them for the crane mesh, which made the hook visibly fall with the block. `QuickGameSnapshot` now carries `crane_x/crane_y` separately and the scene renders mesh 8 from those coordinates. The ballistic block continues to use `current_x/current_y`; this is presentation-only and does not change collision or scoring state.

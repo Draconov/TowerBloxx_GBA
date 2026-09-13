@@ -38,6 +38,7 @@ struct BuildCitySnapshot
     int max_unlocked_building_type = 1;
     int max_trophy_building_type = 0;
     int selected_building_type = 1;
+    int selected_unlock_population = 0;
     int cursor_column = 2;
     int cursor_row = 2;
     bool placement_valid = false;

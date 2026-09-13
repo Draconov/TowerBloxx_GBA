@@ -69,3 +69,18 @@ The city-level trophy flag is provisional. Immediately before roof state, the co
 A roof miss leaves `O=0` and consumes one of the same three construction chances. If chances remain, the roof is retried. Exhausting all chances anywhere in construction enters terminal state `K=2`; a successful roof does the same after reaching `Q==J`. After 2000 ms, the game calls the city handoff with `(L, R, O)`.
 
 M3G mesh selection is also code-proven: user IDs 10..13 are the ordinary family floors, 30..33 are the normal roofs, and 40..43 are the trophy roofs. IDs 20..23 are selected by a separate `999` render marker and are not assigned an invented role in the Phase-9 port.
+
+## Fix 7: recovered Build City compositor geometry
+
+The old GBA scene centered city sprites on an invented tan/green 5x5 panel and overlaid large `Build City`, `Population`, and town-name text. Re-reading `m.a(Graphics, boolean)` proves that those elements do not belong in the playfield. On a 240x160 GBA viewport the recovered Java2D layout specializes to:
+
+- board outer rectangle: `(89,32)` size `88x88`;
+- 5x5 lot origin: `(92,35)`, 17-pixel pitch;
+- browse selector: `(63,34)` size `19x67`, with 15x15 slots at y `36 + 16*n`;
+- stored building source left: `94 + 17*column`;
+- stored building baseline: `47 + 17*row`;
+- bottom context panel starts at y=137;
+- population icon is clipped at `(3,1)` and the five brown digits are right-aligned from x=58 with 8-pixel spacing;
+- the two browse-mode top-right value boxes begin at x=189 and x=213.
+
+The native scene now consumes resources 21, 24-29 and the original brown digit strip at those recovered anchors. Resources 24-27 use their stored roof byte as the frame selector. Resource 28 remains the red placement-outline family, resource 29 is the placement effect animation, and resource 23 is used for the separate discard selector. Locked-tower help is rendered only in the original 23-pixel bottom message panel; the population threshold comes from the BuildCity core rather than being duplicated in renderer constants.

@@ -215,9 +215,10 @@ def test_phase8_build_city_scene_uses_original_city_art_and_core() -> None:
     assert "generated::city_building_1_f0" in scene
     assert "generated::city_building_4_f3" in scene
     assert "generated::city_lot_f" in scene
-    assert "localized_strings[_language][82]" in scene  # Population
-    assert "localized_strings[_language][83" in scene or "localized_strings[_language][83 +" in scene
-    assert "localized_strings[_language][71" in scene or "localized_strings[_language][71 +" in scene
+    assert "generated::city_status_icon_f0" in scene
+    assert "generated::hud_brown_digit_f0" in scene
+    assert "generated::city_panel_f0" in scene
+    assert "generated::city_effect_f0" in scene
     assert "placement_valid" in scene
     assert "_show_composite(*lot_assets[0], x, y)" not in scene
     assert "construction_request" in scene
@@ -417,3 +418,35 @@ def test_fix6_quick_and_construction_huds_use_reference_texture_assets() -> None
     assert "generated::hud_state_indicator_f0" in construction
     assert "value_line(generated::localized_strings[_language][80]" not in construction
     assert "bn::string<8> chances" not in construction
+
+
+def test_fix7_crane_and_build_city_use_separate_reference_state_and_compositor_assets() -> None:
+    root = _root()
+    quick_h = (root / "gba/include/tb/quick_game.h").read_text()
+    quick_scene = (root / "gba/src/quick_game_scene.cpp").read_text()
+    construction_scene = (root / "gba/src/tower_construction_scene.cpp").read_text()
+    city_scene = (root / "gba/src/build_city_scene.cpp").read_text()
+
+    # Crane state survives release independently from the ballistic block.
+    assert "int crane_x" in quick_h
+    assert "int crane_y" in quick_h
+    assert "snapshot.crane_x" in quick_scene
+    assert "snapshot.crane_y" in quick_scene
+    assert "snapshot.crane_x" in construction_scene
+    assert "snapshot.crane_y" in construction_scene
+
+    # Build City uses the recovered JAR compositor instead of the old text/placeholder shell.
+    for asset in (
+        "city_status_icon_f0",
+        "hud_brown_digit_f0",
+        "city_panel_f0",
+        "city_building_1_f3",
+        "city_lot_f3",
+        "city_effect_f0",
+    ):
+        assert f"generated::{asset}" in city_scene
+    assert "grid_screen_left = 89" in city_scene
+    assert "grid_screen_top = 32" in city_scene
+    assert "grid_spacing = 17" in city_scene
+    assert "localized_strings[_language][92]" not in city_scene  # no fake Build City title over the board
+    assert "value_line(generated::localized_strings[_language][82]" not in city_scene

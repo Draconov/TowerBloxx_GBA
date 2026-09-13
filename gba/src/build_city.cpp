@@ -158,6 +158,7 @@ BuildCitySnapshot BuildCity::snapshot() const
     result.max_unlocked_building_type = _max_unlocked_type;
     result.max_trophy_building_type = _max_trophy_type;
     result.selected_building_type = _selected_type;
+    result.selected_unlock_population = milestones[building_unlock_milestones[_selected_type - 1]];
     result.cursor_column = _cursor_column;
     result.cursor_row = _cursor_row;
     result.placement_committing = _placement_committing;

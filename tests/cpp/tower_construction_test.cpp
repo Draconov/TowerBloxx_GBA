@@ -38,7 +38,28 @@ int main()
     assert(snapshot.swing_amplitude_y == 64);
     construction.update(25, no_input());
     snapshot = construction.snapshot();
-    assert(snapshot.crane_angle_degrees == ((snapshot.current_x >> 4) * 2) / 3);
+    assert(snapshot.crane_x == snapshot.current_x);
+    assert(snapshot.crane_y == snapshot.current_y);
+    assert(snapshot.crane_angle_degrees == ((snapshot.crane_x >> 4) * 2) / 3);
+
+    // The hook/crane keeps following the swing after release; only the block falls.
+    for(int guard = 0; guard < 200 && construction.snapshot().block_state != tb::TowerConstructionBlockState::Attached; ++guard)
+    {
+        construction.update(25, no_input());
+    }
+    assert(construction.snapshot().block_state == tb::TowerConstructionBlockState::Attached);
+    tb::InputFrame release{};
+    release.pressed_mask = uint16_t(tb::Key::A);
+    construction.update(25, release);
+    snapshot = construction.snapshot();
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Falling);
+    const int released_block_y = snapshot.current_y;
+    const int released_crane_y = snapshot.crane_y;
+    construction.update(100, no_input());
+    snapshot = construction.snapshot();
+    assert(snapshot.current_y != released_block_y);
+    assert(snapshot.crane_y != snapshot.current_y);
+    assert(snapshot.crane_y != released_crane_y || snapshot.crane_x != snapshot.current_x);
 
     construction.start(4, 40, true);
     snapshot = construction.snapshot();

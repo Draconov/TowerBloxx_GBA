@@ -263,7 +263,9 @@ int main()
     assert(quick_snapshot.rope_length == 16);
     assert(quick_snapshot.current_x == 20);
     assert(quick_snapshot.current_y == 2480);
-    assert(quick_snapshot.crane_angle_degrees == ((quick_snapshot.current_x >> 4) * 2) / 3);
+    assert(quick_snapshot.crane_x == quick_snapshot.current_x);
+    assert(quick_snapshot.crane_y == quick_snapshot.current_y);
+    assert(quick_snapshot.crane_angle_degrees == ((quick_snapshot.crane_x >> 4) * 2) / 3);
     assert(quick_snapshot.tower_phase_tenths == 25);
     assert(quick_snapshot.presentation_camera_y == quick_snapshot.camera_y);
 
@@ -290,6 +292,12 @@ int main()
     assert(quick_snapshot.block_state == tb::QuickBlockState::Falling);
     assert(quick_snapshot.current_y < before_drop.current_y + 128);
     assert(quick_snapshot.drop_velocity_x != 0 || quick_snapshot.drop_velocity_y != 0);
+    assert(quick_snapshot.crane_x != quick_snapshot.current_x || quick_snapshot.crane_y != quick_snapshot.current_y);
+    const int falling_crane_y = quick_snapshot.crane_y;
+    quick.update(25, {});
+    quick_snapshot = quick.snapshot();
+    assert(quick_snapshot.block_state == tb::QuickBlockState::Falling);
+    assert(quick_snapshot.crane_y != falling_crane_y || quick_snapshot.crane_x != before_drop.current_x);
 
     // The same input/delta stream must be bit-for-bit deterministic at the exposed state level.
     tb::QuickGame replay_a;
@@ -568,12 +576,18 @@ int main()
     assert(city_snapshot.max_unlocked_building_type == 1);
     assert(city_snapshot.max_trophy_building_type == 0);
     assert(city_snapshot.selected_building_type == 1);
+    assert(city_snapshot.selected_unlock_population == 0);
     assert(city_snapshot.cursor_column == 2);
     assert(city_snapshot.cursor_row == 2);
 
     // Browse selection can inspect all four types, but locked types cannot launch construction.
     city.update(16, fresh(tb::Key::Down), city_save);
     assert(city.snapshot().selected_building_type == 2);
+    assert(city.snapshot().selected_unlock_population == 250);
+    city.update(16, fresh(tb::Key::Down), city_save);
+    assert(city.snapshot().selected_building_type == 3);
+    assert(city.snapshot().selected_unlock_population == 800);
+    city.update(16, fresh(tb::Key::Up), city_save);
     auto city_update = city.update(16, fresh(tb::Key::A), city_save);
     assert(! city_update.save_dirty);
     assert(! city.construction_request().pending);

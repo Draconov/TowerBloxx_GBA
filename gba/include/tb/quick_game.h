@@ -68,6 +68,8 @@ struct QuickGameSnapshot
     bool camera_impact_active = false;
     int current_x = 0;
     int current_y = 2432;
+    int crane_x = 0;
+    int crane_y = 2432;
     int rope_length = 0;
     int swing_phase_ms = 2000;
     int swing_period_ms = 1550;

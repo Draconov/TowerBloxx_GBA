@@ -214,6 +214,8 @@ QuickGameSnapshot QuickGame::snapshot() const
     result.camera_impact_active = _clock_ms - _camera_impact_start_ms < camera_impact_ms;
     result.current_x = _current_x;
     result.current_y = _current_y;
+    result.crane_x = _crane_x;
+    result.crane_y = _crane_y;
     result.rope_length = _rope_length;
     result.swing_phase_ms = _swing_phase_ms;
     result.swing_period_ms = _swing_period_ms;

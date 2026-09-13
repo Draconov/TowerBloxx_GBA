@@ -389,8 +389,11 @@ void QuickGameScene::_update_world_positions()
     if(crane_visible)
     {
         const generated::MeshAsset& crane_mesh = mesh_by_id(crane_hook_mesh_id);
-        const int crane_x = _screen_x(snapshot.current_x);
-        const int crane_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+        // Once the block is released, current_* becomes ballistic state while the
+        // crane keeps swinging independently. Render the hook from its own recovered
+        // world position so it never follows the falling block.
+        const int crane_x = _screen_x(snapshot.crane_x);
+        const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
         for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
         {
             // M3G rotates in a Y-up world; sprite coordinates are Y-down.

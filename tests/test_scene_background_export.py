@@ -52,14 +52,32 @@ def test_construction_background_uses_recovered_nokia_layers(tower_bloxx_jar: Pa
     assert image.getpixel((82, 109))[:3] != (178, 214, 242)
 
 
-def test_city_background_contains_visible_grid() -> None:
+def test_city_background_matches_recovered_build_city_compositor() -> None:
     image = render_city_background()
     assert image.size == (240, 160)
     assert image.mode == "RGBA"
-    # Empty Build City must no longer be a single flat backdrop.
-    colors = set(image.get_flattened_data())
-    assert len(colors) >= 5
-    assert image.getpixel((120, 80)) != image.getpixel((0, 0))
+
+    # m.a(Graphics,boolean): the playfield is the exact #AFE5FF -> #588CFF
+    # vertical gradient between y=13 and y=137 on a 240x160 viewport.
+    # y=13/14 are overwritten by the recovered top-band border.
+    assert image.getpixel((120, 15))[:3] == (174, 228, 255)
+    assert image.getpixel((120, 136))[:3] == (90, 142, 255)
+
+    # Source top status bar and bottom white instruction panel are structural UI,
+    # not the tan placeholder field from Fix 6.
+    assert image.getpixel((20, 5))[:3] == (173, 156, 131)
+    assert image.getpixel((20, 150))[:3] == (255, 255, 255)
+
+    # Recovered 88x88 city board at x=89,y=32 with 17px cell pitch.
+    assert image.getpixel((89, 32))[:3] == (255, 255, 255)
+    assert image.getpixel((90, 33))[:3] == (64, 64, 64)
+    assert image.getpixel((92, 35))[:3] == (120, 188, 40)
+    assert image.getpixel((93, 36))[:3] == (67, 120, 23)
+
+    # Browse-mode top-right status boxes start at width-51 after the 9px icon slot.
+    assert image.getpixel((189, 1))[:3] == (199, 191, 178)
+    assert image.getpixel((190, 2))[:3] == (173, 156, 131)
+    assert image.getpixel((213, 1))[:3] == (199, 191, 178)
 
 
 def test_export_scene_backgrounds_writes_butano_regular_bg_assets(

@@ -96,3 +96,7 @@ construction run.
 16. Therefore a renderer that only has resources 24–28 cannot be visually
 complete. Fix 6 exports the missing family, but placement of 20–23/29 remains
 for the dedicated Build City compositor pass rather than guessing coordinates.
+
+## Fix 7 Build City placement
+
+The Build City renderer now places the already-extracted source families instead of leaving them as archive-only evidence: resource 21 status glyphs, brown population digits, resources 24-27 building frames, resource 28 placement outlines, resource 29 placement effects, and resource 23's action/discard icon. The background exporter also reproduces the recovered blue gradient, 88x88 road grid, selector shell, status band, top-right value boxes and bottom message panel.

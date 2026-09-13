@@ -156,41 +156,86 @@ def render_construction_background(jar_path: Path) -> Image.Image:
 
 
 def render_city_background() -> Image.Image:
-    """Render the empty 5x5 City Grid field behind the saved tower sprites.
+    """Render the recovered 240x160 Build City compositor base.
 
-    The original m.a(Graphics,boolean) is pure Java 2D. This captures its
-    green field / road-grid presentation in the same GBA coordinates already
-    used by BuildCityScene, rather than leaving an empty sky backdrop.
+    m.a(Graphics, boolean) draws this screen almost entirely with Java 2D:
+    a 13px status bar, a #AFE5FF -> #588CFF playfield gradient, an 88x88
+    road/grid panel, the four-slot tower selector and a 23px bottom message
+    panel.  Dynamic digits, tower previews, saved buildings and effects remain
+    sprites in BuildCityScene.
     """
-    image = Image.new("RGBA", (VISIBLE_WIDTH, VISIBLE_HEIGHT), (175, 229, 255, 255))
+    image = Image.new("RGBA", (VISIBLE_WIDTH, VISIBLE_HEIGHT), (255, 255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    # Darker lower city field and road frame, using colors recovered from m's
-    # static palette (signed Java ints masked to RGB).
-    draw.rectangle((0, 32, VISIBLE_WIDTH - 1, VISIBLE_HEIGHT - 1), fill=(173, 153, 99, 255))
-    draw.rectangle((56, 38, 184, 132), fill=(42, 67, 20, 255))
-    draw.rectangle((61, 43, 179, 127), fill=(86, 117, 48, 255))
+    # m.a[] = {175,229,255,-87,-89,0}.  Java integer division truncates
+    # toward zero; all terms here are non-negative before adding the deltas.
+    gradient_last = VISIBLE_HEIGHT - 22
+    denominator = gradient_last - 13
+    for y in range(13, gradient_last + 1):
+        t = y - 13
+        red = 175 - (87 * t) // denominator
+        green = 229 - (89 * t) // denominator
+        blue = 255
+        draw.line((0, y, VISIBLE_WIDTH - 1, y), fill=(red, green, blue, 255))
 
-    grid_left = 120 - 34
-    grid_top = 80 - 25
-    spacing = 17
+    # Top status band: m.b[] = #AD9C83, #231E14, #231E14, #EBE1E1, #140C0C.
+    top_colors = ((173, 156, 131), (35, 30, 20), (35, 30, 20), (235, 225, 225), (20, 12, 12))
+    y = 0
+    draw.rectangle((3, y, VISIBLE_WIDTH - 4, y + 10), fill=(*top_colors[0], 255))
+    y += 11
+    for color in top_colors[1:]:
+        draw.line((3, y, VISIBLE_WIDTH - 4, y), fill=(*color, 255))
+        y += 1
+
+    # Bottom message panel starts at h-23 and overwrites the gradient there.
+    bottom_y = VISIBLE_HEIGHT - 23
+    draw.line((3, bottom_y, VISIBLE_WIDTH - 4, bottom_y), fill=(20, 12, 12, 255))
+    draw.line((3, bottom_y + 1, VISIBLE_WIDTH - 4, bottom_y + 1), fill=(125, 110, 110, 255))
+    draw.rectangle((3, bottom_y + 2, VISIBLE_WIDTH - 7, VISIBLE_HEIGHT - 1), fill=(255, 255, 255, 255))
+
+    # Exact 240x160 specialization of m's board positioning formula.
+    board_x = ((VISIBLE_WIDTH - 19 - 7 - 88) >> 1) + 19 + 7  # 89
+    board_y = 15 + ((VISIBLE_HEIGHT - 15 - 23 - 88 + 1) >> 1)  # 32
+    draw.rectangle((board_x, board_y, board_x + 87, board_y + 87), fill=(255, 255, 255, 255))
+    draw.rectangle((board_x + 1, board_y + 1, board_x + 86, board_y + 86), fill=(64, 64, 64, 255))
+
+    # City level zero uses m.e[0]=#78BC28 and m.d[0]=#437817.
+    lot_outer = (120, 188, 40, 255)
+    lot_inner = (67, 120, 23, 255)
     for row in range(5):
         for column in range(5):
-            cx = grid_left + column * spacing
-            cy = grid_top + row * spacing
-            # 15x15 lots leave the original narrow road gaps between sectors.
-            fill = (104, 139, 62, 255) if (row + column) & 1 else (112, 147, 68, 255)
-            draw.rectangle((cx - 7, cy - 7, cx + 7, cy + 7), fill=fill)
-            draw.line((cx - 7, cy - 7, cx + 7, cy - 7), fill=(188, 184, 137, 255))
-            draw.line((cx - 7, cy + 7, cx + 7, cy + 7), fill=(48, 73, 27, 255))
+            x = board_x + 3 + column * 17
+            y = board_y + 3 + row * 17
+            draw.rectangle((x, y, x + 13, y + 13), fill=lot_outer)
+            draw.rectangle((x + 1, y + 1, x + 12, y + 12), fill=lot_inner)
+            draw.rectangle((x + 2, y + 2, x + 11, y + 11), fill=lot_outer)
 
-    # Demolishing lot at the left of row 4, matching the current controller's
-    # column=-1 selection position.
-    demo_x = grid_left - 31
-    demo_y = grid_top + 4 * spacing
-    draw.rectangle((demo_x - 8, demo_y - 8, demo_x + 8, demo_y + 8), fill=(88, 88, 88, 255))
-    draw.line((demo_x - 6, demo_y - 6, demo_x + 6, demo_y + 6), fill=(180, 40, 32, 255), width=2)
-    draw.line((demo_x + 6, demo_y - 6, demo_x - 6, demo_y + 6), fill=(180, 40, 32, 255), width=2)
+    # Dashed road separators from m.a(Graphics,boolean), color #929292.
+    road = (146, 146, 146, 255)
+    for separator in range(4):
+        x = board_x + 3 + 15 + separator * 17
+        for y0 in range(board_y + 4, board_y + 84, 6):
+            draw.line((x, y0, x, min(y0 + 2, board_y + 84)), fill=road)
+        y = board_y + 3 + 15 + separator * 17
+        for x0 in range(board_x + 4, board_x + 84, 6):
+            draw.line((x0, y, min(x0 + 2, board_x + 84), y), fill=road)
+
+    # Browse-mode four-slot selector recovered from bytecode after x -= 26.
+    selector_x = board_x - 26
+    selector_y = board_y + 2
+    draw.rectangle((selector_x, selector_y, selector_x + 18, selector_y + 66), fill=(125, 110, 110, 255))
+    draw.rectangle((selector_x + 1, selector_y + 1, selector_x + 17, selector_y + 65), fill=(255, 255, 255, 255))
+    for slot in range(4):
+        slot_y = selector_y + 2 + slot * 16
+        draw.rectangle((selector_x + 2, slot_y, selector_x + 16, slot_y + 14), fill=(172, 172, 172, 255))
+
+    # Browse-mode top-right HUD pair from m.a(Graphics,boolean): x starts at
+    # width-60, the icon consumes 9px, then two 24x9 outlined value boxes.
+    status_x = VISIBLE_WIDTH - 60 + 9
+    for box in range(2):
+        x = status_x + box * 24
+        draw.rectangle((x, 1, x + 23, 9), fill=(199, 191, 178, 255))  # #C7BFB2
+        draw.rectangle((x + 1, 2, x + 22, 8), fill=(173, 156, 131, 255))  # #AD9C83
     return image
 
 

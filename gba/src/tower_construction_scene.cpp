@@ -336,8 +336,11 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     if(crane_visible)
     {
         const generated::MeshAsset& crane_mesh = mesh_by_id(crane_hook_mesh_id);
-        const int crane_x = _screen_x(snapshot.current_x);
-        const int crane_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+        // The original keeps crane/hook motion independent after release.
+        // current_x/current_y become the ballistic block pose, while the crane
+        // continues to swing from its own p/q coordinates.
+        const int crane_x = _screen_x(snapshot.crane_x);
+        const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
         for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
         {
             // M3G rotates in a Y-up world; sprite coordinates are Y-down.
