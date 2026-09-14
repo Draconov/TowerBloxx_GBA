@@ -131,3 +131,18 @@ visible BGR555 pixels: all Build City building frames share one bounded partial
 roof 8bpp palette, and menu workers are split across two overlapping shared
 4bpp layers. The separate two-pixel special-roof crane cable is now regenerated
 by the clean gameplay asset exporter instead of surviving only as a carried file.
+
+## Fix 14.4: browse pulses and placement-effect state
+
+A bytecode pass over `m.a(Graphics, boolean)` and the timers updated by `m.b(int,int)` resolves three remaining Build City presentation mismatches.
+
+The valid-lot timer `x` is not placement-only. It advances modulo 800 ms and the same family-colored two-pixel lot ring is drawn in both browser mode and active placement mode. In browser mode the required capability is the currently selected family (`b`); in placement mode it is the pending constructed family (`g - 1`). The ring is suppressed during the 3000 ms placement commit and during the initial building-to-grid transition. This is why the source browser screen already previews every lot that can accept the selected building before construction begins.
+
+The browse selector has a second timer, `t`, which advances modulo 500 ms only while browsing. For the first 250 ms the selected 15x15 slot is filled with Java color `-89856 == #FEA100`; for the second 250 ms the static gray selector slot remains visible. Resource 28's type-specific red silhouette and the normal building preview are then composed above this flashing slot. The GBA exporter emits `city_selector_active_slot` as the exact 15x15 orange underlay and shares its BPP4 palette with the existing lot/badge group.
+
+Resource 29 is a bounded placement/replacement transition, not a six-frame loop. With placement timer `m` counting down from 3000 ms:
+
+- replacing an occupied lot uses `local = m - 2250`; while `0 <= local < 750`, frame is `5 - 6*local/750`, covering frames 0..5 once;
+- placing on an empty lot uses `local = m - 1500`; while `0 <= local < 750`, frame is `5 - 4*local/750`, covering only frames 2..5 once.
+
+Therefore frames 0 and 1 are never shown for a normal empty-lot placement. The old GBA renderer incorrectly looped `(elapsed / 100) % 6` for the entire three-second commit, which made a newly placed tower appear to be destroyed. During the commit the source also suppresses the normal pending-tower preview and placement cursor; the committed building appears from saved city state when the timer finishes. The bottom instruction remains the valid-placement message during this already-approved commit instead of changing to the invalid-placement text merely because input is temporarily locked.

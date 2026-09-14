@@ -111,7 +111,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert logo_files
     assert sumea_files
     assert manifest_a["procedural_assets"] == [
-        "menu_highlight", "city_progress_segment", "city_valid_lot_ring",
+        "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
         "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
         "city_type_badge_3", "city_type_badge_4",
     ]

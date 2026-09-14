@@ -58,6 +58,7 @@ private:
     int _language = 0;
     int _frame_phase = 0;
     int _placement_flash_ms = 0;
+    int _selector_flash_ms = 0;
     BuildCitySnapshot _last_snapshot{};
     bool _has_snapshot = false;
     bool _active = false;

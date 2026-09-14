@@ -317,7 +317,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f0",
-        "palette_entries": 11,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_lot_f0_p0",
@@ -335,7 +335,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f1",
-        "palette_entries": 11,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_lot_f1_p0",
@@ -353,7 +353,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f2",
-        "palette_entries": 11,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_lot_f2_p0",
@@ -371,7 +371,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f3",
-        "palette_entries": 11,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_lot_f3_p0",
@@ -389,7 +389,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f4",
-        "palette_entries": 11,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_lot_f4_p0",
@@ -773,6 +773,24 @@
           "width": 13
         }
       ],
+      "selector_active_slot": {
+        "bpp": 4,
+        "height": 15,
+        "name": "city_selector_active_slot",
+        "palette_entries": 12,
+        "parts": [
+          {
+            "asset": "city_selector_active_slot_p0",
+            "height": 16,
+            "screen_x": 1,
+            "screen_y": 1,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 16
+          }
+        ],
+        "width": 15
+      },
       "status_clips": [
         {
           "bpp": 4,
@@ -944,7 +962,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_1",
-          "palette_entries": 11,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_type_badge_1_p0",
@@ -962,7 +980,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_2",
-          "palette_entries": 11,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_type_badge_2_p0",
@@ -980,7 +998,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_3",
-          "palette_entries": 11,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_type_badge_3_p0",
@@ -998,7 +1016,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_4",
-          "palette_entries": 11,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_type_badge_4_p0",
@@ -1174,7 +1192,7 @@
     "bpp": 4,
     "height": 1,
     "name": "city_progress_segment",
-    "palette_entries": 11,
+    "palette_entries": 12,
     "parts": [
       {
         "asset": "city_progress_segment_p0",
@@ -1193,7 +1211,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f1",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f1_p0",
@@ -1211,7 +1229,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f2",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f2_p0",
@@ -1229,7 +1247,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f3",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f3_p0",
@@ -1247,7 +1265,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f4",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f4_p0",
@@ -1265,7 +1283,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f5",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f5_p0",
@@ -1283,7 +1301,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f6",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f6_p0",
@@ -1301,7 +1319,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f7",
-      "palette_entries": 11,
+      "palette_entries": 12,
       "parts": [
         {
           "asset": "city_progress_tail_f7_p0",
@@ -1649,7 +1667,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f0_p0.bmp",
-      "sha256": "9ae2d0739f8ebaa080b096eb439481fe7e9e570d212299b093b72dd90b69bb39",
+      "sha256": "c220f82cf5109ddd44bb9cb8dd6224726aef89db1d265c9122f74fae3f4f3831",
       "size": 630
     },
     {
@@ -1659,7 +1677,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f1_p0.bmp",
-      "sha256": "350bcfb6552999179b14f9c31e0c83a43fc93411693e4ffc59c3c6f4b4e4058d",
+      "sha256": "60458de76c17eb8c32de9531cf0f1f6485748cd5725d7ea973ae2ae87a612ca9",
       "size": 630
     },
     {
@@ -1669,7 +1687,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f2_p0.bmp",
-      "sha256": "081402699e5c745742611b771dba95e01d62014010c904c5635feccd86b6a50f",
+      "sha256": "c257ecf23023ddc51572e926c14c33c3d83205ae13a13bbe12db680beb045533",
       "size": 630
     },
     {
@@ -1679,7 +1697,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f3_p0.bmp",
-      "sha256": "bcb37bb55980d4f1e9d3937a1db47f6b23eff490bb7ff9abae357a953deb7c3d",
+      "sha256": "f86be6894a5d9253bb82261a7afac8ae1aa6fbee3467ff9701edd125c9cc3669",
       "size": 630
     },
     {
@@ -1689,7 +1707,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f4_p0.bmp",
-      "sha256": "1ae10899e17f2f8da11ec9094018a786f3d4e2e466f5ac779094a3d65d6c767d",
+      "sha256": "0994649cc031e94e5345e7e0cd31d4ad9dcb2ce84ccd74b5b4625afd2a97b31f",
       "size": 246
     },
     {
@@ -1729,7 +1747,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_segment_p0.bmp",
-      "sha256": "59c157169a9758fbca792b5f40875a019371d1e5c28c55712947dcbc77d2b558",
+      "sha256": "3b68ee9bfeb29796bf2e8f2febebf9c704d00ad14442318b096557577dd15bd1",
       "size": 150
     },
     {
@@ -1739,7 +1757,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f1_p0.bmp",
-      "sha256": "e273523118f34263c9ecc4997a51859525f68ac57d80c4ecd8af6e401c64276f",
+      "sha256": "3afc5890367a6ae6a2a59ad9cdce16f42892e3dbaae26004f10672dc0ded5c58",
       "size": 150
     },
     {
@@ -1749,7 +1767,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f2_p0.bmp",
-      "sha256": "bef8014892be282c04e04d54c1e0291cf220ec126c8b11cbd508d2d322f06c21",
+      "sha256": "5717dc695ee250675fa9595eef4d76d50f5d731a4aee4e7fd4812bcef93d7468",
       "size": 150
     },
     {
@@ -1759,7 +1777,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f3_p0.bmp",
-      "sha256": "113486ef96a5f04c555b059ae689f5077c2798ade93980e3629b8264c49a0881",
+      "sha256": "c42c80805727df8c3429264f428ed67ad45be8109d0c448b86821e09f8beeac5",
       "size": 150
     },
     {
@@ -1769,7 +1787,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f4_p0.bmp",
-      "sha256": "903fc0848ad5725aad2b4c657af902105d45240ee692f688988d3513efd56909",
+      "sha256": "a0a1e45bfa31684225a17d3cb49a4a5b275aa67861d2c0e58a596a0f1be8b205",
       "size": 150
     },
     {
@@ -1779,7 +1797,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f5_p0.bmp",
-      "sha256": "e591ba081905d6542a4a8feed62bcd0c0ba2f1b8aaa910acee57d0bd16441751",
+      "sha256": "76d3897e7564b01fe31801480c89fe725923250064733885c2f14d7e4e3d80e4",
       "size": 150
     },
     {
@@ -1789,7 +1807,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f6_p0.bmp",
-      "sha256": "595a3b168d79b0c8e58a3926caef525536924a5502546bfd6a92bc254ea7f2f1",
+      "sha256": "a39aad41920f16207a63b7d22260a9f788635bc829f6e9f49228aefb00d39ca1",
       "size": 150
     },
     {
@@ -1799,11 +1817,21 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f7_p0.bmp",
-      "sha256": "be87a58be456bb213b77ce2cccc5b27fe6700bb849ab7368f3e22a5f942097c0",
+      "sha256": "b7ea8b7c10ce5393315fd26de97deed887b0d8e6a1a36217bc7d7e1000fc23ad",
       "size": 150
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f7_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/city_selector_active_slot_p0.bmp",
+      "sha256": "c8f6a48aff07a3904377cb8bc9cd42b25f7b339deef3e53c355c49ecd30c318f",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/city_selector_active_slot_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
@@ -1929,7 +1957,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_1_p0.bmp",
-      "sha256": "a99aca649fa9a97204d59951b0b569ec96989428c4400d8cf002319d6e11915d",
+      "sha256": "7bcc44daa2ad48ca555f155eda804cc7b0adbeb2aebec50a8a373337136bc2c2",
       "size": 150
     },
     {
@@ -1939,7 +1967,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_2_p0.bmp",
-      "sha256": "c04e2f1263e119174e64d7536f44959c66e72c75d11e52cb116346108b852d52",
+      "sha256": "c2fb529be93fd34992e7dafdc27c188c670e2c21a873c96cdceeefb59c572798",
       "size": 150
     },
     {
@@ -1949,7 +1977,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_3_p0.bmp",
-      "sha256": "ee1c675a28abcf9184f85514a97e107151061438c92ba3161008e1b7f4ae2a92",
+      "sha256": "360755ce251a17bc132d099784f0eaf232430eca0c8cb80a2a77f2e93c219c0a",
       "size": 150
     },
     {
@@ -1959,7 +1987,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_4_p0.bmp",
-      "sha256": "590137528acab1a6f1309beee78a3a2da8b26e342442c657097c6530e5de11bb",
+      "sha256": "deab8f1257334f13ca91e140c71cd27cc929c66e5ff737659bcc5770a0da79bc",
       "size": 150
     },
     {
@@ -3129,8 +3157,8 @@
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "d52b6a713a5103a19c3456059a2bb8621b4ac27cf9e1f832924d65314f9f100d",
-      "size": 42754
+      "sha256": "3b20ef9af080f5ac3ed3cc6aaa831bae1808ffe4ca733fb836fc58c5fc04c51f",
+      "size": 43046
     }
   ],
   "font_character_count": 118,
@@ -5036,6 +5064,7 @@
     "menu_highlight",
     "city_progress_segment",
     "city_valid_lot_ring",
+    "city_selector_active_slot",
     "city_comparison_panel_active",
     "city_type_badge_1",
     "city_type_badge_2",
@@ -5082,7 +5111,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "327b23116995ec74b045bf93a71a73a070cb8e3192f73c27fe9a7525cfed58c3",
+  "tree_hash": "1716c7d7099ebd9b8ed7a9fb499c9ec41e946737586ecbe0b71ec3fb0b0d4e53",
   "utf8_characters": [
     "¡",
     "°",

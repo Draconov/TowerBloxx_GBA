@@ -828,6 +828,14 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         city_valid_lot_ring_image, "city_valid_lot_ring", graphics_dir
     )
 
+    # m.a(Graphics, boolean) flashes the selected browser slot with Java color
+    # -89856 == 0xFFFEA100 for 250ms of each 500ms selector cycle. The static
+    # gray slot remains in city_bg during the other half of the cycle.
+    city_selector_active_slot_image = Image.new("RGBA", (15, 15), (254, 161, 0, 255))
+    _selector_slot_composite, city_selector_active_slot_record = _export_composite(
+        city_selector_active_slot_image, "city_selector_active_slot", graphics_dir
+    )
+
     # The comparison boxes at x=189/213 are Java2D rectangles, not resource
     # 22.  Export their active state as a tiny reusable overlay.
     city_comparison_panel_active_image = Image.new("RGBA", (24, 9), (226, 226, 226, 255))
@@ -849,7 +857,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
 
     asset_records.extend((
         tower_record, sumea_record, menu_highlight_record, city_progress_record,
-        city_valid_lot_ring_record, city_comparison_panel_active_record,
+        city_valid_lot_ring_record, city_selector_active_slot_record, city_comparison_panel_active_record,
     ))
     asset_records.extend(city_progress_tail_records)
     asset_records.extend(city_type_badge_records)
@@ -1008,7 +1016,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     city_continue_arrow_record["palette_entries"] = city_status_entries
 
     lot_badge_records = [
-        *city_type_badge_records, *city_lot_records, city_progress_record, *city_progress_tail_records
+        *city_type_badge_records, *city_lot_records, city_progress_record, *city_progress_tail_records,
+        city_selector_active_slot_record,
     ]
     lot_badge_entries = _share_bpp4_palette(
         graphics_dir, _record_asset_names(lot_badge_records)
@@ -1084,7 +1093,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         },
         "logos": [tower_record, sumea_record],
         "procedural_assets": [
-            "menu_highlight", "city_progress_segment", "city_valid_lot_ring",
+            "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
             "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
             "city_type_badge_3", "city_type_badge_4",
         ],
@@ -1122,6 +1131,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
                 "action_icon": city_action_icon_record,
                 "effects": city_effect_records,
                 "valid_lot_ring": city_valid_lot_ring_record,
+                "selector_active_slot": city_selector_active_slot_record,
                 "comparison_panel_active": city_comparison_panel_active_record,
                 "type_badges": city_type_badge_records,
             },

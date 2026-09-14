@@ -52,4 +52,32 @@ uint32_t build_city_valid_lot_rgb(int building_type, int flash_ms)
     const uint32_t blue = uint32_t(start_b + (end_b - start_b) * phase / 400);
     return (red << 16) | (green << 8) | blue;
 }
+
+bool build_city_selector_slot_active(int flash_ms)
+{
+    int phase_ms = flash_ms % 500;
+    if(phase_ms < 0)
+    {
+        phase_ms += 500;
+    }
+    return phase_ms < 250;
+}
+
+int build_city_placement_effect_frame(bool replacing, int placement_timer_ms)
+{
+    // m.a(Graphics, boolean): resource 29 is a bounded placement/replacement
+    // transition, not a six-frame loop. Empty lots deliberately skip the
+    // first two destruction-looking frames.
+    const int local_timer = replacing ? placement_timer_ms - 2250 : placement_timer_ms - 1500;
+    if(local_timer < 0 || local_timer >= 750)
+    {
+        return -1;
+    }
+
+    if(replacing)
+    {
+        return 5 - (6 * local_timer / 750);
+    }
+    return 5 - (4 * local_timer / 750);
+}
 }

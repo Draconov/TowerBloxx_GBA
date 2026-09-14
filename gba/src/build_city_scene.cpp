@@ -288,6 +288,7 @@ void BuildCityScene::start(const SaveData& save, int language)
     _language = language;
     _frame_phase = 0;
     _placement_flash_ms = 0;
+    _selector_flash_ms = 0;
     _has_snapshot = false;
     _active = true;
     _rebuild(save);
@@ -359,13 +360,13 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
         }
     }
 
-    if(snapshot.mode == BuildCityMode::Placement && ! snapshot.placement_committing)
+    // m.x is the continuous 800ms valid-lot pulse timer in both browser and
+    // placement views. m.t advances only while browsing and flashes the
+    // selected 15x15 selector slot orange for the first half of each 500ms.
+    _placement_flash_ms = (_placement_flash_ms + delta_ms) % 800;
+    if(snapshot.mode == BuildCityMode::Browse)
     {
-        _placement_flash_ms = (_placement_flash_ms + delta_ms) % 800;
-    }
-    else
-    {
-        _placement_flash_ms = 0;
+        _selector_flash_ms = (_selector_flash_ms + delta_ms) % 500;
     }
 
     if(result.exit)
@@ -374,9 +375,10 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
         return result;
     }
 
+    const bool browse_animation = snapshot.mode == BuildCityMode::Browse;
     const bool placement_animation = snapshot.mode == BuildCityMode::Placement && ! snapshot.placement_committing;
     if(! _has_snapshot || snapshot_changed(snapshot, _last_snapshot) || city_result.save_dirty ||
-       result.construction_requested || _events.has_event() || placement_animation)
+       result.construction_requested || _events.has_event() || browse_animation || placement_animation)
     {
         _rebuild(save);
     }
@@ -463,14 +465,29 @@ void BuildCityScene::_show_valid_lot_ring(
 
 void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnapshot& snapshot)
 {
-    if(snapshot.mode == BuildCityMode::Placement && snapshot.cursor_column >= 0 &&
-       snapshot.placement_transition_ms == 0 && snapshot.pending_building_type >= 1 && ! _events.has_event())
+    int pulse_building_type = 0;
+    if(! _events.has_event() && snapshot.placement_transition_ms == 0 && ! snapshot.placement_committing)
     {
-        // Create every ring while the source palette is still untouched so
-        // Butano can reuse one BPP4 OBJ palette bank for all valid sectors.
-        // Only after all ring sprites exist do we recolor that shared bank.
+        if(snapshot.mode == BuildCityMode::Browse && snapshot.selected_building_type >= 1 &&
+           snapshot.selected_building_type <= snapshot.max_unlocked_building_type &&
+           snapshot.selected_building_type <= 4)
+        {
+            pulse_building_type = snapshot.selected_building_type;
+        }
+        else if(snapshot.mode == BuildCityMode::Placement && snapshot.pending_building_type >= 1 &&
+                snapshot.pending_building_type <= 4)
+        {
+            pulse_building_type = snapshot.pending_building_type;
+        }
+    }
+
+    if(pulse_building_type != 0)
+    {
+        // m.a(Graphics, boolean) shows the same continuous type-colored pulse
+        // in browser and placement modes. Create every ring before recoloring
+        // so all sectors reuse one Butano BPP4 OBJ palette bank.
         bn::optional<bn::sprite_palette_ptr> valid_lot_palette;
-        const int required = snapshot.pending_building_type - 1;
+        const int required = pulse_building_type - 1;
         for(int index = 0; index < 25; ++index)
         {
             if(int(snapshot.placement_capabilities[index]) >= required)
@@ -486,7 +503,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
         if(valid_lot_palette)
         {
-            const uint32_t rgb = build_city_valid_lot_rgb(snapshot.pending_building_type, _placement_flash_ms);
+            const uint32_t rgb = build_city_valid_lot_rgb(pulse_building_type, _placement_flash_ms);
             const bn::color color(
                     int((rgb >> 16) & 0xFFu) >> 3,
                     int((rgb >> 8) & 0xFFu) >> 3,
@@ -518,14 +535,28 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.mode == BuildCityMode::Browse)
     {
-        // Resource 28 frames 0..3 are the four red selector silhouettes.
-        // Their 23x23 logical canvas surrounds the frame-3 building preview:
-        // preview left = highlight left + 2, preview baseline = highlight top + 21.
         if(snapshot.selected_building_type >= 1 &&
            snapshot.selected_building_type <= snapshot.max_unlocked_building_type &&
            snapshot.selected_building_type <= 4)
         {
             const int selected = snapshot.selected_building_type;
+
+            // m.t: the selected 15x15 selector cell is #FEA100 for 250ms,
+            // then the static gray background shows for 250ms. Draw this
+            // under resource-28's red silhouette and the frame-3 preview.
+            if(build_city_selector_slot_active(_selector_flash_ms))
+            {
+                const int slot_left = selector_screen_left + 2;
+                const int slot_top = selector_screen_top + 2 + (selected - 1) * 16;
+                _show_composite(
+                        generated::city_selector_active_slot,
+                        centered_x(slot_left + 7),
+                        centered_y(slot_top + 7));
+            }
+
+            // Resource 28 frames 0..3 are the four red selector silhouettes.
+            // Their 23x23 logical canvas surrounds the frame-3 building preview:
+            // preview left = highlight left + 2, preview baseline = highlight top + 21.
             const int preview_left = selector_screen_left + 4;
             const int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
             const int highlight_left = preview_left - 2;
@@ -537,8 +568,6 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         }
 
         // Recovered four-slot browser: every tower icon uses strip frame 3.
-        // The selected state is the red resource-28 silhouette above, not a
-        // different roof frame from the building strip.
         for(int type = 1; type <= snapshot.max_unlocked_building_type && type <= 4; ++type)
         {
             const int screen_left = selector_screen_left + 4;
@@ -560,11 +589,10 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     const int cell_center_x = cell_screen_left + 7 + snapshot.cursor_column * grid_spacing;
     const int cell_center_y = cell_screen_top + 7 + snapshot.cursor_row * grid_spacing;
-    if(snapshot.placement_transition_ms == 0)
+    if(snapshot.placement_transition_ms == 0 && ! snapshot.placement_committing)
     {
-        // Resource 28 frame 4 is the placement square.  Its visible 14x14
-        // pixels begin at logical source (0, 9) in a 23x23 canvas, so anchor
-        // the canvas rather than centering the cropped sprite on the lot.
+        // Resource 28 frame 4 is the placement square. Its visible 14x14
+        // pixels begin at logical source (0, 9) in a 23x23 canvas.
         const int cursor_canvas_left = cell_screen_left + snapshot.cursor_column * grid_spacing;
         const int cursor_canvas_top = cell_screen_top - 9 + snapshot.cursor_row * grid_spacing;
         _show_composite(
@@ -573,7 +601,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                 centered_y(cursor_canvas_top + 11));
     }
 
-    if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
+    if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4 &&
+       ! snapshot.placement_committing)
     {
         const int target_left = grid_screen_left + 5 + snapshot.cursor_column * grid_spacing;
         const int target_baseline = grid_screen_top + 15 + snapshot.cursor_row * grid_spacing;
@@ -595,13 +624,13 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.placement_committing && snapshot.placement_timer_ms >= 0)
     {
-        int elapsed = 3000 - snapshot.placement_timer_ms;
-        if(elapsed < 0)
+        const int tile_index = snapshot.cursor_row * 5 + snapshot.cursor_column;
+        const bool replacing = save.city_tiles[tile_index].type != 0;
+        const int effect_frame = build_city_placement_effect_frame(replacing, snapshot.placement_timer_ms);
+        if(effect_frame >= 0)
         {
-            elapsed = 0;
+            _show_composite(*city_effects[effect_frame], centered_x(cell_center_x), centered_y(cell_center_y));
         }
-        int effect_frame = (elapsed / 100) % 6;
-        _show_composite(*city_effects[effect_frame], centered_x(cell_center_x), centered_y(cell_center_y));
     }
 }
 
@@ -709,7 +738,8 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     {
         const char* instruction = snapshot.cursor_column < 0 ?
                 generated::localized_strings[_language][64] :
-                generated::localized_strings[_language][snapshot.placement_valid ? 65 : 66];
+                generated::localized_strings[_language][
+                        (snapshot.placement_committing || snapshot.placement_valid) ? 65 : 66];
         _text_generator.generate(0, 68, instruction, _sprites);
     }
 }

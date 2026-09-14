@@ -398,11 +398,17 @@ void UiShell::_show_score_message(const UiController& controller, bool qualified
 void UiShell::_show_name_entry(const UiController& controller)
 {
     const int language = controller.language();
+    constexpr int name_line_y = -48;
+    constexpr int name_column_offset = 24;
     _text_generator.generate(0, -68, generated::localized_strings[language][128], _sprites);
-    _text_generator.generate(-76, -48, generated::localized_strings[language][129], _sprites);
-    _text_generator.generate(22, -48, controller.name_entry().data(), _sprites);
+    _text_generator.generate(-name_column_offset, name_line_y, generated::localized_strings[language][129], _sprites);
+    _text_generator.generate(name_column_offset, name_line_y, controller.name_entry().data(), _sprites);
 
     constexpr int columns = 8;
+    const int selected_row = controller.name_cursor() / columns;
+    const int selected_row_y = -18 + selected_row * 17;
+    _show_composite(generated::menu_highlight, 0, selected_row_y, 100);
+
     for(int index = 0; index < name_grid_size; ++index)
     {
         const int row = index / columns;
@@ -412,7 +418,6 @@ void UiShell::_show_name_entry(const UiController& controller)
         char label[2] = {name_grid[index], '\0'};
         if(index == controller.name_cursor())
         {
-            _show_composite(generated::menu_highlight, x, y, 100);
             _selected_text_generator.generate(x, y, label, _sprites);
         }
         else

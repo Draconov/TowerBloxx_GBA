@@ -11,6 +11,7 @@
 #include "bn_sprite_items_menu_highlight_p3.h"
 #include "bn_sprite_items_city_progress_segment_p0.h"
 #include "bn_sprite_items_city_valid_lot_ring_p0.h"
+#include "bn_sprite_items_city_selector_active_slot_p0.h"
 #include "bn_sprite_items_city_comparison_panel_active_p0.h"
 #include "bn_sprite_items_city_progress_tail_f1_p0.h"
 #include "bn_sprite_items_city_progress_tail_f2_p0.h"
@@ -224,6 +225,11 @@ inline const UiSpritePartAsset city_valid_lot_ring_parts[] = {
     { &bn::sprite_items::city_valid_lot_ring_p0, 1, 1 },
 };
 inline const UiCompositeAsset city_valid_lot_ring = { city_valid_lot_ring_parts, 1 };
+
+inline const UiSpritePartAsset city_selector_active_slot_parts[] = {
+    { &bn::sprite_items::city_selector_active_slot_p0, 1, 1 },
+};
+inline const UiCompositeAsset city_selector_active_slot = { city_selector_active_slot_parts, 1 };
 
 inline const UiSpritePartAsset city_comparison_panel_active_parts[] = {
     { &bn::sprite_items::city_comparison_panel_active_p0, 4, 4 },
