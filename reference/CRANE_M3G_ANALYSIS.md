@@ -1,4 +1,4 @@
-# Crane / M3G presentation analysis (Fix 13, corrected in Fix 14.6)
+# Crane / M3G presentation analysis (Fix 13, corrected through Fix 14.7)
 
 Canonical source: `Tower-Bloxx_v1522.jar`, primarily `House.e(Graphics)`, `House.u()`, the House landing/slip branches, `f.class`, and `n.class`.
 
@@ -20,7 +20,9 @@ The first block itself is also special.  While `K == 4`, House marks it with the
 
 ## Normal mesh-8 branch
 
-When `K == 0` and the block is not in miss state 3, `House.e(Graphics)` draws mesh 8. It resets the mesh transform, translates to `(p, q, 0)`, then calls `f.a(r / 540.0f, 0, 0, 1)`. `f.a(float,float,float,float)` multiplies its first argument by 360 degrees before applying `postRotate`, so the actual Z rotation is `r * 2 / 3` degrees. The GBA snapshots expose the equivalent `crane_angle_degrees` and the port keeps that recovered transform.
+When `K == 0` and the block is not in miss state 3, `House.e(Graphics)` draws mesh 8. It resets the mesh transform, translates to `(p, q, 0)`, then calls `f.a(r / 540.0f, 0, 0, 1)`. `f.a(float,float,float,float)` multiplies its first argument by 360 degrees before applying `postRotate`, so the actual Z rotation is `r * 2 / 3` degrees. `r` is `p >> 4`, and the reachable swing range is -24..24.
+
+Fix 14.7 no longer rotates separately sliced GBA OBJ parts at runtime. That approximation gave every chunk its own affine pivot and visibly tore mesh 8 apart. The exporter now renders all 49 reachable `r` steps through the original M3G transform around one shared origin; runtime selects the pre-rendered frame with `crane_x >> 4`. The resulting visible BGR555 pixels are byte-checked against the offline M3G renderer.
 
 ## Special mesh-7 branch
 
@@ -36,7 +38,7 @@ Mesh 7 is translated to the crane position without the mesh-8 Z rotation.  This 
 
 The V-strap mesh is not the entire cable. In every special branch above, House projects world point `(p, q + 528, 0, 1)` through the active M3G camera and draws a black Java2D line to it twice, one pixel apart. The GBA port preserves that separation with a dedicated two-pixel cable-segment sprite chain.
 
-The endpoint is aligned to the recovered mesh-7 attachment region. This reproduces the visible source structure, but it is not claimed to be a bit-identical M3G camera projection; final emulator screenshot tuning can still adjust the anchor by a few pixels if a canonical capture proves necessary.
+Fix 14.7 removes the earlier sprite-center guess (`+5,-18`). The cable now ends at the GBA projection of the recovered source point itself: `_screen_x(crane_x)` and `_screen_y(crane_y + 528, camera_y)`.
 
 ## Bad-placement secondary tumble
 
@@ -57,7 +59,7 @@ The original passes the recovered Y angle through the M3G object transform. The 
 
 This is a presentation approximation rather than a claim of bit-identical 3D rasterization. The state, target angle, interpolation duration, RNG ordering and scene timing are recovered behavior; only the final 3D-to-2D rasterization is adapted to the GBA sprite renderer.
 
-## Runtime integration after Fix 14.6
+## Runtime integration after Fix 14.7
 
 - Quick Game: first block/base uses mesh 23; initial rig uses mesh 7 + cable; first release hides the crane; after first landing, normal construction uses mesh 8 and later floor mesh 13; miss state switches back to mesh 7 + cable.
 - Build City construction: first block/base uses mesh 20..23 for the selected family; the same initial mesh-7 / hidden-first-fall / mesh-8 sequence applies; roof phase uses mesh 7 + cable; miss state also uses mesh 7 + cable.
@@ -65,4 +67,4 @@ This is a presentation approximation rather than a claim of bit-identical 3D ras
 
 ## Remaining visual-only verification
 
-With the state-machine mismatch removed, the remaining crane check is the normal mesh-8 rasterization itself. Compare a post-first-floor normal-hook capture against the GBA output. If affine rotation still produces visibly rough texture/edge artifacts, pre-rendered M3G-derived angle frames can replace the runtime affine approximation without changing the recovered state machine.
+The normal mesh-8 shared-origin rasterization and special-cable endpoint are now source-derived rather than affine/chunk guesses. The remaining verification is live emulator comparison of the 49-step hook swing, first-floor special rig, and roof/miss special rig for any final camera/layout discrepancy.

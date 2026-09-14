@@ -17,6 +17,7 @@ from .m3g_render import (
     class_n_camera_transform,
     house_gameplay_camera_distance,
     identity_matrix,
+    post_rotate,
     render_mesh_reference,
     runtime_camera,
 )
@@ -222,12 +223,24 @@ def _asset_name(mesh_id: int, part_index: int) -> str:
     return f"tb_mesh_{mesh_id:03d}_p{part_index}"
 
 
-def _header(composites: list[SpriteComposite]) -> str:
+def _crane_hook_asset_name(frame_index: int, part_index: int) -> str:
+    return f"crane_hook_pose_{frame_index:02d}_p{part_index}"
+
+
+def _header(
+    composites: list[SpriteComposite],
+    crane_hook_frames: list[tuple[int, SpriteComposite]],
+) -> str:
     names = [
         _asset_name(composite.mesh_id, part_index)
         for composite in composites
         for part_index, _part in enumerate(composite.parts)
     ]
+    names.extend(
+        _crane_hook_asset_name(frame_index, part_index)
+        for frame_index, (_step, composite) in enumerate(crane_hook_frames)
+        for part_index, _part in enumerate(composite.parts)
+    )
     lines = [
         "#ifndef TB_GENERATED_TOWER_MESH_ASSETS_H",
         "#define TB_GENERATED_TOWER_MESH_ASSETS_H",
@@ -262,6 +275,49 @@ def _header(composites: list[SpriteComposite]) -> str:
             y = part.source_y + part.height // 2 - composite.canvas_height // 2
             lines.append(f"    {{ &bn::sprite_items::{name}, {x}, {y} }},")
         lines.extend(["};", ""])
+
+    lines.extend([
+        "struct CraneHookFrameAsset",
+        "{",
+        "    int16_t rotation_step;",
+        "    const MeshPartAsset* parts;",
+        "    int16_t part_count;",
+        "};",
+        "",
+    ])
+    for frame_index, (_step, composite) in enumerate(crane_hook_frames):
+        lines.append(f"inline const MeshPartAsset crane_hook_pose_{frame_index:02d}_parts[] = {{")
+        for part_index, part in enumerate(composite.parts):
+            name = _crane_hook_asset_name(frame_index, part_index)
+            x = part.source_x + part.width // 2 - composite.canvas_width // 2
+            y = part.source_y + part.height // 2 - composite.canvas_height // 2
+            lines.append(f"    {{ &bn::sprite_items::{name}, {x}, {y} }},")
+        lines.extend(["};", ""])
+
+    lines.append("inline const CraneHookFrameAsset crane_hook_frames[] = {")
+    for frame_index, (step, composite) in enumerate(crane_hook_frames):
+        lines.append(
+            f"    {{ {step}, crane_hook_pose_{frame_index:02d}_parts, {len(composite.parts)} }},"
+        )
+    lines.extend([
+        "};",
+        f"inline constexpr int crane_hook_frame_count = {len(crane_hook_frames)};",
+        "",
+        "inline const CraneHookFrameAsset& crane_hook_frame_for_step(int step)",
+        "{",
+        "    if(step < -24)",
+        "    {",
+        "        step = -24;",
+        "    }",
+        "    else if(step > 24)",
+        "    {",
+        "        step = 24;",
+        "    }",
+        "    return crane_hook_frames[step + 24];",
+        "}",
+        "",
+    ])
+
     lines.append("inline const MeshAsset meshes[] = {")
     for composite in composites:
         lines.append(
@@ -351,6 +407,74 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
             "parts": part_records,
         })
 
+    # House.e(Graphics) rotates the complete mesh-8 hook/rope around one M3G
+    # origin. Rotating its GBA sprite chunks independently shears the mesh, so
+    # bake every reachable r=(crane_x >> 4) step with the original transform.
+    crane_mesh = resolve_mesh(scene, 8)
+    crane_textures: dict[int, TextureRGBA] = {}
+    for submesh in crane_mesh.submeshes:
+        image_index = submesh.image_index
+        if image_index is not None and image_index not in crane_textures:
+            width, height, rgba = decode_image_rgba(scene, image_index)
+            crane_textures[image_index] = TextureRGBA(width, height, rgba)
+
+    crane_hook_frames: list[tuple[int, SpriteComposite]] = []
+    crane_hook_records: list[dict[str, object]] = []
+    crane_hook_asset_names: list[str] = []
+    for frame_index, rotation_step in enumerate(range(-24, 25)):
+        draw_transform = post_rotate(
+            identity_matrix(), rotation_step * (2.0 / 3.0), 0.0, 0.0, 1.0
+        )
+        frame = render_mesh_reference(
+            crane_mesh, camera=camera, textures=crane_textures, draw_transform=draw_transform
+        )
+        render = Image.frombytes("RGBA", (camera.width, camera.height), frame.rgba)
+        composite = slice_sprite(render, 800 + frame_index)
+        if composite.bpp != 4:
+            raise ValueError(
+                f"crane hook pose {rotation_step} unexpectedly needs {composite.bpp}bpp"
+            )
+        crane_hook_frames.append((rotation_step, composite))
+        part_records: list[dict[str, object]] = []
+        for part_index, part in enumerate(composite.parts):
+            name = _crane_hook_asset_name(frame_index, part_index)
+            crane_hook_asset_names.append(name)
+            _write_indexed_bmp(
+                graphics_dir / f"{name}.bmp",
+                part.width,
+                part.height,
+                part.indices,
+                composite.palette_bgr555,
+                composite.bpp,
+            )
+            _write_json(
+                graphics_dir / f"{name}.json",
+                {"bpp_mode": "bpp_4", "type": "sprite"},
+            )
+            part_records.append({
+                "asset": name,
+                "source_x": part.source_x,
+                "source_y": part.source_y,
+                "width": part.width,
+                "height": part.height,
+                "screen_x": part.source_x + part.width // 2 - composite.canvas_width // 2,
+                "screen_y": part.source_y + part.height // 2 - composite.canvas_height // 2,
+            })
+        crane_hook_records.append({
+            "rotation_step": rotation_step,
+            "angle_degrees": rotation_step * (2.0 / 3.0),
+            "bbox": list(composite.bbox),
+            "bpp": composite.bpp,
+            "palette_entries": len(composite.palette_bgr555),
+            "parts": part_records,
+        })
+
+    crane_hook_palette_entries = _share_bpp4_asset_palette(
+        graphics_dir, tuple(crane_hook_asset_names)
+    )
+    for record in crane_hook_records:
+        record["palette_entries"] = crane_hook_palette_entries
+
     # Floor, initial/base floor, normal roof and trophy roof from one tower
     # family can be live simultaneously. They must share the same partial
     # BPP8 OBJ palette; otherwise the GBA has only one incompatible BPP8
@@ -370,7 +494,7 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
     )
 
     header_path = include_dir / "tower_mesh_assets.h"
-    header_path.write_text(_header(composites), encoding="utf-8", newline="\n")
+    header_path.write_text(_header(composites, crane_hook_frames), encoding="utf-8", newline="\n")
 
     tracked_files = sorted([
         *graphics_dir.glob("*.bmp"),
@@ -400,6 +524,8 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
         "base_fov": 55.0,
         "mesh_ids": list(GAME_MESH_USER_IDS),
         "meshes": mesh_records,
+        "crane_hook_frames": crane_hook_records,
+        "crane_hook_palette_entries": crane_hook_palette_entries,
         "files": files,
         "tree_hash": tree_digest.hexdigest(),
     }

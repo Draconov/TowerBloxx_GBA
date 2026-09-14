@@ -56,7 +56,6 @@ private:
     bn::optional<bn::regular_bg_ptr> _background;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
-    bn::sprite_affine_mat_ptr _crane_affine_mat;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;
@@ -72,6 +71,7 @@ private:
     int _visible_floor_start = 0;
     int _rendered_current_mesh_id = -1;
     int _rendered_crane_mesh_id = -1;
+    int _rendered_crane_rotation_step = 999;
     int _last_hud_floor_count = -1;
     int _last_hud_chances = -1;
     int _last_hud_population = -1;

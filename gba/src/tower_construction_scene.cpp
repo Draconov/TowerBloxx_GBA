@@ -147,6 +147,26 @@ void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::i
     }
 }
 
+void create_crane_hook_frame_sprites(
+        const generated::CraneHookFrameAsset& frame, bn::ivector<bn::sprite_ptr>& output)
+{
+    output.clear();
+    for(int index = 0; index < frame.part_count; ++index)
+    {
+        output.push_back(frame.parts[index].item->create_sprite(0, 0));
+    }
+}
+
+void position_crane_hook_frame_sprites(
+        const generated::CraneHookFrameAsset& frame, int x, int y,
+        bn::ivector<bn::sprite_ptr>& sprites)
+{
+    for(int index = 0; index < frame.part_count; ++index)
+    {
+        sprites[index].set_position(x + frame.parts[index].x, y + frame.parts[index].y);
+    }
+}
+
 void position_rotated_mesh_part(
         const generated::MeshPartAsset& part, int x, int y, int angle_degrees, int y_angle_degrees,
         bn::sprite_affine_mat_ptr& affine_mat, bn::sprite_ptr& sprite)
@@ -172,7 +192,6 @@ void position_rotated_mesh_part(
 
 TowerConstructionScene::TowerConstructionScene() :
     _current_affine_mat(bn::sprite_affine_mat_ptr::create()),
-    _crane_affine_mat(bn::sprite_affine_mat_ptr::create()),
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
@@ -191,6 +210,7 @@ void TowerConstructionScene::start(
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
     _rendered_crane_mesh_id = -1;
+    _rendered_crane_rotation_step = 999;
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
@@ -356,6 +376,7 @@ void TowerConstructionScene::suspend_presentation()
     _hud_sprites.clear();
     _rendered_current_mesh_id = -1;
     _rendered_crane_mesh_id = -1;
+    _rendered_crane_rotation_step = 999;
 }
 
 void TowerConstructionScene::resume_presentation()
@@ -370,6 +391,7 @@ void TowerConstructionScene::resume_presentation()
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
     _rendered_crane_mesh_id = -1;
+    _rendered_crane_rotation_step = 999;
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
@@ -455,11 +477,25 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
         return;
     }
 
-    const int crane_mesh_id = mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
-    if(_crane_hook_sprites.empty() || crane_mesh_id != _rendered_crane_mesh_id)
+    if(mode == CranePresentationMode::Special)
     {
-        create_mesh_sprites(mesh_by_id(crane_mesh_id), _crane_hook_sprites);
-        _rendered_crane_mesh_id = crane_mesh_id;
+        if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != special_crane_mesh_id)
+        {
+            create_mesh_sprites(mesh_by_id(special_crane_mesh_id), _crane_hook_sprites);
+            _rendered_crane_mesh_id = special_crane_mesh_id;
+            _rendered_crane_rotation_step = 999;
+        }
+        return;
+    }
+
+    const int rotation_step = snapshot.crane_x >> 4;
+    const generated::CraneHookFrameAsset& frame = generated::crane_hook_frame_for_step(rotation_step);
+    if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != crane_hook_mesh_id ||
+       _rendered_crane_rotation_step != frame.rotation_step)
+    {
+        create_crane_hook_frame_sprites(frame, _crane_hook_sprites);
+        _rendered_crane_mesh_id = crane_hook_mesh_id;
+        _rendered_crane_rotation_step = frame.rotation_step;
     }
 }
 
@@ -477,8 +513,8 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
     // spending an affine matrix per segment.
     constexpr int start_x = 0;
     constexpr int start_y = -85;
-    const int end_x = _screen_x(snapshot.crane_x) + 5;
-    const int end_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y) - 18;
+    const int end_x = _screen_x(snapshot.crane_x);
+    const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
     const int dy = end_y - start_y;
     const int abs_dy = dy < 0 ? -dy : dy;
     int segment_count = (abs_dy + 15) / 16;
@@ -564,22 +600,18 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     for(bn::sprite_ptr& sprite : _crane_hook_sprites) { sprite.set_visible(crane_visible); }
     if(crane_visible)
     {
-        const int crane_mesh_id = crane_mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
-        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_mesh_id);
         const int crane_x = _screen_x(snapshot.crane_x);
         const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
         if(crane_mode == CranePresentationMode::Special)
         {
-            position_mesh_sprites(crane_mesh, crane_x, crane_y, _crane_hook_sprites);
+            position_mesh_sprites(
+                    mesh_by_id(special_crane_mesh_id), crane_x, crane_y, _crane_hook_sprites);
         }
         else
         {
-            for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
-            {
-                position_rotated_mesh_part(
-                        crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
-                        _crane_affine_mat, _crane_hook_sprites[part_index]);
-            }
+            const generated::CraneHookFrameAsset& frame =
+                    generated::crane_hook_frame_for_step(snapshot.crane_x >> 4);
+            position_crane_hook_frame_sprites(frame, crane_x, crane_y, _crane_hook_sprites);
         }
     }
     _rebuild_special_cable(snapshot, crane_mode);

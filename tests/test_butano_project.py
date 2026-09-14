@@ -356,20 +356,24 @@ def test_playability_fix3_uses_original_scene_background_items() -> None:
     assert "bn::regular_bg_items::city_bg.create_bg" in city
 
 
-def test_playability_fix3_crane_uses_recovered_affine_orientation() -> None:
+def test_playability_fix3_crane_uses_recovered_shared_origin_orientation() -> None:
     root = _root()
+    generated = (root / "gba/include/generated/tower_mesh_assets.h").read_text()
+    assert "crane_hook_frame_count = 49" in generated
+    assert "crane_hook_frame_for_step" in generated
+
     for header_name, source_name in (
         ("quick_game_scene.h", "quick_game_scene.cpp"),
         ("tower_construction_scene.h", "tower_construction_scene.cpp"),
     ):
         header = (root / "gba/include/tb" / header_name).read_text()
         source = (root / "gba/src" / source_name).read_text()
-        assert "bn::sprite_affine_mat_ptr _crane_affine_mat" in header
-        assert "snapshot.crane_angle_degrees" in source
-        # Java M3G uses world +Z rotation with a Y-up projection. GBA sprite
-        # coordinates are Y-down, so the visible affine angle is negated.
-        assert "-snapshot.crane_angle_degrees" in source
-        assert "_crane_affine_mat" in source
+        # Fix 14.7 bakes the complete M3G mesh at each recovered r step so all
+        # sprite chunks rotate around the same source origin instead of each
+        # chunk getting its own affine pivot.
+        assert "bn::sprite_affine_mat_ptr _crane_affine_mat" not in header
+        assert "crane_hook_frame_for_step(snapshot.crane_x >> 4)" in source
+        assert "-snapshot.crane_angle_degrees" not in source
 
 
 def test_playability_fix3_maxmod_audio_routing_is_wired() -> None:

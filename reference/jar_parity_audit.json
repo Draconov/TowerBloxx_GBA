@@ -190,5 +190,21 @@
       "remaining": "final emulator screenshot tuning of special-cable attachment and Y-foreshortening",
       "reference_file": "reference/CRANE_M3G_ANALYSIS.md"
     }
+  },
+  "fix14_7": {
+    "crane_shared_origin_rasterization": {
+      "status": "recovered",
+      "normal_crane_mesh": 8,
+      "rotation_step_source": "r = crane_x >> 4",
+      "rotation_steps": [
+        -24,
+        24
+      ],
+      "frame_count": 49,
+      "angle_degrees": "r * 2 / 3",
+      "runtime": "pre-rendered shared-origin M3G frames; no per-chunk crane affine pivot",
+      "special_cable_endpoint": "screen(crane_x, crane_y + 528)",
+      "reference_file": "reference/CRANE_M3G_ANALYSIS.md"
+    }
   }
 }
