@@ -38,10 +38,13 @@ def test_runtime_uses_prerendered_hook_and_exact_special_cable_projection() -> N
         assert "const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);" in source
 
 
-def test_build_city_offset_remains_source_confirmation_only() -> None:
+def test_build_city_highlighted_unlocked_tower_stays_raised() -> None:
     root = Path(__file__).resolve().parents[1]
     source = (root / "gba/src/build_city_scene.cpp").read_text(encoding="utf-8")
-    # The JAR's F timer controls the +2/-2 movement. The continuously flashing
-    # orange selector timer t must not move the building during ordinary browse.
-    assert "snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250" in source
+    # Approved GBA UX adaptation: the highlighted unlocked tower and its red
+    # outline stay +2px right / -2px up for the full browse selection, not only
+    # during the source confirmation timer. The orange pulse itself never moves it.
+    assert "build_city_preview_raised(selected, snapshot.selected_building_type," in source
+    assert "build_city_preview_raised(type, snapshot.selected_building_type," in source
+    assert "snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250" not in source
     assert "_selector_flash_ms < 250" not in source

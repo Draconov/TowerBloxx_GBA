@@ -556,7 +556,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
             {
                 int preview_left = selector_screen_left + 4;
                 int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
-                if(snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250)
+                if(build_city_preview_raised(selected, snapshot.selected_building_type,
+                                             snapshot.max_unlocked_building_type))
                 {
                     preview_left += 2;
                     preview_baseline -= 2;
@@ -571,14 +572,14 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         }
 
         // Recovered four-slot browser: every unlocked tower icon uses strip
-        // frame 3. During the last half of source F=500 confirmation, only
-        // the chosen tower shifts +2px right and -2px up with its outline.
+        // frame 3. GBA UX adaptation: the currently highlighted unlocked tower
+        // stays raised +2px right / -2px up with its outline.
         for(int type = 1; type <= snapshot.max_unlocked_building_type && type <= 4; ++type)
         {
             int screen_left = selector_screen_left + 4;
             int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
-            if(type == snapshot.selected_building_type &&
-               snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250)
+            if(build_city_preview_raised(type, snapshot.selected_building_type,
+                                         snapshot.max_unlocked_building_type))
             {
                 screen_left += 2;
                 screen_baseline -= 2;

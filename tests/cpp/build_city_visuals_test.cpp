@@ -7,6 +7,7 @@
 int main()
 {
     using tb::build_city_placement_effect_frame;
+    using tb::build_city_preview_raised;
     using tb::build_city_selector_slot_active;
     using tb::build_city_valid_lot_rgb;
 
@@ -28,6 +29,16 @@ int main()
     // indexing outside the recovered four-entry endpoint table.
     assert(build_city_valid_lot_rgb(0, 0) == 0x0054A0u);
     assert(build_city_valid_lot_rgb(5, 400) == 0xF0FF00u);
+
+    // GBA UX adaptation: an unlocked highlighted browser tower stays raised
+    // by +2px right / -2px up for as long as its row is selected. Locked
+    // rows keep the selector pulse but do not show/raise a tower.
+    assert(build_city_preview_raised(1, 1, 1));
+    assert(build_city_preview_raised(2, 2, 4));
+    assert(! build_city_preview_raised(1, 2, 4));
+    assert(! build_city_preview_raised(2, 2, 1));
+    assert(! build_city_preview_raised(0, 0, 4));
+    assert(! build_city_preview_raised(5, 5, 4));
 
     // m.t is a 500ms browser selector timer: orange for 250ms, gray for 250ms.
     assert(build_city_selector_slot_active(0));

@@ -53,6 +53,11 @@ uint32_t build_city_valid_lot_rgb(int building_type, int flash_ms)
     return (red << 16) | (green << 8) | blue;
 }
 
+bool build_city_preview_raised(int type, int selected_type, int max_unlocked_type)
+{
+    return type >= 1 && type <= 4 && type == selected_type && type <= max_unlocked_type;
+}
+
 bool build_city_selector_slot_active(int flash_ms)
 {
     int phase_ms = flash_ms % 500;
