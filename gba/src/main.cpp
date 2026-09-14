@@ -101,13 +101,20 @@ int main()
             }
             else if(result.placement_committed)
             {
-                build_city.suspend_presentation();
-                controller.begin_score_submission(
+                const auto score_submission = controller.begin_score_submission(
                         tb::HallTable::BuildCity,
                         uint32_t(result.committed_total_population),
                         save,
                         tb::ScoreFlowReturn::BuildCity);
-                session.show_ui();
+                if(score_submission.save_dirty)
+                {
+                    tb::store_save(save);
+                }
+                if(score_submission.requires_ui)
+                {
+                    build_city.suspend_presentation();
+                    session.show_ui();
+                }
             }
             else if(result.exit)
             {

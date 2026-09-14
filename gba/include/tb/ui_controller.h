@@ -60,6 +60,12 @@ struct UiUpdateResult
     UiAction action = UiAction::None;
 };
 
+struct ScoreSubmissionBeginResult
+{
+    bool save_dirty = false;
+    bool requires_ui = true;
+};
+
 class UiController
 {
 public:
@@ -80,7 +86,7 @@ public:
     [[nodiscard]] uint32_t pending_score() const;
     [[nodiscard]] const std::array<char, hall_name_max_length + 1>& name_entry() const;
     [[nodiscard]] int name_cursor() const;
-    void begin_score_submission(HallTable table, uint32_t score, const SaveData& save, ScoreFlowReturn return_target);
+    ScoreSubmissionBeginResult begin_score_submission(HallTable table, uint32_t score, SaveData& save, ScoreFlowReturn return_target);
 
     UiUpdateResult update(const InputFrame& input, SaveData& save);
 

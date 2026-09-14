@@ -16,6 +16,10 @@ struct HallQualification { bool qualifies = false; uint8_t position = 0; };
 void reset_hall_of_fame(HallOfFameData& data);
 HallQualification qualify_hall_score(const HallOfFameData& data, HallTable table, uint32_t score);
 HallQualification insert_hall_score(HallOfFameData& data, HallTable table, uint32_t score, const char* name);
+[[nodiscard]] bool build_city_player_registered(const HallOfFameData& data);
+HallQualification insert_build_city_player_score(HallOfFameData& data, uint32_t score, const char* name);
+[[nodiscard]] bool update_build_city_player_score(HallOfFameData& data, uint32_t score);
+void forget_build_city_player(HallOfFameData& data);
 void normalize_hall_name(const char* input, std::array<char, hall_name_max_length + 1>& output);
 }
 #endif

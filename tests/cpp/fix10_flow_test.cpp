@@ -83,7 +83,8 @@ int main()
     assert(result.action == tb::UiAction::None);
     assert(ui.scene() == tb::UiScene::MainMenu);
 
-    ui.begin_score_submission(tb::HallTable::BuildCity, 2000, save, tb::ScoreFlowReturn::BuildCity);
+    auto begin = ui.begin_score_submission(tb::HallTable::BuildCity, 2000, save, tb::ScoreFlowReturn::BuildCity);
+    assert(begin.requires_ui);
     ui.update(fresh(tb::Key::A), save);
     ui.update(fresh(tb::Key::A), save);
     result = ui.update(fresh(tb::Key::Start), save);
@@ -91,6 +92,12 @@ int main()
     assert(save.hall_of_fame.tables[0][0].score == 2000);
     result = ui.update(fresh(tb::Key::B), save);
     assert(result.action == tb::UiAction::ReturnToBuildCity);
+
+    begin = ui.begin_score_submission(tb::HallTable::BuildCity, 2500, save, tb::ScoreFlowReturn::BuildCity);
+    assert(! begin.requires_ui);
+    assert(begin.save_dirty);
+    assert(save.hall_of_fame.tables[0][0].score == 2500);
+    assert(std::strcmp(save.hall_of_fame.tables[0][0].name.data(), "A") == 0);
 
     std::cout << "fix10 flow ok\n";
 }

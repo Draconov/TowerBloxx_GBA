@@ -347,15 +347,45 @@ int main()
     assert(score_ui.scene() == tb::UiScene::MainMenu);
     assert(save.hall_of_fame.tables[1][0].score == previous_top);
 
-    // Build City score flow returns through an explicit runtime action.
-    score_ui.begin_score_submission(tb::HallTable::BuildCity, 5000, save, tb::ScoreFlowReturn::BuildCity);
+    // First qualifying Build City score asks for a name and registers that entry.
+    auto begin = score_ui.begin_score_submission(tb::HallTable::BuildCity, 5000, save, tb::ScoreFlowReturn::BuildCity);
+    assert(begin.requires_ui);
+    assert(! begin.save_dirty);
     score_ui.update(fresh(tb::Key::A), save);
     score_ui.update(fresh(tb::Key::A), save);
     result = score_ui.update(fresh(tb::Key::Start), save);
     assert(result.save_dirty);
     assert(score_ui.scene() == tb::UiScene::HighScoreTable);
+    assert(tb::build_city_player_registered(save.hall_of_fame));
     result = score_ui.update(fresh(tb::Key::B), save);
     assert(result.action == tb::UiAction::ReturnToBuildCity);
+
+    // Later Build City placements silently update/re-sort the remembered entry.
+    begin = score_ui.begin_score_submission(tb::HallTable::BuildCity, 6000, save, tb::ScoreFlowReturn::BuildCity);
+    assert(! begin.requires_ui);
+    assert(begin.save_dirty);
+    assert(save.hall_of_fame.tables[0][0].score == 6000);
+    assert(std::strcmp(save.hall_of_fame.tables[0][0].name.data(), "A") == 0);
+    begin = score_ui.begin_score_submission(tb::HallTable::BuildCity, 5500, save, tb::ScoreFlowReturn::BuildCity);
+    assert(! begin.requires_ui);
+    assert(! begin.save_dirty);
+    assert(save.hall_of_fame.tables[0][0].score == 6000);
+
+    // Quick Game keeps its existing interactive score/name flow.
+    begin = score_ui.begin_score_submission(tb::HallTable::QuickGame, 9999, save, tb::ScoreFlowReturn::RootMenu);
+    assert(begin.requires_ui);
+    assert(! begin.save_dirty);
+    assert(score_ui.scene() == tb::UiScene::ScoreQualification);
+    result = score_ui.update(fresh(tb::Key::B), save);
+    assert(result.action == tb::UiAction::None);
+    assert(score_ui.scene() == tb::UiScene::MainMenu);
+
+    // Reset City forgets the Build City identity so the next qualifier can enter a new name.
+    tb::reset_city_progress(save);
+    assert(! tb::build_city_player_registered(save.hall_of_fame));
+    begin = score_ui.begin_score_submission(tb::HallTable::BuildCity, 7000, save, tb::ScoreFlowReturn::BuildCity);
+    assert(begin.requires_ui);
+    assert(score_ui.scene() == tb::UiScene::ScoreQualification);
 
     // Instructions remains directly reachable from the root, and root B returns to Title.
     tb::UiController instructions_ui(save);

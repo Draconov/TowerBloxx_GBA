@@ -133,8 +133,16 @@ bool UiController::_change_language(int delta, SaveData& save)
     return true;
 }
 
-void UiController::begin_score_submission(HallTable table, uint32_t score, const SaveData& save, ScoreFlowReturn return_target)
+ScoreSubmissionBeginResult UiController::begin_score_submission(HallTable table, uint32_t score, SaveData& save, ScoreFlowReturn return_target)
 {
+    if(table == HallTable::BuildCity && build_city_player_registered(save.hall_of_fame))
+    {
+        _score_flow_active = false;
+        _pending_score = 0;
+        _pending_qualification = {};
+        return {update_build_city_player_score(save.hall_of_fame, score), false};
+    }
+
     _selected_hall_table = table;
     _pending_score = score;
     _pending_qualification = qualify_hall_score(save.hall_of_fame, table, score);
@@ -142,6 +150,7 @@ void UiController::begin_score_submission(HallTable table, uint32_t score, const
     _score_flow_active = true;
     _selection = 0;
     _scene = _pending_qualification.qualifies ? UiScene::ScoreQualification : UiScene::ScoreFailure;
+    return {};
 }
 
 UiAction UiController::_finish_score_flow()
@@ -206,8 +215,9 @@ void UiController::_delete_name_character()
 
 void UiController::_confirm_name(SaveData& save, UiUpdateResult& result)
 {
-    const HallQualification inserted = insert_hall_score(
-        save.hall_of_fame, _selected_hall_table, _pending_score, _name_entry.data());
+    const HallQualification inserted = _selected_hall_table == HallTable::BuildCity ?
+        insert_build_city_player_score(save.hall_of_fame, _pending_score, _name_entry.data()) :
+        insert_hall_score(save.hall_of_fame, _selected_hall_table, _pending_score, _name_entry.data());
     if(! inserted.qualifies)
     {
         _scene = UiScene::ScoreFailure;

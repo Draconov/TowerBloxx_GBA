@@ -113,6 +113,7 @@ void reset_city_progress(SaveData& save)
         tile = {};
     }
     save.city_tutorial_flags.fill(0);
+    forget_build_city_player(save.hall_of_fame);
 }
 
 QuickRecordFlags apply_quick_result(SaveData& save, const QuickGameResult& result)
