@@ -317,7 +317,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f0",
-        "palette_entries": 3,
+        "palette_entries": 11,
         "parts": [
           {
             "asset": "city_lot_f0_p0",
@@ -335,7 +335,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f1",
-        "palette_entries": 3,
+        "palette_entries": 11,
         "parts": [
           {
             "asset": "city_lot_f1_p0",
@@ -353,7 +353,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f2",
-        "palette_entries": 3,
+        "palette_entries": 11,
         "parts": [
           {
             "asset": "city_lot_f2_p0",
@@ -371,7 +371,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f3",
-        "palette_entries": 3,
+        "palette_entries": 11,
         "parts": [
           {
             "asset": "city_lot_f3_p0",
@@ -389,7 +389,7 @@
         "bpp": 4,
         "height": 23,
         "name": "city_lot_f4",
-        "palette_entries": 3,
+        "palette_entries": 11,
         "parts": [
           {
             "asset": "city_lot_f4_p0",
@@ -427,7 +427,7 @@
         "bpp": 4,
         "height": 9,
         "name": "city_comparison_panel_active",
-        "palette_entries": 3,
+        "palette_entries": 15,
         "parts": [
           {
             "asset": "city_comparison_panel_active_p0",
@@ -445,7 +445,7 @@
         "bpp": 4,
         "height": 5,
         "name": "city_continue_arrow",
-        "palette_entries": 3,
+        "palette_entries": 12,
         "parts": [
           {
             "asset": "city_continue_arrow_p0",
@@ -464,7 +464,7 @@
           "bpp": 4,
           "height": 23,
           "name": "city_edge_top_left",
-          "palette_entries": 5,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_edge_top_left_p0",
@@ -482,7 +482,7 @@
           "bpp": 4,
           "height": 23,
           "name": "city_edge_top_right",
-          "palette_entries": 5,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_edge_top_right_p0",
@@ -500,7 +500,7 @@
           "bpp": 4,
           "height": 23,
           "name": "city_edge_bottom_left",
-          "palette_entries": 4,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_edge_bottom_left_p0",
@@ -518,7 +518,7 @@
           "bpp": 4,
           "height": 23,
           "name": "city_edge_bottom_right",
-          "palette_entries": 4,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_edge_bottom_right_p0",
@@ -666,7 +666,7 @@
           "bpp": 4,
           "height": 11,
           "name": "city_status_panel_f0",
-          "palette_entries": 6,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_status_panel_f0_p0",
@@ -684,7 +684,7 @@
           "bpp": 4,
           "height": 11,
           "name": "city_status_panel_f1",
-          "palette_entries": 10,
+          "palette_entries": 11,
           "parts": [
             {
               "asset": "city_status_panel_f1_p0",
@@ -720,7 +720,7 @@
           "bpp": 4,
           "height": 11,
           "name": "city_status_panel_f3",
-          "palette_entries": 4,
+          "palette_entries": 15,
           "parts": [
             {
               "asset": "city_status_panel_f3_p0",
@@ -778,7 +778,7 @@
           "bpp": 4,
           "height": 9,
           "name": "city_population_icon",
-          "palette_entries": 4,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_population_icon_p0",
@@ -796,7 +796,7 @@
           "bpp": 4,
           "height": 9,
           "name": "city_status_placement",
-          "palette_entries": 4,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_status_placement_p0",
@@ -814,7 +814,7 @@
           "bpp": 4,
           "height": 9,
           "name": "city_status_browse",
-          "palette_entries": 2,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_status_browse_p0",
@@ -832,7 +832,7 @@
           "bpp": 4,
           "height": 9,
           "name": "city_status_aux",
-          "palette_entries": 5,
+          "palette_entries": 12,
           "parts": [
             {
               "asset": "city_status_aux_p0",
@@ -944,7 +944,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_1",
-          "palette_entries": 3,
+          "palette_entries": 11,
           "parts": [
             {
               "asset": "city_type_badge_1_p0",
@@ -962,7 +962,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_2",
-          "palette_entries": 3,
+          "palette_entries": 11,
           "parts": [
             {
               "asset": "city_type_badge_2_p0",
@@ -980,7 +980,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_3",
-          "palette_entries": 3,
+          "palette_entries": 11,
           "parts": [
             {
               "asset": "city_type_badge_3_p0",
@@ -998,7 +998,7 @@
           "bpp": 4,
           "height": 7,
           "name": "city_type_badge_4",
-          "palette_entries": 3,
+          "palette_entries": 11,
           "parts": [
             {
               "asset": "city_type_badge_4_p0",
@@ -1174,7 +1174,7 @@
     "bpp": 4,
     "height": 1,
     "name": "city_progress_segment",
-    "palette_entries": 2,
+    "palette_entries": 11,
     "parts": [
       {
         "asset": "city_progress_segment_p0",
@@ -1193,7 +1193,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f1",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f1_p0",
@@ -1211,7 +1211,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f2",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f2_p0",
@@ -1229,7 +1229,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f3",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f3_p0",
@@ -1247,7 +1247,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f4",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f4_p0",
@@ -1265,7 +1265,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f5",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f5_p0",
@@ -1283,7 +1283,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f6",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f6_p0",
@@ -1301,7 +1301,7 @@
       "bpp": 4,
       "height": 1,
       "name": "city_progress_tail_f7",
-      "palette_entries": 2,
+      "palette_entries": 11,
       "parts": [
         {
           "asset": "city_progress_tail_f7_p0",
@@ -1519,7 +1519,7 @@
     },
     {
       "path": "gba/graphics/ui/city_comparison_panel_active_p0.bmp",
-      "sha256": "a196c15fdd4c75e571c3cfafe8ce0b70422267ce1d967c1baa97b6292d1a2d81",
+      "sha256": "0eec3eda833010d08fd404f7d2a5f03a7d2597968fd58afb39e9dd7c94637cd7",
       "size": 374
     },
     {
@@ -1529,7 +1529,7 @@
     },
     {
       "path": "gba/graphics/ui/city_continue_arrow_p0.bmp",
-      "sha256": "cf478bb7647af8763f2024fa9373f7f33cc6ba02197ed0201e980fb5a74668af",
+      "sha256": "701de4ced9d30716b7bde96b76591aeafde5a7c6c0103e80954acbd6c7eeaea4",
       "size": 150
     },
     {
@@ -1539,7 +1539,7 @@
     },
     {
       "path": "gba/graphics/ui/city_edge_bottom_left_p0.bmp",
-      "sha256": "ef61e46139a20414ef5581517eda55f2677915e1021ef6754a91560005f9a486",
+      "sha256": "04544478f28feba02c3ebb703a26466383d98adda510a67683b862ecfec1f08d",
       "size": 246
     },
     {
@@ -1549,7 +1549,7 @@
     },
     {
       "path": "gba/graphics/ui/city_edge_bottom_right_p0.bmp",
-      "sha256": "6265f60086aed2f522935f94e2f17486033b716c3bab2ea7d6155256b77b0ee9",
+      "sha256": "c026938d62cd832ed34304eb21c437a8d4c3c1ee6528b2a54668d52fc2a661a9",
       "size": 246
     },
     {
@@ -1559,7 +1559,7 @@
     },
     {
       "path": "gba/graphics/ui/city_edge_top_left_p0.bmp",
-      "sha256": "9e205a10d7a33a35661b69ed96c0d9cb94d5eed7e563f8575885f079e89959bd",
+      "sha256": "a191efeff70886fbc4f33e13423137f17f0678095d3c12af164632c551e2f959",
       "size": 182
     },
     {
@@ -1569,7 +1569,7 @@
     },
     {
       "path": "gba/graphics/ui/city_edge_top_right_p0.bmp",
-      "sha256": "56907c646464f794074f5b89a1cffcca34fbce2732a607f202bddcb20c01598f",
+      "sha256": "64f07c17a521eb1121f40600b809c768f3c52769435fc4a165ccb8e6e7a9715f",
       "size": 182
     },
     {
@@ -1649,7 +1649,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f0_p0.bmp",
-      "sha256": "1e59c1ebb95910d896896a41d6b8152ff0eb60cae7e25c6bbc7451a57772a832",
+      "sha256": "9ae2d0739f8ebaa080b096eb439481fe7e9e570d212299b093b72dd90b69bb39",
       "size": 630
     },
     {
@@ -1659,7 +1659,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f1_p0.bmp",
-      "sha256": "ade9fa27414949939135ace54af75fbaebbb2df827df8e91bb7ac1ea27169f16",
+      "sha256": "350bcfb6552999179b14f9c31e0c83a43fc93411693e4ffc59c3c6f4b4e4058d",
       "size": 630
     },
     {
@@ -1669,7 +1669,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f2_p0.bmp",
-      "sha256": "a5471d51e73b86c6f53f38c85eebdf1572d875d4e0e9271bf54d31540b67f82b",
+      "sha256": "081402699e5c745742611b771dba95e01d62014010c904c5635feccd86b6a50f",
       "size": 630
     },
     {
@@ -1679,7 +1679,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f3_p0.bmp",
-      "sha256": "e2a01de499140babb74adc7e258a443723ed98b7bf474119ce84713c724f7eb5",
+      "sha256": "bcb37bb55980d4f1e9d3937a1db47f6b23eff490bb7ff9abae357a953deb7c3d",
       "size": 630
     },
     {
@@ -1689,7 +1689,7 @@
     },
     {
       "path": "gba/graphics/ui/city_lot_f4_p0.bmp",
-      "sha256": "a02dee1aa2f0f3ab7bfa27a2446a1f0ca56849691d2aa5a69d7e5c62d2b47e4a",
+      "sha256": "1ae10899e17f2f8da11ec9094018a786f3d4e2e466f5ac779094a3d65d6c767d",
       "size": 246
     },
     {
@@ -1719,7 +1719,7 @@
     },
     {
       "path": "gba/graphics/ui/city_population_icon_p0.bmp",
-      "sha256": "8e07283e60e8371a36ef7a8d7694813a13b9c958545a6d8ebab2902c4bc4f99e",
+      "sha256": "b495b317144b72117a45ea885b0a2041114ac55072cc2d5d558c5760b873bdaa",
       "size": 246
     },
     {
@@ -1729,7 +1729,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_segment_p0.bmp",
-      "sha256": "554d985e43f6c8ce8b2c4f82ffa844f23279ef9608a8a363db1c9fc63d90f20c",
+      "sha256": "59c157169a9758fbca792b5f40875a019371d1e5c28c55712947dcbc77d2b558",
       "size": 150
     },
     {
@@ -1739,7 +1739,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f1_p0.bmp",
-      "sha256": "edade9180b326b479e59b2733839dd809c38ebbb88c80a931248c54b2deef19a",
+      "sha256": "e273523118f34263c9ecc4997a51859525f68ac57d80c4ecd8af6e401c64276f",
       "size": 150
     },
     {
@@ -1749,7 +1749,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f2_p0.bmp",
-      "sha256": "d47586f3b1cb7d0b94c4a08a958a4f95d40d02844849c6aa059ee7b8f1267102",
+      "sha256": "bef8014892be282c04e04d54c1e0291cf220ec126c8b11cbd508d2d322f06c21",
       "size": 150
     },
     {
@@ -1759,7 +1759,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f3_p0.bmp",
-      "sha256": "2bdeac21319fb3a2563a6c536da1a8e18271047b22ee5493c3611df135910448",
+      "sha256": "113486ef96a5f04c555b059ae689f5077c2798ade93980e3629b8264c49a0881",
       "size": 150
     },
     {
@@ -1769,7 +1769,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f4_p0.bmp",
-      "sha256": "dab5aef7f9077ebd39573507de9072432460db841c9c03552393c5624bab3632",
+      "sha256": "903fc0848ad5725aad2b4c657af902105d45240ee692f688988d3513efd56909",
       "size": 150
     },
     {
@@ -1779,7 +1779,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f5_p0.bmp",
-      "sha256": "dd5362bfdc4a82b364c3820a89580dba81bde7e6a1639ebb0101f681ab7b50f5",
+      "sha256": "e591ba081905d6542a4a8feed62bcd0c0ba2f1b8aaa910acee57d0bd16441751",
       "size": 150
     },
     {
@@ -1789,7 +1789,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f6_p0.bmp",
-      "sha256": "64b8ae56fbf4af8b72a8910abb764af0b5051737b58c82b84e45ba7e3bf4fa3c",
+      "sha256": "595a3b168d79b0c8e58a3926caef525536924a5502546bfd6a92bc254ea7f2f1",
       "size": 150
     },
     {
@@ -1799,7 +1799,7 @@
     },
     {
       "path": "gba/graphics/ui/city_progress_tail_f7_p0.bmp",
-      "sha256": "20f2b819bbe872516a7474d4388e1a8a4a2f378a45e73a1a6a0377f345b5946b",
+      "sha256": "be87a58be456bb213b77ce2cccc5b27fe6700bb849ab7368f3e22a5f942097c0",
       "size": 150
     },
     {
@@ -1809,7 +1809,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_aux_p0.bmp",
-      "sha256": "08b08b0521cf6cadd1f14234aa451f3cfb67039071afdd7b5483cb41987b695a",
+      "sha256": "7ca9b372ad02ff6153113c1fb52f132c273391a0d20a1659143ce5a3cf1ce00d",
       "size": 150
     },
     {
@@ -1819,7 +1819,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_browse_p0.bmp",
-      "sha256": "52c2b9915601d874078e75db17dcf33564cbdd6cb88bbf148dfb5c740a2a323b",
+      "sha256": "40835714c3ff2f381e8fc49c5fef6d90812de6f9e83cee18bb6e989307d97427",
       "size": 150
     },
     {
@@ -1879,7 +1879,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_panel_f0_p0.bmp",
-      "sha256": "5c93533973dfac0ec5723cd94aed1db9b7556b5c6294d7d7071de05215e042dd",
+      "sha256": "1c8edb0b1778806bb897f2a04745778c5e7dde254527f00e56cf877593784f97",
       "size": 182
     },
     {
@@ -1889,7 +1889,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_panel_f1_p0.bmp",
-      "sha256": "1789094c56928809355b8215f01892337ed3edc92a634a37a58dd29ad503655a",
+      "sha256": "4d347b1339068891dcdd15bcc756ef7dd32a4af5cfef766888e386aa172a4840",
       "size": 182
     },
     {
@@ -1899,7 +1899,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_panel_f2_p0.bmp",
-      "sha256": "575c0325c7e5b5e99794d6b48c8c2e73a2c7621e01ad74df6067c948994f9c05",
+      "sha256": "8ae7b48f9a546ff4e20cf6a48f2e73dbc8fed0f143d01547bbbc7e9be79ebf71",
       "size": 182
     },
     {
@@ -1909,7 +1909,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_panel_f3_p0.bmp",
-      "sha256": "d008deb4210611d9bf303e498a3ad2283b700ad4b669840cd8077b59c441f06c",
+      "sha256": "fc99d1248d2b8e3bdbad94476c472fdb5169601f06819a2f948b75827cb13ef6",
       "size": 182
     },
     {
@@ -1919,7 +1919,7 @@
     },
     {
       "path": "gba/graphics/ui/city_status_placement_p0.bmp",
-      "sha256": "5eb017075ee55a111be8d7e16fa2b80a3eec50e21404df4c9caea380abb92002",
+      "sha256": "0b9ef703e9e4388114a5c236d13f9c014057faf9f1d51224e3fe124744ea6851",
       "size": 150
     },
     {
@@ -1929,7 +1929,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_1_p0.bmp",
-      "sha256": "23b1e329eac26cc071ccb22c131bbbbdae9c92d6de753e64ba00940760e34442",
+      "sha256": "a99aca649fa9a97204d59951b0b569ec96989428c4400d8cf002319d6e11915d",
       "size": 150
     },
     {
@@ -1939,7 +1939,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_2_p0.bmp",
-      "sha256": "1626d852abdddbd70d366f9c40a77a4d8941f00c3b24177a043345ac514693b6",
+      "sha256": "c04e2f1263e119174e64d7536f44959c66e72c75d11e52cb116346108b852d52",
       "size": 150
     },
     {
@@ -1949,7 +1949,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_3_p0.bmp",
-      "sha256": "1d8fbb80ec1baf01c496c6e39767c9fa82443ce6f26eae21694355704989f739",
+      "sha256": "ee1c675a28abcf9184f85514a97e107151061438c92ba3161008e1b7f4ae2a92",
       "size": 150
     },
     {
@@ -1959,7 +1959,7 @@
     },
     {
       "path": "gba/graphics/ui/city_type_badge_4_p0.bmp",
-      "sha256": "ecccab2d0a99b4ff1f4679210411a87e326b0f8cdc8c588335543a3fb38c7643",
+      "sha256": "590137528acab1a6f1309beee78a3a2da8b26e342442c657097c6530e5de11bb",
       "size": 150
     },
     {
@@ -2079,7 +2079,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f0_p0.bmp",
-      "sha256": "f82a98cd07ddcfa79ce7e8a618e1e10933e68e5e04a2347ca3b3d57014e8852c",
+      "sha256": "3af47a2203e294096b749ea3cc4a1ed6eef2862a5aeddd0dd9d3ab9b8dbf8810",
       "size": 150
     },
     {
@@ -2089,7 +2089,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f10_p0.bmp",
-      "sha256": "ee11bde5604ab1623ad31b0046f796977931075208f21e9e310d163c749d33a2",
+      "sha256": "7f0e3e62d80033c8bb348262bbb562323e279c91ddaca6c29215ce97fc48a76a",
       "size": 150
     },
     {
@@ -2099,7 +2099,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f11_p0.bmp",
-      "sha256": "8d6197ac717584286ed17e0ebd83b05c541bb5e1fd46d8aa080cbdbbbf77f9a0",
+      "sha256": "b71f9131c76e77688b1e3da386eddb60c5f0ee6a682c68a0fac28cb7e019c15e",
       "size": 150
     },
     {
@@ -2109,7 +2109,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f1_p0.bmp",
-      "sha256": "3092f1791df80e5273d025d119e6ede724bbe4b46ce45964f24b6346887da57d",
+      "sha256": "a01811b0c5b3951fae81dfa54f45da837a196109da6a30b78bea8fc00375e788",
       "size": 150
     },
     {
@@ -2119,7 +2119,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f2_p0.bmp",
-      "sha256": "1ea1e0c6e61ad3d876d2f9b323d7660b98d41b694da12c69a6b3919ba4b64c72",
+      "sha256": "15d21578fe73c0c454509e14b56f50b811c5792994080fbd54000b81d4a64580",
       "size": 150
     },
     {
@@ -2129,7 +2129,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f3_p0.bmp",
-      "sha256": "edc81519eb901696c4b5b154672a0339a328f27fe41ebe9414f88d426a9d6ed1",
+      "sha256": "bdc4a7c81daf87ae0f812c1e3cacf169e7b7cd22f5feeacae239b40ee1238ff1",
       "size": 150
     },
     {
@@ -2139,7 +2139,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f4_p0.bmp",
-      "sha256": "fa4c92218ee349ec2b5f799a546c88765a5f2eb6078c8a2c1f23b8c3e5e28995",
+      "sha256": "544c071f4077e79536e2727e537a93c25216af8d4bc7135c9295ddce43c05cf8",
       "size": 150
     },
     {
@@ -2149,7 +2149,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f5_p0.bmp",
-      "sha256": "fc05e2ebd774cb8bf38a38ec40058ce3c5882ffcc8778f239d1e025960fbc579",
+      "sha256": "7ab7fd6cb25ef359c7e7048981350f123154cdb6020b4306cc8668b3bd0ff602",
       "size": 150
     },
     {
@@ -2159,7 +2159,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f6_p0.bmp",
-      "sha256": "8e6c1c65e0f399cbdde9263d6c7338045a88066241e1f878409cb36e2debcbb3",
+      "sha256": "3ba7cd9bdad4de58ba99243c14b8e081de3b09939863e0ece24a54ac1afd4a4c",
       "size": 150
     },
     {
@@ -2169,7 +2169,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f7_p0.bmp",
-      "sha256": "8018676a559aee96007814bce8c118c9ce379d7cb884a85f783fdb8b6e980823",
+      "sha256": "1eaa49c14dd69713c33a252ddb150527320a94b9eac2e2fe1099a6c66ba016e7",
       "size": 150
     },
     {
@@ -2179,7 +2179,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f8_p0.bmp",
-      "sha256": "2b08d55999e3b7be36ba177c4d73735c4ea9a2a838067bc6f0980f051e24f85c",
+      "sha256": "cd91cf77760e0fac41ac14c5bb9d37b395116219e632174d235ee3ced8d94741",
       "size": 150
     },
     {
@@ -2189,7 +2189,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f9_p0.bmp",
-      "sha256": "62267bc1f2850dd3404d5faedcc62962454d07b8a69bfaa4ef3cd42685a22466",
+      "sha256": "2d969af68211a81ad3e0da0e324ea7d7660fa62bc979b4782959e81c7d014e8d",
       "size": 150
     },
     {
@@ -2429,7 +2429,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f0_p0.bmp",
-      "sha256": "046a4a3214800602ec25691259b7447dd8eb1606570f8e173b6c41b3ba3b4b54",
+      "sha256": "da077f36c074b44a6615ab6a49e499d480772a404ca0f763ab1906c37ee3f267",
       "size": 150
     },
     {
@@ -2439,7 +2439,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f10_p0.bmp",
-      "sha256": "f382a144a902275b8e422405feaf29c45a5432fe698b1b5ec993cc81fae2cd0b",
+      "sha256": "7e7aa001c203a152e5f8cbbf3c3d1b62fd0636775c61dc5f3bba7a851ed7c1e1",
       "size": 150
     },
     {
@@ -2449,7 +2449,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f11_p0.bmp",
-      "sha256": "75803e07dc737bfee5a6c324eb4a10ba74ad16fd316b903a20e7d654613a3745",
+      "sha256": "6f73db0fb05122e02b3d04959a6e3216c89c0add2e3216dc9bc909d2e2c71237",
       "size": 150
     },
     {
@@ -2459,7 +2459,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f12_p0.bmp",
-      "sha256": "9730361892f753b1d7bd17249ff2d1b39e22f8a988463e77a87db250e3965a4b",
+      "sha256": "63a5ed3b434f96b5cda21d912095dd860c90856d671dcf0849b2eb1dbffa70f3",
       "size": 150
     },
     {
@@ -2469,7 +2469,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f13_p0.bmp",
-      "sha256": "fb41d095ebde64de5884d9fb2ca521d79b516c6f16bb200e88a96e95b82e527d",
+      "sha256": "ce46ff855b04b4aab5ab1052f1fbc1753da5b99c73c0040c0fbab8b466be101c",
       "size": 150
     },
     {
@@ -2479,7 +2479,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f1_p0.bmp",
-      "sha256": "0c1a358c5fcb44ae4e325f4092c9bac1cd19467ee24041042db36d96ebcb145b",
+      "sha256": "82452ca0b2d12527465e6f0327af4c22caa95d55177bc05453f3c034f901d0e5",
       "size": 150
     },
     {
@@ -2489,7 +2489,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f2_p0.bmp",
-      "sha256": "380aa2f1cbab18f5a0a7eb96ec2f720a7b004c04e8fdc4e0606d7ff98cc16402",
+      "sha256": "00c60ec5ce16e8e7f8b2d8397de73581bfc76927cf294a913c6f2bbdb1110848",
       "size": 150
     },
     {
@@ -2499,7 +2499,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f3_p0.bmp",
-      "sha256": "55c0c880e975476f01dbaf23a3d2b802861fd1be8c845fa800fb4d397966be98",
+      "sha256": "0d8d082cd632fe21b58b88cce4535df75433f1f5d44bb6e8f87cd8efbdcec476",
       "size": 150
     },
     {
@@ -2509,7 +2509,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f4_p0.bmp",
-      "sha256": "760f83792ed0ec0aa4126d6ab50b479fac66ecae262d49baae8518955baddd2b",
+      "sha256": "4034fda507bc0047a4452ac9d119ff577fb43c8355b6b8ea9183e0378e9afe1b",
       "size": 150
     },
     {
@@ -2519,7 +2519,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f5_p0.bmp",
-      "sha256": "30487fa6aba692a72a477884b9ea97a6f9d2b500e67ab0c8d798fb55e402ae64",
+      "sha256": "c4e681ebc2dc29e2c9857a247f01e07ee4355fef55653aa842ad7ff7a1de8d4e",
       "size": 150
     },
     {
@@ -2529,7 +2529,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f6_p0.bmp",
-      "sha256": "a910a8a39862a2b73ccc278723283324eb9eadb9f3a02469739f985d9cc1cdc7",
+      "sha256": "6d6cfb52930dcffcd1090b133e4c05433e1e022724160810fb0a6889f429d394",
       "size": 150
     },
     {
@@ -2539,7 +2539,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f7_p0.bmp",
-      "sha256": "3581593d1799e33d1f7042018882e9cf5d9fe2707aaef4fa4a6f949926ba30e6",
+      "sha256": "736e3ab624ae8d23b866fcce4aae0a482e34d1464bb418c5899f7e8bc189c065",
       "size": 150
     },
     {
@@ -2549,7 +2549,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f8_p0.bmp",
-      "sha256": "fe11807014ba29d041b0420062b1d1a39a49588bbe8bd0d3f276b3cb62328c74",
+      "sha256": "fe202138a34a4d9a3a10bb0ee15a28bf9dabee023ac7280dbfc75c6bba941e41",
       "size": 150
     },
     {
@@ -2559,7 +2559,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f9_p0.bmp",
-      "sha256": "f889a087e2dac57f4a515bf23e7432a16928826727e06026ac7b34c1a1420a84",
+      "sha256": "394ab85d7314ab36e45ff2d5725fb6a718e073efb917f812d2aeb4933098e98b",
       "size": 150
     },
     {
@@ -2899,7 +2899,7 @@
     },
     {
       "path": "gba/graphics/ui/tower_font.bmp",
-      "sha256": "6daf191225449f02541fb6e0e91cb4cb5605c41810c9563c23dbe3b0cdcba21a",
+      "sha256": "de3d0e1fb6b3b2692f3ef064c9efc05556fb4fffd0aba54d823199145e336bc3",
       "size": 7606
     },
     {
@@ -2999,7 +2999,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f0",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f0_p0",
@@ -3017,7 +3017,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f1",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f1_p0",
@@ -3035,7 +3035,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f2",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f2_p0",
@@ -3053,7 +3053,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f3",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f3_p0",
@@ -3071,7 +3071,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f4",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f4_p0",
@@ -3089,7 +3089,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f5",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f5_p0",
@@ -3107,7 +3107,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f6",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f6_p0",
@@ -3125,7 +3125,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f7",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f7_p0",
@@ -3161,7 +3161,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f9",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f9_p0",
@@ -3179,7 +3179,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f10",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f10_p0",
@@ -3197,7 +3197,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f11",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_brown_digit_f11_p0",
@@ -3837,7 +3837,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f0",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f0_p0",
@@ -3855,7 +3855,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f1",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f1_p0",
@@ -3873,7 +3873,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f2",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f2_p0",
@@ -3891,7 +3891,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f3",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f3_p0",
@@ -3909,7 +3909,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f4",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f4_p0",
@@ -3927,7 +3927,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f5",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f5_p0",
@@ -3945,7 +3945,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f6",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f6_p0",
@@ -3963,7 +3963,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f7",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f7_p0",
@@ -3981,7 +3981,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f8",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f8_p0",
@@ -3999,7 +3999,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f9",
-        "palette_entries": 4,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f9_p0",
@@ -4017,7 +4017,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f10",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f10_p0",
@@ -4035,7 +4035,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f11",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f11_p0",
@@ -4053,7 +4053,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f12",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f12_p0",
@@ -4071,7 +4071,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f13",
-        "palette_entries": 3,
+        "palette_entries": 5,
         "parts": [
           {
             "asset": "hud_white_digit_f13_p0",
@@ -4702,7 +4702,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "30a211df287f4bcd290495018feee80722ac4f3aadfc78f178891a174f76ef62",
+  "tree_hash": "05927654c976c7773487b3deedd8aba690a0541e7c86a01346ae506c4aae43ce",
   "utf8_characters": [
     "¡",
     "°",

@@ -114,3 +114,45 @@ def test_valid_lot_palette_does_not_consume_a_second_obj_palette_bank(
     # The mutable ring starts from a sacrificial palette that is not shared
     # with the white continue arrow or another UI item before recoloring.
     assert ring.getpalette()[:48] != arrow.getpalette()[:48]
+
+
+def _palette_signature(path: Path) -> tuple[int, ...]:
+    image = Image.open(path)
+    palette = image.getpalette()
+    assert palette is not None, f"{path.name} is not indexed"
+    # Butano deduplicates BPP4 OBJ palettes by the complete 16-entry palette.
+    return tuple(palette[: 16 * 3])
+
+
+def test_build_city_first_placement_keeps_obj_palette_headroom() -> None:
+    root = Path(__file__).resolve().parents[1]
+    graphics = root / "gba/graphics/ui"
+
+    # A deterministic fresh-save placement screen.  Before Fix 14.2 these
+    # exact visible assets occupied all 16 BPP4 OBJ palette banks, leaving
+    # zero room for any alternate digit/effect/replacement state and causing
+    # Butano's `BPP4 palette create failed` panic while placing a tower.
+    live_assets = (
+        "city_valid_lot_ring_p0",
+        "city_lot_f4_p0",
+        "city_building_1_f0_p0",
+        "city_edge_top_left_p0",
+        "city_edge_top_right_p0",
+        "city_edge_bottom_left_p0",
+        "city_edge_bottom_right_p0",
+        "city_population_icon_p0",
+        "city_status_panel_f0_p0",
+        "city_status_panel_f3_p0",
+        "hud_brown_digit_f0_p0",
+        "city_status_placement_p0",
+        "city_comparison_panel_active_p0",
+        "city_type_badge_1_p0",
+        "hud_white_digit_f1_p0",
+        "hud_white_digit_f0_p0",
+        "tower_font",
+    )
+    signatures = {_palette_signature(graphics / f"{asset}.bmp") for asset in live_assets}
+
+    # Keep four banks free for dynamic Build City states.  This is deliberately
+    # stricter than merely fitting the crash case into the 16-bank hardware cap.
+    assert len(signatures) <= 12, f"Build City consumes {len(signatures)}/16 BPP4 OBJ palettes"

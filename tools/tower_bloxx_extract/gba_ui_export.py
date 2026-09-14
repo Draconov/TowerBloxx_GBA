@@ -447,6 +447,87 @@ def _export_composite(
 
 
 
+def _share_bpp4_palette(graphics_dir: Path, asset_names: tuple[str, ...]) -> int:
+    """Reindex compatible sprite BMPs onto one exact 16-color OBJ palette.
+
+    GBA OBJ 4bpp sprites select one of only 16 hardware palette banks.  Butano
+    can reuse a bank only when the palette data is identical, so independently
+    cropped UI pieces with overlapping colors can otherwise exhaust all banks.
+    This helper keeps every pixel's BGR555 color unchanged while giving the
+    selected assets one canonical palette.
+    """
+    if not asset_names:
+        raise ValueError("shared palette group must not be empty")
+
+    canonical_opaque: list[int] = []
+    seen: set[int] = set()
+    images: list[tuple[Path, Image.Image, tuple[int, ...]]] = []
+
+    for asset_name in asset_names:
+        bmp_path = graphics_dir / f"{asset_name}.bmp"
+        json_path = graphics_dir / f"{asset_name}.json"
+        metadata = json.loads(json_path.read_text(encoding="utf-8"))
+        if metadata.get("bpp_mode") != "bpp_4":
+            raise ValueError(f"{asset_name} is not a 4bpp sprite")
+
+        image = Image.open(bmp_path)
+        if image.mode != "P":
+            raise ValueError(f"{asset_name} is not indexed")
+        raw_palette = image.getpalette()
+        if raw_palette is None:
+            raise ValueError(f"{asset_name} has no palette")
+
+        old_palette: list[int] = []
+        for index in range(16):
+            base = index * 3
+            red, green, blue = raw_palette[base : base + 3]
+            old_palette.append(_bgr555(red, green, blue))
+
+        used_indices = set(image.get_flattened_data())
+        for index in range(1, 16):
+            if index not in used_indices:
+                continue
+            color = old_palette[index]
+            if color not in seen:
+                seen.add(color)
+                canonical_opaque.append(color)
+
+        images.append((bmp_path, image.copy(), tuple(old_palette)))
+        image.close()
+
+    if len(canonical_opaque) > 15:
+        raise ValueError(
+            f"shared 4bpp palette needs {len(canonical_opaque)} opaque colors: {asset_names!r}"
+        )
+
+    canonical_palette = (0, *canonical_opaque)
+    color_to_index = {color: index + 1 for index, color in enumerate(canonical_opaque)}
+
+    for bmp_path, image, old_palette in images:
+        remapped = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if old_index:
+                remapped[offset] = color_to_index[old_palette[old_index]]
+        _write_indexed_bmp(
+            bmp_path, image.width, image.height, bytes(remapped), canonical_palette, 4
+        )
+
+    return len(canonical_palette)
+
+
+def _record_asset_names(records: tuple[dict[str, object], ...] | list[dict[str, object]]) -> tuple[str, ...]:
+    return tuple(
+        str(part["asset"])
+        for record in records
+        for part in record["parts"]  # type: ignore[index]
+    )
+
+
+def _set_shared_palette_entries(records: tuple[dict[str, object], ...] | list[dict[str, object]], entries: int) -> None:
+    for record in records:
+        record["palette_entries"] = entries
+
+
 def _export_strip_frames(
     image: Image.Image,
     frame_count: int,
@@ -722,6 +803,51 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         asset_records.extend(records)
     city_lot_records = _export_strip_frames(city_lot_strip, 5, "city_lot", graphics_dir)
     asset_records.extend(city_lot_records)
+
+    # Fix 14.2: canonicalize Build City UI palettes.  The original per-crop
+    # export could occupy all 16 OBJ BPP4 banks on the first placement screen.
+    # These groups are exact-color unions that fit in one 4bpp palette each;
+    # only palette indices change, never rendered BGR555 colors.
+    white_ui_assets = ("tower_font", *_record_asset_names(hud_white_digit_records))
+    white_entries = _share_bpp4_palette(graphics_dir, white_ui_assets)
+    _set_shared_palette_entries(hud_white_digit_records, white_entries)
+
+    brown_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(hud_brown_digit_records)
+    )
+    _set_shared_palette_entries(hud_brown_digit_records, brown_entries)
+
+    placement_panel_records = [
+        *city_edge_clip_records,
+        city_panel_state_records[0],
+        city_panel_state_records[3],
+        city_comparison_panel_active_record,
+    ]
+    placement_panel_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(placement_panel_records)
+    )
+    _set_shared_palette_entries(placement_panel_records, placement_panel_entries)
+
+    browse_panel_records = [city_panel_state_records[1], city_panel_state_records[2]]
+    browse_panel_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(browse_panel_records)
+    )
+    _set_shared_palette_entries(browse_panel_records, browse_panel_entries)
+
+    city_status_entries = _share_bpp4_palette(
+        graphics_dir,
+        (*_record_asset_names(city_status_clip_records), *_record_asset_names([city_continue_arrow_record])),
+    )
+    _set_shared_palette_entries(city_status_clip_records, city_status_entries)
+    city_continue_arrow_record["palette_entries"] = city_status_entries
+
+    lot_badge_records = [
+        *city_type_badge_records, *city_lot_records, city_progress_record, *city_progress_tail_records
+    ]
+    lot_badge_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(lot_badge_records)
+    )
+    _set_shared_palette_entries(lot_badge_records, lot_badge_entries)
 
     adapted = {locale.code: _adapt_instructions(locale) for locale in locales}
     wrapped: dict[str, dict[str, tuple[str, ...]]] = {}
