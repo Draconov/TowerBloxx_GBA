@@ -43,7 +43,8 @@ private:
     void _rebuild(const SaveData& save);
     void _show_composite(const generated::UiCompositeAsset& asset, int x, int y);
     void _show_city_tiles(const SaveData& save, const BuildCitySnapshot& snapshot);
-    void _show_valid_lot_ring(int screen_x, int screen_y, int building_type);
+    void _show_valid_lot_ring(
+            int screen_x, int screen_y, bn::optional<bn::sprite_palette_ptr>& valid_lot_palette);
     void _show_status(const SaveData& save, const BuildCitySnapshot& snapshot);
     void _show_progress_line(const BuildCitySnapshot& snapshot);
     void _show_event_modal(const BuildCityEvent& event);
@@ -54,7 +55,6 @@ private:
     bn::optional<bn::regular_bg_ptr> _background;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_ptr, 256> _sprites;
-    bn::optional<bn::sprite_palette_ptr> _valid_lot_palette;
     int _language = 0;
     int _frame_phase = 0;
     int _placement_flash_ms = 0;

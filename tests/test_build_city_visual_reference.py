@@ -75,8 +75,10 @@ def test_fix14_build_city_scene_uses_recovered_hud_anchors_and_continuous_ring()
     assert "_show_status(const SaveData& save, const BuildCitySnapshot& snapshot)" in header
     assert "tb/build_city_visuals.h" in scene
     assert "generated::city_valid_lot_ring" in scene
-    assert "bn::optional<bn::sprite_palette_ptr> _valid_lot_palette" in header
-    assert scene.count("create_new_palette()") == 1
+    assert "_valid_lot_palette" not in header
+    assert "create_new_palette()" not in scene
+    assert "bn::optional<bn::sprite_palette_ptr> valid_lot_palette;" in scene
+    assert "valid_lot_palette = sprite.palette()" in scene
     assert "generated::city_comparison_panel_active" in scene
     assert "generated::city_type_badge_1" in scene
     assert "centered_y(11)" in scene  # resource-20 top clips
@@ -86,3 +88,29 @@ def test_fix14_build_city_scene_uses_recovered_hud_anchors_and_continuous_ring()
     assert "211" in scene and "235" in scene  # exact white-digit right anchors
     assert "* 4" in scene  # exact white-digit spacing
     assert "_placement_flash_ms >= 400" not in scene
+
+
+def test_valid_lot_palette_does_not_consume_a_second_obj_palette_bank(
+    tower_bloxx_jar: Path, tmp_path: Path
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    header = (root / "gba/include/tb/build_city_scene.h").read_text()
+    scene = (root / "gba/src/build_city_scene.cpp").read_text()
+
+    # Fix-14 originally allocated a fresh 16-color OBJ palette and then
+    # created each ring sprite with its source palette before swapping it.
+    # On real GBA/Butano this can transiently require a second palette bank
+    # and panic once all 16 OBJ BPP4 banks are occupied.
+    assert "create_new_palette()" not in scene
+    assert "_valid_lot_palette" not in header
+    assert "valid_lot_palette = sprite.palette()" in scene
+    assert "valid_lot_palette->set_color(1, color)" in scene
+
+    project = tmp_path / "project"
+    export_gba_ui_assets(tower_bloxx_jar, project)
+    graphics = project / "gba/graphics/ui"
+    ring = Image.open(graphics / "city_valid_lot_ring_p0.bmp")
+    arrow = Image.open(graphics / "city_continue_arrow_p0.bmp")
+    # The mutable ring starts from a sacrificial palette that is not shared
+    # with the white continue arrow or another UI item before recoloring.
+    assert ring.getpalette()[:48] != arrow.getpalette()[:48]

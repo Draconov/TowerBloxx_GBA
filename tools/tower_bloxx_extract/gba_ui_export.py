@@ -586,7 +586,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     # interpolated 2px ring while preserving the 10x10 source lot center.
     # The runtime recolors palette index 1 every frame, so export the mask as
     # white here and keep transparency in the center.
-    city_valid_lot_ring_image = Image.new("RGBA", (14, 14), (255, 255, 255, 255))
+    city_valid_lot_ring_image = Image.new("RGBA", (14, 14), (255, 247, 255, 255))
     city_valid_lot_ring_image.paste((0, 0, 0, 0), (2, 2, 12, 12))
     _valid_lot_composite, city_valid_lot_ring_record = _export_composite(
         city_valid_lot_ring_image, "city_valid_lot_ring", graphics_dir

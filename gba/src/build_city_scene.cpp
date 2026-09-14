@@ -413,7 +413,6 @@ void BuildCityScene::suspend_presentation()
 {
     _background.reset();
     _sprites.clear();
-    _valid_lot_palette.reset();
     _has_snapshot = false;
 }
 
@@ -433,7 +432,6 @@ void BuildCityScene::_stop()
     _active = false;
     _background.reset();
     _sprites.clear();
-    _valid_lot_palette.reset();
     _has_snapshot = false;
 }
 
@@ -446,26 +444,19 @@ void BuildCityScene::_show_composite(const generated::UiCompositeAsset& asset, i
     }
 }
 
-void BuildCityScene::_show_valid_lot_ring(int screen_x, int screen_y, int building_type)
+void BuildCityScene::_show_valid_lot_ring(
+        int screen_x, int screen_y, bn::optional<bn::sprite_palette_ptr>& valid_lot_palette)
 {
-    const uint32_t rgb = build_city_valid_lot_rgb(building_type, _placement_flash_ms);
-    const bn::color color(
-            int((rgb >> 16) & 0xFFu) >> 3,
-            int((rgb >> 8) & 0xFFu) >> 3,
-            int(rgb & 0xFFu) >> 3);
     const generated::UiCompositeAsset& asset = generated::city_valid_lot_ring;
-    if(! _valid_lot_palette)
-    {
-        _valid_lot_palette = asset.parts[0].item->palette_item().create_new_palette();
-    }
-    _valid_lot_palette->set_color(1, color);
-
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
         bn::sprite_ptr sprite = part.item->create_sprite(
                 centered_x(screen_x + part.x), centered_y(screen_y + part.y));
-        sprite.set_palette(*_valid_lot_palette);
+        if(! valid_lot_palette)
+        {
+            valid_lot_palette = sprite.palette();
+        }
         _sprites.push_back(sprite);
     }
 }
@@ -473,8 +464,12 @@ void BuildCityScene::_show_valid_lot_ring(int screen_x, int screen_y, int buildi
 void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnapshot& snapshot)
 {
     if(snapshot.mode == BuildCityMode::Placement && snapshot.cursor_column >= 0 &&
-       snapshot.placement_transition_ms == 0 && snapshot.pending_building_type >= 1)
+       snapshot.placement_transition_ms == 0 && snapshot.pending_building_type >= 1 && ! _events.has_event())
     {
+        // Create every ring while the source palette is still untouched so
+        // Butano can reuse one BPP4 OBJ palette bank for all valid sectors.
+        // Only after all ring sprites exist do we recolor that shared bank.
+        bn::optional<bn::sprite_palette_ptr> valid_lot_palette;
         const int required = snapshot.pending_building_type - 1;
         for(int index = 0; index < 25; ++index)
         {
@@ -485,8 +480,18 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                 _show_valid_lot_ring(
                         cell_screen_left + 7 + column * grid_spacing,
                         cell_screen_top + 7 + row * grid_spacing,
-                        snapshot.pending_building_type);
+                        valid_lot_palette);
             }
+        }
+
+        if(valid_lot_palette)
+        {
+            const uint32_t rgb = build_city_valid_lot_rgb(snapshot.pending_building_type, _placement_flash_ms);
+            const bn::color color(
+                    int((rgb >> 16) & 0xFFu) >> 3,
+                    int((rgb >> 8) & 0xFFu) >> 3,
+                    int(rgb & 0xFFu) >> 3);
+            valid_lot_palette->set_color(1, color);
         }
     }
 

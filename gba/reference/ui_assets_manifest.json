@@ -1969,7 +1969,7 @@
     },
     {
       "path": "gba/graphics/ui/city_valid_lot_ring_p0.bmp",
-      "sha256": "559e6db65aee0f2321c71b5dcb881bca9f6b65baf3206c94e14722a0e095a232",
+      "sha256": "6c660fe7df12a8820a5d4ac6fbe61028e4d0e8c88e996d00edb1dccd7e3774bd",
       "size": 246
     },
     {
@@ -4702,7 +4702,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "e993738265d85a67fad2a7e3ac73e57cf2337bf8019e5f522ea79372c34347e9",
+  "tree_hash": "30a211df287f4bcd290495018feee80722ac4f3aadfc78f178891a174f76ef62",
   "utf8_characters": [
     "¡",
     "°",
