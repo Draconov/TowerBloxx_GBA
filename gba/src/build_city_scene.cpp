@@ -518,15 +518,33 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.mode == BuildCityMode::Browse)
     {
-        // Recovered four-slot browser: x=boardX-26; slot fill begins at x+2;
-        // unlocked tower preview frame 3 uses x+4 and the y+15 baseline.
+        // Resource 28 frames 0..3 are the four red selector silhouettes.
+        // Their 23x23 logical canvas surrounds the frame-3 building preview:
+        // preview left = highlight left + 2, preview baseline = highlight top + 21.
+        if(snapshot.selected_building_type >= 1 &&
+           snapshot.selected_building_type <= snapshot.max_unlocked_building_type &&
+           snapshot.selected_building_type <= 4)
+        {
+            const int selected = snapshot.selected_building_type;
+            const int preview_left = selector_screen_left + 4;
+            const int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
+            const int highlight_left = preview_left - 2;
+            const int highlight_top = preview_baseline - 21;
+            _show_composite(
+                    *lot_assets[snapshot.selected_building_type - 1],
+                    centered_x(highlight_left + 11),
+                    centered_y(highlight_top + 11));
+        }
+
+        // Recovered four-slot browser: every tower icon uses strip frame 3.
+        // The selected state is the red resource-28 silhouette above, not a
+        // different roof frame from the building strip.
         for(int type = 1; type <= snapshot.max_unlocked_building_type && type <= 4; ++type)
         {
             const int screen_left = selector_screen_left + 4;
             const int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
-            const int frame = type == snapshot.selected_building_type ? 1 : 3;
             _show_composite(
-                    building_asset(type, frame),
+                    building_asset(type, 3),
                     building_center_x(type, screen_left),
                     building_center_y(type, screen_baseline));
         }
@@ -542,10 +560,17 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     const int cell_center_x = cell_screen_left + 7 + snapshot.cursor_column * grid_spacing;
     const int cell_center_y = cell_screen_top + 7 + snapshot.cursor_row * grid_spacing;
-    const int lot_frame = snapshot.placement_valid ? 4 : 3;
     if(snapshot.placement_transition_ms == 0)
     {
-        _show_composite(*lot_assets[lot_frame], centered_x(cell_center_x), centered_y(cell_center_y));
+        // Resource 28 frame 4 is the placement square.  Its visible 14x14
+        // pixels begin at logical source (0, 9) in a 23x23 canvas, so anchor
+        // the canvas rather than centering the cropped sprite on the lot.
+        const int cursor_canvas_left = cell_screen_left + snapshot.cursor_column * grid_spacing;
+        const int cursor_canvas_top = cell_screen_top - 9 + snapshot.cursor_row * grid_spacing;
+        _show_composite(
+                *lot_assets[4],
+                centered_x(cursor_canvas_left + 11),
+                centered_y(cursor_canvas_top + 11));
     }
 
     if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)

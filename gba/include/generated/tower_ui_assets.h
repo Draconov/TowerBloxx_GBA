@@ -29,25 +29,45 @@
 #include "bn_sprite_items_menu_settings_icon_p0.h"
 #include "bn_sprite_items_menu_exit_icon_p0.h"
 #include "bn_sprite_items_menu_worker_blue_f0_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f0_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f1_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f1_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f2_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f2_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f3_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f3_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f4_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f4_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f5_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f5_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f6_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f6_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f7_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f7_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f8_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f8_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f9_p0.h"
+#include "bn_sprite_items_menu_worker_blue_f9_p1.h"
 #include "bn_sprite_items_menu_worker_red_f0_p0.h"
+#include "bn_sprite_items_menu_worker_red_f0_p1.h"
 #include "bn_sprite_items_menu_worker_red_f1_p0.h"
+#include "bn_sprite_items_menu_worker_red_f1_p1.h"
 #include "bn_sprite_items_menu_worker_red_f2_p0.h"
+#include "bn_sprite_items_menu_worker_red_f2_p1.h"
 #include "bn_sprite_items_menu_worker_red_f3_p0.h"
+#include "bn_sprite_items_menu_worker_red_f3_p1.h"
 #include "bn_sprite_items_menu_worker_red_f4_p0.h"
+#include "bn_sprite_items_menu_worker_red_f4_p1.h"
 #include "bn_sprite_items_menu_worker_red_f5_p0.h"
+#include "bn_sprite_items_menu_worker_red_f5_p1.h"
 #include "bn_sprite_items_menu_worker_red_f6_p0.h"
+#include "bn_sprite_items_menu_worker_red_f6_p1.h"
 #include "bn_sprite_items_menu_worker_red_f7_p0.h"
+#include "bn_sprite_items_menu_worker_red_f7_p1.h"
 #include "bn_sprite_items_menu_worker_red_f8_p0.h"
+#include "bn_sprite_items_menu_worker_red_f8_p1.h"
 #include "bn_sprite_items_menu_worker_red_f9_p0.h"
+#include "bn_sprite_items_menu_worker_red_f9_p1.h"
 #include "bn_sprite_items_construction_target_badge_f0_p0.h"
 #include "bn_sprite_items_construction_target_badge_f1_p0.h"
 #include "bn_sprite_items_construction_target_badge_f2_p0.h"
@@ -292,103 +312,123 @@ inline const UiCompositeAsset menu_exit_icon = { menu_exit_icon_parts, 1 };
 
 inline const UiSpritePartAsset menu_worker_blue_f0_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f0_p0, 1, 3 },
+    { &bn::sprite_items::menu_worker_blue_f0_p1, 1, 3 },
 };
-inline const UiCompositeAsset menu_worker_blue_f0 = { menu_worker_blue_f0_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f0 = { menu_worker_blue_f0_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f1_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f1_p0, 9, 7 },
+    { &bn::sprite_items::menu_worker_blue_f1_p1, 9, 7 },
 };
-inline const UiCompositeAsset menu_worker_blue_f1 = { menu_worker_blue_f1_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f1 = { menu_worker_blue_f1_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f2_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f2_p0, 2, 5 },
+    { &bn::sprite_items::menu_worker_blue_f2_p1, 2, 5 },
 };
-inline const UiCompositeAsset menu_worker_blue_f2 = { menu_worker_blue_f2_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f2 = { menu_worker_blue_f2_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f3_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f3_p0, 3, 5 },
+    { &bn::sprite_items::menu_worker_blue_f3_p1, 3, 5 },
 };
-inline const UiCompositeAsset menu_worker_blue_f3 = { menu_worker_blue_f3_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f3 = { menu_worker_blue_f3_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f4_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f4_p0, 0, 6 },
+    { &bn::sprite_items::menu_worker_blue_f4_p1, 0, 6 },
 };
-inline const UiCompositeAsset menu_worker_blue_f4 = { menu_worker_blue_f4_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f4 = { menu_worker_blue_f4_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f5_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f5_p0, -1, 7 },
+    { &bn::sprite_items::menu_worker_blue_f5_p1, -1, 7 },
 };
-inline const UiCompositeAsset menu_worker_blue_f5 = { menu_worker_blue_f5_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f5 = { menu_worker_blue_f5_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f6_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f6_p0, 4, 0 },
+    { &bn::sprite_items::menu_worker_blue_f6_p1, 4, 0 },
 };
-inline const UiCompositeAsset menu_worker_blue_f6 = { menu_worker_blue_f6_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f6 = { menu_worker_blue_f6_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f7_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f7_p0, 4, 0 },
+    { &bn::sprite_items::menu_worker_blue_f7_p1, 4, 0 },
 };
-inline const UiCompositeAsset menu_worker_blue_f7 = { menu_worker_blue_f7_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f7 = { menu_worker_blue_f7_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f8_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f8_p0, 1, -2 },
+    { &bn::sprite_items::menu_worker_blue_f8_p1, 1, -2 },
 };
-inline const UiCompositeAsset menu_worker_blue_f8 = { menu_worker_blue_f8_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f8 = { menu_worker_blue_f8_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f9_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f9_p0, 6, -2 },
+    { &bn::sprite_items::menu_worker_blue_f9_p1, 6, -2 },
 };
-inline const UiCompositeAsset menu_worker_blue_f9 = { menu_worker_blue_f9_parts, 1 };
+inline const UiCompositeAsset menu_worker_blue_f9 = { menu_worker_blue_f9_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f0_parts[] = {
     { &bn::sprite_items::menu_worker_red_f0_p0, 2, 2 },
+    { &bn::sprite_items::menu_worker_red_f0_p1, 2, 2 },
 };
-inline const UiCompositeAsset menu_worker_red_f0 = { menu_worker_red_f0_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f0 = { menu_worker_red_f0_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f1_parts[] = {
     { &bn::sprite_items::menu_worker_red_f1_p0, 1, 7 },
+    { &bn::sprite_items::menu_worker_red_f1_p1, 1, 7 },
 };
-inline const UiCompositeAsset menu_worker_red_f1 = { menu_worker_red_f1_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f1 = { menu_worker_red_f1_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f2_parts[] = {
     { &bn::sprite_items::menu_worker_red_f2_p0, 2, 6 },
+    { &bn::sprite_items::menu_worker_red_f2_p1, 2, 6 },
 };
-inline const UiCompositeAsset menu_worker_red_f2 = { menu_worker_red_f2_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f2 = { menu_worker_red_f2_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f3_parts[] = {
     { &bn::sprite_items::menu_worker_red_f3_p0, 3, 5 },
+    { &bn::sprite_items::menu_worker_red_f3_p1, 3, 5 },
 };
-inline const UiCompositeAsset menu_worker_red_f3 = { menu_worker_red_f3_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f3 = { menu_worker_red_f3_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f4_parts[] = {
     { &bn::sprite_items::menu_worker_red_f4_p0, 0, 6 },
+    { &bn::sprite_items::menu_worker_red_f4_p1, 0, 6 },
 };
-inline const UiCompositeAsset menu_worker_red_f4 = { menu_worker_red_f4_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f4 = { menu_worker_red_f4_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f5_parts[] = {
     { &bn::sprite_items::menu_worker_red_f5_p0, -1, 7 },
+    { &bn::sprite_items::menu_worker_red_f5_p1, -1, 7 },
 };
-inline const UiCompositeAsset menu_worker_red_f5 = { menu_worker_red_f5_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f5 = { menu_worker_red_f5_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f6_parts[] = {
     { &bn::sprite_items::menu_worker_red_f6_p0, 4, 0 },
+    { &bn::sprite_items::menu_worker_red_f6_p1, 4, 0 },
 };
-inline const UiCompositeAsset menu_worker_red_f6 = { menu_worker_red_f6_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f6 = { menu_worker_red_f6_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f7_parts[] = {
     { &bn::sprite_items::menu_worker_red_f7_p0, 4, 0 },
+    { &bn::sprite_items::menu_worker_red_f7_p1, 4, 0 },
 };
-inline const UiCompositeAsset menu_worker_red_f7 = { menu_worker_red_f7_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f7 = { menu_worker_red_f7_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f8_parts[] = {
     { &bn::sprite_items::menu_worker_red_f8_p0, 1, -2 },
+    { &bn::sprite_items::menu_worker_red_f8_p1, 1, -2 },
 };
-inline const UiCompositeAsset menu_worker_red_f8 = { menu_worker_red_f8_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f8 = { menu_worker_red_f8_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_red_f9_parts[] = {
     { &bn::sprite_items::menu_worker_red_f9_p0, 6, -2 },
+    { &bn::sprite_items::menu_worker_red_f9_p1, 6, -2 },
 };
-inline const UiCompositeAsset menu_worker_red_f9 = { menu_worker_red_f9_parts, 1 };
+inline const UiCompositeAsset menu_worker_red_f9 = { menu_worker_red_f9_parts, 2 };
 
 inline const UiSpritePartAsset construction_target_badge_f0_parts[] = {
     { &bn::sprite_items::construction_target_badge_f0_p0, 3, 2 },

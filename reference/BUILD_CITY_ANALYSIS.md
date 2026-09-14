@@ -107,3 +107,27 @@ Resources 20-22 also have stricter call-site meanings than the earlier Fix-11 ap
 The two top-right comparison boxes are Java2D rectangles. Their outer bounds are `(189,1,24,9)` and `(213,1,24,9)`. Active outer/inner colors are `#E2E2E2` and `#0D0C0C`; the city background already contains the inactive `#C7BFB2/#AD9C83` boxes. Active placement also draws a 4x7 family badge whose first six rows use `#4371D7/#E11A08/#11AF0C/#DA9F00` and whose last row uses `#0B2D8E/#841111/#045C00/#503800`. White comparison digits use five-pixel glyphs at four-pixel spacing with right anchors x=211 and x=235.
 
 Two visual details are deliberately left as follow-up rather than guessed here. The JAR has a `q/r/s` population digit-roll state which selects resource-22 states 1/2 during counter animation; Fix 14 uses the proven static state 0 + state-3 cap. The static initializer also exposes four city lot palette themes (`m.d/m.e`) selected as city progress advances; the current 240x160 background still bakes the level-zero lot palette. Those require their own state/timing pass.
+
+## Fix 14.3: selector outline and placement-cursor anchors
+
+Resource 28's five frames have two different jobs. Frames 0-3 are the red
+selection silhouettes for Residential, Commercial, Office and Luxury. In the
+browse selector they sit behind the normal resource-24..27 frame-3 previews;
+the selected tower must not switch to building frame 1. The 23x23 outline
+canvas is aligned so the preview starts two pixels to its right and the preview
+baseline is `outlineTop + 21`.
+
+Frame 4 is the city-grid placement square. Its visible 14x14 block begins at
+logical source `(0,9)` inside the 23x23 resource frame. To align that block with
+the recovered lot origin `(92,35) + 17*(column,row)`, the logical resource canvas
+starts at `(92 + 17*column, 26 + 17*row)`. Centering the cropped sprite directly
+on the lot was therefore four pixels too far left and five pixels too low.
+Saved buildings remain unchanged at source-left `94 + 17*column` and baseline
+`47 + 17*row`.
+
+Fix 14.3 also canonicalizes simultaneously-live OBJ palettes without changing
+visible BGR555 pixels: all Build City building frames share one bounded partial
+8bpp palette, each construction tower family shares a floor/normal-roof/trophy-
+roof 8bpp palette, and menu workers are split across two overlapping shared
+4bpp layers. The separate two-pixel special-roof crane cable is now regenerated
+by the clean gameplay asset exporter instead of surviving only as a carried file.

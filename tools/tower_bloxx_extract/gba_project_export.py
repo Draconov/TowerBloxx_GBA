@@ -88,6 +88,99 @@ def _write_indexed_bmp(path: Path, width: int, height: int, indices: bytes, pale
     path.write_bytes(file_header + info_header + bytes(color_table) + bytes(pixel_bytes))
 
 
+
+def _read_indexed_asset(path: Path, bpp: int) -> tuple[Image.Image, tuple[int, ...]]:
+    image = Image.open(path)
+    if image.mode != "P":
+        image.close()
+        raise ValueError(f"{path.name} is not indexed")
+    raw_palette = image.getpalette()
+    if raw_palette is None:
+        image.close()
+        raise ValueError(f"{path.name} has no palette")
+    entries = 16 if bpp == 4 else 256
+    palette: list[int] = []
+    for index in range(entries):
+        base = index * 3
+        red, green, blue = raw_palette[base : base + 3]
+        palette.append((red >> 3) | ((green >> 3) << 5) | ((blue >> 3) << 10))
+    return image, tuple(palette)
+
+
+def _share_mesh_family_palette(
+    graphics_dir: Path,
+    mesh_records: list[dict[str, object]],
+    mesh_ids: tuple[int, ...],
+) -> int:
+    records_by_id = {int(record["mesh_id"]): record for record in mesh_records}
+    records = [records_by_id[mesh_id] for mesh_id in mesh_ids]
+    opaque: list[int] = []
+    seen: set[int] = set()
+    sources: list[tuple[dict[str, object], str, Image.Image, tuple[int, ...]]] = []
+
+    for record in records:
+        old_bpp = int(record["bpp"])
+        for part in record["parts"]:  # type: ignore[index]
+            asset = str(part["asset"])
+            image, palette = _read_indexed_asset(graphics_dir / f"{asset}.bmp", old_bpp)
+            used = set(image.get_flattened_data())
+            for index in sorted(used):
+                if index == 0:
+                    continue
+                color = palette[index]
+                if color not in seen:
+                    seen.add(color)
+                    opaque.append(color)
+            sources.append((record, asset, image.copy(), palette))
+            image.close()
+
+    if len(opaque) > 255:
+        raise ValueError(f"tower family {mesh_ids!r} needs {len(opaque)} opaque colors")
+    exact_entries = 1 + len(opaque)
+    colors_count = ((exact_entries + 15) // 16) * 16
+    canonical = (0, *opaque)
+    color_to_index = {color: index + 1 for index, color in enumerate(opaque)}
+
+    for _record, asset, image, old_palette in sources:
+        remapped = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if old_index:
+                remapped[offset] = color_to_index[old_palette[old_index]]
+        _write_indexed_bmp(
+            graphics_dir / f"{asset}.bmp",
+            image.width,
+            image.height,
+            bytes(remapped),
+            canonical,
+            8,
+        )
+        _write_json(
+            graphics_dir / f"{asset}.json",
+            {"bpp_mode": "bpp_8", "colors_count": colors_count, "type": "sprite"},
+        )
+
+    for record in records:
+        record["bpp"] = 8
+        record["palette_entries"] = colors_count
+    return colors_count
+
+
+def _export_special_cable(graphics_dir: Path) -> None:
+    """Regenerate House.e(Graphics)'s separate two-pixel special-roof cable."""
+    asset = "crane_special_cable_segment"
+    width = 8
+    height = 16
+    indices = bytearray(width * height)
+    for y in range(height):
+        indices[y * width + 3] = 1
+        indices[y * width + 4] = 1
+    # Transparent magenta + opaque black, matching the hand-recovered Fix 13 asset.
+    _write_indexed_bmp(
+        graphics_dir / f"{asset}.bmp", width, height, bytes(indices), (0x7C1F, 0), 4
+    )
+    _write_json(graphics_dir / f"{asset}.json", {"bpp_mode": "bpp_4", "type": "sprite"})
+
+
 def _asset_name(mesh_id: int, part_index: int) -> str:
     return f"tb_mesh_{mesh_id:03d}_p{part_index}"
 
@@ -220,6 +313,16 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
             "palette_entries": len(composite.palette_bgr555),
             "parts": part_records,
         })
+
+    # Fix 14.3: floor, normal roof and trophy roof from one tower family can
+    # be live simultaneously.  They must share the same partial BPP8 OBJ
+    # palette; otherwise the GBA has only one incompatible BPP8 palette space.
+    for family in ((10, 30, 40), (11, 31, 41), (12, 32, 42), (13, 33, 43)):
+        _share_mesh_family_palette(graphics_dir, mesh_records, family)
+
+    # Fix 13's special roof cable is a generated gameplay asset too.  Recreate
+    # it after the clean graphics-directory reset so clean builds retain it.
+    _export_special_cable(graphics_dir)
 
     header_path = include_dir / "tower_mesh_assets.h"
     header_path.write_text(_header(composites), encoding="utf-8", newline="\n")

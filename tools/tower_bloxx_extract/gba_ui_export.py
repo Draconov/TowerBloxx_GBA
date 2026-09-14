@@ -515,6 +515,161 @@ def _share_bpp4_palette(graphics_dir: Path, asset_names: tuple[str, ...]) -> int
     return len(canonical_palette)
 
 
+
+def _read_indexed_asset(graphics_dir: Path, asset_name: str) -> tuple[Image.Image, tuple[int, ...], int]:
+    bmp_path = graphics_dir / f"{asset_name}.bmp"
+    json_path = graphics_dir / f"{asset_name}.json"
+    metadata = json.loads(json_path.read_text(encoding="utf-8"))
+    mode = metadata.get("bpp_mode")
+    if mode not in ("bpp_4", "bpp_8"):
+        raise ValueError(f"{asset_name} has unsupported bpp mode: {mode!r}")
+    bpp = 4 if mode == "bpp_4" else 8
+    image = Image.open(bmp_path)
+    if image.mode != "P":
+        image.close()
+        raise ValueError(f"{asset_name} is not indexed")
+    raw_palette = image.getpalette()
+    if raw_palette is None:
+        image.close()
+        raise ValueError(f"{asset_name} has no palette")
+    palette_entries = 16 if bpp == 4 else 256
+    colors: list[int] = []
+    for index in range(palette_entries):
+        base = index * 3
+        red, green, blue = raw_palette[base : base + 3]
+        colors.append(_bgr555(red, green, blue))
+    return image, tuple(colors), bpp
+
+
+def _share_bpp8_palette(
+    graphics_dir: Path,
+    records: tuple[dict[str, object], ...] | list[dict[str, object]],
+) -> int:
+    """Put a related sprite group on one bounded partial BPP8 OBJ palette."""
+    asset_names = _record_asset_names(records)
+    if not asset_names:
+        raise ValueError("shared BPP8 palette group must not be empty")
+
+    canonical_opaque: list[int] = []
+    seen: set[int] = set()
+    images: list[tuple[str, Image.Image, tuple[int, ...]]] = []
+    for asset_name in asset_names:
+        image, old_palette, _bpp = _read_indexed_asset(graphics_dir, asset_name)
+        used = set(image.get_flattened_data())
+        for index in sorted(used):
+            if index == 0:
+                continue
+            color = old_palette[index]
+            if color not in seen:
+                seen.add(color)
+                canonical_opaque.append(color)
+        images.append((asset_name, image.copy(), old_palette))
+        image.close()
+
+    if len(canonical_opaque) > 255:
+        raise ValueError(f"shared BPP8 palette needs {len(canonical_opaque)} opaque colors")
+    exact_entries = 1 + len(canonical_opaque)
+    colors_count = ((exact_entries + 15) // 16) * 16
+    canonical_palette = (0, *canonical_opaque)
+    color_to_index = {color: index + 1 for index, color in enumerate(canonical_opaque)}
+
+    for asset_name, image, old_palette in images:
+        remapped = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if old_index:
+                remapped[offset] = color_to_index[old_palette[old_index]]
+        _write_indexed_bmp(
+            graphics_dir / f"{asset_name}.bmp",
+            image.width,
+            image.height,
+            bytes(remapped),
+            canonical_palette,
+            8,
+        )
+        _write_json(
+            graphics_dir / f"{asset_name}.json",
+            {"bpp_mode": "bpp_8", "colors_count": colors_count, "type": "sprite"},
+        )
+
+    for record in records:
+        record["bpp"] = 8
+        record["palette_entries"] = colors_count
+    return colors_count
+
+
+def _split_worker_palettes(
+    graphics_dir: Path,
+    records: tuple[dict[str, object], ...] | list[dict[str, object]],
+) -> tuple[int, int]:
+    """Split all menu workers into two shared exact-color BPP4 layers.
+
+    Workers use 29 opaque source colors in total, so a single 4bpp bank cannot
+    represent them without recoloring.  Each source pixel is assigned to one
+    of two shared palettes; the two sprites overlap at the same coordinates.
+    """
+    original_assets: list[tuple[dict[str, object], dict[str, object], Image.Image, tuple[int, ...]]] = []
+    opaque_colors: list[int] = []
+    seen: set[int] = set()
+    for record in records:
+        if len(record["parts"]) != 1:  # type: ignore[arg-type]
+            raise ValueError(f"worker {record['name']} must have one source part before splitting")
+        part = record["parts"][0]  # type: ignore[index]
+        asset_name = str(part["asset"])
+        image, old_palette, _bpp = _read_indexed_asset(graphics_dir, asset_name)
+        used = set(image.get_flattened_data())
+        for index in sorted(used):
+            if index == 0:
+                continue
+            color = old_palette[index]
+            if color not in seen:
+                seen.add(color)
+                opaque_colors.append(color)
+        original_assets.append((record, part, image.copy(), old_palette))
+        image.close()
+
+    if len(opaque_colors) > 30:
+        raise ValueError(f"workers need more than two 4bpp palettes: {len(opaque_colors)} opaque colors")
+    group0 = opaque_colors[:15]
+    group1 = opaque_colors[15:]
+    palette0 = (0, *group0)
+    palette1 = (0, *group1)
+    map0 = {color: index + 1 for index, color in enumerate(group0)}
+    map1 = {color: index + 1 for index, color in enumerate(group1)}
+
+    for record, part, image, old_palette in original_assets:
+        asset0 = str(part["asset"])
+        if not asset0.endswith("_p0"):
+            raise ValueError(f"unexpected worker asset name: {asset0}")
+        asset1 = asset0[:-1] + "1"
+        layer0 = bytearray(image.width * image.height)
+        layer1 = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if not old_index:
+                continue
+            color = old_palette[old_index]
+            if color in map0:
+                layer0[offset] = map0[color]
+            else:
+                layer1[offset] = map1[color]
+
+        _write_indexed_bmp(
+            graphics_dir / f"{asset0}.bmp", image.width, image.height, bytes(layer0), palette0, 4
+        )
+        _write_indexed_bmp(
+            graphics_dir / f"{asset1}.bmp", image.width, image.height, bytes(layer1), palette1, 4
+        )
+        metadata = {"bpp_mode": "bpp_4", "type": "sprite"}
+        _write_json(graphics_dir / f"{asset0}.json", metadata)
+        _write_json(graphics_dir / f"{asset1}.json", metadata)
+        part1 = dict(part)
+        part1["asset"] = asset1
+        record["parts"] = [part, part1]
+        record["bpp"] = 4
+        record["palette_entries"] = 16
+
+    return 1 + len(group0), 1 + len(group1)
+
+
 def _record_asset_names(records: tuple[dict[str, object], ...] | list[dict[str, object]]) -> tuple[str, ...]:
     return tuple(
         str(part["asset"])
@@ -803,6 +958,17 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         asset_records.extend(records)
     city_lot_records = _export_strip_frames(city_lot_strip, 5, "city_lot", graphics_dir)
     asset_records.extend(city_lot_records)
+
+    # Fix 14.3: all four building strips can coexist in a developed city.
+    # Put them on one partial BPP8 palette so the hardware never has to choose
+    # between incompatible BPP8 OBJ palettes.
+    _share_bpp8_palette(graphics_dir, city_building_records)
+
+    # The two worker strips use 29 opaque colors combined.  Preserve every
+    # source color by splitting each frame across two shared BPP4 layers.
+    _split_worker_palettes(
+        graphics_dir, [*menu_worker_blue_records, *menu_worker_red_records]
+    )
 
     # Fix 14.2: canonicalize Build City UI palettes.  The original per-crop
     # export could occupy all 16 OBJ BPP4 banks on the first placement screen.
