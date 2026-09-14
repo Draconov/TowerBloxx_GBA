@@ -58,6 +58,7 @@ void BuildCity::reset_from_save(const SaveData& save)
     _saved_populations.fill(0);
     _request = {};
     _selected_type = 1;
+    _construction_select_ms = 0;
     _max_unlocked_type = 1;
     _max_trophy_type = 0;
     _recalculate_progress(save, true);
@@ -74,6 +75,20 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
 
     if(_mode == BuildCityMode::Browse)
     {
+        if(_construction_select_ms > 0)
+        {
+            _construction_select_ms -= delta_ms;
+            if(_construction_select_ms <= 0)
+            {
+                _construction_select_ms = 0;
+                _request.pending = true;
+                _request.building_type = uint8_t(_selected_type);
+                _request.target_height = target_heights[_selected_type - 1];
+                _request.trophy_eligible = _selected_type <= _max_trophy_type;
+            }
+            return result;
+        }
+
         if(input.pressed(Key::Up) && _selected_type > 1)
         {
             --_selected_type;
@@ -86,10 +101,7 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
         {
             if(_selected_type <= _max_unlocked_type)
             {
-                _request.pending = true;
-                _request.building_type = uint8_t(_selected_type);
-                _request.target_height = target_heights[_selected_type - 1];
-                _request.trophy_eligible = _selected_type <= _max_trophy_type;
+                _construction_select_ms = 500;
             }
         }
         else if(input.pressed(Key::B))
@@ -184,6 +196,7 @@ BuildCitySnapshot BuildCity::snapshot() const
     result.max_trophy_building_type = _max_trophy_type;
     result.selected_building_type = _selected_type;
     result.selected_unlock_population = milestones[building_unlock_milestones[_selected_type - 1]];
+    result.construction_select_ms = _construction_select_ms;
     result.cursor_column = _cursor_column;
     result.cursor_row = _cursor_row;
     result.placement_committing = _placement_committing;
@@ -218,6 +231,7 @@ void BuildCity::accept_constructed_tower(uint8_t building_type, int population, 
     assert(population >= 0);
     assert(roof <= 2);
     _request = {};
+    _construction_select_ms = 0;
     _mode = BuildCityMode::Placement;
     _cursor_column = 2;
     _cursor_row = 2;

@@ -5,7 +5,7 @@
   "files": [
     {
       "path": "gba/graphics/gameplay/crane_special_cable_segment.bmp",
-      "sha256": "e91ecab6ebf8716918837f06e681c1a31696840a9ebbed2863e598fe9c448a1e",
+      "sha256": "7bf8913b83c60118318eb57d69036e24ec12e9e8820448c8c84fdc19bfd63f5e",
       "size": 182
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_010_p0.bmp",
-      "sha256": "b1336f29aa26e9b5a886faf8a991cedc640d3c606b6a02448191657f8f7264be",
+      "sha256": "f7e61b8fcfb0e7ab70ddea4ef9d0082ced6a5c9421969783629ffc85faff74cd",
       "size": 2102
     },
     {
@@ -95,17 +95,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_011_p0.bmp",
-      "sha256": "a63744fbeb652bb94327221b494ab7bf52c63410957db12c05469aafdb6b16cc",
+      "sha256": "f6da7d1152717ccd1de708557cc0dc3be1ae1ae2531c4ca8748b47f820240661",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_011_p0.json",
-      "sha256": "48e932b95239f1d11277502ac35645529c62a16181686ec69462db7dff5f34bc",
+      "sha256": "d0bf46f8f45e59b110b9158f0b9349bffc420eefb1e147b27ba9180aa3597527",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_012_p0.bmp",
-      "sha256": "48db2a39c9490d71e5aa3a510e14df8d84efc460b0a741d1bf04c2dde4acf396",
+      "sha256": "aa6284ee64d1c8210232c36a03cd1441b6a6b00cd562691f09982d3a7fb2c7f9",
       "size": 2102
     },
     {
@@ -115,57 +115,57 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_013_p0.bmp",
-      "sha256": "c0d537a5c5fb7a2c66cbea6fc7ea925fb42e33b2dfa84bb18161260acd4df89c",
+      "sha256": "848b9abd922bb9b200c279625ea048932f77f13c21f59ba1d6106ac908b7ea76",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_013_p0.json",
-      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
+      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_020_p0.bmp",
-      "sha256": "d8c8e925fb634d7effa99e3a60d4c9bd240d9825073fe90a9e2443cc142d1eb9",
-      "size": 630
+      "sha256": "b47bca2857667b6bdeb67a7095d818c53e35ff95b8380f3b5a17ccc00acbe95a",
+      "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_020_p0.json",
-      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
-      "size": 46
+      "sha256": "d0bf46f8f45e59b110b9158f0b9349bffc420eefb1e147b27ba9180aa3597527",
+      "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_021_p0.bmp",
-      "sha256": "02b441ce4afb61626d0ee9e0f3b6cf1c918082e6f75e7be667c23bd46fac4310",
+      "sha256": "af886a3c3ce4f2e3772603ee185c1a040c39602de2b77842d3296f3d0893c8bb",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_021_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
+      "sha256": "d0bf46f8f45e59b110b9158f0b9349bffc420eefb1e147b27ba9180aa3597527",
+      "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_022_p0.bmp",
-      "sha256": "6102fcaa73d4b2cb5cac91cdc3a6eafdcebd6bd0a06fcdcd3048ff9444075953",
+      "sha256": "64547ccd910f0e33e59767c74578177bd8a98a996d9b7622607c32687afbd42e",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_022_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
+      "sha256": "48e932b95239f1d11277502ac35645529c62a16181686ec69462db7dff5f34bc",
+      "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_023_p0.bmp",
-      "sha256": "46fb42e3c4f9975d3ef1afa9ca5a6c1811f36d017799acb9d724835239da7234",
+      "sha256": "4a7edc1495de5e9a56b0e19cd22981f5257bb77f8a57dad0fed18ed3a547f9a0",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_023_p0.json",
-      "sha256": "4e6c81d08578ada5bbab9a75fa5efea3bd78c488b969daa0e1c589560fe59abf",
-      "size": 46
+      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
+      "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_030_p0.bmp",
-      "sha256": "a7bbb4bbc478e01fe7664accb7f94f51b0c6e38017a98702ca50c2b855b6939d",
+      "sha256": "a95e1bc10baaa9cd122a11daa5e87700299aa010a6f18e50bda8235c1076aed0",
       "size": 2102
     },
     {
@@ -175,17 +175,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_031_p0.bmp",
-      "sha256": "5470052c27eb804793c87da7824c26f88b056ba426cc555538237d7f175b7d9a",
+      "sha256": "b15de87691c97cd1dd84760f7e3c5c33eeb8f599b3653a6a3c955b65a5e90577",
       "size": 3126
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_031_p0.json",
-      "sha256": "48e932b95239f1d11277502ac35645529c62a16181686ec69462db7dff5f34bc",
+      "sha256": "d0bf46f8f45e59b110b9158f0b9349bffc420eefb1e147b27ba9180aa3597527",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_032_p0.bmp",
-      "sha256": "155a157038cec25e9d0fcdbcf6a6706faf489ea97939a23b12a9675db2606380",
+      "sha256": "3f4034056aab5a3243d0dbafd5cb901d7df705b32b0296363c3caefc265bb1b7",
       "size": 3126
     },
     {
@@ -195,17 +195,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_033_p0.bmp",
-      "sha256": "c801ca55c5a0f4af18be58c4433905dbe7f102549b3c225e1562d94d72298381",
+      "sha256": "80e5700c1d43c286e9a353cd80a8e0823d203650f4acab99ce55881cf0d23c90",
       "size": 3126
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_033_p0.json",
-      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
+      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_040_p0.bmp",
-      "sha256": "6383a3f1696c7127e6b524d6dc8588ebc4cda77c778b14519936b9579e82b344",
+      "sha256": "4d334c3624f1eeb44452507e188c9898f3ee4688fefa72527e0307ce775549ee",
       "size": 3126
     },
     {
@@ -215,17 +215,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_041_p0.bmp",
-      "sha256": "51731a68edc345b407555956552fca755457bb7ab76b5a30df06f1ecf642f23c",
+      "sha256": "e5db88df84fa0c1d7718bdcb9e888ee426d5f2eec958e9f731d6fbacf2397029",
       "size": 3126
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_041_p0.json",
-      "sha256": "48e932b95239f1d11277502ac35645529c62a16181686ec69462db7dff5f34bc",
+      "sha256": "d0bf46f8f45e59b110b9158f0b9349bffc420eefb1e147b27ba9180aa3597527",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_042_p0.bmp",
-      "sha256": "fa06852907bbbb344d678d00e99907ed5b7e2603811ef7ba9b45d89c93f76ef6",
+      "sha256": "6426725d5de1e71eba07095982d69380fea21e14c4c352e5c0fdddaf9ffb4ffd",
       "size": 3126
     },
     {
@@ -235,12 +235,12 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_043_p0.bmp",
-      "sha256": "8bbba33e3aecda3f92dc25be4e54d8c34522148fac1c23e9e6c3d823c340a225",
+      "sha256": "fdbac7745225d52f9b0cc9eb296d94a0186f064fee03849885c2f07ffb7cf8b9",
       "size": 5174
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_043_p0.json",
-      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
+      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
       "size": 68
     },
     {
@@ -281,7 +281,7 @@
       ],
       "bpp": 4,
       "mesh_id": 7,
-      "palette_entries": 7,
+      "palette_entries": 8,
       "parts": [
         {
           "asset": "tb_mesh_007_p0",
@@ -405,7 +405,7 @@
       ],
       "bpp": 8,
       "mesh_id": 11,
-      "palette_entries": 48,
+      "palette_entries": 64,
       "parts": [
         {
           "asset": "tb_mesh_011_p0",
@@ -449,7 +449,7 @@
       ],
       "bpp": 8,
       "mesh_id": 13,
-      "palette_entries": 80,
+      "palette_entries": 96,
       "parts": [
         {
           "asset": "tb_mesh_013_p0",
@@ -469,9 +469,9 @@
         133,
         92
       ],
-      "bpp": 4,
+      "bpp": 8,
       "mesh_id": 20,
-      "palette_entries": 13,
+      "palette_entries": 64,
       "parts": [
         {
           "asset": "tb_mesh_020_p0",
@@ -493,7 +493,7 @@
       ],
       "bpp": 8,
       "mesh_id": 21,
-      "palette_entries": 18,
+      "palette_entries": 64,
       "parts": [
         {
           "asset": "tb_mesh_021_p0",
@@ -515,7 +515,7 @@
       ],
       "bpp": 8,
       "mesh_id": 22,
-      "palette_entries": 20,
+      "palette_entries": 48,
       "parts": [
         {
           "asset": "tb_mesh_022_p0",
@@ -537,7 +537,7 @@
       ],
       "bpp": 8,
       "mesh_id": 23,
-      "palette_entries": 18,
+      "palette_entries": 96,
       "parts": [
         {
           "asset": "tb_mesh_023_p0",
@@ -581,7 +581,7 @@
       ],
       "bpp": 8,
       "mesh_id": 31,
-      "palette_entries": 48,
+      "palette_entries": 64,
       "parts": [
         {
           "asset": "tb_mesh_031_p0",
@@ -625,7 +625,7 @@
       ],
       "bpp": 8,
       "mesh_id": 33,
-      "palette_entries": 80,
+      "palette_entries": 96,
       "parts": [
         {
           "asset": "tb_mesh_033_p0",
@@ -669,7 +669,7 @@
       ],
       "bpp": 8,
       "mesh_id": 41,
-      "palette_entries": 48,
+      "palette_entries": 64,
       "parts": [
         {
           "asset": "tb_mesh_041_p0",
@@ -713,7 +713,7 @@
       ],
       "bpp": 8,
       "mesh_id": 43,
-      "palette_entries": 80,
+      "palette_entries": 96,
       "parts": [
         {
           "asset": "tb_mesh_043_p0",
@@ -728,5 +728,5 @@
     }
   ],
   "render_pose": "house_gameplay_240x160",
-  "tree_hash": "566a4efac4c14c64b461833eefdfd47fd6b1225a4bf4647470cf81645df1fe4b"
+  "tree_hash": "9dac433169b95688f6aaaa8d4fccde12e38e0a1b857d20304980552251faf88c"
 }

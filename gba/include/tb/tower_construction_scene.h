@@ -12,6 +12,7 @@
 
 #include "generated/tower_font.h"
 #include "tb/build_city.h"
+#include "tb/crane_presentation.h"
 #include "tb/gameplay_workers.h"
 #include "tb/tower_construction.h"
 
@@ -45,13 +46,14 @@ private:
     void _rebuild_floor_sprites();
     void _rebuild_current_sprites(const TowerConstructionSnapshot& snapshot);
     void _ensure_crane_sprites(const TowerConstructionSnapshot& snapshot);
-    void _rebuild_special_cable(const TowerConstructionSnapshot& snapshot);
+    void _rebuild_special_cable(const TowerConstructionSnapshot& snapshot, CranePresentationMode mode);
     void _update_world_positions(const TowerConstructionSnapshot& snapshot);
     [[nodiscard]] GameplayWorkerWorld _worker_world(const TowerConstructionSnapshot& snapshot) const;
     void _rebuild_worker_sprites(const TowerConstructionSnapshot& snapshot);
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
     void _show_modal(int localization_index);
     [[nodiscard]] int _normal_floor_mesh_id() const;
+    [[nodiscard]] int _initial_base_mesh_id() const;
     [[nodiscard]] int _normal_roof_mesh_id() const;
     [[nodiscard]] int _trophy_roof_mesh_id() const;
     [[nodiscard]] int _screen_x(int world_x) const;

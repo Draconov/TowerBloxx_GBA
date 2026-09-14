@@ -2006,6 +2006,116 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/construction_meter_base_p0.bmp",
+      "sha256": "eef7d717ea5b526b52bd0e5a7e1adf40e5db958c161cc48399ce644df7bca21f",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_base_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_empty_p0.bmp",
+      "sha256": "af579f4497596bdd8ffb23882e1acf0e0f87f1316b53e405ac8e8269b1f48df1",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_empty_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_1_p0.bmp",
+      "sha256": "ac71459315ed656f5f8090994d2d2e2091f13ea2783e7422641954129bf9af10",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_1_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_2_p0.bmp",
+      "sha256": "060163f39d21335a497585f92542943f451346ddaa88d6da7ebc0cf05443923a",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_2_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_3_p0.bmp",
+      "sha256": "3932297695ed1098973685ca93269d6c15afbe1080e027807e04c61f60f586ad",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_3_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_4_p0.bmp",
+      "sha256": "934971b34b300bf6ae7fad6c69e3b711787db7250b5c47dd6ebabec9ad51196f",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_fill_4_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_10_p0.bmp",
+      "sha256": "989fe53c6a7721fdcb006f52c67fffae09edaa8a1bef702593827f11f65de3bc",
+      "size": 374
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_10_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_20_p0.bmp",
+      "sha256": "4ce9c86f8dda9c10759d8361f5540aedd77665a12b2b3e4cf4f4257de8e1de6b",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_20_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_30_p0.bmp",
+      "sha256": "57751b15c9d28ab3a4faf8171e76b0c239612dd2a6050a01b5a03e945a1b82b5",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_30_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_40_p0.bmp",
+      "sha256": "3474861acc2656231f6ac9f054bff30bb2078ace8661b3276f308a8204243c70",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_40_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_40_p1.bmp",
+      "sha256": "024e500bb88117a496314303d4b2bd9f2d0c2fef7f91e3b709a8e849c6f33f5d",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/construction_meter_rails_40_p1.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/construction_target_badge_f0_p0.bmp",
       "sha256": "c5ded72ae268857718d4d9066f5e8593f8c8278a584a93db64f4d88b437feb9e",
       "size": 246
@@ -2227,7 +2337,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_population_icon_p0.bmp",
-      "sha256": "55de580753d8e974198c96b13139afac27137c91e42334cf6f3dd7b55a8b85f1",
+      "sha256": "b563c02ddf0271accf4881dfdd4b7f977029681338e9bb7d4435ccbd45009ae4",
       "size": 182
     },
     {
@@ -2457,7 +2567,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f0_p0.bmp",
-      "sha256": "da077f36c074b44a6615ab6a49e499d480772a404ca0f763ab1906c37ee3f267",
+      "sha256": "84ca1778f841ddee2cc30f94802b50bd38a4f164b01e4584a1438b0764f281c6",
       "size": 150
     },
     {
@@ -2467,7 +2577,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f10_p0.bmp",
-      "sha256": "7e7aa001c203a152e5f8cbbf3c3d1b62fd0636775c61dc5f3bba7a851ed7c1e1",
+      "sha256": "5bb00f6c41928d50b624870b4de7f860a9849f2b5788c64dcb69d3907761a83e",
       "size": 150
     },
     {
@@ -2477,7 +2587,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f11_p0.bmp",
-      "sha256": "6f73db0fb05122e02b3d04959a6e3216c89c0add2e3216dc9bc909d2e2c71237",
+      "sha256": "9d6fa656a977c8241e7b5a21a371183d2f6d83b019cf0be95fbc65f5f95defe7",
       "size": 150
     },
     {
@@ -2487,7 +2597,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f12_p0.bmp",
-      "sha256": "63a5ed3b434f96b5cda21d912095dd860c90856d671dcf0849b2eb1dbffa70f3",
+      "sha256": "40b1e3631a55a3fe13506afdfbd978b4884317d4160d44cf23f29388f96a0535",
       "size": 150
     },
     {
@@ -2497,7 +2607,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f13_p0.bmp",
-      "sha256": "ce46ff855b04b4aab5ab1052f1fbc1753da5b99c73c0040c0fbab8b466be101c",
+      "sha256": "5c4baa0fc2f69ded189aa4b6a63e5b24789031a95f5b7c2d787a5c4022644c4a",
       "size": 150
     },
     {
@@ -2507,7 +2617,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f1_p0.bmp",
-      "sha256": "82452ca0b2d12527465e6f0327af4c22caa95d55177bc05453f3c034f901d0e5",
+      "sha256": "e05812a7d0e1d61c9d997d7d8470ab799c560b816523505ec111b9a2c1897030",
       "size": 150
     },
     {
@@ -2517,7 +2627,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f2_p0.bmp",
-      "sha256": "00c60ec5ce16e8e7f8b2d8397de73581bfc76927cf294a913c6f2bbdb1110848",
+      "sha256": "10d17dc94b6512f590741dcf724711095112d11fda69fe4a50a48ecb6cb02e19",
       "size": 150
     },
     {
@@ -2527,7 +2637,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f3_p0.bmp",
-      "sha256": "0d8d082cd632fe21b58b88cce4535df75433f1f5d44bb6e8f87cd8efbdcec476",
+      "sha256": "5e8b65ef75df346be7a45fbf13b87bc082ca4322aa40a5d222bc63f8f44179b6",
       "size": 150
     },
     {
@@ -2537,7 +2647,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f4_p0.bmp",
-      "sha256": "4034fda507bc0047a4452ac9d119ff577fb43c8355b6b8ea9183e0378e9afe1b",
+      "sha256": "bf87c10c94fb8d668a2e457fa6a5c09e79520e7b20c9e4f9f123490ebe50e568",
       "size": 150
     },
     {
@@ -2547,7 +2657,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f5_p0.bmp",
-      "sha256": "c4e681ebc2dc29e2c9857a247f01e07ee4355fef55653aa842ad7ff7a1de8d4e",
+      "sha256": "6e6bfd753f6c38091133396d8139b0f82aeead78b81a4715eed172ea8c0dbbde",
       "size": 150
     },
     {
@@ -2557,7 +2667,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f6_p0.bmp",
-      "sha256": "6d6cfb52930dcffcd1090b133e4c05433e1e022724160810fb0a6889f429d394",
+      "sha256": "20a3c0a8ad331ec6558f41f42803384ef9787856a91c8dfa1d9a7a5e22a4321b",
       "size": 150
     },
     {
@@ -2567,7 +2677,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f7_p0.bmp",
-      "sha256": "736e3ab624ae8d23b866fcce4aae0a482e34d1464bb418c5899f7e8bc189c065",
+      "sha256": "975c625aaae3e901dcdd97832665e5cdd728c539dc412d329f50eb4b23ca3f46",
       "size": 150
     },
     {
@@ -2577,7 +2687,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f8_p0.bmp",
-      "sha256": "fe202138a34a4d9a3a10bb0ee15a28bf9dabee023ac7280dbfc75c6bba941e41",
+      "sha256": "50b0ace755b037ddbc163518c58ae6668c2c0480d99e1ee020243cf711bb06fc",
       "size": 150
     },
     {
@@ -2587,7 +2697,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_white_digit_f9_p0.bmp",
-      "sha256": "394ab85d7314ab36e45ff2d5725fb6a718e073efb917f812d2aeb4933098e98b",
+      "sha256": "ca8a483f92287f46465d9594920b42ce93e034c74b738e09cf56f59ad2145b3f",
       "size": 150
     },
     {
@@ -3127,7 +3237,7 @@
     },
     {
       "path": "gba/graphics/ui/tower_font.bmp",
-      "sha256": "de3d0e1fb6b3b2692f3ef064c9efc05556fb4fffd0aba54d823199145e336bc3",
+      "sha256": "eb1a00f69a27f779c61bd1fe42d2702a75f60a725da1b670d49ed60b9dad195b",
       "size": 7606
     },
     {
@@ -3157,8 +3267,8 @@
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "3b20ef9af080f5ac3ed3cc6aaa831bae1808ffe4ca733fb836fc58c5fc04c51f",
-      "size": 43046
+      "sha256": "d74b37761af0ee9e754c99573417d4f1bae10d57a8453e1889e769953f982721",
+      "size": 46122
     }
   ],
   "font_character_count": 118,
@@ -3440,6 +3550,199 @@
         "width": 5
       }
     ],
+    "construction_meter_base": {
+      "bpp": 4,
+      "height": 2,
+      "name": "construction_meter_base",
+      "palette_entries": 10,
+      "parts": [
+        {
+          "asset": "construction_meter_base_p0",
+          "height": 8,
+          "screen_x": 1,
+          "screen_y": 3,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 7
+    },
+    "construction_meter_empty": {
+      "bpp": 4,
+      "height": 2,
+      "name": "construction_meter_empty",
+      "palette_entries": 10,
+      "parts": [
+        {
+          "asset": "construction_meter_empty_p0",
+          "height": 8,
+          "screen_x": 2,
+          "screen_y": 3,
+          "source_x": 0,
+          "source_y": 0,
+          "width": 8
+        }
+      ],
+      "width": 5
+    },
+    "construction_meter_fills": [
+      {
+        "bpp": 4,
+        "height": 2,
+        "name": "construction_meter_fill_1",
+        "palette_entries": 16,
+        "parts": [
+          {
+            "asset": "construction_meter_fill_1_p0",
+            "height": 8,
+            "screen_x": 2,
+            "screen_y": 3,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 8
+          }
+        ],
+        "width": 5
+      },
+      {
+        "bpp": 4,
+        "height": 2,
+        "name": "construction_meter_fill_2",
+        "palette_entries": 16,
+        "parts": [
+          {
+            "asset": "construction_meter_fill_2_p0",
+            "height": 8,
+            "screen_x": 2,
+            "screen_y": 3,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 8
+          }
+        ],
+        "width": 5
+      },
+      {
+        "bpp": 4,
+        "height": 2,
+        "name": "construction_meter_fill_3",
+        "palette_entries": 16,
+        "parts": [
+          {
+            "asset": "construction_meter_fill_3_p0",
+            "height": 8,
+            "screen_x": 2,
+            "screen_y": 3,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 8
+          }
+        ],
+        "width": 5
+      },
+      {
+        "bpp": 4,
+        "height": 2,
+        "name": "construction_meter_fill_4",
+        "palette_entries": 16,
+        "parts": [
+          {
+            "asset": "construction_meter_fill_4_p0",
+            "height": 8,
+            "screen_x": 2,
+            "screen_y": 3,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 8
+          }
+        ],
+        "width": 5
+      }
+    ],
+    "construction_meter_rails": [
+      {
+        "bpp": 4,
+        "height": 20,
+        "name": "construction_meter_rails_10",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "construction_meter_rails_10_p0",
+            "height": 32,
+            "screen_x": 4,
+            "screen_y": 6,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 16
+          }
+        ],
+        "width": 9
+      },
+      {
+        "bpp": 4,
+        "height": 40,
+        "name": "construction_meter_rails_20",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "construction_meter_rails_20_p0",
+            "height": 64,
+            "screen_x": 12,
+            "screen_y": 12,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 32
+          }
+        ],
+        "width": 9
+      },
+      {
+        "bpp": 4,
+        "height": 60,
+        "name": "construction_meter_rails_30",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "construction_meter_rails_30_p0",
+            "height": 64,
+            "screen_x": 12,
+            "screen_y": 2,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 32
+          }
+        ],
+        "width": 9
+      },
+      {
+        "bpp": 4,
+        "height": 80,
+        "name": "construction_meter_rails_40",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "construction_meter_rails_40_p0",
+            "height": 64,
+            "screen_x": 12,
+            "screen_y": -8,
+            "source_x": 0,
+            "source_y": 0,
+            "width": 32
+          },
+          {
+            "asset": "construction_meter_rails_40_p1",
+            "height": 16,
+            "screen_x": 4,
+            "screen_y": 32,
+            "source_x": 0,
+            "source_y": 64,
+            "width": 16
+          }
+        ],
+        "width": 9
+      }
+    ],
     "construction_target_badges": [
       {
         "bpp": 4,
@@ -3628,7 +3931,7 @@
       "bpp": 4,
       "height": 9,
       "name": "hud_population_icon",
-      "palette_entries": 4,
+      "palette_entries": 10,
       "parts": [
         {
           "asset": "hud_population_icon_p0",
@@ -4065,7 +4368,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f0",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f0_p0",
@@ -4083,7 +4386,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f1",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f1_p0",
@@ -4101,7 +4404,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f2",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f2_p0",
@@ -4119,7 +4422,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f3",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f3_p0",
@@ -4137,7 +4440,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f4",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f4_p0",
@@ -4155,7 +4458,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f5",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f5_p0",
@@ -4173,7 +4476,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f6",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f6_p0",
@@ -4191,7 +4494,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f7",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f7_p0",
@@ -4209,7 +4512,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f8",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f8_p0",
@@ -4227,7 +4530,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f9",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f9_p0",
@@ -4245,7 +4548,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f10",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f10_p0",
@@ -4263,7 +4566,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f11",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f11_p0",
@@ -4281,7 +4584,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f12",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f12_p0",
@@ -4299,7 +4602,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_white_digit_f13",
-        "palette_entries": 5,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "hud_white_digit_f13_p0",
@@ -5111,7 +5414,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "1716c7d7099ebd9b8ed7a9fb499c9ec41e946737586ecbe0b71ec3fb0b0d4e53",
+  "tree_hash": "075f857ea28ad4397bf237e732f5a2a34b246c0c31fafe52529ab42399889579",
   "utf8_characters": [
     "¡",
     "°",

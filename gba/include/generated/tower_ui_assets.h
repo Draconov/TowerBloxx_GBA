@@ -113,6 +113,17 @@
 #include "bn_sprite_items_hud_red_digit_f10_p0.h"
 #include "bn_sprite_items_hud_status_graphic_p0.h"
 #include "bn_sprite_items_hud_population_icon_p0.h"
+#include "bn_sprite_items_construction_meter_fill_1_p0.h"
+#include "bn_sprite_items_construction_meter_fill_2_p0.h"
+#include "bn_sprite_items_construction_meter_fill_3_p0.h"
+#include "bn_sprite_items_construction_meter_fill_4_p0.h"
+#include "bn_sprite_items_construction_meter_base_p0.h"
+#include "bn_sprite_items_construction_meter_empty_p0.h"
+#include "bn_sprite_items_construction_meter_rails_10_p0.h"
+#include "bn_sprite_items_construction_meter_rails_20_p0.h"
+#include "bn_sprite_items_construction_meter_rails_30_p0.h"
+#include "bn_sprite_items_construction_meter_rails_40_p0.h"
+#include "bn_sprite_items_construction_meter_rails_40_p1.h"
 #include "bn_sprite_items_hud_state_indicator_f0_p0.h"
 #include "bn_sprite_items_hud_state_indicator_f1_p0.h"
 #include "bn_sprite_items_hud_state_indicator_f2_p0.h"
@@ -655,6 +666,57 @@ inline const UiSpritePartAsset hud_population_icon_parts[] = {
     { &bn::sprite_items::hud_population_icon_p0, 1, 4 },
 };
 inline const UiCompositeAsset hud_population_icon = { hud_population_icon_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_fill_1_parts[] = {
+    { &bn::sprite_items::construction_meter_fill_1_p0, 2, 3 },
+};
+inline const UiCompositeAsset construction_meter_fill_1 = { construction_meter_fill_1_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_fill_2_parts[] = {
+    { &bn::sprite_items::construction_meter_fill_2_p0, 2, 3 },
+};
+inline const UiCompositeAsset construction_meter_fill_2 = { construction_meter_fill_2_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_fill_3_parts[] = {
+    { &bn::sprite_items::construction_meter_fill_3_p0, 2, 3 },
+};
+inline const UiCompositeAsset construction_meter_fill_3 = { construction_meter_fill_3_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_fill_4_parts[] = {
+    { &bn::sprite_items::construction_meter_fill_4_p0, 2, 3 },
+};
+inline const UiCompositeAsset construction_meter_fill_4 = { construction_meter_fill_4_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_base_parts[] = {
+    { &bn::sprite_items::construction_meter_base_p0, 1, 3 },
+};
+inline const UiCompositeAsset construction_meter_base = { construction_meter_base_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_empty_parts[] = {
+    { &bn::sprite_items::construction_meter_empty_p0, 2, 3 },
+};
+inline const UiCompositeAsset construction_meter_empty = { construction_meter_empty_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_rails_10_parts[] = {
+    { &bn::sprite_items::construction_meter_rails_10_p0, 4, 6 },
+};
+inline const UiCompositeAsset construction_meter_rails_10 = { construction_meter_rails_10_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_rails_20_parts[] = {
+    { &bn::sprite_items::construction_meter_rails_20_p0, 12, 12 },
+};
+inline const UiCompositeAsset construction_meter_rails_20 = { construction_meter_rails_20_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_rails_30_parts[] = {
+    { &bn::sprite_items::construction_meter_rails_30_p0, 12, 2 },
+};
+inline const UiCompositeAsset construction_meter_rails_30 = { construction_meter_rails_30_parts, 1 };
+
+inline const UiSpritePartAsset construction_meter_rails_40_parts[] = {
+    { &bn::sprite_items::construction_meter_rails_40_p0, 12, -8 },
+    { &bn::sprite_items::construction_meter_rails_40_p1, 4, 32 },
+};
+inline const UiCompositeAsset construction_meter_rails_40 = { construction_meter_rails_40_parts, 2 };
 
 inline const UiSpritePartAsset hud_state_indicator_f0_parts[] = {
     { &bn::sprite_items::hud_state_indicator_f0_p0, 1, 1 },

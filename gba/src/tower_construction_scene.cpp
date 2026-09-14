@@ -1,6 +1,7 @@
 #include "tb/tower_construction_scene.h"
 
 #include "tb/scene_backdrop.h"
+#include "tb/crane_presentation.h"
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
@@ -50,6 +51,14 @@ constexpr const generated::UiCompositeAsset* construction_state_indicator_frames
     &generated::hud_state_indicator_f4, &generated::hud_state_indicator_f5,
     &generated::hud_state_indicator_f6, &generated::hud_state_indicator_f7,
     &generated::hud_state_indicator_f8, &generated::hud_state_indicator_f9,
+};
+constexpr const generated::UiCompositeAsset* construction_meter_fill_frames[] = {
+    &generated::construction_meter_fill_1, &generated::construction_meter_fill_2,
+    &generated::construction_meter_fill_3, &generated::construction_meter_fill_4,
+};
+constexpr const generated::UiCompositeAsset* construction_meter_rails_frames[] = {
+    &generated::construction_meter_rails_10, &generated::construction_meter_rails_20,
+    &generated::construction_meter_rails_30, &generated::construction_meter_rails_40,
 };
 constexpr const generated::UiCompositeAsset* construction_white_digit_frames[] = {
     &generated::hud_white_digit_f0, &generated::hud_white_digit_f1, &generated::hud_white_digit_f2,
@@ -313,6 +322,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         _rebuild_floor_sprites();
     }
     _rebuild_current_sprites(snapshot);
+    _ensure_crane_sprites(snapshot);
     _update_world_positions(snapshot);
     if(workers_advanced || floor_added)
     {
@@ -398,7 +408,7 @@ void TowerConstructionScene::_rebuild_floor_sprites()
     {
         const TowerConstructionFloor& floor = _construction.floor(floor_index);
         const int mesh_id = floor.roof ? (snapshot.roof_result == 2 ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
-                                         _normal_floor_mesh_id();
+                                         (floor_index == 0 ? initial_base_mesh_id(_request.building_type) : _normal_floor_mesh_id());
         const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
         bn::sprite_affine_mat_ptr affine_mat = bn::sprite_affine_mat_ptr::create();
         _floor_affine_mats.push_back(affine_mat);
@@ -414,7 +424,8 @@ void TowerConstructionScene::_rebuild_floor_sprites()
 void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSnapshot& snapshot)
 {
     const int mesh_id = snapshot.roof_phase ?
-            (snapshot.trophy_eligible ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) : _normal_floor_mesh_id();
+            (snapshot.trophy_eligible ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
+            (snapshot.floor_count == 0 ? _initial_base_mesh_id() : _normal_floor_mesh_id());
     if(mesh_id != _rendered_current_mesh_id)
     {
         create_mesh_sprites(mesh_by_id(mesh_id), _current_sprites);
@@ -432,7 +443,19 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
     {
         create_mesh_sprites(mesh_by_id(platform_mesh_id), _platform_sprites);
     }
-    const int crane_mesh_id = snapshot.roof_phase ? special_crane_mesh_id : crane_hook_mesh_id;
+
+    const CranePresentationMode mode = crane_presentation_mode(
+            snapshot.status == TowerConstructionStatus::Playing,
+            snapshot.floor_count,
+            snapshot.roof_phase,
+            snapshot.block_state == TowerConstructionBlockState::Falling,
+            snapshot.block_state == TowerConstructionBlockState::Missed);
+    if(mode == CranePresentationMode::Hidden)
+    {
+        return;
+    }
+
+    const int crane_mesh_id = mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
     if(_crane_hook_sprites.empty() || crane_mesh_id != _rendered_crane_mesh_id)
     {
         create_mesh_sprites(mesh_by_id(crane_mesh_id), _crane_hook_sprites);
@@ -440,10 +463,10 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
     }
 }
 
-void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnapshot& snapshot)
+void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnapshot& snapshot, CranePresentationMode mode)
 {
     _special_cable_sprites.clear();
-    if(! snapshot.roof_phase || snapshot.status != TowerConstructionStatus::Playing)
+    if(mode != CranePresentationMode::Special)
     {
         return;
     }
@@ -488,7 +511,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         const TowerConstructionFloor& floor = _construction.floor(floor_index);
         const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
         const int mesh_id = floor.roof ? (snapshot.roof_result == 2 ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
-                                         _normal_floor_mesh_id();
+                                         (floor_index == 0 ? initial_base_mesh_id(_request.building_type) : _normal_floor_mesh_id());
         const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
         const int x = _screen_x(floor.x + pose.x_delta);
         const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
@@ -531,18 +554,21 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
                               _screen_y(0, snapshot.presentation_camera_y), _platform_sprites);
     }
 
-    const bool crane_visible = snapshot.status == TowerConstructionStatus::Playing;
+    const CranePresentationMode crane_mode = crane_presentation_mode(
+            snapshot.status == TowerConstructionStatus::Playing,
+            snapshot.floor_count,
+            snapshot.roof_phase,
+            snapshot.block_state == TowerConstructionBlockState::Falling,
+            snapshot.block_state == TowerConstructionBlockState::Missed);
+    const bool crane_visible = crane_mode != CranePresentationMode::Hidden;
     for(bn::sprite_ptr& sprite : _crane_hook_sprites) { sprite.set_visible(crane_visible); }
     if(crane_visible)
     {
-        const int crane_mesh_id = snapshot.roof_phase ? special_crane_mesh_id : crane_hook_mesh_id;
+        const int crane_mesh_id = crane_mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
         const generated::MeshAsset& crane_mesh = mesh_by_id(crane_mesh_id);
-        // The original keeps crane/hook motion independent after release.
-        // Mesh 8 rotates with p>>4 in normal play; special roof mode switches
-        // to mesh 7 at the same p/q translation with no mesh rotation.
         const int crane_x = _screen_x(snapshot.crane_x);
         const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
-        if(snapshot.roof_phase)
+        if(crane_mode == CranePresentationMode::Special)
         {
             position_mesh_sprites(crane_mesh, crane_x, crane_y, _crane_hook_sprites);
         }
@@ -550,14 +576,13 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         {
             for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
             {
-                // M3G rotates in a Y-up world; sprite coordinates are Y-down.
                 position_rotated_mesh_part(
                         crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
                         _crane_affine_mat, _crane_hook_sprites[part_index]);
             }
         }
     }
-    _rebuild_special_cable(snapshot);
+    _rebuild_special_cable(snapshot, crane_mode);
 }
 
 GameplayWorkerWorld TowerConstructionScene::_worker_world(const TowerConstructionSnapshot& snapshot) const
@@ -627,6 +652,25 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
         building_index = 3;
     }
 
+    // House.i(Graphics), B==3: the vertical target-height meter is anchored
+    // at x=11 and grows upward two pixels per target floor.  The bottom cap
+    // occupies y=148..149, while the target-1 normal floor slots occupy
+    // y=146 upward in 2px rows.
+    const int meter_left = 11;
+    const int meter_top = 150 - 2 * snapshot.target_height;
+    const int meter_slot_count = snapshot.target_height - 1;
+    for(int slot = 0; slot < meter_slot_count; ++slot)
+    {
+        const int row_top = 146 - 2 * slot;
+        const generated::UiCompositeAsset& row = slot < snapshot.floor_count ?
+                *construction_meter_fill_frames[building_index] : generated::construction_meter_empty;
+        show_ui_composite(row, meter_left + 4 - 120, row_top + 1 - 80, _hud_sprites);
+    }
+    show_ui_composite(generated::construction_meter_base, meter_left + 4 - 120, 149 - 80, _hud_sprites);
+    show_ui_composite(
+            *construction_meter_rails_frames[building_index],
+            meter_left + 4 - 120, meter_top + snapshot.target_height - 80, _hud_sprites);
+
     // Common House.i(Graphics) chance/life strip. The original clips its
     // four-row draw loop to three visible 6x6 cells at x=25. Active cells use
     // the building color pair; exhausted cells use resource-18 frame 8.
@@ -681,7 +725,12 @@ void TowerConstructionScene::_show_modal(int localization_index)
 
 int TowerConstructionScene::_normal_floor_mesh_id() const
 {
-    return 9 + _request.building_type;
+    return normal_floor_mesh_id(_request.building_type);
+}
+
+int TowerConstructionScene::_initial_base_mesh_id() const
+{
+    return initial_base_mesh_id(_request.building_type);
 }
 
 int TowerConstructionScene::_normal_roof_mesh_id() const

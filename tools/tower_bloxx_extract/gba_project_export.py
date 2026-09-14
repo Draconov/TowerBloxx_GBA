@@ -165,6 +165,43 @@ def _share_mesh_family_palette(
     return colors_count
 
 
+
+def _share_bpp4_asset_palette(graphics_dir: Path, asset_names: tuple[str, ...]) -> int:
+    if not asset_names:
+        raise ValueError("shared gameplay palette group must not be empty")
+
+    opaque: list[int] = []
+    seen: set[int] = set()
+    sources: list[tuple[Path, Image.Image, tuple[int, ...]]] = []
+    for asset_name in asset_names:
+        bmp_path = graphics_dir / f"{asset_name}.bmp"
+        metadata = json.loads((graphics_dir / f"{asset_name}.json").read_text(encoding="utf-8"))
+        if metadata.get("bpp_mode") != "bpp_4":
+            raise ValueError(f"{asset_name} is not a 4bpp gameplay sprite")
+        image, palette = _read_indexed_asset(bmp_path, 4)
+        used = set(image.get_flattened_data())
+        for index in sorted(used):
+            if index == 0:
+                continue
+            color = palette[index]
+            if color not in seen:
+                seen.add(color)
+                opaque.append(color)
+        sources.append((bmp_path, image.copy(), palette))
+        image.close()
+
+    if len(opaque) > 15:
+        raise ValueError(f"shared gameplay BPP4 palette needs {len(opaque)} opaque colors")
+    canonical = (0, *opaque)
+    color_to_index = {color: index + 1 for index, color in enumerate(opaque)}
+    for bmp_path, image, old_palette in sources:
+        remapped = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if old_index:
+                remapped[offset] = color_to_index[old_palette[old_index]]
+        _write_indexed_bmp(bmp_path, image.width, image.height, bytes(remapped), canonical, 4)
+    return len(canonical)
+
 def _export_special_cable(graphics_dir: Path) -> None:
     """Regenerate House.e(Graphics)'s separate two-pixel special-roof cable."""
     asset = "crane_special_cable_segment"
@@ -314,15 +351,23 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
             "parts": part_records,
         })
 
-    # Fix 14.3: floor, normal roof and trophy roof from one tower family can
-    # be live simultaneously.  They must share the same partial BPP8 OBJ
-    # palette; otherwise the GBA has only one incompatible BPP8 palette space.
-    for family in ((10, 30, 40), (11, 31, 41), (12, 32, 42), (13, 33, 43)):
+    # Floor, initial/base floor, normal roof and trophy roof from one tower
+    # family can be live simultaneously. They must share the same partial
+    # BPP8 OBJ palette; otherwise the GBA has only one incompatible BPP8
+    # palette space. Fix 14.6 adds the recovered 20..23 base meshes to the
+    # family because the first landed floor persists under later floors.
+    for family in ((10, 20, 30, 40), (11, 21, 31, 41), (12, 22, 32, 42), (13, 23, 33, 43)):
         _share_mesh_family_palette(graphics_dir, mesh_records, family)
 
-    # Fix 13's special roof cable is a generated gameplay asset too.  Recreate
-    # it after the clean graphics-directory reset so clean builds retain it.
+    # Fix 13's special cable is a generated gameplay asset too. Recreate it
+    # after the clean graphics-directory reset, then share mesh 7's exact BPP4
+    # palette with the cable so the special rig costs one OBJ palette bank.
     _export_special_cable(graphics_dir)
+    mesh7_record = next(record for record in mesh_records if record["mesh_id"] == 7)
+    mesh7_names = tuple(str(part["asset"]) for part in mesh7_record["parts"])
+    mesh7_record["palette_entries"] = _share_bpp4_asset_palette(
+        graphics_dir, (*mesh7_names, "crane_special_cable_segment")
+    )
 
     header_path = include_dir / "tower_mesh_assets.h"
     header_path.write_text(_header(composites), encoding="utf-8", newline="\n")

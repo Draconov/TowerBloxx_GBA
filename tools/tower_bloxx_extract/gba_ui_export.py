@@ -895,6 +895,43 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     _population_icon_composite, hud_population_icon_record = _export_composite(
         hud_status_graphic.crop((0, 0, 6, 9)), "hud_population_icon", graphics_dir
     )
+
+    # House.i(Graphics), construction branch B==3, clips resource 17 into
+    # a 5px-wide per-floor fill plus a 7x2 bottom cap.  The fill source row
+    # shifts by two pixels for L=1..4.  Rails and empty rows are Java2D
+    # primitives, exported here as deterministic composites so the GBA scene
+    # can reproduce the exact recovered 240x160 geometry.
+    construction_meter_fill_records: list[dict[str, object]] = []
+    for building_type in range(1, 5):
+        source_top = 9 + 2 * (building_type - 1)
+        _fill_composite, fill_record = _export_composite(
+            hud_status_graphic.crop((0, source_top, 5, source_top + 2)),
+            f"construction_meter_fill_{building_type}",
+            graphics_dir,
+        )
+        construction_meter_fill_records.append(fill_record)
+
+    _meter_base_composite, construction_meter_base_record = _export_composite(
+        hud_status_graphic.crop((0, 17, 7, 19)), "construction_meter_base", graphics_dir
+    )
+    construction_meter_empty_image = Image.new("RGBA", (5, 2), (35, 30, 20, 255))
+    _meter_empty_composite, construction_meter_empty_record = _export_composite(
+        construction_meter_empty_image, "construction_meter_empty", graphics_dir
+    )
+
+    construction_meter_rails_records: list[dict[str, object]] = []
+    for target_height in (10, 20, 30, 40):
+        rail_height = target_height * 2
+        rails = Image.new("RGBA", (9, rail_height), (0, 0, 0, 0))
+        for y in range(max(0, rail_height - 2)):
+            rails.putpixel((0, y), (72, 28, 0, 255))
+            rails.putpixel((1, y), (255, 255, 0, 255))
+            rails.putpixel((7, y), (255, 255, 0, 255))
+            rails.putpixel((8, y), (72, 28, 0, 255))
+        _rails_composite, rails_record = _export_composite(
+            rails, f"construction_meter_rails_{target_height}", graphics_dir
+        )
+        construction_meter_rails_records.append(rails_record)
     hud_state_indicator_records = _export_strip_frames(
         hud_state_indicators, 10, "hud_state_indicator", graphics_dir
     )
@@ -945,6 +982,10 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     asset_records.extend(hud_red_digit_records)
     asset_records.append(hud_status_graphic_record)
     asset_records.append(hud_population_icon_record)
+    asset_records.extend(construction_meter_fill_records)
+    asset_records.append(construction_meter_base_record)
+    asset_records.append(construction_meter_empty_record)
+    asset_records.extend(construction_meter_rails_records)
     asset_records.extend(hud_state_indicator_records)
     asset_records.append(quick_counter_frame_record)
     asset_records.append(city_hanging_ui_record)
@@ -982,9 +1023,15 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     # export could occupy all 16 OBJ BPP4 banks on the first placement screen.
     # These groups are exact-color unions that fit in one 4bpp palette each;
     # only palette indices change, never rendered BGR555 colors.
-    white_ui_assets = ("tower_font", *_record_asset_names(hud_white_digit_records))
+    construction_meter_frame_records = [
+        construction_meter_base_record, construction_meter_empty_record, *construction_meter_rails_records,
+    ]
+    white_ui_records = [
+        *hud_white_digit_records, hud_population_icon_record, *construction_meter_frame_records,
+    ]
+    white_ui_assets = ("tower_font", *_record_asset_names(white_ui_records))
     white_entries = _share_bpp4_palette(graphics_dir, white_ui_assets)
-    _set_shared_palette_entries(hud_white_digit_records, white_entries)
+    _set_shared_palette_entries(white_ui_records, white_entries)
 
     brown_entries = _share_bpp4_palette(
         graphics_dir, _record_asset_names(hud_brown_digit_records)
@@ -1023,6 +1070,15 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         graphics_dir, _record_asset_names(lot_badge_records)
     )
     _set_shared_palette_entries(lot_badge_records, lot_badge_entries)
+
+    # The four source fill rows contain exactly 15 opaque BGR555 colors, so
+    # they fit one hardware BPP4 bank.  Keep them separate from the common
+    # font/digit/population/meter-frame palette above; that common exact-color
+    # union is only nine opaque colors and saves two live construction banks.
+    construction_meter_fill_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(construction_meter_fill_records)
+    )
+    _set_shared_palette_entries(construction_meter_fill_records, construction_meter_fill_entries)
 
     adapted = {locale.code: _adapt_instructions(locale) for locale in locales}
     wrapped: dict[str, dict[str, tuple[str, ...]]] = {}
@@ -1112,6 +1168,10 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             "red_digits": hud_red_digit_records,
             "status_graphic": hud_status_graphic_record,
             "population_icon": hud_population_icon_record,
+            "construction_meter_fills": construction_meter_fill_records,
+            "construction_meter_base": construction_meter_base_record,
+            "construction_meter_empty": construction_meter_empty_record,
+            "construction_meter_rails": construction_meter_rails_records,
             "state_indicators": hud_state_indicator_records,
             "quick_counter_frame": quick_counter_frame_record,
             "crane_hook_frames": crane_hook_frame_records,

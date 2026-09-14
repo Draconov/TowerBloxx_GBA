@@ -253,6 +253,7 @@ bool snapshot_changed(const BuildCitySnapshot& left, const BuildCitySnapshot& ri
            left.max_trophy_building_type != right.max_trophy_building_type ||
            left.selected_building_type != right.selected_building_type ||
            left.selected_unlock_population != right.selected_unlock_population ||
+           left.construction_select_ms != right.construction_select_ms ||
            left.cursor_column != right.cursor_column || left.cursor_row != right.cursor_row ||
            left.placement_valid != right.placement_valid ||
            left.placement_committing != right.placement_committing ||
@@ -535,15 +536,12 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.mode == BuildCityMode::Browse)
     {
-        if(snapshot.selected_building_type >= 1 &&
-           snapshot.selected_building_type <= snapshot.max_unlocked_building_type &&
-           snapshot.selected_building_type <= 4)
+        if(snapshot.selected_building_type >= 1 && snapshot.selected_building_type <= 4)
         {
             const int selected = snapshot.selected_building_type;
 
-            // m.t: the selected 15x15 selector cell is #FEA100 for 250ms,
-            // then the static gray background shows for 250ms. Draw this
-            // under resource-28's red silhouette and the frame-3 preview.
+            // Source m.t highlights the cursor row even when that type is
+            // still locked; locked rows simply omit the tower/outline art.
             if(build_city_selector_slot_active(_selector_flash_ms))
             {
                 const int slot_left = selector_screen_left + 2;
@@ -554,24 +552,37 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                         centered_y(slot_top + 7));
             }
 
-            // Resource 28 frames 0..3 are the four red selector silhouettes.
-            // Their 23x23 logical canvas surrounds the frame-3 building preview:
-            // preview left = highlight left + 2, preview baseline = highlight top + 21.
-            const int preview_left = selector_screen_left + 4;
-            const int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
-            const int highlight_left = preview_left - 2;
-            const int highlight_top = preview_baseline - 21;
-            _show_composite(
-                    *lot_assets[snapshot.selected_building_type - 1],
-                    centered_x(highlight_left + 11),
-                    centered_y(highlight_top + 11));
+            if(selected <= snapshot.max_unlocked_building_type)
+            {
+                int preview_left = selector_screen_left + 4;
+                int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
+                if(snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250)
+                {
+                    preview_left += 2;
+                    preview_baseline -= 2;
+                }
+                const int highlight_left = preview_left - 2;
+                const int highlight_top = preview_baseline - 21;
+                _show_composite(
+                        *lot_assets[snapshot.selected_building_type - 1],
+                        centered_x(highlight_left + 11),
+                        centered_y(highlight_top + 11));
+            }
         }
 
-        // Recovered four-slot browser: every tower icon uses strip frame 3.
+        // Recovered four-slot browser: every unlocked tower icon uses strip
+        // frame 3. During the last half of source F=500 confirmation, only
+        // the chosen tower shifts +2px right and -2px up with its outline.
         for(int type = 1; type <= snapshot.max_unlocked_building_type && type <= 4; ++type)
         {
-            const int screen_left = selector_screen_left + 4;
-            const int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
+            int screen_left = selector_screen_left + 4;
+            int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
+            if(type == snapshot.selected_building_type &&
+               snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250)
+            {
+                screen_left += 2;
+                screen_baseline -= 2;
+            }
             _show_composite(
                     building_asset(type, 3),
                     building_center_x(type, screen_left),

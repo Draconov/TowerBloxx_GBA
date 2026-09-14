@@ -67,6 +67,8 @@ void place(
 int request_target(tb::BuildCity& city, tb::SaveData& save)
 {
     press(city, save, tb::Key::A);
+    assert(city.snapshot().construction_select_ms == 500);
+    city.update(500, {}, save);
     const tb::BuildCityConstructionRequest request = city.construction_request();
     assert(request.pending);
     const int target = request.target_height;

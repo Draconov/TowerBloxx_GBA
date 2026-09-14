@@ -1,6 +1,7 @@
 #include "tb/quick_game_scene.h"
 
 #include "tb/scene_backdrop.h"
+#include "tb/crane_presentation.h"
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
@@ -8,6 +9,7 @@
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_regular_bg_items_construction_bg.h"
+#include "bn_sprite_items_crane_special_cable_segment.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -18,9 +20,11 @@ namespace tb
 namespace
 {
 constexpr int max_visible_floors = 5;
+constexpr int quick_building_type = 4;
 constexpr int floor_mesh_id = 13;
 constexpr int platform_mesh_id = 9;
 constexpr int crane_hook_mesh_id = 8;
+constexpr int special_crane_mesh_id = 7;
 constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
@@ -210,6 +214,8 @@ void QuickGameScene::start(int language)
     _records_applied = false;
     _frame_phase = 0;
     _rendered_floor_count = -1;
+    _rendered_current_mesh_id = -1;
+    _rendered_crane_mesh_id = -1;
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
@@ -224,10 +230,10 @@ void QuickGameScene::start(int language)
     _floor_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
-    _ensure_current_sprites();
-    _ensure_crane_sprites();
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
+    _rebuild_current_sprites(snapshot);
+    _ensure_crane_sprites(snapshot);
     _update_world_positions();
     _rebuild_hud(snapshot);
 }
@@ -294,6 +300,8 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     {
         _rebuild_floor_sprites();
     }
+    _rebuild_current_sprites(snapshot);
+    _ensure_crane_sprites(snapshot);
     _update_world_positions();
     if(workers_advanced || floor_added)
     {
@@ -324,6 +332,7 @@ void QuickGameScene::suspend_presentation()
     _current_sprites.clear();
     _platform_sprites.clear();
     _crane_hook_sprites.clear();
+    _special_cable_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
 }
@@ -338,16 +347,18 @@ void QuickGameScene::resume_presentation()
     _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
     _background->set_priority(3);
     _rendered_floor_count = -1;
+    _rendered_current_mesh_id = -1;
+    _rendered_crane_mesh_id = -1;
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
     _last_hud_combo_count = -1;
     _last_hud_combo_bucket = -1;
     _last_hud_status = QuickGameStatus::GameOver;
-    _ensure_current_sprites();
-    _ensure_crane_sprites();
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
+    _rebuild_current_sprites(snapshot);
+    _ensure_crane_sprites(snapshot);
     _update_world_positions();
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
@@ -371,9 +382,11 @@ void QuickGameScene::_rebuild_floor_sprites()
     _rendered_floor_count = _game.floor_count();
     _visible_floor_start = _rendered_floor_count > max_visible_floors ? _rendered_floor_count - max_visible_floors : 0;
 
-    const generated::MeshAsset& mesh = mesh_by_id(floor_mesh_id);
     for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
+        const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
+                                               floor_mesh_id;
+        const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
         bn::sprite_affine_mat_ptr affine_mat = bn::sprite_affine_mat_ptr::create();
         _floor_affine_mats.push_back(affine_mat);
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
@@ -385,34 +398,85 @@ void QuickGameScene::_rebuild_floor_sprites()
     }
 }
 
-void QuickGameScene::_ensure_current_sprites()
+void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
 {
-    if(_current_sprites.empty())
+    const int mesh_id = snapshot.floor_count == 0 ? initial_base_mesh_id(quick_building_type) :
+                                                    floor_mesh_id;
+    if(mesh_id != _rendered_current_mesh_id)
     {
-        create_mesh_sprites(mesh_by_id(floor_mesh_id), _current_sprites);
+        create_mesh_sprites(mesh_by_id(mesh_id), _current_sprites);
         for(bn::sprite_ptr& sprite : _current_sprites)
         {
             sprite.set_affine_mat(_current_affine_mat);
         }
+        _rendered_current_mesh_id = mesh_id;
     }
 }
 
-void QuickGameScene::_ensure_crane_sprites()
+void QuickGameScene::_ensure_crane_sprites(const QuickGameSnapshot& snapshot)
 {
     if(_platform_sprites.empty())
     {
         create_mesh_sprites(mesh_by_id(platform_mesh_id), _platform_sprites);
     }
-    if(_crane_hook_sprites.empty())
+
+    const CranePresentationMode mode = crane_presentation_mode(
+            snapshot.status == QuickGameStatus::Playing,
+            snapshot.floor_count,
+            false,
+            snapshot.block_state == QuickBlockState::Falling,
+            snapshot.block_state == QuickBlockState::Missed);
+    if(mode == CranePresentationMode::Hidden)
     {
-        create_mesh_sprites(mesh_by_id(crane_hook_mesh_id), _crane_hook_sprites);
+        return;
+    }
+
+    const int crane_mesh_id = mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
+    if(_crane_hook_sprites.empty() || crane_mesh_id != _rendered_crane_mesh_id)
+    {
+        create_mesh_sprites(mesh_by_id(crane_mesh_id), _crane_hook_sprites);
+        _rendered_crane_mesh_id = crane_mesh_id;
+    }
+}
+
+void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, CranePresentationMode mode)
+{
+    _special_cable_sprites.clear();
+    if(mode != CranePresentationMode::Special)
+    {
+        return;
+    }
+
+    constexpr int start_x = 0;
+    constexpr int start_y = -85;
+    const int end_x = _screen_x(snapshot.crane_x) + 5;
+    const int end_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y) - 18;
+    const int dy = end_y - start_y;
+    const int abs_dy = dy < 0 ? -dy : dy;
+    int segment_count = (abs_dy + 15) / 16;
+    if(segment_count < 1)
+    {
+        segment_count = 1;
+    }
+    if(segment_count > 16)
+    {
+        segment_count = 16;
+    }
+    for(int index = 0; index < segment_count; ++index)
+    {
+        const int numerator = index * 2 + 1;
+        const int denominator = segment_count * 2;
+        const int x = start_x + ((end_x - start_x) * numerator) / denominator;
+        const int y = start_y + (dy * numerator) / denominator;
+        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(x, y);
+        sprite.set_z_order(1);
+        _special_cable_sprites.push_back(sprite);
     }
 }
 
 void QuickGameScene::_update_world_positions()
 {
     const QuickGameSnapshot snapshot = _game.snapshot();
-    const generated::MeshAsset& floor_mesh = mesh_by_id(floor_mesh_id);
 
     int sprite_index = 0;
     int affine_index = 0;
@@ -420,6 +484,9 @@ void QuickGameScene::_update_world_positions()
     {
         const QuickFloor& floor = _game.floor(floor_index);
         const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
+        const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
+                                               floor_mesh_id;
+        const generated::MeshAsset& floor_mesh = mesh_by_id(mesh_id);
         const int x = _screen_x(floor.x + pose.x_delta);
         const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
         bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
@@ -442,13 +509,14 @@ void QuickGameScene::_update_world_positions()
     }
     if(current_visible)
     {
+        const generated::MeshAsset& floor_mesh = mesh_by_id(_rendered_current_mesh_id);
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
         for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
         {
             position_rotated_mesh_part(
-                    floor_mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, snapshot.current_y_angle_degrees, _current_affine_mat,
-                    _current_sprites[part_index]);
+                    floor_mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees,
+                    snapshot.current_y_angle_degrees, _current_affine_mat, _current_sprites[part_index]);
         }
     }
 
@@ -464,27 +532,38 @@ void QuickGameScene::_update_world_positions()
                 _screen_y(0, snapshot.presentation_camera_y), _platform_sprites);
     }
 
-    const bool crane_visible = snapshot.status == QuickGameStatus::Playing;
+    const CranePresentationMode mode = crane_presentation_mode(
+            snapshot.status == QuickGameStatus::Playing,
+            snapshot.floor_count,
+            false,
+            snapshot.block_state == QuickBlockState::Falling,
+            snapshot.block_state == QuickBlockState::Missed);
+    const bool crane_visible = mode != CranePresentationMode::Hidden;
     for(bn::sprite_ptr& sprite : _crane_hook_sprites)
     {
         sprite.set_visible(crane_visible);
     }
     if(crane_visible)
     {
-        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_hook_mesh_id);
-        // Once the block is released, current_* becomes ballistic state while the
-        // crane keeps swinging independently. Render the hook from its own recovered
-        // world position so it never follows the falling block.
+        const int crane_mesh_id = mode == CranePresentationMode::Special ? special_crane_mesh_id : crane_hook_mesh_id;
+        const generated::MeshAsset& crane_mesh = mesh_by_id(crane_mesh_id);
         const int crane_x = _screen_x(snapshot.crane_x);
         const int crane_y = _screen_y(snapshot.crane_y, snapshot.presentation_camera_y);
-        for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
+        if(mode == CranePresentationMode::Special)
         {
-            // M3G rotates in a Y-up world; sprite coordinates are Y-down.
-            position_rotated_mesh_part(
-                    crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
-                    _crane_affine_mat, _crane_hook_sprites[part_index]);
+            position_mesh_sprites(crane_mesh, crane_x, crane_y, _crane_hook_sprites);
+        }
+        else
+        {
+            for(int part_index = 0; part_index < crane_mesh.part_count; ++part_index)
+            {
+                position_rotated_mesh_part(
+                        crane_mesh.parts[part_index], crane_x, crane_y, -snapshot.crane_angle_degrees, 0,
+                        _crane_affine_mat, _crane_hook_sprites[part_index]);
+            }
         }
     }
+    _rebuild_special_cable(snapshot, mode);
 }
 
 GameplayWorkerWorld QuickGameScene::_worker_world(const QuickGameSnapshot& snapshot) const

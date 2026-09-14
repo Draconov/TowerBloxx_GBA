@@ -10,6 +10,7 @@
 
 #include "generated/tower_font.h"
 #include "tb/app_state.h"
+#include "tb/crane_presentation.h"
 #include "tb/gameplay_workers.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
@@ -40,8 +41,9 @@ public:
 private:
     void _stop();
     void _rebuild_floor_sprites();
-    void _ensure_current_sprites();
-    void _ensure_crane_sprites();
+    void _rebuild_current_sprites(const QuickGameSnapshot& snapshot);
+    void _ensure_crane_sprites(const QuickGameSnapshot& snapshot);
+    void _rebuild_special_cable(const QuickGameSnapshot& snapshot, CranePresentationMode mode);
     void _update_world_positions();
     [[nodiscard]] GameplayWorkerWorld _worker_world(const QuickGameSnapshot& snapshot) const;
     void _rebuild_worker_sprites(const QuickGameSnapshot& snapshot);
@@ -61,12 +63,15 @@ private:
     bn::vector<bn::sprite_ptr, 4> _current_sprites;
     bn::vector<bn::sprite_ptr, 4> _platform_sprites;
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
+    bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
     int _visible_floor_start = 0;
+    int _rendered_current_mesh_id = -1;
+    int _rendered_crane_mesh_id = -1;
     int _last_hud_floor_count = -1;
     int _last_hud_chances = -1;
     int _last_hud_population = -1;

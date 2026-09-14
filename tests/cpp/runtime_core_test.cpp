@@ -759,6 +759,9 @@ int main()
     assert(! city.construction_request().pending);
     city.update(16, fresh(tb::Key::Up), city_save);
     city.update(16, fresh(tb::Key::A), city_save);
+    assert(city.snapshot().construction_select_ms == 500);
+    assert(! city.construction_request().pending);
+    city.update(500, {}, city_save);
     auto construction = city.construction_request();
     assert(construction.pending);
     assert(construction.building_type == 1);
@@ -778,6 +781,8 @@ int main()
     unlocked_city.update(16, fresh(tb::Key::Up), unlocked_save);
     unlocked_city.update(16, fresh(tb::Key::Up), unlocked_save);
     unlocked_city.update(16, fresh(tb::Key::A), unlocked_save);
+    assert(unlocked_city.snapshot().construction_select_ms == 500);
+    unlocked_city.update(500, {}, unlocked_save);
     construction = unlocked_city.construction_request();
     assert(construction.pending);
     assert(construction.building_type == 1);
