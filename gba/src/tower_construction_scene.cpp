@@ -569,7 +569,7 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
     // -(22 * 1920 >> 8) = -165 in Butano's screen-centred coordinates.
     constexpr int start_x = 0;
     constexpr int start_y = -165;
-    constexpr int endpoint_overlap = 2;
+    constexpr int endpoint_overlap = 3;
     const int end_x = _screen_x(snapshot.crane_x);
     const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
     const int dx = end_x - start_x;
@@ -589,7 +589,7 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
     }
 
     // Java2D drawLine() includes both endpoints. Give the affine replacement
-    // a two-pixel overlap at each end so fixed-point sampling cannot open a
+    // a three-pixel overlap at each end so fixed-point sampling cannot open a
     // one-frame gap where the long cable meets the V-shaped sling.
     const int cable_draw_length = cable_length + endpoint_overlap * 2;
     bn::sprite_ptr& sprite = _special_cable_sprites[0];

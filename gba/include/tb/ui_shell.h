@@ -42,6 +42,7 @@ private:
     void _show_softkeys(int language, bool select, bool back);
     void _show_confirmation_options(const UiController& controller);
     void _show_dialog_backdrop();
+    void _show_dialog_lines(const char* const* lines, int line_count, int center_y);
     void _show_menu(const char* const* labels, int count, int selection);
     void _show_menu_workers();
     void _show_lines(const char* const* lines, int line_count, int page);
@@ -62,6 +63,8 @@ private:
     int _content_page = 0;
     MenuWorkerField _menu_workers;
     int _menu_worker_frame_phase = 0;
+    int _title_blink_frame = 0;
+    bool _title_prompt_visible = true;
     bool _first_update = true;
 };
 }

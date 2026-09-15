@@ -16,9 +16,16 @@ namespace tb
 namespace
 {
 constexpr int instructions_indices[] = {91, 92};
-constexpr int lines_per_page = generated::instruction_lines_per_page;
+constexpr int lines_per_page = 5;
 constexpr char name_grid[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.";
 constexpr int name_grid_size = int(sizeof(name_grid)) - 1;
+constexpr const char* title_prompt_lines[] = {
+    "Press any key to play",
+    "Appuyez sur une touche pour jouer",
+    "Premi un tasto per giocare",
+    "Beliebige Taste drücken zum Starten",
+    "Pulsa cualquier tecla para jugar",
+};
 
 constexpr const generated::UiCompositeAsset* menu_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1, &generated::menu_worker_blue_f2,
@@ -70,6 +77,8 @@ void UiShell::hide()
     _background.reset();
     _menu_workers.reset();
     _menu_worker_frame_phase = 0;
+    _title_blink_frame = 0;
+    _title_prompt_visible = true;
     _first_update = true;
 }
 
@@ -90,21 +99,35 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
         _content_page = 0;
         page_changed = true;
     }
-    else if(scene == UiScene::InstructionsPage || scene == UiScene::About)
+    else
     {
         const int pages = _content_page_count(controller);
-        if(pages > 1 && input.pressed(Key::Left))
+        if((scene == UiScene::InstructionsPage || scene == UiScene::About) && pages > 1 && input.pressed(Key::Up))
         {
             --_content_page;
             if(_content_page < 0) _content_page = pages - 1;
             page_changed = true;
         }
-        else if(pages > 1 && input.pressed(Key::Right))
+        else if((scene == UiScene::InstructionsPage || scene == UiScene::About) && pages > 1 && input.pressed(Key::Down))
         {
             ++_content_page;
             if(_content_page >= pages) _content_page = 0;
             page_changed = true;
         }
+    }
+
+    bool title_blink_changed = false;
+    if(scene == UiScene::Title)
+    {
+        const bool previous_visible = _title_prompt_visible;
+        _title_blink_frame = (_title_blink_frame + 1) % 48;
+        _title_prompt_visible = _title_blink_frame < 24;
+        title_blink_changed = previous_visible != _title_prompt_visible;
+    }
+    else
+    {
+        _title_blink_frame = 0;
+        _title_prompt_visible = true;
     }
 
     bool worker_advanced = false;
@@ -131,7 +154,7 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
         name_signature *= 1099511628211ULL;
     }
     const bool name_screen = scene == UiScene::NameEntry;
-    if(_first_update || page_changed || worker_advanced || scene != _last_scene ||
+    if(_first_update || page_changed || title_blink_changed || worker_advanced || scene != _last_scene ||
        controller.selection() != _last_selection || language != _last_language || sound != _last_sound ||
        (name_screen && (name_cursor != _last_name_cursor || pending_score != _last_pending_score ||
                         name_signature != _last_name_signature)))
@@ -196,9 +219,11 @@ void UiShell::_show_publisher_splash()
 void UiShell::_show_title(int language)
 {
     _show_composite(generated::tower_bloxx_logo, 0, -24);
-    _text_generator.generate(0, 24, generated::localized_strings[language][0], _sprites);
-    _text_generator.generate(-10, 49, "A", _sprites);
-    _text_generator.generate(22, 49, generated::localized_strings[language][4], _sprites);
+    if(_title_prompt_visible)
+    {
+        _show_composite(generated::menu_highlight, 0, 49, 100);
+        _selected_text_generator.generate(0, 49, title_prompt_lines[language], _sprites);
+    }
 }
 
 void UiShell::_show_menu(const char* const* labels, int count, int selection)
@@ -276,14 +301,14 @@ void UiShell::_show_root_menu(const UiController& controller)
         case RootMenuItem::ContinueGame: _show_composite(generated::menu_continue_icon, -103, y); break;
         case RootMenuItem::BuildCity: _show_composite(generated::menu_build_city_icon, -103, y); break;
         case RootMenuItem::QuickGame: _show_composite(generated::menu_quick_game_icon, -103, y); break;
-        case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -103, y); break;
-        case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -103, y); break;
+        case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -101, y - 1); break;
+        case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -100, y - 1); break;
         case RootMenuItem::Settings: _show_composite(generated::menu_settings_icon, -103, y); break;
         }
     }
 
     _show_menu_workers();
-    _show_softkeys(language, true, false);
+    _show_softkeys(language, false, false);
 }
 
 void UiShell::_show_overwrite_confirm(const UiController& controller)
@@ -291,15 +316,9 @@ void UiShell::_show_overwrite_confirm(const UiController& controller)
     _show_dialog_backdrop();
     const int language = controller.language();
     const int line_count = generated::overwrite_game_confirmation_lines_line_counts[language];
-    int y = -50;
-    for(int index = 0; index < line_count; ++index)
-    {
-        _text_generator.generate(
-                0, y, generated::overwrite_game_confirmation_lines[language][index], _sprites);
-        y += 16;
-    }
+    _show_dialog_lines(generated::overwrite_game_confirmation_lines[language], line_count, -28);
     _show_confirmation_options(controller);
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_settings(const UiController& controller)
@@ -314,12 +333,28 @@ void UiShell::_show_settings(const UiController& controller)
     _text_generator.generate(70, -12,
             generated::localized_strings[language][controller.sound_enabled() ? 13 : 14], _sprites);
     _text_generator.generate(70, 12, generated::locale_names[language], _sprites);
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_dialog_backdrop()
 {
     _show_composite(generated::dialog_window, 0, 0, dialog_backdrop_z_order);
+}
+
+void UiShell::_show_dialog_lines(const char* const* lines, int line_count, int center_y)
+{
+    if(line_count <= 0)
+    {
+        return;
+    }
+
+    const int total_height = (line_count - 1) * 16;
+    int y = center_y - total_height / 2;
+    for(int index = 0; index < line_count; ++index)
+    {
+        _text_generator.generate(0, y, lines[index], _sprites);
+        y += 16;
+    }
 }
 
 void UiShell::_show_confirmation_options(const UiController& controller)
@@ -349,14 +384,9 @@ void UiShell::_show_reset_city_confirm(const UiController& controller)
     _show_dialog_backdrop();
     const int language = controller.language();
     const int line_count = generated::reset_city_confirmation_lines_line_counts[language];
-    int y = -58;
-    for(int index = 0; index < line_count; ++index)
-    {
-        _text_generator.generate(0, y, generated::reset_city_confirmation_lines[language][index], _sprites);
-        y += 16;
-    }
+    _show_dialog_lines(generated::reset_city_confirmation_lines[language], line_count, -28);
     _show_confirmation_options(controller);
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_high_score_select(const UiController& controller)
@@ -369,7 +399,7 @@ void UiShell::_show_high_score_select(const UiController& controller)
         generated::localized_strings[language][127],
     };
     _show_menu(labels, 3, controller.selection());
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_high_score_table(const UiController& controller, const SaveData& save)
@@ -394,14 +424,16 @@ void UiShell::_show_clear_high_scores_confirm(const UiController& controller)
 {
     _show_dialog_backdrop();
     const int language = controller.language();
-    _text_generator.generate(0, -40, generated::localized_strings[language][130], _sprites);
+    const char* lines[] = {generated::localized_strings[language][130]};
+    _show_dialog_lines(lines, 1, -28);
     _show_confirmation_options(controller);
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_score_message(const UiController& controller, bool qualified)
 {
     const int language = controller.language();
+    _show_dialog_backdrop();
     bn::string<96> message;
     const char* source = generated::localized_strings[language][qualified ? 121 : 122];
     const unsigned value = qualified ? controller.pending_qualification().position : 3;
@@ -420,7 +452,7 @@ void UiShell::_show_score_message(const UiController& controller, bool qualified
     }
     _text_generator.generate(0, -18, message, _sprites);
     _text_generator.generate(0, 12, bn::to_string<12>(controller.pending_score()), _sprites);
-    _show_softkeys(language, qualified, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_name_entry(const UiController& controller)
@@ -459,10 +491,7 @@ void UiShell::_show_name_entry(const UiController& controller)
 
 void UiShell::_show_softkeys(int language, bool select, bool back)
 {
-    if(select)
-    {
-        _text_generator.generate(-92, 70, generated::localized_strings[language][4], _sprites);
-    }
+    (void) select;
     if(back)
     {
         _text_generator.generate(92, 70, generated::localized_strings[language][7], _sprites);
@@ -477,7 +506,7 @@ void UiShell::_show_instructions_menu(const UiController& controller)
         generated::localized_strings[language][instructions_indices[1]],
     };
     _show_menu(labels, 2, controller.selection());
-    _show_softkeys(language, true, true);
+    _show_softkeys(language, false, true);
 }
 
 void UiShell::_show_lines(const char* const* lines, int line_count, int page)
@@ -485,7 +514,8 @@ void UiShell::_show_lines(const char* const* lines, int line_count, int page)
     const int start = page * lines_per_page;
     int end = start + lines_per_page;
     if(end > line_count) end = line_count;
-    int y = -62;
+    const int visible_count = end - start;
+    int y = -((visible_count - 1) * 16) / 2;
     for(int index = start; index < end; ++index)
     {
         _text_generator.generate(0, y, lines[index], _sprites);
@@ -494,17 +524,18 @@ void UiShell::_show_lines(const char* const* lines, int line_count, int page)
     const int pages = page_count(line_count);
     if(page > 0)
     {
-        _show_composite(generated::support_nav_f0, 112, -68);
+        _show_composite(generated::support_nav_f0, 98, -42);
     }
     if(page + 1 < pages)
     {
-        _show_composite(generated::support_nav_f1, 112, 52);
+        _show_composite(generated::support_nav_f1, 98, 42);
     }
 }
 
 void UiShell::_show_instructions_page(const UiController& controller)
 {
     const int language = controller.language();
+    _show_dialog_backdrop();
     if(controller.instructions_page() == 0)
     {
         _show_lines(generated::quick_game_instruction_lines[language],

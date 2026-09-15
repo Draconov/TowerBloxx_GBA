@@ -58,6 +58,6 @@ def test_special_cable_is_updated_in_place_with_endpoint_overlap() -> None:
         assert body.count("crane_special_cable_segment.create_sprite") == 1
         assert "bn::sprite_ptr& sprite = _special_cable_sprites[0];" in body
 
-        assert "constexpr int endpoint_overlap = 2;" in body
+        assert "constexpr int endpoint_overlap = 3;" in body
         assert "const int cable_draw_length = cable_length + endpoint_overlap * 2;" in body
         assert "sprite.set_vertical_scale(bn::fixed(cable_draw_length) / 64);" in body

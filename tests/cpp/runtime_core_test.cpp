@@ -18,10 +18,8 @@ tb::InputFrame fresh(tb::Key key)
 
 void enter_main_menu(tb::UiController& ui, tb::SaveData& save)
 {
-    assert(ui.scene() == tb::UiScene::PublisherSplash);
-    ui.update(fresh(tb::Key::A), save);
     assert(ui.scene() == tb::UiScene::Title);
-    ui.update(fresh(tb::Key::A), save);
+    ui.update(fresh(tb::Key::B), save);
     assert(ui.scene() == tb::UiScene::MainMenu);
 }
 }
@@ -199,16 +197,12 @@ int main()
     save = tb::make_default_save();
     save = tb::make_default_save();
     tb::UiController ui(save);
-    assert(ui.scene() == tb::UiScene::PublisherSplash);
+    assert(ui.scene() == tb::UiScene::Title);
     assert(ui.selection() == 0);
     assert(ui.language() == 0);
     assert(ui.sound_enabled());
 
-    auto result = ui.update(fresh(tb::Key::A), save);
-    assert(! result.save_dirty);
-    assert(result.action == tb::UiAction::None);
-    assert(ui.scene() == tb::UiScene::Title);
-    result = ui.update(fresh(tb::Key::A), save);
+    auto result = ui.update(fresh(tb::Key::Left), save);
     assert(! result.save_dirty);
     assert(result.action == tb::UiAction::None);
     assert(ui.scene() == tb::UiScene::MainMenu);
@@ -218,6 +212,25 @@ int main()
     assert(ui.root_menu_item(2) == tb::RootMenuItem::HighScores);
     assert(ui.root_menu_item(3) == tb::RootMenuItem::Settings);
     assert(ui.root_menu_item(4) == tb::RootMenuItem::Instructions);
+
+    tb::UiController any_key_select(save);
+    assert(any_key_select.scene() == tb::UiScene::Title);
+    result = any_key_select.update(fresh(tb::Key::Select), save);
+    assert(! result.save_dirty);
+    assert(result.action == tb::UiAction::None);
+    assert(any_key_select.scene() == tb::UiScene::MainMenu);
+
+    tb::UiController any_key_a(save);
+    result = any_key_a.update(fresh(tb::Key::A), save);
+    assert(! result.save_dirty);
+    assert(result.action == tb::UiAction::None);
+    assert(any_key_a.scene() == tb::UiScene::MainMenu);
+
+    tb::UiController no_input(save);
+    result = no_input.update(tb::InputFrame{}, save);
+    assert(! result.save_dirty);
+    assert(result.action == tb::UiAction::None);
+    assert(no_input.scene() == tb::UiScene::Title);
 
     // Root navigation wraps across the visible list and launches modes directly.
     ui.update(fresh(tb::Key::Up), save);

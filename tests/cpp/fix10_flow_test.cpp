@@ -17,10 +17,8 @@ tb::InputFrame fresh(tb::Key key)
 
 void enter_main_menu(tb::UiController& ui, tb::SaveData& save)
 {
-    assert(ui.scene() == tb::UiScene::PublisherSplash);
-    ui.update(fresh(tb::Key::A), save);
     assert(ui.scene() == tb::UiScene::Title);
-    ui.update(fresh(tb::Key::A), save);
+    ui.update(fresh(tb::Key::B), save);
     assert(ui.scene() == tb::UiScene::MainMenu);
 }
 }

@@ -104,13 +104,12 @@ private:
     void _confirm_name(SaveData& save, UiUpdateResult& result);
     [[nodiscard]] int _name_length() const;
 
-    UiScene _scene = UiScene::PublisherSplash;
+    UiScene _scene = UiScene::Title;
     int _selection = 0;
     int _instructions_page = 0;
     uint8_t _language = 0;
     bool _sound_enabled = true;
     bool _suspended_session_available = false;
-    int _publisher_splash_ms = 2000;
     int _publisher_frame_phase = 0;
 
     HallTable _selected_hall_table = HallTable::BuildCity;

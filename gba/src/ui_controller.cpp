@@ -8,6 +8,11 @@ constexpr int locale_count = 5;
 constexpr char name_grid[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.";
 constexpr int name_grid_size = int(sizeof(name_grid)) - 1;
 
+bool any_pressed(const InputFrame& input)
+{
+    return input.pressed_mask != 0;
+}
+
 int wrapped(int value, int count)
 {
     value %= count;
@@ -236,25 +241,10 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
 
     switch(_scene)
     {
-    case UiScene::PublisherSplash:
-    {
-        static constexpr int frame_deltas[] = {16, 17, 17};
-        const int delta_ms = frame_deltas[_publisher_frame_phase];
-        _publisher_frame_phase = (_publisher_frame_phase + 1) % 3;
-        if(input.pressed(Key::A) || input.pressed(Key::Start) || _publisher_splash_ms <= delta_ms)
-        {
-            _publisher_splash_ms = 0;
-            _set_scene(UiScene::Title);
-        }
-        else
-        {
-            _publisher_splash_ms -= delta_ms;
-        }
-        break;
-    }
+    case UiScene::PublisherSplash: _set_scene(UiScene::Title); break;
 
     case UiScene::Title:
-        if(input.pressed(Key::A) || input.pressed(Key::Start))
+        if(any_pressed(input))
         {
             _set_scene(UiScene::MainMenu);
         }

@@ -27,12 +27,14 @@ def test_paged_support_screens_use_source_up_down_arrows_not_text_chevrons() -> 
     assert "generated::support_nav_f1" in source
 
 
-def test_startup_has_two_second_skippable_publisher_splash() -> None:
+def test_startup_opens_directly_on_title_and_title_accepts_any_button() -> None:
     header = (ROOT / "gba/include/tb/ui_controller.h").read_text(encoding="utf-8")
     controller = (ROOT / "gba/src/ui_controller.cpp").read_text(encoding="utf-8")
     shell = (ROOT / "gba/src/ui_shell.cpp").read_text(encoding="utf-8")
     assert "PublisherSplash" in header
-    assert "int _publisher_splash_ms = 2000;" in header
-    assert "case UiScene::PublisherSplash" in controller
-    assert "input.pressed(Key::A) || input.pressed(Key::Start)" in controller
-    assert "generated::digital_chocolate_logo" in shell
+    assert "UiScene _scene = UiScene::Title;" in header
+    assert "bool any_pressed(const InputFrame& input)" in controller
+    assert "case UiScene::PublisherSplash: _set_scene(UiScene::Title); break;" in controller
+    assert "case UiScene::Title:" in controller
+    assert "if(any_pressed(input))" in controller
+    assert "Press any key to play" in shell

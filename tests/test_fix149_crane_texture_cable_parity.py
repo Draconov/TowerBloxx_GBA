@@ -83,7 +83,7 @@ def test_runtime_special_cable_uses_one_affine_sprite_and_exact_source_anchor() 
         assert "const int dx = end_x - start_x;" in source
         assert "const int dy = end_y - start_y;" in source
         assert "const int cable_length = bn::sqrt(dx * dx + dy * dy);" in source
-        assert "constexpr int endpoint_overlap = 2;" in source
+        assert "constexpr int endpoint_overlap = 3;" in source
         assert "const int cable_draw_length = cable_length + endpoint_overlap * 2;" in source
         assert "sprite.set_vertical_scale(bn::fixed(cable_draw_length) / 64);" in source
         assert "sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));" in source

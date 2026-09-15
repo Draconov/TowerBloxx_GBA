@@ -112,4 +112,19 @@ def test_root_icons_and_dialog_reuse_existing_shared_palettes(
 def test_overwrite_warning_uses_generated_wrapped_lines() -> None:
     source = (ROOT / "gba/src/ui_shell.cpp").read_text(encoding="utf-8")
     assert "overwrite_game_confirmation_lines_line_counts" in source
-    assert "overwrite_game_confirmation_lines[language][index]" in source
+    assert "_show_dialog_lines(generated::overwrite_game_confirmation_lines[language], line_count, -28);" in source
+
+
+def test_root_menu_adjusts_high_scores_and_instructions_icons_and_hides_select_softkey() -> None:
+    source = (ROOT / "gba/src/ui_shell.cpp").read_text(encoding="utf-8")
+    assert "case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -101, y - 1); break;" in source
+    assert "case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -100, y - 1); break;" in source
+    assert "_show_softkeys(language, false, false);" in source
+
+
+def test_instruction_pages_scroll_with_up_down_and_render_inside_dialog_window() -> None:
+    source = (ROOT / "gba/src/ui_shell.cpp").read_text(encoding="utf-8")
+    assert "if((scene == UiScene::InstructionsPage || scene == UiScene::About) && pages > 1 && input.pressed(Key::Up))" in source
+    assert "else if((scene == UiScene::InstructionsPage || scene == UiScene::About) && pages > 1 && input.pressed(Key::Down))" in source
+    assert "_show_dialog_backdrop();" in source[source.index("void UiShell::_show_instructions_page") : source.index("void UiShell::_show_about")]
+    assert "constexpr int lines_per_page = 5;" in source
