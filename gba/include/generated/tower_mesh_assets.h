@@ -123,6 +123,390 @@
 #include "bn_sprite_items_crane_hook_pose_47_p1.h"
 #include "bn_sprite_items_crane_hook_pose_48_p0.h"
 #include "bn_sprite_items_crane_hook_pose_48_p1.h"
+#include "bn_sprite_items_tumble_m010_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m010_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m010_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m010_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m010_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m011_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m011_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m011_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m011_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m012_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m012_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m012_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m012_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m013_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m013_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m013_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m013_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m020_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m020_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m020_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m020_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m021_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m021_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m021_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m021_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m022_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m022_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m022_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m022_c3_s12_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s01_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s02_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s03_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s04_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s05_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s06_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s07_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s08_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s09_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s10_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s11_p0.h"
+#include "bn_sprite_items_tumble_m023_c0_s12_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s01_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s02_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s03_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s04_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s05_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s06_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s07_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s08_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s09_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s10_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s11_p0.h"
+#include "bn_sprite_items_tumble_m023_c1_s12_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s01_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s02_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s03_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s04_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s05_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s06_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s07_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s08_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s09_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s10_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s11_p0.h"
+#include "bn_sprite_items_tumble_m023_c2_s12_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s01_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s02_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s03_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s04_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s05_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s06_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s07_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s08_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s09_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s10_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s11_p0.h"
+#include "bn_sprite_items_tumble_m023_c3_s12_p0.h"
 
 namespace tb::generated
 {
@@ -536,6 +920,1973 @@ inline const CraneHookFrameAsset& crane_hook_frame_for_step(int step)
         step = 24;
     }
     return crane_hook_frames[step + 24];
+}
+
+struct TumblePoseAsset
+{
+    int16_t mesh_id;
+    int8_t stage;
+    bool z_negative;
+    bool y_negative;
+    const MeshPartAsset* parts;
+    int16_t part_count;
+};
+
+inline const MeshPartAsset tumble_m010_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m010_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m010_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m010_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m010_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m010_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m011_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m011_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m011_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m011_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m011_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m012_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m012_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m012_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m012_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m012_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m013_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m013_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m013_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m013_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m013_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m020_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m020_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m020_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m020_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m020_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m021_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m021_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m021_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m021_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m021_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m022_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m022_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m022_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m022_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m022_c3_s12_p0, 12, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s01_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s02_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s02_p0, 1, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s03_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s04_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s04_p0, 14, 1 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s05_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s05_p0, 13, 0 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s06_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s06_p0, 12, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s07_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s08_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s09_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s10_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s11_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c0_s12_parts[] = {
+    { &bn::sprite_items::tumble_m023_c0_s12_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s01_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s02_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s02_p0, -1, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s03_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s04_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s04_p0, 12, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s05_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s05_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s06_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s06_p0, 11, 16 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s07_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s08_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s09_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s10_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s11_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c1_s12_parts[] = {
+    { &bn::sprite_items::tumble_m023_c1_s12_p0, 12, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s01_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s01_p0, 2, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s02_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s02_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s03_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s03_p0, 15, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s04_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s04_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s05_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s05_p0, 13, 1 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s06_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s06_p0, 12, 16 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s07_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s08_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s08_p0, 11, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s09_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s10_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s10_p0, 10, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s11_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c2_s12_parts[] = {
+    { &bn::sprite_items::tumble_m023_c2_s12_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s01_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s01_p0, 1, 3 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s02_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s02_p0, -1, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s03_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s03_p0, 14, 2 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s04_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s04_p0, 12, 1 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s05_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s05_p0, 12, 0 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s06_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s06_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s07_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s07_p0, 11, 15 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s08_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s08_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s09_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s09_p0, 10, 14 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s10_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s10_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s11_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s11_p0, 11, 13 },
+};
+
+inline const MeshPartAsset tumble_m023_c3_s12_parts[] = {
+    { &bn::sprite_items::tumble_m023_c3_s12_p0, 12, 14 },
+};
+
+inline const TumblePoseAsset tumble_poses[] = {
+    { 10, 1, false, false, tumble_m010_c0_s01_parts, 1 },
+    { 10, 2, false, false, tumble_m010_c0_s02_parts, 1 },
+    { 10, 3, false, false, tumble_m010_c0_s03_parts, 1 },
+    { 10, 4, false, false, tumble_m010_c0_s04_parts, 1 },
+    { 10, 5, false, false, tumble_m010_c0_s05_parts, 1 },
+    { 10, 6, false, false, tumble_m010_c0_s06_parts, 1 },
+    { 10, 7, false, false, tumble_m010_c0_s07_parts, 1 },
+    { 10, 8, false, false, tumble_m010_c0_s08_parts, 1 },
+    { 10, 9, false, false, tumble_m010_c0_s09_parts, 1 },
+    { 10, 10, false, false, tumble_m010_c0_s10_parts, 1 },
+    { 10, 11, false, false, tumble_m010_c0_s11_parts, 1 },
+    { 10, 12, false, false, tumble_m010_c0_s12_parts, 1 },
+    { 10, 1, false, true, tumble_m010_c1_s01_parts, 1 },
+    { 10, 2, false, true, tumble_m010_c1_s02_parts, 1 },
+    { 10, 3, false, true, tumble_m010_c1_s03_parts, 1 },
+    { 10, 4, false, true, tumble_m010_c1_s04_parts, 1 },
+    { 10, 5, false, true, tumble_m010_c1_s05_parts, 1 },
+    { 10, 6, false, true, tumble_m010_c1_s06_parts, 1 },
+    { 10, 7, false, true, tumble_m010_c1_s07_parts, 1 },
+    { 10, 8, false, true, tumble_m010_c1_s08_parts, 1 },
+    { 10, 9, false, true, tumble_m010_c1_s09_parts, 1 },
+    { 10, 10, false, true, tumble_m010_c1_s10_parts, 1 },
+    { 10, 11, false, true, tumble_m010_c1_s11_parts, 1 },
+    { 10, 12, false, true, tumble_m010_c1_s12_parts, 1 },
+    { 10, 1, true, false, tumble_m010_c2_s01_parts, 1 },
+    { 10, 2, true, false, tumble_m010_c2_s02_parts, 1 },
+    { 10, 3, true, false, tumble_m010_c2_s03_parts, 1 },
+    { 10, 4, true, false, tumble_m010_c2_s04_parts, 1 },
+    { 10, 5, true, false, tumble_m010_c2_s05_parts, 1 },
+    { 10, 6, true, false, tumble_m010_c2_s06_parts, 1 },
+    { 10, 7, true, false, tumble_m010_c2_s07_parts, 1 },
+    { 10, 8, true, false, tumble_m010_c2_s08_parts, 1 },
+    { 10, 9, true, false, tumble_m010_c2_s09_parts, 1 },
+    { 10, 10, true, false, tumble_m010_c2_s10_parts, 1 },
+    { 10, 11, true, false, tumble_m010_c2_s11_parts, 1 },
+    { 10, 12, true, false, tumble_m010_c2_s12_parts, 1 },
+    { 10, 1, true, true, tumble_m010_c3_s01_parts, 1 },
+    { 10, 2, true, true, tumble_m010_c3_s02_parts, 1 },
+    { 10, 3, true, true, tumble_m010_c3_s03_parts, 1 },
+    { 10, 4, true, true, tumble_m010_c3_s04_parts, 1 },
+    { 10, 5, true, true, tumble_m010_c3_s05_parts, 1 },
+    { 10, 6, true, true, tumble_m010_c3_s06_parts, 1 },
+    { 10, 7, true, true, tumble_m010_c3_s07_parts, 1 },
+    { 10, 8, true, true, tumble_m010_c3_s08_parts, 1 },
+    { 10, 9, true, true, tumble_m010_c3_s09_parts, 1 },
+    { 10, 10, true, true, tumble_m010_c3_s10_parts, 1 },
+    { 10, 11, true, true, tumble_m010_c3_s11_parts, 1 },
+    { 10, 12, true, true, tumble_m010_c3_s12_parts, 1 },
+    { 11, 1, false, false, tumble_m011_c0_s01_parts, 1 },
+    { 11, 2, false, false, tumble_m011_c0_s02_parts, 1 },
+    { 11, 3, false, false, tumble_m011_c0_s03_parts, 1 },
+    { 11, 4, false, false, tumble_m011_c0_s04_parts, 1 },
+    { 11, 5, false, false, tumble_m011_c0_s05_parts, 1 },
+    { 11, 6, false, false, tumble_m011_c0_s06_parts, 1 },
+    { 11, 7, false, false, tumble_m011_c0_s07_parts, 1 },
+    { 11, 8, false, false, tumble_m011_c0_s08_parts, 1 },
+    { 11, 9, false, false, tumble_m011_c0_s09_parts, 1 },
+    { 11, 10, false, false, tumble_m011_c0_s10_parts, 1 },
+    { 11, 11, false, false, tumble_m011_c0_s11_parts, 1 },
+    { 11, 12, false, false, tumble_m011_c0_s12_parts, 1 },
+    { 11, 1, false, true, tumble_m011_c1_s01_parts, 1 },
+    { 11, 2, false, true, tumble_m011_c1_s02_parts, 1 },
+    { 11, 3, false, true, tumble_m011_c1_s03_parts, 1 },
+    { 11, 4, false, true, tumble_m011_c1_s04_parts, 1 },
+    { 11, 5, false, true, tumble_m011_c1_s05_parts, 1 },
+    { 11, 6, false, true, tumble_m011_c1_s06_parts, 1 },
+    { 11, 7, false, true, tumble_m011_c1_s07_parts, 1 },
+    { 11, 8, false, true, tumble_m011_c1_s08_parts, 1 },
+    { 11, 9, false, true, tumble_m011_c1_s09_parts, 1 },
+    { 11, 10, false, true, tumble_m011_c1_s10_parts, 1 },
+    { 11, 11, false, true, tumble_m011_c1_s11_parts, 1 },
+    { 11, 12, false, true, tumble_m011_c1_s12_parts, 1 },
+    { 11, 1, true, false, tumble_m011_c2_s01_parts, 1 },
+    { 11, 2, true, false, tumble_m011_c2_s02_parts, 1 },
+    { 11, 3, true, false, tumble_m011_c2_s03_parts, 1 },
+    { 11, 4, true, false, tumble_m011_c2_s04_parts, 1 },
+    { 11, 5, true, false, tumble_m011_c2_s05_parts, 1 },
+    { 11, 6, true, false, tumble_m011_c2_s06_parts, 1 },
+    { 11, 7, true, false, tumble_m011_c2_s07_parts, 1 },
+    { 11, 8, true, false, tumble_m011_c2_s08_parts, 1 },
+    { 11, 9, true, false, tumble_m011_c2_s09_parts, 1 },
+    { 11, 10, true, false, tumble_m011_c2_s10_parts, 1 },
+    { 11, 11, true, false, tumble_m011_c2_s11_parts, 1 },
+    { 11, 12, true, false, tumble_m011_c2_s12_parts, 1 },
+    { 11, 1, true, true, tumble_m011_c3_s01_parts, 1 },
+    { 11, 2, true, true, tumble_m011_c3_s02_parts, 1 },
+    { 11, 3, true, true, tumble_m011_c3_s03_parts, 1 },
+    { 11, 4, true, true, tumble_m011_c3_s04_parts, 1 },
+    { 11, 5, true, true, tumble_m011_c3_s05_parts, 1 },
+    { 11, 6, true, true, tumble_m011_c3_s06_parts, 1 },
+    { 11, 7, true, true, tumble_m011_c3_s07_parts, 1 },
+    { 11, 8, true, true, tumble_m011_c3_s08_parts, 1 },
+    { 11, 9, true, true, tumble_m011_c3_s09_parts, 1 },
+    { 11, 10, true, true, tumble_m011_c3_s10_parts, 1 },
+    { 11, 11, true, true, tumble_m011_c3_s11_parts, 1 },
+    { 11, 12, true, true, tumble_m011_c3_s12_parts, 1 },
+    { 12, 1, false, false, tumble_m012_c0_s01_parts, 1 },
+    { 12, 2, false, false, tumble_m012_c0_s02_parts, 1 },
+    { 12, 3, false, false, tumble_m012_c0_s03_parts, 1 },
+    { 12, 4, false, false, tumble_m012_c0_s04_parts, 1 },
+    { 12, 5, false, false, tumble_m012_c0_s05_parts, 1 },
+    { 12, 6, false, false, tumble_m012_c0_s06_parts, 1 },
+    { 12, 7, false, false, tumble_m012_c0_s07_parts, 1 },
+    { 12, 8, false, false, tumble_m012_c0_s08_parts, 1 },
+    { 12, 9, false, false, tumble_m012_c0_s09_parts, 1 },
+    { 12, 10, false, false, tumble_m012_c0_s10_parts, 1 },
+    { 12, 11, false, false, tumble_m012_c0_s11_parts, 1 },
+    { 12, 12, false, false, tumble_m012_c0_s12_parts, 1 },
+    { 12, 1, false, true, tumble_m012_c1_s01_parts, 1 },
+    { 12, 2, false, true, tumble_m012_c1_s02_parts, 1 },
+    { 12, 3, false, true, tumble_m012_c1_s03_parts, 1 },
+    { 12, 4, false, true, tumble_m012_c1_s04_parts, 1 },
+    { 12, 5, false, true, tumble_m012_c1_s05_parts, 1 },
+    { 12, 6, false, true, tumble_m012_c1_s06_parts, 1 },
+    { 12, 7, false, true, tumble_m012_c1_s07_parts, 1 },
+    { 12, 8, false, true, tumble_m012_c1_s08_parts, 1 },
+    { 12, 9, false, true, tumble_m012_c1_s09_parts, 1 },
+    { 12, 10, false, true, tumble_m012_c1_s10_parts, 1 },
+    { 12, 11, false, true, tumble_m012_c1_s11_parts, 1 },
+    { 12, 12, false, true, tumble_m012_c1_s12_parts, 1 },
+    { 12, 1, true, false, tumble_m012_c2_s01_parts, 1 },
+    { 12, 2, true, false, tumble_m012_c2_s02_parts, 1 },
+    { 12, 3, true, false, tumble_m012_c2_s03_parts, 1 },
+    { 12, 4, true, false, tumble_m012_c2_s04_parts, 1 },
+    { 12, 5, true, false, tumble_m012_c2_s05_parts, 1 },
+    { 12, 6, true, false, tumble_m012_c2_s06_parts, 1 },
+    { 12, 7, true, false, tumble_m012_c2_s07_parts, 1 },
+    { 12, 8, true, false, tumble_m012_c2_s08_parts, 1 },
+    { 12, 9, true, false, tumble_m012_c2_s09_parts, 1 },
+    { 12, 10, true, false, tumble_m012_c2_s10_parts, 1 },
+    { 12, 11, true, false, tumble_m012_c2_s11_parts, 1 },
+    { 12, 12, true, false, tumble_m012_c2_s12_parts, 1 },
+    { 12, 1, true, true, tumble_m012_c3_s01_parts, 1 },
+    { 12, 2, true, true, tumble_m012_c3_s02_parts, 1 },
+    { 12, 3, true, true, tumble_m012_c3_s03_parts, 1 },
+    { 12, 4, true, true, tumble_m012_c3_s04_parts, 1 },
+    { 12, 5, true, true, tumble_m012_c3_s05_parts, 1 },
+    { 12, 6, true, true, tumble_m012_c3_s06_parts, 1 },
+    { 12, 7, true, true, tumble_m012_c3_s07_parts, 1 },
+    { 12, 8, true, true, tumble_m012_c3_s08_parts, 1 },
+    { 12, 9, true, true, tumble_m012_c3_s09_parts, 1 },
+    { 12, 10, true, true, tumble_m012_c3_s10_parts, 1 },
+    { 12, 11, true, true, tumble_m012_c3_s11_parts, 1 },
+    { 12, 12, true, true, tumble_m012_c3_s12_parts, 1 },
+    { 13, 1, false, false, tumble_m013_c0_s01_parts, 1 },
+    { 13, 2, false, false, tumble_m013_c0_s02_parts, 1 },
+    { 13, 3, false, false, tumble_m013_c0_s03_parts, 1 },
+    { 13, 4, false, false, tumble_m013_c0_s04_parts, 1 },
+    { 13, 5, false, false, tumble_m013_c0_s05_parts, 1 },
+    { 13, 6, false, false, tumble_m013_c0_s06_parts, 1 },
+    { 13, 7, false, false, tumble_m013_c0_s07_parts, 1 },
+    { 13, 8, false, false, tumble_m013_c0_s08_parts, 1 },
+    { 13, 9, false, false, tumble_m013_c0_s09_parts, 1 },
+    { 13, 10, false, false, tumble_m013_c0_s10_parts, 1 },
+    { 13, 11, false, false, tumble_m013_c0_s11_parts, 1 },
+    { 13, 12, false, false, tumble_m013_c0_s12_parts, 1 },
+    { 13, 1, false, true, tumble_m013_c1_s01_parts, 1 },
+    { 13, 2, false, true, tumble_m013_c1_s02_parts, 1 },
+    { 13, 3, false, true, tumble_m013_c1_s03_parts, 1 },
+    { 13, 4, false, true, tumble_m013_c1_s04_parts, 1 },
+    { 13, 5, false, true, tumble_m013_c1_s05_parts, 1 },
+    { 13, 6, false, true, tumble_m013_c1_s06_parts, 1 },
+    { 13, 7, false, true, tumble_m013_c1_s07_parts, 1 },
+    { 13, 8, false, true, tumble_m013_c1_s08_parts, 1 },
+    { 13, 9, false, true, tumble_m013_c1_s09_parts, 1 },
+    { 13, 10, false, true, tumble_m013_c1_s10_parts, 1 },
+    { 13, 11, false, true, tumble_m013_c1_s11_parts, 1 },
+    { 13, 12, false, true, tumble_m013_c1_s12_parts, 1 },
+    { 13, 1, true, false, tumble_m013_c2_s01_parts, 1 },
+    { 13, 2, true, false, tumble_m013_c2_s02_parts, 1 },
+    { 13, 3, true, false, tumble_m013_c2_s03_parts, 1 },
+    { 13, 4, true, false, tumble_m013_c2_s04_parts, 1 },
+    { 13, 5, true, false, tumble_m013_c2_s05_parts, 1 },
+    { 13, 6, true, false, tumble_m013_c2_s06_parts, 1 },
+    { 13, 7, true, false, tumble_m013_c2_s07_parts, 1 },
+    { 13, 8, true, false, tumble_m013_c2_s08_parts, 1 },
+    { 13, 9, true, false, tumble_m013_c2_s09_parts, 1 },
+    { 13, 10, true, false, tumble_m013_c2_s10_parts, 1 },
+    { 13, 11, true, false, tumble_m013_c2_s11_parts, 1 },
+    { 13, 12, true, false, tumble_m013_c2_s12_parts, 1 },
+    { 13, 1, true, true, tumble_m013_c3_s01_parts, 1 },
+    { 13, 2, true, true, tumble_m013_c3_s02_parts, 1 },
+    { 13, 3, true, true, tumble_m013_c3_s03_parts, 1 },
+    { 13, 4, true, true, tumble_m013_c3_s04_parts, 1 },
+    { 13, 5, true, true, tumble_m013_c3_s05_parts, 1 },
+    { 13, 6, true, true, tumble_m013_c3_s06_parts, 1 },
+    { 13, 7, true, true, tumble_m013_c3_s07_parts, 1 },
+    { 13, 8, true, true, tumble_m013_c3_s08_parts, 1 },
+    { 13, 9, true, true, tumble_m013_c3_s09_parts, 1 },
+    { 13, 10, true, true, tumble_m013_c3_s10_parts, 1 },
+    { 13, 11, true, true, tumble_m013_c3_s11_parts, 1 },
+    { 13, 12, true, true, tumble_m013_c3_s12_parts, 1 },
+    { 20, 1, false, false, tumble_m020_c0_s01_parts, 1 },
+    { 20, 2, false, false, tumble_m020_c0_s02_parts, 1 },
+    { 20, 3, false, false, tumble_m020_c0_s03_parts, 1 },
+    { 20, 4, false, false, tumble_m020_c0_s04_parts, 1 },
+    { 20, 5, false, false, tumble_m020_c0_s05_parts, 1 },
+    { 20, 6, false, false, tumble_m020_c0_s06_parts, 1 },
+    { 20, 7, false, false, tumble_m020_c0_s07_parts, 1 },
+    { 20, 8, false, false, tumble_m020_c0_s08_parts, 1 },
+    { 20, 9, false, false, tumble_m020_c0_s09_parts, 1 },
+    { 20, 10, false, false, tumble_m020_c0_s10_parts, 1 },
+    { 20, 11, false, false, tumble_m020_c0_s11_parts, 1 },
+    { 20, 12, false, false, tumble_m020_c0_s12_parts, 1 },
+    { 20, 1, false, true, tumble_m020_c1_s01_parts, 1 },
+    { 20, 2, false, true, tumble_m020_c1_s02_parts, 1 },
+    { 20, 3, false, true, tumble_m020_c1_s03_parts, 1 },
+    { 20, 4, false, true, tumble_m020_c1_s04_parts, 1 },
+    { 20, 5, false, true, tumble_m020_c1_s05_parts, 1 },
+    { 20, 6, false, true, tumble_m020_c1_s06_parts, 1 },
+    { 20, 7, false, true, tumble_m020_c1_s07_parts, 1 },
+    { 20, 8, false, true, tumble_m020_c1_s08_parts, 1 },
+    { 20, 9, false, true, tumble_m020_c1_s09_parts, 1 },
+    { 20, 10, false, true, tumble_m020_c1_s10_parts, 1 },
+    { 20, 11, false, true, tumble_m020_c1_s11_parts, 1 },
+    { 20, 12, false, true, tumble_m020_c1_s12_parts, 1 },
+    { 20, 1, true, false, tumble_m020_c2_s01_parts, 1 },
+    { 20, 2, true, false, tumble_m020_c2_s02_parts, 1 },
+    { 20, 3, true, false, tumble_m020_c2_s03_parts, 1 },
+    { 20, 4, true, false, tumble_m020_c2_s04_parts, 1 },
+    { 20, 5, true, false, tumble_m020_c2_s05_parts, 1 },
+    { 20, 6, true, false, tumble_m020_c2_s06_parts, 1 },
+    { 20, 7, true, false, tumble_m020_c2_s07_parts, 1 },
+    { 20, 8, true, false, tumble_m020_c2_s08_parts, 1 },
+    { 20, 9, true, false, tumble_m020_c2_s09_parts, 1 },
+    { 20, 10, true, false, tumble_m020_c2_s10_parts, 1 },
+    { 20, 11, true, false, tumble_m020_c2_s11_parts, 1 },
+    { 20, 12, true, false, tumble_m020_c2_s12_parts, 1 },
+    { 20, 1, true, true, tumble_m020_c3_s01_parts, 1 },
+    { 20, 2, true, true, tumble_m020_c3_s02_parts, 1 },
+    { 20, 3, true, true, tumble_m020_c3_s03_parts, 1 },
+    { 20, 4, true, true, tumble_m020_c3_s04_parts, 1 },
+    { 20, 5, true, true, tumble_m020_c3_s05_parts, 1 },
+    { 20, 6, true, true, tumble_m020_c3_s06_parts, 1 },
+    { 20, 7, true, true, tumble_m020_c3_s07_parts, 1 },
+    { 20, 8, true, true, tumble_m020_c3_s08_parts, 1 },
+    { 20, 9, true, true, tumble_m020_c3_s09_parts, 1 },
+    { 20, 10, true, true, tumble_m020_c3_s10_parts, 1 },
+    { 20, 11, true, true, tumble_m020_c3_s11_parts, 1 },
+    { 20, 12, true, true, tumble_m020_c3_s12_parts, 1 },
+    { 21, 1, false, false, tumble_m021_c0_s01_parts, 1 },
+    { 21, 2, false, false, tumble_m021_c0_s02_parts, 1 },
+    { 21, 3, false, false, tumble_m021_c0_s03_parts, 1 },
+    { 21, 4, false, false, tumble_m021_c0_s04_parts, 1 },
+    { 21, 5, false, false, tumble_m021_c0_s05_parts, 1 },
+    { 21, 6, false, false, tumble_m021_c0_s06_parts, 1 },
+    { 21, 7, false, false, tumble_m021_c0_s07_parts, 1 },
+    { 21, 8, false, false, tumble_m021_c0_s08_parts, 1 },
+    { 21, 9, false, false, tumble_m021_c0_s09_parts, 1 },
+    { 21, 10, false, false, tumble_m021_c0_s10_parts, 1 },
+    { 21, 11, false, false, tumble_m021_c0_s11_parts, 1 },
+    { 21, 12, false, false, tumble_m021_c0_s12_parts, 1 },
+    { 21, 1, false, true, tumble_m021_c1_s01_parts, 1 },
+    { 21, 2, false, true, tumble_m021_c1_s02_parts, 1 },
+    { 21, 3, false, true, tumble_m021_c1_s03_parts, 1 },
+    { 21, 4, false, true, tumble_m021_c1_s04_parts, 1 },
+    { 21, 5, false, true, tumble_m021_c1_s05_parts, 1 },
+    { 21, 6, false, true, tumble_m021_c1_s06_parts, 1 },
+    { 21, 7, false, true, tumble_m021_c1_s07_parts, 1 },
+    { 21, 8, false, true, tumble_m021_c1_s08_parts, 1 },
+    { 21, 9, false, true, tumble_m021_c1_s09_parts, 1 },
+    { 21, 10, false, true, tumble_m021_c1_s10_parts, 1 },
+    { 21, 11, false, true, tumble_m021_c1_s11_parts, 1 },
+    { 21, 12, false, true, tumble_m021_c1_s12_parts, 1 },
+    { 21, 1, true, false, tumble_m021_c2_s01_parts, 1 },
+    { 21, 2, true, false, tumble_m021_c2_s02_parts, 1 },
+    { 21, 3, true, false, tumble_m021_c2_s03_parts, 1 },
+    { 21, 4, true, false, tumble_m021_c2_s04_parts, 1 },
+    { 21, 5, true, false, tumble_m021_c2_s05_parts, 1 },
+    { 21, 6, true, false, tumble_m021_c2_s06_parts, 1 },
+    { 21, 7, true, false, tumble_m021_c2_s07_parts, 1 },
+    { 21, 8, true, false, tumble_m021_c2_s08_parts, 1 },
+    { 21, 9, true, false, tumble_m021_c2_s09_parts, 1 },
+    { 21, 10, true, false, tumble_m021_c2_s10_parts, 1 },
+    { 21, 11, true, false, tumble_m021_c2_s11_parts, 1 },
+    { 21, 12, true, false, tumble_m021_c2_s12_parts, 1 },
+    { 21, 1, true, true, tumble_m021_c3_s01_parts, 1 },
+    { 21, 2, true, true, tumble_m021_c3_s02_parts, 1 },
+    { 21, 3, true, true, tumble_m021_c3_s03_parts, 1 },
+    { 21, 4, true, true, tumble_m021_c3_s04_parts, 1 },
+    { 21, 5, true, true, tumble_m021_c3_s05_parts, 1 },
+    { 21, 6, true, true, tumble_m021_c3_s06_parts, 1 },
+    { 21, 7, true, true, tumble_m021_c3_s07_parts, 1 },
+    { 21, 8, true, true, tumble_m021_c3_s08_parts, 1 },
+    { 21, 9, true, true, tumble_m021_c3_s09_parts, 1 },
+    { 21, 10, true, true, tumble_m021_c3_s10_parts, 1 },
+    { 21, 11, true, true, tumble_m021_c3_s11_parts, 1 },
+    { 21, 12, true, true, tumble_m021_c3_s12_parts, 1 },
+    { 22, 1, false, false, tumble_m022_c0_s01_parts, 1 },
+    { 22, 2, false, false, tumble_m022_c0_s02_parts, 1 },
+    { 22, 3, false, false, tumble_m022_c0_s03_parts, 1 },
+    { 22, 4, false, false, tumble_m022_c0_s04_parts, 1 },
+    { 22, 5, false, false, tumble_m022_c0_s05_parts, 1 },
+    { 22, 6, false, false, tumble_m022_c0_s06_parts, 1 },
+    { 22, 7, false, false, tumble_m022_c0_s07_parts, 1 },
+    { 22, 8, false, false, tumble_m022_c0_s08_parts, 1 },
+    { 22, 9, false, false, tumble_m022_c0_s09_parts, 1 },
+    { 22, 10, false, false, tumble_m022_c0_s10_parts, 1 },
+    { 22, 11, false, false, tumble_m022_c0_s11_parts, 1 },
+    { 22, 12, false, false, tumble_m022_c0_s12_parts, 1 },
+    { 22, 1, false, true, tumble_m022_c1_s01_parts, 1 },
+    { 22, 2, false, true, tumble_m022_c1_s02_parts, 1 },
+    { 22, 3, false, true, tumble_m022_c1_s03_parts, 1 },
+    { 22, 4, false, true, tumble_m022_c1_s04_parts, 1 },
+    { 22, 5, false, true, tumble_m022_c1_s05_parts, 1 },
+    { 22, 6, false, true, tumble_m022_c1_s06_parts, 1 },
+    { 22, 7, false, true, tumble_m022_c1_s07_parts, 1 },
+    { 22, 8, false, true, tumble_m022_c1_s08_parts, 1 },
+    { 22, 9, false, true, tumble_m022_c1_s09_parts, 1 },
+    { 22, 10, false, true, tumble_m022_c1_s10_parts, 1 },
+    { 22, 11, false, true, tumble_m022_c1_s11_parts, 1 },
+    { 22, 12, false, true, tumble_m022_c1_s12_parts, 1 },
+    { 22, 1, true, false, tumble_m022_c2_s01_parts, 1 },
+    { 22, 2, true, false, tumble_m022_c2_s02_parts, 1 },
+    { 22, 3, true, false, tumble_m022_c2_s03_parts, 1 },
+    { 22, 4, true, false, tumble_m022_c2_s04_parts, 1 },
+    { 22, 5, true, false, tumble_m022_c2_s05_parts, 1 },
+    { 22, 6, true, false, tumble_m022_c2_s06_parts, 1 },
+    { 22, 7, true, false, tumble_m022_c2_s07_parts, 1 },
+    { 22, 8, true, false, tumble_m022_c2_s08_parts, 1 },
+    { 22, 9, true, false, tumble_m022_c2_s09_parts, 1 },
+    { 22, 10, true, false, tumble_m022_c2_s10_parts, 1 },
+    { 22, 11, true, false, tumble_m022_c2_s11_parts, 1 },
+    { 22, 12, true, false, tumble_m022_c2_s12_parts, 1 },
+    { 22, 1, true, true, tumble_m022_c3_s01_parts, 1 },
+    { 22, 2, true, true, tumble_m022_c3_s02_parts, 1 },
+    { 22, 3, true, true, tumble_m022_c3_s03_parts, 1 },
+    { 22, 4, true, true, tumble_m022_c3_s04_parts, 1 },
+    { 22, 5, true, true, tumble_m022_c3_s05_parts, 1 },
+    { 22, 6, true, true, tumble_m022_c3_s06_parts, 1 },
+    { 22, 7, true, true, tumble_m022_c3_s07_parts, 1 },
+    { 22, 8, true, true, tumble_m022_c3_s08_parts, 1 },
+    { 22, 9, true, true, tumble_m022_c3_s09_parts, 1 },
+    { 22, 10, true, true, tumble_m022_c3_s10_parts, 1 },
+    { 22, 11, true, true, tumble_m022_c3_s11_parts, 1 },
+    { 22, 12, true, true, tumble_m022_c3_s12_parts, 1 },
+    { 23, 1, false, false, tumble_m023_c0_s01_parts, 1 },
+    { 23, 2, false, false, tumble_m023_c0_s02_parts, 1 },
+    { 23, 3, false, false, tumble_m023_c0_s03_parts, 1 },
+    { 23, 4, false, false, tumble_m023_c0_s04_parts, 1 },
+    { 23, 5, false, false, tumble_m023_c0_s05_parts, 1 },
+    { 23, 6, false, false, tumble_m023_c0_s06_parts, 1 },
+    { 23, 7, false, false, tumble_m023_c0_s07_parts, 1 },
+    { 23, 8, false, false, tumble_m023_c0_s08_parts, 1 },
+    { 23, 9, false, false, tumble_m023_c0_s09_parts, 1 },
+    { 23, 10, false, false, tumble_m023_c0_s10_parts, 1 },
+    { 23, 11, false, false, tumble_m023_c0_s11_parts, 1 },
+    { 23, 12, false, false, tumble_m023_c0_s12_parts, 1 },
+    { 23, 1, false, true, tumble_m023_c1_s01_parts, 1 },
+    { 23, 2, false, true, tumble_m023_c1_s02_parts, 1 },
+    { 23, 3, false, true, tumble_m023_c1_s03_parts, 1 },
+    { 23, 4, false, true, tumble_m023_c1_s04_parts, 1 },
+    { 23, 5, false, true, tumble_m023_c1_s05_parts, 1 },
+    { 23, 6, false, true, tumble_m023_c1_s06_parts, 1 },
+    { 23, 7, false, true, tumble_m023_c1_s07_parts, 1 },
+    { 23, 8, false, true, tumble_m023_c1_s08_parts, 1 },
+    { 23, 9, false, true, tumble_m023_c1_s09_parts, 1 },
+    { 23, 10, false, true, tumble_m023_c1_s10_parts, 1 },
+    { 23, 11, false, true, tumble_m023_c1_s11_parts, 1 },
+    { 23, 12, false, true, tumble_m023_c1_s12_parts, 1 },
+    { 23, 1, true, false, tumble_m023_c2_s01_parts, 1 },
+    { 23, 2, true, false, tumble_m023_c2_s02_parts, 1 },
+    { 23, 3, true, false, tumble_m023_c2_s03_parts, 1 },
+    { 23, 4, true, false, tumble_m023_c2_s04_parts, 1 },
+    { 23, 5, true, false, tumble_m023_c2_s05_parts, 1 },
+    { 23, 6, true, false, tumble_m023_c2_s06_parts, 1 },
+    { 23, 7, true, false, tumble_m023_c2_s07_parts, 1 },
+    { 23, 8, true, false, tumble_m023_c2_s08_parts, 1 },
+    { 23, 9, true, false, tumble_m023_c2_s09_parts, 1 },
+    { 23, 10, true, false, tumble_m023_c2_s10_parts, 1 },
+    { 23, 11, true, false, tumble_m023_c2_s11_parts, 1 },
+    { 23, 12, true, false, tumble_m023_c2_s12_parts, 1 },
+    { 23, 1, true, true, tumble_m023_c3_s01_parts, 1 },
+    { 23, 2, true, true, tumble_m023_c3_s02_parts, 1 },
+    { 23, 3, true, true, tumble_m023_c3_s03_parts, 1 },
+    { 23, 4, true, true, tumble_m023_c3_s04_parts, 1 },
+    { 23, 5, true, true, tumble_m023_c3_s05_parts, 1 },
+    { 23, 6, true, true, tumble_m023_c3_s06_parts, 1 },
+    { 23, 7, true, true, tumble_m023_c3_s07_parts, 1 },
+    { 23, 8, true, true, tumble_m023_c3_s08_parts, 1 },
+    { 23, 9, true, true, tumble_m023_c3_s09_parts, 1 },
+    { 23, 10, true, true, tumble_m023_c3_s10_parts, 1 },
+    { 23, 11, true, true, tumble_m023_c3_s11_parts, 1 },
+    { 23, 12, true, true, tumble_m023_c3_s12_parts, 1 },
+};
+inline constexpr int tumble_pose_count = 384;
+
+inline int tumble_stage_for_y_angle(int y_angle_degrees)
+{
+    if(y_angle_degrees < 0)
+    {
+        y_angle_degrees = -y_angle_degrees;
+    }
+    int stage = (y_angle_degrees + 2) / 5;
+    if(stage > 12) { stage = 12; }
+    return stage;
+}
+
+inline bool tumble_pose_available(int mesh_id)
+{
+    return (mesh_id >= 10 && mesh_id <= 13) || (mesh_id >= 20 && mesh_id <= 23);
+}
+
+inline const TumblePoseAsset& tumble_pose_for(int mesh_id, int stage, bool z_negative, bool y_negative)
+{
+    int mesh_index = 0;
+    if(mesh_id >= 10 && mesh_id <= 13)
+    {
+        mesh_index = mesh_id - 10;
+    }
+    else if(mesh_id >= 20 && mesh_id <= 23)
+    {
+        mesh_index = 4 + mesh_id - 20;
+    }
+    if(stage < 1) { stage = 1; }
+    if(stage > 12) { stage = 12; }
+    const int combo = (z_negative ? 2 : 0) + (y_negative ? 1 : 0);
+    return tumble_poses[(mesh_index * 4 + combo) * 12 + (stage - 1)];
 }
 
 inline const MeshAsset meshes[] = {

@@ -2216,6 +2216,106 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/dialog_window_p0.bmp",
+      "sha256": "a1a4b41685f1f25c4f86aeef39d1e482a88441b534e34dcac787b1f77b7915d8",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p1.bmp",
+      "sha256": "54418b109af4e3445baeaa4223efaea6cd89124405343958fcce5f0ca76dd464",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p1.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p2.bmp",
+      "sha256": "54418b109af4e3445baeaa4223efaea6cd89124405343958fcce5f0ca76dd464",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p2.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p3.bmp",
+      "sha256": "eac110a941ef867e5d330f4906d122c6c8803a25cb76a5f1faf0fe31d9471e4b",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p3.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p4.bmp",
+      "sha256": "4f42c7ca34a2c0954c4e7396db61da3ccababf4983ae2c2a7e2e48dfdd502921",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p4.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p5.bmp",
+      "sha256": "4db8a87b64a7199fe973ba18594f7566fc5e6e05b6bcbe6ae46c4a663d053495",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p5.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p6.bmp",
+      "sha256": "4db8a87b64a7199fe973ba18594f7566fc5e6e05b6bcbe6ae46c4a663d053495",
+      "size": 2166
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p6.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p7.bmp",
+      "sha256": "9e2022d8dc8b1ddfa86b671dfed9ad73c824623da25811d94f212b5749595cb7",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/dialog_window_p7.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/digital_chocolate_logo_p0.bmp",
+      "sha256": "de080023f3adf6dc0600debf09f1a78e6eae76fe3b2c7f5725bc633788d688ac",
+      "size": 1142
+    },
+    {
+      "path": "gba/graphics/ui/digital_chocolate_logo_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/digital_chocolate_logo_p1.bmp",
+      "sha256": "fd9327dbe8cf799841c6e669c67a112c1fe6b439dfa41a643d386fdca2c54ecf",
+      "size": 374
+    },
+    {
+      "path": "gba/graphics/ui/digital_chocolate_logo_p1.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/hud_brown_digit_f0_p0.bmp",
       "sha256": "3af47a2203e294096b749ea3cc4a1ed6eef2862a5aeddd0dd9d3ab9b8dbf8810",
       "size": 150
@@ -2707,7 +2807,7 @@
     },
     {
       "path": "gba/graphics/ui/menu_build_city_icon_p0.bmp",
-      "sha256": "2f030950c50492c424033c22cde0b2794387b0b24b2d3b7ce41d43c1e7ee8996",
+      "sha256": "8c954979030370e3d4da82e938d868ab55ea08c2f2f6109e03dcc44fcc71c76f",
       "size": 246
     },
     {
@@ -2717,7 +2817,7 @@
     },
     {
       "path": "gba/graphics/ui/menu_continue_icon_p0.bmp",
-      "sha256": "37117c4b9f62f9bb6de3fa9c8917e49a1a61029380ed469d46a8b78a3ce00308",
+      "sha256": "8bd8c28aaa0b230f1a3ecb5d687f9f7864dab076baff5246fa6e41ca94721774",
       "size": 246
     },
     {
@@ -2727,11 +2827,21 @@
     },
     {
       "path": "gba/graphics/ui/menu_exit_icon_p0.bmp",
-      "sha256": "adfc9de8e9ef6782f609f793bf938c1302664e5e06fd1eff5a1153b80131fb93",
+      "sha256": "822599c3162d37e4e14dbb188d54a2d9cca52237653e4370ca71e05d1e2de64f",
       "size": 246
     },
     {
       "path": "gba/graphics/ui/menu_exit_icon_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/menu_high_scores_icon_p0.bmp",
+      "sha256": "1b89321445fb2d89da7cd841d76465cf3be26aa14a32e4be749061c327476624",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/menu_high_scores_icon_p0.json",
       "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
       "size": 46
     },
@@ -2776,8 +2886,18 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/menu_instructions_icon_p0.bmp",
+      "sha256": "2f710eda0c0c8a2974f5f035e4edd1bfaa5c29edf4fc48f17b38505faa7162ed",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/menu_instructions_icon_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/menu_quick_game_icon_p0.bmp",
-      "sha256": "26694ce8150f8ee253b9a4d8ae892f087514f4c96b16bce9bb06c441fd2a2f04",
+      "sha256": "538c4439b636a10c824e7d5cdc72c29289a0bf877fefb895a1813dc84542b703",
       "size": 246
     },
     {
@@ -2787,7 +2907,7 @@
     },
     {
       "path": "gba/graphics/ui/menu_settings_icon_p0.bmp",
-      "sha256": "2c05e3861352e40b3000d91a9f54b178921020975002a14b430f9664dcd4b62c",
+      "sha256": "4fca8bf56d9e247013d3143c1d0c040034787d41c85d6d8bb53b1fc01e7c686d",
       "size": 246
     },
     {
@@ -3216,6 +3336,36 @@
       "size": 46
     },
     {
+      "path": "gba/graphics/ui/support_nav_f0_p0.bmp",
+      "sha256": "68837e4d9b376d20248edb1e64be38c0ff89d04719344f51c159c7081864faf0",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/support_nav_f0_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/support_nav_f1_p0.bmp",
+      "sha256": "3fb2630270136970fb6a302b0960c3f9b181cd366186a129defe6e88d5f770be",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/support_nav_f1_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
+      "path": "gba/graphics/ui/support_nav_f2_p0.bmp",
+      "sha256": "b21431907e3d1dc98f0be3ac6592c28f127309630e0361d584a20bdabf50e910",
+      "size": 150
+    },
+    {
+      "path": "gba/graphics/ui/support_nav_f2_p0.json",
+      "sha256": "b334fe6ae05836455d7485d9123e11ad5a9fdaafc95cc3a1d4e452158e365a60",
+      "size": 46
+    },
+    {
       "path": "gba/graphics/ui/tower_bloxx_logo_p0.bmp",
       "sha256": "024b406c5ee5fc4162778a86aa35ca9c4c0c609ebcebc23fc83b21e8590f4f48",
       "size": 1142
@@ -3262,13 +3412,13 @@
     },
     {
       "path": "gba/include/generated/tower_localization.h",
-      "sha256": "1936e3f5eb587ad81ce6b6179fef12bca1159cc3ebdddcde3afe729301ee59e9",
-      "size": 112485
+      "sha256": "0868a08fe87cfb4289cfa757bd7643222d77a26a836ae4d539269daeb1193678",
+      "size": 113066
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "d74b37761af0ee9e754c99573417d4f1bae10d57a8453e1889e769953f982721",
-      "size": 46122
+      "sha256": "9309cc30ec163c4b7c3bba42a07f09dc9fd38552bb895c2bb8e8d8cbaf95f6b3",
+      "size": 48711
     }
   ],
   "font_character_count": 118,
@@ -4686,7 +4836,7 @@
         "bpp": 4,
         "height": 10,
         "name": "menu_continue_icon",
-        "palette_entries": 4,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "menu_continue_icon_p0",
@@ -4704,7 +4854,7 @@
         "bpp": 4,
         "height": 10,
         "name": "menu_build_city_icon",
-        "palette_entries": 4,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "menu_build_city_icon_p0",
@@ -4722,7 +4872,7 @@
         "bpp": 4,
         "height": 10,
         "name": "menu_quick_game_icon",
-        "palette_entries": 4,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "menu_quick_game_icon_p0",
@@ -4740,7 +4890,7 @@
         "bpp": 4,
         "height": 10,
         "name": "menu_settings_icon",
-        "palette_entries": 4,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "menu_settings_icon_p0",
@@ -4758,7 +4908,7 @@
         "bpp": 4,
         "height": 10,
         "name": "menu_exit_icon",
-        "palette_entries": 4,
+        "palette_entries": 10,
         "parts": [
           {
             "asset": "menu_exit_icon_p0",
@@ -4767,6 +4917,42 @@
             "screen_y": 3,
             "source_x": 4,
             "source_y": 0,
+            "width": 16
+          }
+        ],
+        "width": 14
+      },
+      {
+        "bpp": 4,
+        "height": 10,
+        "name": "menu_high_scores_icon",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "menu_high_scores_icon_p0",
+            "height": 16,
+            "screen_x": 3,
+            "screen_y": 4,
+            "source_x": 2,
+            "source_y": 1,
+            "width": 16
+          }
+        ],
+        "width": 14
+      },
+      {
+        "bpp": 4,
+        "height": 10,
+        "name": "menu_instructions_icon",
+        "palette_entries": 10,
+        "parts": [
+          {
+            "asset": "menu_instructions_icon_p0",
+            "height": 16,
+            "screen_x": 2,
+            "screen_y": 4,
+            "source_x": 1,
+            "source_y": 1,
             "width": 16
           }
         ],
@@ -5364,6 +5550,7 @@
     "width": 230
   },
   "procedural_assets": [
+    "dialog_window",
     "menu_highlight",
     "city_progress_segment",
     "city_valid_lot_ring",
@@ -5391,6 +5578,7 @@
     "city_status_icons": 21,
     "construction_target_badges": 13,
     "crane_hook_frames": 30,
+    "digital_chocolate_logo": 9,
     "font_atlas": 36,
     "font_metrics": 44,
     "hud_brown_digits": 15,
@@ -5411,10 +5599,11 @@
     ],
     "quick_counter_frame": 19,
     "sumea_logo": 10,
+    "support_nav": 1,
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "075f857ea28ad4397bf237e732f5a2a34b246c0c31fafe52529ab42399889579",
+  "tree_hash": "b83abe613186e68ce361d405a0532a33237cf3686637c42027579a19a09e0ae6",
   "utf8_characters": [
     "¡",
     "°",
@@ -5444,30 +5633,35 @@
     "de-DE": {
       "about": 20,
       "city": 32,
+      "overwrite_game": 1,
       "quick": 21,
       "reset_city": 3
     },
     "en-EN": {
       "about": 19,
       "city": 28,
+      "overwrite_game": 2,
       "quick": 18,
       "reset_city": 2
     },
     "es-ES": {
       "about": 17,
       "city": 31,
+      "overwrite_game": 1,
       "quick": 21,
       "reset_city": 3
     },
     "fr-FR": {
       "about": 19,
       "city": 29,
+      "overwrite_game": 1,
       "quick": 20,
       "reset_city": 2
     },
     "it-IT": {
       "about": 19,
       "city": 32,
+      "overwrite_game": 1,
       "quick": 20,
       "reset_city": 2
     }

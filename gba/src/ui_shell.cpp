@@ -34,6 +34,7 @@ constexpr const generated::UiCompositeAsset* menu_worker_red_frames[] = {
 };
 constexpr int menu_worker_width = 19;
 constexpr int menu_worker_height = 23;
+constexpr int dialog_backdrop_z_order = 200;
 
 int page_count(int lines)
 {
@@ -74,8 +75,15 @@ void UiShell::hide()
 
 void UiShell::update(const UiController& controller, const SaveData& save, const InputFrame& input)
 {
-    set_ui_backdrop();
     const UiScene scene = controller.scene();
+    if(scene == UiScene::PublisherSplash)
+    {
+        bn::bg_palettes::set_transparent_color(bn::color(31, 31, 31));
+    }
+    else
+    {
+        set_ui_backdrop();
+    }
     bool page_changed = false;
     if(scene != _last_scene)
     {
@@ -150,6 +158,7 @@ void UiShell::_rebuild(const UiController& controller, const SaveData& save)
 
     switch(controller.scene())
     {
+    case UiScene::PublisherSplash: _show_publisher_splash(); break;
     case UiScene::Title: _show_title(controller.language()); break;
     case UiScene::MainMenu: _show_root_menu(controller); break;
     case UiScene::OverwriteGameConfirm: _show_overwrite_confirm(controller); break;
@@ -177,6 +186,11 @@ void UiShell::_show_composite(const generated::UiCompositeAsset& asset, int x, i
         sprite.set_z_order(z_order);
         _sprites.push_back(sprite);
     }
+}
+
+void UiShell::_show_publisher_splash()
+{
+    _show_composite(generated::digital_chocolate_logo, 0, 0);
 }
 
 void UiShell::_show_title(int language)
@@ -262,10 +276,9 @@ void UiShell::_show_root_menu(const UiController& controller)
         case RootMenuItem::ContinueGame: _show_composite(generated::menu_continue_icon, -103, y); break;
         case RootMenuItem::BuildCity: _show_composite(generated::menu_build_city_icon, -103, y); break;
         case RootMenuItem::QuickGame: _show_composite(generated::menu_quick_game_icon, -103, y); break;
+        case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -103, y); break;
+        case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -103, y); break;
         case RootMenuItem::Settings: _show_composite(generated::menu_settings_icon, -103, y); break;
-        case RootMenuItem::HighScores:
-        case RootMenuItem::Instructions:
-            break;
         }
     }
 
@@ -275,8 +288,16 @@ void UiShell::_show_root_menu(const UiController& controller)
 
 void UiShell::_show_overwrite_confirm(const UiController& controller)
 {
+    _show_dialog_backdrop();
     const int language = controller.language();
-    _text_generator.generate(0, -40, generated::localized_strings[language][118], _sprites);
+    const int line_count = generated::overwrite_game_confirmation_lines_line_counts[language];
+    int y = -50;
+    for(int index = 0; index < line_count; ++index)
+    {
+        _text_generator.generate(
+                0, y, generated::overwrite_game_confirmation_lines[language][index], _sprites);
+        y += 16;
+    }
     _show_confirmation_options(controller);
     _show_softkeys(language, true, true);
 }
@@ -294,6 +315,11 @@ void UiShell::_show_settings(const UiController& controller)
             generated::localized_strings[language][controller.sound_enabled() ? 13 : 14], _sprites);
     _text_generator.generate(70, 12, generated::locale_names[language], _sprites);
     _show_softkeys(language, true, true);
+}
+
+void UiShell::_show_dialog_backdrop()
+{
+    _show_composite(generated::dialog_window, 0, 0, dialog_backdrop_z_order);
 }
 
 void UiShell::_show_confirmation_options(const UiController& controller)
@@ -320,6 +346,7 @@ void UiShell::_show_confirmation_options(const UiController& controller)
 
 void UiShell::_show_reset_city_confirm(const UiController& controller)
 {
+    _show_dialog_backdrop();
     const int language = controller.language();
     const int line_count = generated::reset_city_confirmation_lines_line_counts[language];
     int y = -58;
@@ -365,6 +392,7 @@ void UiShell::_show_high_score_table(const UiController& controller, const SaveD
 
 void UiShell::_show_clear_high_scores_confirm(const UiController& controller)
 {
+    _show_dialog_backdrop();
     const int language = controller.language();
     _text_generator.generate(0, -40, generated::localized_strings[language][130], _sprites);
     _show_confirmation_options(controller);
@@ -463,9 +491,14 @@ void UiShell::_show_lines(const char* const* lines, int line_count, int page)
         _text_generator.generate(0, y, lines[index], _sprites);
         y += 16;
     }
-    if(page_count(line_count) > 1)
+    const int pages = page_count(line_count);
+    if(page > 0)
     {
-        _text_generator.generate(0, 66, "<  >", _sprites);
+        _show_composite(generated::support_nav_f0, 112, -68);
+    }
+    if(page + 1 < pages)
+    {
+        _show_composite(generated::support_nav_f1, 112, 52);
     }
 }
 

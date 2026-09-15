@@ -25,6 +25,19 @@ from .resources import read_resource
 
 BUTANO_VERSION = "21.7.1"
 
+TUMBLE_MESH_IDS = (10, 11, 12, 13, 20, 21, 22, 23)
+TUMBLE_STAGE_COUNT = 12
+
+def tumble_pose_angles(stage: int, z_negative: bool, y_negative: bool) -> tuple[float, float]:
+    if stage < 0:
+        stage = 0
+    elif stage > TUMBLE_STAGE_COUNT:
+        stage = TUMBLE_STAGE_COUNT
+    y_magnitude = float(stage * 5)
+    z_magnitude = 45.0 * float(stage) / float(TUMBLE_STAGE_COUNT)
+    return (-z_magnitude if z_negative else z_magnitude,
+            -y_magnitude if y_negative else y_magnitude)
+
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -167,6 +180,52 @@ def _share_mesh_family_palette(
 
 
 
+def _share_bpp8_asset_palette(graphics_dir: Path, asset_names: tuple[str, ...]) -> int:
+    if not asset_names:
+        raise ValueError("shared gameplay BPP8 palette group must not be empty")
+
+    opaque: list[int] = []
+    seen: set[int] = set()
+    sources: list[tuple[str, Image.Image, tuple[int, ...]]] = []
+    for asset_name in asset_names:
+        bmp_path = graphics_dir / f"{asset_name}.bmp"
+        metadata_path = graphics_dir / f"{asset_name}.json"
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        old_bpp = 4 if metadata.get("bpp_mode") == "bpp_4" else 8
+        image, palette = _read_indexed_asset(bmp_path, old_bpp)
+        used = set(image.get_flattened_data())
+        for index in sorted(used):
+            if index == 0:
+                continue
+            color = palette[index]
+            if color not in seen:
+                seen.add(color)
+                opaque.append(color)
+        sources.append((asset_name, image.copy(), palette))
+        image.close()
+
+    if len(opaque) > 255:
+        raise ValueError(f"shared gameplay BPP8 palette needs {len(opaque)} opaque colors")
+    exact_entries = 1 + len(opaque)
+    colors_count = ((exact_entries + 15) // 16) * 16
+    canonical = (0, *opaque)
+    color_to_index = {color: index + 1 for index, color in enumerate(opaque)}
+
+    for asset_name, image, old_palette in sources:
+        remapped = bytearray(image.width * image.height)
+        for offset, old_index in enumerate(image.get_flattened_data()):
+            if old_index:
+                remapped[offset] = color_to_index[old_palette[old_index]]
+        _write_indexed_bmp(
+            graphics_dir / f"{asset_name}.bmp", image.width, image.height, bytes(remapped), canonical, 8
+        )
+        _write_json(
+            graphics_dir / f"{asset_name}.json",
+            {"bpp_mode": "bpp_8", "colors_count": colors_count, "type": "sprite"},
+        )
+    return colors_count
+
+
 def _share_bpp4_asset_palette(graphics_dir: Path, asset_names: tuple[str, ...]) -> int:
     if not asset_names:
         raise ValueError("shared gameplay palette group must not be empty")
@@ -229,10 +288,14 @@ def _asset_name(mesh_id: int, part_index: int) -> str:
 def _crane_hook_asset_name(frame_index: int, part_index: int) -> str:
     return f"crane_hook_pose_{frame_index:02d}_p{part_index}"
 
+def _tumble_asset_name(mesh_id: int, combo: int, stage: int, part_index: int) -> str:
+    return f"tumble_m{mesh_id:03d}_c{combo}_s{stage:02d}_p{part_index}"
+
 
 def _header(
     composites: list[SpriteComposite],
     crane_hook_frames: list[tuple[int, SpriteComposite]],
+    tumble_poses: list[tuple[int, int, bool, bool, SpriteComposite]],
 ) -> str:
     names = [
         _asset_name(composite.mesh_id, part_index)
@@ -242,6 +305,11 @@ def _header(
     names.extend(
         _crane_hook_asset_name(frame_index, part_index)
         for frame_index, (_step, composite) in enumerate(crane_hook_frames)
+        for part_index, _part in enumerate(composite.parts)
+    )
+    names.extend(
+        _tumble_asset_name(mesh_id, (2 if z_negative else 0) + (1 if y_negative else 0), stage, part_index)
+        for mesh_id, stage, z_negative, y_negative, composite in tumble_poses
         for part_index, _part in enumerate(composite.parts)
     )
     lines = [
@@ -317,6 +385,76 @@ def _header(
         "        step = 24;",
         "    }",
         "    return crane_hook_frames[step + 24];",
+        "}",
+        "",
+    ])
+
+    lines.extend([
+        "struct TumblePoseAsset",
+        "{",
+        "    int16_t mesh_id;",
+        "    int8_t stage;",
+        "    bool z_negative;",
+        "    bool y_negative;",
+        "    const MeshPartAsset* parts;",
+        "    int16_t part_count;",
+        "};",
+        "",
+    ])
+    for pose_index, (mesh_id, stage, z_negative, y_negative, composite) in enumerate(tumble_poses):
+        combo = (2 if z_negative else 0) + (1 if y_negative else 0)
+        base = f"tumble_m{mesh_id:03d}_c{combo}_s{stage:02d}"
+        lines.append(f"inline const MeshPartAsset {base}_parts[] = {{")
+        for part_index, part in enumerate(composite.parts):
+            name = _tumble_asset_name(mesh_id, combo, stage, part_index)
+            x = part.source_x + part.width // 2 - composite.canvas_width // 2
+            y = part.source_y + part.height // 2 - composite.canvas_height // 2
+            lines.append(f"    {{ &bn::sprite_items::{name}, {x}, {y} }},")
+        lines.extend(["};", ""])
+
+    lines.append("inline const TumblePoseAsset tumble_poses[] = {")
+    for mesh_id, stage, z_negative, y_negative, composite in tumble_poses:
+        combo = (2 if z_negative else 0) + (1 if y_negative else 0)
+        base = f"tumble_m{mesh_id:03d}_c{combo}_s{stage:02d}"
+        lines.append(
+            f"    {{ {mesh_id}, {stage}, {'true' if z_negative else 'false'}, "
+            f"{'true' if y_negative else 'false'}, {base}_parts, {len(composite.parts)} }},"
+        )
+    lines.extend([
+        "};",
+        f"inline constexpr int tumble_pose_count = {len(tumble_poses)};",
+        "",
+        "inline int tumble_stage_for_y_angle(int y_angle_degrees)",
+        "{",
+        "    if(y_angle_degrees < 0)",
+        "    {",
+        "        y_angle_degrees = -y_angle_degrees;",
+        "    }",
+        "    int stage = (y_angle_degrees + 2) / 5;",
+        "    if(stage > 12) { stage = 12; }",
+        "    return stage;",
+        "}",
+        "",
+        "inline bool tumble_pose_available(int mesh_id)",
+        "{",
+        "    return (mesh_id >= 10 && mesh_id <= 13) || (mesh_id >= 20 && mesh_id <= 23);",
+        "}",
+        "",
+        "inline const TumblePoseAsset& tumble_pose_for(int mesh_id, int stage, bool z_negative, bool y_negative)",
+        "{",
+        "    int mesh_index = 0;",
+        "    if(mesh_id >= 10 && mesh_id <= 13)",
+        "    {",
+        "        mesh_index = mesh_id - 10;",
+        "    }",
+        "    else if(mesh_id >= 20 && mesh_id <= 23)",
+        "    {",
+        "        mesh_index = 4 + mesh_id - 20;",
+        "    }",
+        "    if(stage < 1) { stage = 1; }",
+        "    if(stage > 12) { stage = 12; }",
+        "    const int combo = (z_negative ? 2 : 0) + (y_negative ? 1 : 0);",
+        "    return tumble_poses[(mesh_index * 4 + combo) * 12 + (stage - 1)];",
         "}",
         "",
     ])
@@ -478,6 +616,64 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
     for record in crane_hook_records:
         record["palette_entries"] = crane_hook_palette_entries
 
+    # Fix 15.2: bake the bad-placement secondary Y tumble through the same
+    # M3G renderer as the source. Z and Y are applied around one shared origin
+    # before projection. Five-degree Y stages keep the ROM cost bounded.
+    tumble_poses: list[tuple[int, int, bool, bool, SpriteComposite]] = []
+    tumble_records: list[dict[str, object]] = []
+    tumble_assets_by_mesh: dict[int, list[str]] = {mesh_id: [] for mesh_id in TUMBLE_MESH_IDS}
+    for mesh_id in TUMBLE_MESH_IDS:
+        mesh = resolve_mesh(scene, mesh_id)
+        textures: dict[int, TextureRGBA] = {}
+        for submesh in mesh.submeshes:
+            image_index = submesh.image_index
+            if image_index is not None and image_index not in textures:
+                width, height, rgba = decode_image_rgba(scene, image_index)
+                textures[image_index] = TextureRGBA(width, height, rgba)
+        for z_negative in (False, True):
+            for y_negative in (False, True):
+                combo = (2 if z_negative else 0) + (1 if y_negative else 0)
+                for stage in range(1, 13):
+                    z_angle, y_angle = tumble_pose_angles(stage, z_negative, y_negative)
+                    draw_transform = post_rotate(
+                        identity_matrix(), z_angle, 0.0, 0.0, 1.0
+                    )
+                    draw_transform = post_rotate(draw_transform, y_angle, 0.0, 1.0, 0.0)
+                    frame = render_mesh_reference(
+                        mesh, camera=camera, textures=textures, draw_transform=draw_transform
+                    )
+                    render = Image.frombytes("RGBA", (camera.width, camera.height), frame.rgba)
+                    composite = slice_sprite(render, 10000 + len(tumble_poses))
+                    tumble_poses.append((mesh_id, stage, z_negative, y_negative, composite))
+                    part_records: list[dict[str, object]] = []
+                    for part_index, part in enumerate(composite.parts):
+                        name = _tumble_asset_name(mesh_id, combo, stage, part_index)
+                        tumble_assets_by_mesh[mesh_id].append(name)
+                        _write_indexed_bmp(
+                            graphics_dir / f"{name}.bmp", part.width, part.height, part.indices,
+                            composite.palette_bgr555, composite.bpp
+                        )
+                        _write_json(
+                            graphics_dir / f"{name}.json",
+                            {"bpp_mode": f"bpp_{composite.bpp}", "type": "sprite"},
+                        )
+                        part_records.append({
+                            "asset": name,
+                            "source_x": part.source_x,
+                            "source_y": part.source_y,
+                            "width": part.width,
+                            "height": part.height,
+                            "screen_x": part.source_x + part.width // 2 - composite.canvas_width // 2,
+                            "screen_y": part.source_y + part.height // 2 - composite.canvas_height // 2,
+                        })
+                    tumble_records.append({
+                        "mesh_id": mesh_id, "stage": stage,
+                        "z_negative": z_negative, "y_negative": y_negative,
+                        "z_angle_degrees": z_angle, "y_angle_degrees": y_angle,
+                        "bbox": list(composite.bbox), "bpp": composite.bpp,
+                        "palette_entries": len(composite.palette_bgr555), "parts": part_records,
+                    })
+
     # Floor, initial/base floor, normal roof and trophy roof from one tower
     # family can be live simultaneously. They must share the same partial
     # BPP8 OBJ palette; otherwise the GBA has only one incompatible BPP8
@@ -485,6 +681,21 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
     # family because the first landed floor persists under later floors.
     for family in ((10, 20, 30, 40), (11, 21, 31, 41), (12, 22, 32, 42), (13, 23, 33, 43)):
         _share_mesh_family_palette(graphics_dir, mesh_records, family)
+        family_asset_names: list[str] = []
+        for family_mesh_id in family:
+            record = next(record for record in mesh_records if record["mesh_id"] == family_mesh_id)
+            family_asset_names.extend(str(part["asset"]) for part in record["parts"])
+        family_asset_names.extend(tumble_assets_by_mesh[family[0]])
+        family_asset_names.extend(tumble_assets_by_mesh[family[1]])
+        colors_count = _share_bpp8_asset_palette(graphics_dir, tuple(family_asset_names))
+        for family_mesh_id in family:
+            record = next(record for record in mesh_records if record["mesh_id"] == family_mesh_id)
+            record["bpp"] = 8
+            record["palette_entries"] = colors_count
+        for record in tumble_records:
+            if record["mesh_id"] in (family[0], family[1]):
+                record["bpp"] = 8
+                record["palette_entries"] = colors_count
 
     # Fix 13's special cable is a generated gameplay asset too. Recreate it
     # after the clean graphics-directory reset, then share mesh 7's exact BPP4
@@ -497,7 +708,7 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
     )
 
     header_path = include_dir / "tower_mesh_assets.h"
-    header_path.write_text(_header(composites, crane_hook_frames), encoding="utf-8", newline="\n")
+    header_path.write_text(_header(composites, crane_hook_frames, tumble_poses), encoding="utf-8", newline="\n")
 
     tracked_files = sorted([
         *graphics_dir.glob("*.bmp"),
@@ -529,6 +740,9 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
         "meshes": mesh_records,
         "crane_hook_frames": crane_hook_records,
         "crane_hook_palette_entries": crane_hook_palette_entries,
+        "tumble_pose_stage_degrees": 5,
+        "tumble_pose_count": len(tumble_poses),
+        "tumble_poses": tumble_records,
         "files": files,
         "tree_hash": tree_digest.hexdigest(),
     }

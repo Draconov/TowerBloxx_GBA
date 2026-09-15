@@ -51,6 +51,7 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert manifest_a["font_graphics_count"] == 94 + len(EXPECTED_EXTENDED)
     assert manifest_a["source_resources"] == {
         "font_atlas": 36, "font_metrics": 44, "tower_logo": 7, "sumea_logo": 10,
+        "support_nav": 1, "digital_chocolate_logo": 9,
         "menu_icons": [2, 3, 4, 5, 6], "menu_workers": [11, 12],
         "construction_target_badges": 13, "hud_white_digits": 14,
         "hud_brown_digits": 15, "hud_red_digits": 16, "hud_status_graphic": 17,
@@ -111,12 +112,13 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert logo_files
     assert sumea_files
     assert manifest_a["procedural_assets"] == [
-        "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
+        "dialog_window", "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
         "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
         "city_type_badge_3", "city_type_badge_4",
     ]
     assert {record["name"] for record in manifest_a["menu_assets"]["icons"]} == {
         "menu_continue_icon", "menu_build_city_icon", "menu_quick_game_icon",
+        "menu_high_scores_icon", "menu_instructions_icon",
         "menu_settings_icon", "menu_exit_icon",
     }
     assert len(manifest_a["menu_assets"]["worker_blue_frames"]) == 10

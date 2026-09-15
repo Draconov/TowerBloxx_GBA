@@ -66,5 +66,55 @@ int main()
         assert(frame >= 2 && frame <= 5);
     }
 
+
+    // Source m.class q/r/s population roll: the changed suffix length is
+    // determined by the highest decimal place whose quotient changed.
+    assert(tb::build_city_changed_population_cells(12345, 12346) == 1);
+    assert(tb::build_city_changed_population_cells(12349, 12350) == 2);
+    assert(tb::build_city_changed_population_cells(12999, 13000) == 4);
+    assert(tb::build_city_changed_population_cells(9999, 10000) == 5);
+    assert(tb::build_city_changed_population_cells(500, 500) == 0);
+
+    tb::BuildCityPopulationRoll roll;
+    roll.reset();
+    roll.start(99, 100);
+    assert(roll.animating());
+    assert(roll.changed_cells() == 3);
+    assert(roll.panel_state_for_cell(1) == 0);
+    assert(roll.panel_state_for_cell(2) == 0);
+    assert(roll.panel_state_for_cell(3) == 0);
+    assert(roll.panel_state_for_cell(4) == 0);
+    assert(roll.panel_state_for_cell(5) == 3);
+    roll.update(16);
+    assert(roll.panel_state() == 1);
+    assert(roll.panel_state_for_cell(2) == 1);
+    assert(roll.panel_state_for_cell(3) == 1);
+    assert(roll.panel_state_for_cell(4) == 1);
+    roll.update(16);
+    assert(roll.panel_state() == 2);
+    roll.update(269); // timer crosses below zero: one rolling cell completes.
+    assert(roll.changed_cells() == 2);
+    assert(roll.timer_ms() == 300);
+
+    // Decreases use the red digit strip only during the 1199ms tail, blinking
+    // 200ms on / 200ms off exactly like m.a(Graphics, boolean).
+    roll.reset();
+    roll.start(1000, 999);
+    assert(roll.decreasing());
+    // Four changed cells, one 300ms phase each.
+    for(int cell = 0; cell < 4; ++cell)
+    {
+        roll.update(301);
+    }
+    assert(roll.changed_cells() == 0);
+    assert(roll.timer_ms() == 1199);
+    assert(! roll.use_red_digits()); // 1199 % 400 = 399.
+    roll.update(200);                 // 999 % 400 = 199.
+    assert(roll.use_red_digits());
+    roll.update(200);                 // 799 % 400 = 399.
+    assert(! roll.use_red_digits());
+    roll.update(800);
+    assert(! roll.animating());
+
     std::cout << "build city visuals ok\n";
 }

@@ -57,7 +57,7 @@ def test_construction_background_uses_recovered_nokia_layers(tower_bloxx_jar: Pa
 
 
 def test_city_background_matches_recovered_build_city_compositor() -> None:
-    image = render_city_background()
+    image = render_city_background(0)
     assert image.size == (240, 160)
     assert image.mode == "RGBA"
 
@@ -84,13 +84,34 @@ def test_city_background_matches_recovered_build_city_compositor() -> None:
     assert image.getpixel((213, 1))[:3] == (199, 191, 178)
 
 
+
+def test_city_background_exports_all_four_source_lot_themes() -> None:
+    expected = (
+        ((0x78, 0xBC, 0x28), (0x43, 0x78, 0x17)),
+        ((0x7F, 0xAF, 0x46), (0x50, 0x6E, 0x37)),
+        ((0x84, 0xA5, 0x5D), (0x58, 0x69, 0x50)),
+        ((0x8A, 0x9C, 0x74), (0x62, 0x61, 0x6A)),
+    )
+    for theme, (outer, inner) in enumerate(expected):
+        image = render_city_background(theme)
+        assert image.getpixel((92, 35))[:3] == outer
+        assert image.getpixel((93, 36))[:3] == inner
+        assert image.getpixel((94, 37))[:3] == outer
+        # Road/board geometry stays unchanged across themes.
+        assert image.getpixel((90, 33))[:3] == (64, 64, 64)
+        assert image.getpixel((120, 136))[:3] == (90, 142, 255)
+
+
 def test_export_scene_backgrounds_writes_butano_regular_bg_assets(
     tower_bloxx_jar: Path, tmp_path: Path
 ) -> None:
     manifest = export_scene_backgrounds(tower_bloxx_jar, tmp_path)
     assert manifest["visible_size"] == [240, 160]
     assert manifest["asset_size"] == [256, 256]
-    assert manifest["assets"] == ["construction_bg", "city_bg", "menu_bg"]
+    assert manifest["assets"] == [
+        "construction_bg", "city_bg_theme_0", "city_bg_theme_1",
+        "city_bg_theme_2", "city_bg_theme_3", "menu_bg",
+    ]
 
     graphics = tmp_path / "gba" / "graphics" / "backgrounds"
     for name in manifest["assets"]:
@@ -98,3 +119,17 @@ def test_export_scene_backgrounds_writes_butano_regular_bg_assets(
         assert bmp.size == (256, 256)
         metadata = json.loads((graphics / f"{name}.json").read_text())
         assert metadata["type"] == "regular_bg"
+
+
+def test_scene_background_export_removes_legacy_single_city_background(
+    tower_bloxx_jar: Path, tmp_path: Path
+) -> None:
+    graphics = tmp_path / "gba" / "graphics" / "backgrounds"
+    graphics.mkdir(parents=True)
+    (graphics / "city_bg.bmp").write_bytes(b"legacy")
+    (graphics / "city_bg.json").write_text("legacy")
+
+    export_scene_backgrounds(tower_bloxx_jar, tmp_path)
+
+    assert not (graphics / "city_bg.bmp").exists()
+    assert not (graphics / "city_bg.json").exists()

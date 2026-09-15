@@ -12,6 +12,7 @@
 #include "generated/tower_ui_assets.h"
 #include "tb/build_city.h"
 #include "tb/build_city_events.h"
+#include "tb/build_city_visuals.h"
 
 namespace tb
 {
@@ -41,7 +42,8 @@ public:
 private:
     void _stop();
     void _rebuild(const SaveData& save);
-    void _show_composite(const generated::UiCompositeAsset& asset, int x, int y);
+    void _show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order = 0);
+    void _show_modal_backdrop(int left, int top, int columns, int rows);
     void _show_city_tiles(const SaveData& save, const BuildCitySnapshot& snapshot);
     void _show_valid_lot_ring(
             int screen_x, int screen_y, bn::optional<bn::sprite_palette_ptr>& valid_lot_palette);
@@ -54,11 +56,14 @@ private:
     BuildCityProgressState _committed_progress{};
     bn::optional<bn::regular_bg_ptr> _background;
     bn::sprite_text_generator _text_generator;
-    bn::vector<bn::sprite_ptr, 256> _sprites;
+    bn::vector<bn::sprite_ptr, 384> _sprites;
     int _language = 0;
     int _frame_phase = 0;
     int _placement_flash_ms = 0;
     int _selector_flash_ms = 0;
+    BuildCityPopulationRoll _population_roll;
+    int _display_population = 0;
+    int _rendered_city_theme = -1;
     BuildCitySnapshot _last_snapshot{};
     bool _has_snapshot = false;
     bool _active = false;

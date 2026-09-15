@@ -25,6 +25,7 @@ public:
 
 private:
     void _rebuild(const UiController& controller, const SaveData& save);
+    void _show_publisher_splash();
     void _show_title(int language);
     void _show_root_menu(const UiController& controller);
     void _show_overwrite_confirm(const UiController& controller);
@@ -40,6 +41,7 @@ private:
     void _show_name_entry(const UiController& controller);
     void _show_softkeys(int language, bool select, bool back);
     void _show_confirmation_options(const UiController& controller);
+    void _show_dialog_backdrop();
     void _show_menu(const char* const* labels, int count, int selection);
     void _show_menu_workers();
     void _show_lines(const char* const* lines, int line_count, int page);

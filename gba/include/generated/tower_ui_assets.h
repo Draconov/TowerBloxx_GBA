@@ -4,7 +4,17 @@
 #include <cstdint>
 #include "bn_sprite_items_tower_bloxx_logo_p0.h"
 #include "bn_sprite_items_tower_bloxx_logo_p1.h"
+#include "bn_sprite_items_digital_chocolate_logo_p0.h"
+#include "bn_sprite_items_digital_chocolate_logo_p1.h"
 #include "bn_sprite_items_sumea_logo_p0.h"
+#include "bn_sprite_items_dialog_window_p0.h"
+#include "bn_sprite_items_dialog_window_p1.h"
+#include "bn_sprite_items_dialog_window_p2.h"
+#include "bn_sprite_items_dialog_window_p3.h"
+#include "bn_sprite_items_dialog_window_p4.h"
+#include "bn_sprite_items_dialog_window_p5.h"
+#include "bn_sprite_items_dialog_window_p6.h"
+#include "bn_sprite_items_dialog_window_p7.h"
 #include "bn_sprite_items_menu_highlight_p0.h"
 #include "bn_sprite_items_menu_highlight_p1.h"
 #include "bn_sprite_items_menu_highlight_p2.h"
@@ -13,6 +23,9 @@
 #include "bn_sprite_items_city_valid_lot_ring_p0.h"
 #include "bn_sprite_items_city_selector_active_slot_p0.h"
 #include "bn_sprite_items_city_comparison_panel_active_p0.h"
+#include "bn_sprite_items_support_nav_f0_p0.h"
+#include "bn_sprite_items_support_nav_f1_p0.h"
+#include "bn_sprite_items_support_nav_f2_p0.h"
 #include "bn_sprite_items_city_progress_tail_f1_p0.h"
 #include "bn_sprite_items_city_progress_tail_f2_p0.h"
 #include "bn_sprite_items_city_progress_tail_f3_p0.h"
@@ -29,6 +42,8 @@
 #include "bn_sprite_items_menu_quick_game_icon_p0.h"
 #include "bn_sprite_items_menu_settings_icon_p0.h"
 #include "bn_sprite_items_menu_exit_icon_p0.h"
+#include "bn_sprite_items_menu_high_scores_icon_p0.h"
+#include "bn_sprite_items_menu_instructions_icon_p0.h"
 #include "bn_sprite_items_menu_worker_blue_f0_p0.h"
 #include "bn_sprite_items_menu_worker_blue_f0_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f1_p0.h"
@@ -214,10 +229,28 @@ inline const UiSpritePartAsset tower_bloxx_logo_parts[] = {
 };
 inline const UiCompositeAsset tower_bloxx_logo = { tower_bloxx_logo_parts, 2 };
 
+inline const UiSpritePartAsset digital_chocolate_logo_parts[] = {
+    { &bn::sprite_items::digital_chocolate_logo_p0, -4, 0 },
+    { &bn::sprite_items::digital_chocolate_logo_p1, 36, 0 },
+};
+inline const UiCompositeAsset digital_chocolate_logo = { digital_chocolate_logo_parts, 2 };
+
 inline const UiSpritePartAsset sumea_logo_parts[] = {
     { &bn::sprite_items::sumea_logo_p0, 12, 11 },
 };
 inline const UiCompositeAsset sumea_logo = { sumea_logo_parts, 1 };
+
+inline const UiSpritePartAsset dialog_window_parts[] = {
+    { &bn::sprite_items::dialog_window_p0, -80, -24 },
+    { &bn::sprite_items::dialog_window_p1, -16, -24 },
+    { &bn::sprite_items::dialog_window_p2, 48, -24 },
+    { &bn::sprite_items::dialog_window_p3, 96, -24 },
+    { &bn::sprite_items::dialog_window_p4, -80, 40 },
+    { &bn::sprite_items::dialog_window_p5, -16, 40 },
+    { &bn::sprite_items::dialog_window_p6, 48, 40 },
+    { &bn::sprite_items::dialog_window_p7, 96, 40 },
+};
+inline const UiCompositeAsset dialog_window = { dialog_window_parts, 8 };
 
 inline const UiSpritePartAsset menu_highlight_parts[] = {
     { &bn::sprite_items::menu_highlight_p0, -83, 8 },
@@ -246,6 +279,21 @@ inline const UiSpritePartAsset city_comparison_panel_active_parts[] = {
     { &bn::sprite_items::city_comparison_panel_active_p0, 4, 4 },
 };
 inline const UiCompositeAsset city_comparison_panel_active = { city_comparison_panel_active_parts, 1 };
+
+inline const UiSpritePartAsset support_nav_f0_parts[] = {
+    { &bn::sprite_items::support_nav_f0_p0, 0, 0 },
+};
+inline const UiCompositeAsset support_nav_f0 = { support_nav_f0_parts, 1 };
+
+inline const UiSpritePartAsset support_nav_f1_parts[] = {
+    { &bn::sprite_items::support_nav_f1_p0, 0, 3 },
+};
+inline const UiCompositeAsset support_nav_f1 = { support_nav_f1_parts, 1 };
+
+inline const UiSpritePartAsset support_nav_f2_parts[] = {
+    { &bn::sprite_items::support_nav_f2_p0, 0, 0 },
+};
+inline const UiCompositeAsset support_nav_f2 = { support_nav_f2_parts, 1 };
 
 inline const UiSpritePartAsset city_progress_tail_f1_parts[] = {
     { &bn::sprite_items::city_progress_tail_f1_p0, 4, 4 },
@@ -326,6 +374,16 @@ inline const UiSpritePartAsset menu_exit_icon_parts[] = {
     { &bn::sprite_items::menu_exit_icon_p0, 5, 3 },
 };
 inline const UiCompositeAsset menu_exit_icon = { menu_exit_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_high_scores_icon_parts[] = {
+    { &bn::sprite_items::menu_high_scores_icon_p0, 3, 4 },
+};
+inline const UiCompositeAsset menu_high_scores_icon = { menu_high_scores_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_instructions_icon_parts[] = {
+    { &bn::sprite_items::menu_instructions_icon_p0, 2, 4 },
+};
+inline const UiCompositeAsset menu_instructions_icon = { menu_instructions_icon_parts, 1 };
 
 inline const UiSpritePartAsset menu_worker_blue_f0_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f0_p0, 1, 3 },

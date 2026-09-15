@@ -51,6 +51,7 @@ private:
     [[nodiscard]] GameplayWorkerWorld _worker_world(const TowerConstructionSnapshot& snapshot) const;
     void _rebuild_worker_sprites(const TowerConstructionSnapshot& snapshot);
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
+    void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
     [[nodiscard]] int _normal_floor_mesh_id() const;
     [[nodiscard]] int _initial_base_mesh_id() const;
@@ -71,13 +72,16 @@ private:
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
     bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
-    bn::vector<bn::sprite_ptr, 96> _hud_sprites;
+    bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
     int _visible_floor_start = 0;
     int _rendered_current_mesh_id = -1;
+    int _rendered_tumble_stage = 0;
+    bool _rendered_tumble_z_negative = false;
+    bool _rendered_tumble_y_negative = false;
     int _rendered_crane_mesh_id = -1;
     int _rendered_crane_rotation_step = 999;
     int _last_hud_floor_count = -1;

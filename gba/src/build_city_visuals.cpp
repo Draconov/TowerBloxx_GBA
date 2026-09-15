@@ -85,4 +85,112 @@ int build_city_placement_effect_frame(bool replacing, int placement_timer_ms)
     }
     return 5 - (4 * local_timer / 750);
 }
+
+int build_city_changed_population_cells(int old_population, int new_population)
+{
+    if(old_population / 10000 != new_population / 10000)
+    {
+        return 5;
+    }
+    if(old_population / 1000 != new_population / 1000)
+    {
+        return 4;
+    }
+    if(old_population / 100 != new_population / 100)
+    {
+        return 3;
+    }
+    if(old_population / 10 != new_population / 10)
+    {
+        return 2;
+    }
+    return old_population != new_population ? 1 : 0;
+}
+
+void BuildCityPopulationRoll::reset()
+{
+    _timer_ms = -1;
+    _panel_state = 0;
+    _changed_cells = 0;
+    _decreasing = false;
+}
+
+void BuildCityPopulationRoll::start(int old_population, int new_population)
+{
+    _changed_cells = build_city_changed_population_cells(old_population, new_population);
+    _panel_state = 0;
+    _decreasing = new_population < old_population;
+    _timer_ms = _changed_cells > 0 ? 300 : -1;
+}
+
+void BuildCityPopulationRoll::update(int delta_ms)
+{
+    if(_timer_ms < 0)
+    {
+        return;
+    }
+    if(delta_ms < 0)
+    {
+        delta_ms = 0;
+    }
+
+    _timer_ms -= delta_ms;
+    if(_changed_cells > 0)
+    {
+        _panel_state = (_panel_state % 2) + 1;
+        if(_timer_ms < 0)
+        {
+            --_changed_cells;
+            _timer_ms = _changed_cells > 0 ? 300 : 1199;
+        }
+    }
+    else if(_timer_ms < 0)
+    {
+        reset();
+    }
+}
+
+bool BuildCityPopulationRoll::animating() const
+{
+    return _timer_ms >= 0;
+}
+
+bool BuildCityPopulationRoll::decreasing() const
+{
+    return _decreasing;
+}
+
+int BuildCityPopulationRoll::changed_cells() const
+{
+    return _changed_cells;
+}
+
+int BuildCityPopulationRoll::timer_ms() const
+{
+    return _timer_ms;
+}
+
+int BuildCityPopulationRoll::panel_state() const
+{
+    return _panel_state;
+}
+
+int BuildCityPopulationRoll::panel_state_for_cell(int cell_index) const
+{
+    if(cell_index == 5)
+    {
+        return 3;
+    }
+    if(cell_index < 0 || cell_index > 4)
+    {
+        return 0;
+    }
+    return 5 - cell_index <= _changed_cells ? _panel_state : 0;
+}
+
+bool BuildCityPopulationRoll::use_red_digits() const
+{
+    return _decreasing && _changed_cells == 0 && _timer_ms >= 0 && (_timer_ms % 400) < 200;
+}
+
 }

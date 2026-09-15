@@ -1,6 +1,5 @@
 #include "tb/game_audio.h"
 
-#include "bn_jingle.h"
 #include "bn_music.h"
 #include "bn_music_items.h"
 
@@ -10,22 +9,37 @@ void GameAudio::update(bool enabled, AudioScene scene)
 {
     if(! enabled)
     {
-        if(_enabled || _started)
+        if(_enabled || _started || _result_active)
         {
             bn::music::stop();
-            bn::jingle::stop();
         }
         _enabled = false;
         _started = false;
+        _result_active = false;
         _scene = scene;
         return;
     }
 
-    if(! _enabled || ! _started || scene != _scene)
+    const bool was_enabled = _enabled;
+    const bool scene_changed = scene != _scene;
+    _enabled = true;
+    _scene = scene;
+
+    // o.playerUpdate(): a finite result track owns the single J2ME player.
+    // Scene changes are remembered while it plays, but cannot interrupt it.
+    if(_result_active)
     {
-        _enabled = true;
-        _scene = scene;
-        _play_scene(scene);
+        if(bn::music::playing())
+        {
+            return;
+        }
+        _result_active = false;
+        _started = false;
+    }
+
+    if(! was_enabled || ! _started || scene_changed)
+    {
+        _play_scene(_scene);
         _started = true;
     }
 }
@@ -37,18 +51,22 @@ void GameAudio::play_construction_result(uint8_t roof)
         return;
     }
 
+    // House stops resource 38 before starting the finite 40/41/42 player.
+    bn::music::stop();
     if(roof == 2)
     {
-        bn::music_items::trophy_roof.play_jingle(0.5);
+        bn::music_items::trophy_roof.play(0.5, false);
     }
     else if(roof == 1)
     {
-        bn::music_items::normal_roof.play_jingle(0.5);
+        bn::music_items::normal_roof.play(0.5, false);
     }
     else
     {
-        bn::music_items::construction_fail.play_jingle(0.5);
+        bn::music_items::construction_fail.play(0.5, false);
     }
+    _result_active = true;
+    _started = false;
 }
 
 void GameAudio::_play_scene(AudioScene scene)

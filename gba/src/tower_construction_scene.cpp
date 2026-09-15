@@ -27,6 +27,11 @@ constexpr int fixed_units_per_floor = 256;
 constexpr int pixels_per_floor = 22;
 constexpr int world_screen_baseline_y = 0;
 
+constexpr int current_block_z_order = -20;
+constexpr int crane_mesh_z_order = -10;
+constexpr int special_cable_z_order = -5;
+constexpr int modal_backdrop_z_order = -90;
+
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
     &generated::menu_worker_blue_f2, &generated::menu_worker_blue_f3,
@@ -209,6 +214,7 @@ void TowerConstructionScene::start(
     _frame_phase = 0;
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
+    _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
     _last_hud_floor_count = -1;
@@ -375,6 +381,7 @@ void TowerConstructionScene::suspend_presentation()
     _worker_sprites.clear();
     _hud_sprites.clear();
     _rendered_current_mesh_id = -1;
+    _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
 }
@@ -390,6 +397,7 @@ void TowerConstructionScene::resume_presentation()
     _background->set_priority(3);
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
+    _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
     _last_hud_floor_count = -1;
@@ -448,14 +456,44 @@ void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSna
     const int mesh_id = snapshot.roof_phase ?
             (snapshot.trophy_eligible ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
             (snapshot.floor_count == 0 ? _initial_base_mesh_id() : _normal_floor_mesh_id());
-    if(mesh_id != _rendered_current_mesh_id)
+    int tumble_stage = generated::tumble_stage_for_y_angle(snapshot.current_y_angle_degrees);
+    if(! generated::tumble_pose_available(mesh_id))
     {
-        create_mesh_sprites(mesh_by_id(mesh_id), _current_sprites);
-        for(bn::sprite_ptr& sprite : _current_sprites)
+        tumble_stage = 0;
+    }
+    const bool z_negative = snapshot.current_z_angle_degrees < 0;
+    const bool y_negative = snapshot.current_y_angle_degrees < 0;
+    const bool presentation_changed = mesh_id != _rendered_current_mesh_id ||
+            tumble_stage != _rendered_tumble_stage ||
+            (tumble_stage > 0 && (z_negative != _rendered_tumble_z_negative ||
+                                  y_negative != _rendered_tumble_y_negative));
+    if(presentation_changed)
+    {
+        _current_sprites.clear();
+        if(tumble_stage > 0)
         {
-            sprite.set_affine_mat(_current_affine_mat);
+            const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
+                    mesh_id, tumble_stage, z_negative, y_negative);
+            for(int part_index = 0; part_index < pose.part_count; ++part_index)
+            {
+                bn::sprite_ptr sprite = pose.parts[part_index].item->create_sprite(0, 0);
+                sprite.set_z_order(current_block_z_order);
+                _current_sprites.push_back(sprite);
+            }
+        }
+        else
+        {
+            create_mesh_sprites(mesh_by_id(mesh_id), _current_sprites);
+            for(bn::sprite_ptr& sprite : _current_sprites)
+            {
+                sprite.set_affine_mat(_current_affine_mat);
+                sprite.set_z_order(current_block_z_order);
+            }
         }
         _rendered_current_mesh_id = mesh_id;
+        _rendered_tumble_stage = tumble_stage;
+        _rendered_tumble_z_negative = z_negative;
+        _rendered_tumble_y_negative = y_negative;
     }
 }
 
@@ -482,6 +520,10 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
         if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != special_crane_mesh_id)
         {
             create_mesh_sprites(mesh_by_id(special_crane_mesh_id), _crane_hook_sprites);
+            for(bn::sprite_ptr& sprite : _crane_hook_sprites)
+            {
+                sprite.set_z_order(crane_mesh_z_order);
+            }
             _rendered_crane_mesh_id = special_crane_mesh_id;
             _rendered_crane_rotation_step = 999;
         }
@@ -494,6 +536,10 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
        _rendered_crane_rotation_step != frame.rotation_step)
     {
         create_crane_hook_frame_sprites(frame, _crane_hook_sprites);
+        for(bn::sprite_ptr& sprite : _crane_hook_sprites)
+        {
+            sprite.set_z_order(crane_mesh_z_order);
+        }
         _rendered_crane_mesh_id = crane_hook_mesh_id;
         _rendered_crane_rotation_step = frame.rotation_step;
     }
@@ -523,7 +569,7 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
                 bn::fixed(start_x + end_x) / 2, bn::fixed(start_y + end_y) / 2);
         sprite.set_vertical_scale(bn::fixed(cable_length) / 64);
         sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));
-        sprite.set_z_order(1);
+        sprite.set_z_order(special_cable_z_order);
         _special_cable_sprites.push_back(sprite);
     }
 }
@@ -562,13 +608,27 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     }
     if(current_visible)
     {
-        const generated::MeshAsset& mesh = mesh_by_id(_rendered_current_mesh_id);
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
-        for(int part_index = 0; part_index < mesh.part_count; ++part_index)
+        if(_rendered_tumble_stage > 0)
         {
-            position_rotated_mesh_part(mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, snapshot.current_y_angle_degrees,
-                                       _current_affine_mat, _current_sprites[part_index]);
+            const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
+                    _rendered_current_mesh_id, _rendered_tumble_stage,
+                    _rendered_tumble_z_negative, _rendered_tumble_y_negative);
+            for(int part_index = 0; part_index < pose.part_count; ++part_index)
+            {
+                _current_sprites[part_index].set_position(
+                        x + pose.parts[part_index].x, y + pose.parts[part_index].y);
+            }
+        }
+        else
+        {
+            const generated::MeshAsset& mesh = mesh_by_id(_rendered_current_mesh_id);
+            for(int part_index = 0; part_index < mesh.part_count; ++part_index)
+            {
+                position_rotated_mesh_part(mesh.parts[part_index], x, y, snapshot.current_z_angle_degrees, 0,
+                                           _current_affine_mat, _current_sprites[part_index]);
+            }
         }
     }
 
@@ -725,6 +785,12 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     }
 }
 
+void TowerConstructionScene::_show_modal_backdrop(int line_count)
+{
+    (void) line_count;
+    show_ui_composite(generated::dialog_window, 0, 0, _hud_sprites, modal_backdrop_z_order);
+}
+
 void TowerConstructionScene::_show_modal(int localization_index)
 {
     const int modal_index = localization_index - generated::city_modal_min_string_index;
@@ -734,6 +800,7 @@ void TowerConstructionScene::_show_modal(int localization_index)
     }
 
     const int line_count = generated::city_modal_line_counts[_language][modal_index];
+    _show_modal_backdrop(line_count);
     int y = -((line_count - 1) * 10) / 2;
     for(int line = 0; line < line_count; ++line)
     {

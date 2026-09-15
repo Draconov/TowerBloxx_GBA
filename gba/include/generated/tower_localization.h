@@ -1185,6 +1185,37 @@ inline constexpr const char* reset_city_confirmation_lines[locale_count][3] = {
     },
 };
 
+inline constexpr int overwrite_game_confirmation_lines_max_lines = 2;
+inline constexpr int overwrite_game_confirmation_lines_line_counts[locale_count] = {
+    2,
+    1,
+    1,
+    1,
+    1,
+};
+inline constexpr const char* overwrite_game_confirmation_lines[locale_count][2] = {
+    {
+        "Starting a new game may end your current game.",
+        "Are you sure?",
+    },
+    {
+        "no translation",
+        "",
+    },
+    {
+        "no translation",
+        "",
+    },
+    {
+        "no translation",
+        "",
+    },
+    {
+        "no translation",
+        "",
+    },
+};
+
 inline constexpr int city_modal_min_string_index = 36;
 inline constexpr int city_modal_max_string_index = 60;
 inline constexpr int city_modal_string_count = 25;

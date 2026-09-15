@@ -8,7 +8,10 @@
 #include "bn_sprite_palette_ptr.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
-#include "bn_regular_bg_items_city_bg.h"
+#include "bn_regular_bg_items_city_bg_theme_0.h"
+#include "bn_regular_bg_items_city_bg_theme_1.h"
+#include "bn_regular_bg_items_city_bg_theme_2.h"
+#include "bn_regular_bg_items_city_bg_theme_3.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_ui_assets.h"
@@ -32,6 +35,7 @@ constexpr int selector_screen_top = grid_screen_top + 2;
 
 constexpr int building_widths[4] = {15, 16, 17, 19};
 constexpr int building_heights[4] = {14, 16, 17, 19};
+constexpr int modal_backdrop_z_order = -90;
 
 const generated::UiCompositeAsset* const building_assets[4][4] = {
     { &generated::city_building_1_f0, &generated::city_building_1_f1,
@@ -63,6 +67,19 @@ const generated::UiCompositeAsset* const brown_digits[10] = {
     &generated::hud_brown_digit_f7,
     &generated::hud_brown_digit_f8,
     &generated::hud_brown_digit_f9,
+};
+
+const generated::UiCompositeAsset* const red_digits[10] = {
+    &generated::hud_red_digit_f0,
+    &generated::hud_red_digit_f1,
+    &generated::hud_red_digit_f2,
+    &generated::hud_red_digit_f3,
+    &generated::hud_red_digit_f4,
+    &generated::hud_red_digit_f5,
+    &generated::hud_red_digit_f6,
+    &generated::hud_red_digit_f7,
+    &generated::hud_red_digit_f8,
+    &generated::hud_red_digit_f9,
 };
 
 const generated::UiCompositeAsset* const white_digits[10] = {
@@ -275,12 +292,17 @@ BuildCityScene::BuildCityScene(const SaveData& save) :
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
+    _text_generator.set_z_order(-100);
 }
 
 void BuildCityScene::start(const SaveData& save, int language)
 {
     set_city_backdrop();
     _city.reset_from_save(save);
+    const BuildCitySnapshot initial_snapshot = _city.snapshot();
+    _display_population = initial_snapshot.total_population;
+    _population_roll.reset();
+    _rendered_city_theme = -1;
     _events.clear_runtime();
     _committed_progress = progress_state(_city.snapshot());
     _events.on_city_entered(_committed_progress, save);
@@ -343,7 +365,13 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
     result.save_dirty = city_result.save_dirty;
     result.construction_requested = _city.construction_request().pending;
 
+    _population_roll.update(delta_ms);
     const BuildCitySnapshot snapshot = _city.snapshot();
+    if(snapshot.total_population != _display_population)
+    {
+        _population_roll.start(_display_population, snapshot.total_population);
+        _display_population = snapshot.total_population;
+    }
     if(city_result.placement_committed)
     {
         const BuildCityProgressState after = progress_state(snapshot);
@@ -378,8 +406,9 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
 
     const bool browse_animation = snapshot.mode == BuildCityMode::Browse;
     const bool placement_animation = snapshot.mode == BuildCityMode::Placement && ! snapshot.placement_committing;
+    const bool population_animation = _population_roll.animating();
     if(! _has_snapshot || snapshot_changed(snapshot, _last_snapshot) || city_result.save_dirty ||
-       result.construction_requested || _events.has_event() || browse_animation || placement_animation)
+       result.construction_requested || _events.has_event() || browse_animation || placement_animation || population_animation)
     {
         _rebuild(save);
     }
@@ -401,6 +430,7 @@ void BuildCityScene::clear_construction_request()
     _city.clear_construction_request();
     _sprites.clear();
     _background.reset();
+    _rendered_city_theme = -1;
     _has_snapshot = false;
 }
 
@@ -438,13 +468,24 @@ void BuildCityScene::_stop()
     _has_snapshot = false;
 }
 
-void BuildCityScene::_show_composite(const generated::UiCompositeAsset& asset, int x, int y)
+void BuildCityScene::_show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order)
 {
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        _sprites.push_back(part.item->create_sprite(x + part.x, y + part.y));
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(z_order);
+        _sprites.push_back(sprite);
     }
+}
+
+void BuildCityScene::_show_modal_backdrop(int left, int top, int columns, int rows)
+{
+    (void) left;
+    (void) top;
+    (void) columns;
+    (void) rows;
+    _show_composite(generated::dialog_window, 0, 0, modal_backdrop_z_order);
 }
 
 void BuildCityScene::_show_valid_lot_ring(
@@ -613,8 +654,12 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                 centered_y(cursor_canvas_top + 11));
     }
 
-    if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4 &&
-       ! snapshot.placement_committing)
+    const bool target_is_grid_cell = snapshot.cursor_column >= 0 && snapshot.cursor_row >= 0;
+    const bool replacing_existing_tile = target_is_grid_cell &&
+            save.city_tiles[snapshot.cursor_row * 5 + snapshot.cursor_column].type != 0;
+    const bool show_pending_building = snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4 &&
+            (! snapshot.placement_committing || ! replacing_existing_tile);
+    if(show_pending_building)
     {
         const int target_left = grid_screen_left + 5 + snapshot.cursor_column * grid_spacing;
         const int target_baseline = grid_screen_top + 15 + snapshot.cursor_row * grid_spacing;
@@ -689,18 +734,24 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // cells and state 3 for the terminal cap when no digit-roll is active.
     for(int cell = 0; cell < 6; ++cell)
     {
-        const int state = cell == 5 ? 3 : 0;
+        const int state = _population_roll.panel_state_for_cell(cell);
         _show_composite(*city_panel_states[state], centered_x(23 + cell * 8), centered_y(5));
     }
 
     int population = snapshot.total_population;
     if(population < 0) { population = 0; }
     if(population > 99999) { population = 99999; }
+    const generated::UiCompositeAsset* const* population_digits =
+            _population_roll.use_red_digits() ? red_digits : brown_digits;
+    const int visible_population_digits = 5 - _population_roll.changed_cells();
     int divisor = 10000;
     for(int index = 0; index < 5; ++index)
     {
         const int digit = (population / divisor) % 10;
-        _show_composite(*brown_digits[digit], centered_x(23 + index * 8), centered_y(5));
+        if(index < visible_population_digits)
+        {
+            _show_composite(*population_digits[digit], centered_x(23 + index * 8), centered_y(5));
+        }
         divisor /= 10;
     }
 
@@ -765,6 +816,8 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     }
 
     const int line_count = generated::city_modal_line_counts[_language][modal_index];
+    const int backdrop_rows = line_count <= 2 ? 4 : (line_count >= 6 ? 6 : 5);
+    _show_modal_backdrop(8, 32, 7, backdrop_rows);
     int y = -((line_count - 1) * 10) / 2;
     for(int line = 0; line < line_count; ++line)
     {
@@ -773,18 +826,36 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
         _text_generator.generate(0, y, formatted, _sprites);
         y += 10;
     }
-    _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152));
+    _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);
 }
 
 void BuildCityScene::_rebuild(const SaveData& save)
 {
-    if(! _background)
+    const BuildCitySnapshot snapshot = _city.snapshot();
+    int city_theme = snapshot.max_unlocked_building_type - 1;
+    if(city_theme < 0) { city_theme = 0; }
+    if(city_theme > 3) { city_theme = 3; }
+    if(! _background || city_theme != _rendered_city_theme)
     {
-        _background = bn::regular_bg_items::city_bg.create_bg(0, 0);
+        switch(city_theme)
+        {
+        case 1:
+            _background = bn::regular_bg_items::city_bg_theme_1.create_bg(0, 0);
+            break;
+        case 2:
+            _background = bn::regular_bg_items::city_bg_theme_2.create_bg(0, 0);
+            break;
+        case 3:
+            _background = bn::regular_bg_items::city_bg_theme_3.create_bg(0, 0);
+            break;
+        default:
+            _background = bn::regular_bg_items::city_bg_theme_0.create_bg(0, 0);
+            break;
+        }
         _background->set_priority(3);
+        _rendered_city_theme = city_theme;
     }
     _sprites.clear();
-    const BuildCitySnapshot snapshot = _city.snapshot();
     _show_city_tiles(save, snapshot);
     _show_status(save, snapshot);
     if(_events.has_event())

@@ -5,18 +5,51 @@
   ],
   "assets": [
     "construction_bg",
-    "city_bg",
+    "city_bg_theme_0",
+    "city_bg_theme_1",
+    "city_bg_theme_2",
+    "city_bg_theme_3",
     "menu_bg"
   ],
   "construction_ground_line": 105,
   "files": [
     {
-      "path": "gba/graphics/backgrounds/city_bg.bmp",
+      "path": "gba/graphics/backgrounds/city_bg_theme_0.bmp",
       "sha256": "0a07537302c9c294531cb597a25d6bb184bf0c01227c3de688c8182dbb2c8f65",
       "size": 66614
     },
     {
-      "path": "gba/graphics/backgrounds/city_bg.json",
+      "path": "gba/graphics/backgrounds/city_bg_theme_0.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_1.bmp",
+      "sha256": "4dfd2041418acf65fb12f8a8c5822e627d9d290a81a2e5e1ab340aea9efab014",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_1.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_2.bmp",
+      "sha256": "28f5018063f9607610a3662ecbb936edfd3cedc44a5a73e261903f638eae16dd",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_2.json",
+      "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
+      "size": 44
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_3.bmp",
+      "sha256": "7ed0bb567dba4d4c1eb2af1098ed35fadcafd5eeb0fc32fd475b2d0b0d52770a",
+      "size": 66614
+    },
+    {
+      "path": "gba/graphics/backgrounds/city_bg_theme_3.json",
       "sha256": "d1a02e1b8a4b5f4019acfb390035cb0b7ae9903c6291f37b8b35d2979c53dde2",
       "size": 44
     },

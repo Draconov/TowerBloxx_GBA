@@ -352,8 +352,9 @@ def test_playability_fix3_uses_original_scene_background_items() -> None:
     assert "bn_regular_bg_items_construction_bg.h" in construction
     assert "bn::regular_bg_items::construction_bg.create_bg" in construction
     assert "bn::optional<bn::regular_bg_ptr> _background" in city_h
-    assert "bn_regular_bg_items_city_bg.h" in city
-    assert "bn::regular_bg_items::city_bg.create_bg" in city
+    for theme in range(4):
+        assert f"bn_regular_bg_items_city_bg_theme_{theme}.h" in city
+        assert f"city_bg_theme_{theme}.create_bg" in city
 
 
 def test_playability_fix3_crane_uses_recovered_shared_origin_orientation() -> None:

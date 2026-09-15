@@ -24,6 +24,7 @@ private:
     AudioScene _scene = AudioScene::Menu;
     bool _enabled = false;
     bool _started = false;
+    bool _result_active = false;
 };
 }
 

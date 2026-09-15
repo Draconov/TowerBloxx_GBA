@@ -1,4 +1,4 @@
-# Crane / M3G presentation analysis (Fix 13, corrected through Fix 14.9)
+# Crane / M3G presentation analysis (Fix 13, corrected through Fix 15.2)
 
 Canonical source: `Tower-Bloxx_v1522.jar`, primarily `House.e(Graphics)`, `House.u()`, the House landing/slip branches, `f.class`, and `n.class`.
 
@@ -53,13 +53,13 @@ So every bad placement also receives a random `+60` or `-60` degree Y-axis targe
 
 The port applies this second target in both Quick Game and Tower Construction using the existing deterministic Java-style visual PRNG. Because the original consumes this random draw before later impact jitter, it intentionally advances the visual RNG stream without changing gameplay results.
 
-## GBA projection treatment
+## GBA projection treatment (Fix 15.2)
 
-The original passes the recovered Y angle through the M3G object transform. The GBA port renders pre-extracted mesh composites as 2D sprites, so it applies the recovered angle as an affine horizontal foreshortening (`abs(cos(Y))`) to each mesh part and its X offset while retaining Z rotation. At the original +/-60-degree target this gives a 0.5 horizontal scale.
+Fix 15.2 removes the earlier affine `abs(cos(Y))` approximation for bad-placement tumble. The exporter now applies the recovered Z rotation and then Y rotation to the complete source M3G mesh around one shared origin before the canonical 240x160 projection. Runtime selects the closest 5-degree Y stage while preserving independent Z/Y signs.
 
-This is a presentation approximation rather than a claim of bit-identical 3D rasterization. The state, target angle, interpolation duration, RNG ordering and scene timing are recovered behavior; only the final 3D-to-2D rasterization is adapted to the GBA sprite renderer.
+The logical stages are Y magnitudes `0,5,...,60` degrees with the paired source Z magnitude `45 * stage / 12`. Stage zero reuses the ordinary mesh asset; the 12 nonzero stages x four sign combinations x eight floor/base meshes therefore produce 384 stored poses for 416 logical states. This keeps ROM cost practical while preserving real M3G perspective, texture orientation and silhouette instead of 2D horizontal squashing. Ordinary zero-Y settle wobble continues through the existing exact 2D Z path.
 
-## Runtime integration after Fix 14.7
+## Runtime integration after Fix 15.2
 
 - Quick Game: first block/base uses mesh 23; initial rig uses mesh 7 + cable; first release hides the crane; after first landing, normal construction uses mesh 8 and later floor mesh 13; miss state switches back to mesh 7 + cable.
 - Build City construction: first block/base uses mesh 20..23 for the selected family; the same initial mesh-7 / hidden-first-fall / mesh-8 sequence applies; roof phase uses mesh 7 + cable; miss state also uses mesh 7 + cable.
@@ -71,4 +71,4 @@ The original exporter applied `1-v` while sampling decoded `Image2D` rows. Tower
 
 ## Remaining visual-only verification
 
-The normal mesh-8 shared-origin rasterization, texture orientation, and special cable are now source-derived instead of affine/chunk/segment guesses. The remaining verification is live emulator comparison of the hook swing and special rig for any final camera/layout discrepancy.
+The normal mesh-8 shared-origin rasterization, texture orientation, special cable and bad-placement Z+Y projection are now source-derived instead of affine/chunk/segment guesses. The remaining verification is live emulator/real-hardware comparison, especially whether 5-degree tumble stepping is visually smooth enough and whether any final crane camera/layout anchor needs pixel tuning.

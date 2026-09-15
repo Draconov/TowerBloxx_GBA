@@ -15,6 +15,15 @@ tb::InputFrame fresh(tb::Key key)
 {
     return tb::InputFrame{tb::key_mask(key), tb::key_mask(key)};
 }
+
+void enter_main_menu(tb::UiController& ui, tb::SaveData& save)
+{
+    assert(ui.scene() == tb::UiScene::PublisherSplash);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::Title);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::MainMenu);
+}
 }
 
 int main()
@@ -190,12 +199,16 @@ int main()
     save = tb::make_default_save();
     save = tb::make_default_save();
     tb::UiController ui(save);
-    assert(ui.scene() == tb::UiScene::Title);
+    assert(ui.scene() == tb::UiScene::PublisherSplash);
     assert(ui.selection() == 0);
     assert(ui.language() == 0);
     assert(ui.sound_enabled());
 
     auto result = ui.update(fresh(tb::Key::A), save);
+    assert(! result.save_dirty);
+    assert(result.action == tb::UiAction::None);
+    assert(ui.scene() == tb::UiScene::Title);
+    result = ui.update(fresh(tb::Key::A), save);
     assert(! result.save_dirty);
     assert(result.action == tb::UiAction::None);
     assert(ui.scene() == tb::UiScene::MainMenu);
@@ -216,7 +229,7 @@ int main()
     assert(ui.scene() == tb::UiScene::MainMenu);
 
     tb::UiController quick_ui(save);
-    quick_ui.update(fresh(tb::Key::A), save);
+    enter_main_menu(quick_ui, save);
     quick_ui.update(fresh(tb::Key::Down), save);
     result = quick_ui.update(fresh(tb::Key::A), save);
     assert(result.action == tb::UiAction::StartQuickGame);
@@ -256,7 +269,7 @@ int main()
     // High Scores table selector and safe clear confirmation.
     tb::insert_hall_score(save.hall_of_fame, tb::HallTable::QuickGame, 900, "OLD");
     tb::UiController hall_ui(save);
-    hall_ui.update(fresh(tb::Key::A), save);
+    enter_main_menu(hall_ui, save);
     hall_ui.update(fresh(tb::Key::Down), save);
     hall_ui.update(fresh(tb::Key::Down), save); // High Scores.
     hall_ui.update(fresh(tb::Key::A), save);
@@ -288,7 +301,7 @@ int main()
 
     // Settings remains three rows and Reset City retains its safe confirmation behavior.
     tb::UiController settings_ui(save);
-    settings_ui.update(fresh(tb::Key::A), save);
+    enter_main_menu(settings_ui, save);
     settings_ui.update(fresh(tb::Key::Down), save);
     settings_ui.update(fresh(tb::Key::Down), save);
     settings_ui.update(fresh(tb::Key::Down), save); // Settings.
@@ -389,7 +402,7 @@ int main()
 
     // Instructions remains directly reachable from the root, and root B returns to Title.
     tb::UiController instructions_ui(save);
-    instructions_ui.update(fresh(tb::Key::A), save);
+    enter_main_menu(instructions_ui, save);
     for(int index = 0; index < 4; ++index) instructions_ui.update(fresh(tb::Key::Down), save);
     instructions_ui.update(fresh(tb::Key::A), save);
     assert(instructions_ui.scene() == tb::UiScene::InstructionsMenu);

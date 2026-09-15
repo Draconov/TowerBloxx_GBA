@@ -14,6 +14,15 @@ tb::InputFrame fresh(tb::Key key)
 {
     return tb::InputFrame{tb::key_mask(key), tb::key_mask(key)};
 }
+
+void enter_main_menu(tb::UiController& ui, tb::SaveData& save)
+{
+    assert(ui.scene() == tb::UiScene::PublisherSplash);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::Title);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::MainMenu);
+}
 }
 
 int main()
@@ -22,8 +31,7 @@ int main()
     tb::UiController ui(save);
     tb::TowerSessionCoordinator session;
 
-    ui.update(fresh(tb::Key::A), save);
-    assert(ui.scene() == tb::UiScene::MainMenu);
+    enter_main_menu(ui, save);
     assert(ui.root_menu_count() == 5);
 
     ui.update(fresh(tb::Key::Down), save); // Quick Game.

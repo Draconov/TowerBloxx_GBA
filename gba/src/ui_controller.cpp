@@ -236,6 +236,23 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
 
     switch(_scene)
     {
+    case UiScene::PublisherSplash:
+    {
+        static constexpr int frame_deltas[] = {16, 17, 17};
+        const int delta_ms = frame_deltas[_publisher_frame_phase];
+        _publisher_frame_phase = (_publisher_frame_phase + 1) % 3;
+        if(input.pressed(Key::A) || input.pressed(Key::Start) || _publisher_splash_ms <= delta_ms)
+        {
+            _publisher_splash_ms = 0;
+            _set_scene(UiScene::Title);
+        }
+        else
+        {
+            _publisher_splash_ms -= delta_ms;
+        }
+        break;
+    }
+
     case UiScene::Title:
         if(input.pressed(Key::A) || input.pressed(Key::Start))
         {

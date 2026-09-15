@@ -31,6 +31,8 @@ SOURCE_RESOURCES = {
     "font_atlas": 36,
     "font_metrics": 44,
     "tower_logo": 7,
+    "support_nav": 1,
+    "digital_chocolate_logo": 9,
     "sumea_logo": 10,
     "menu_icons": [2, 3, 4, 5, 6],
     "menu_workers": [11, 12],
@@ -52,6 +54,66 @@ SOURCE_RESOURCES = {
     "crane_hook_frames": 30,
     "accuracy_stars": 35,
 }
+
+
+def _custom_menu_icon(kind: str) -> Image.Image:
+    """Create the two GBA-only root-menu icons in the source menu style.
+
+    The Java menu has no bitmap for High Scores or Instructions.  Keep these
+    additions deliberately tiny (14x10), using the same brown/gold/white
+    palette family as the Build City / Quick Game source icons.
+    """
+    image = Image.new("RGBA", (14, 10), (0, 0, 0, 0))
+    dark = (128, 96, 0, 255)
+    light = (192, 168, 112, 255)
+    white = (248, 248, 248, 255)
+
+    def px(x: int, y: int, color: tuple[int, int, int, int]) -> None:
+        if 0 <= x < 14 and 0 <= y < 10:
+            image.putpixel((x, y), color)
+
+    if kind == "high_scores":
+        # Small trophy / cup: handles, bowl, stem and base.
+        for x in range(4, 10):
+            px(x, 1, dark)
+            px(x, 5, dark)
+        for y in range(2, 5):
+            px(3, y, dark)
+            px(10, y, dark)
+        px(2, 2, dark); px(2, 3, dark); px(11, 2, dark); px(11, 3, dark)
+        px(3, 4, dark); px(10, 4, dark)
+        for y in range(2, 5):
+            for x in range(4, 10):
+                px(x, y, light)
+        px(4, 2, white); px(5, 2, white); px(4, 3, white)
+        px(6, 6, dark); px(7, 6, dark)
+        px(6, 7, light); px(7, 7, light)
+        for x in range(4, 10):
+            px(x, 8, dark)
+        for x in range(5, 9):
+            px(x, 8, light)
+        for x in range(5, 9):
+            px(x, 9, dark)
+    elif kind == "instructions":
+        # Open book / manual with a dark spine and bright page highlights.
+        for x in range(1, 13):
+            px(x, 1, dark); px(x, 9, dark)
+        for y in range(2, 9):
+            px(1, y, dark); px(12, y, dark); px(6, y, dark); px(7, y, dark)
+        for y in range(2, 9):
+            for x in range(2, 6):
+                px(x, y, light)
+            for x in range(8, 12):
+                px(x, y, light)
+        for x in range(2, 5):
+            px(x, 2, white)
+        for x in range(9, 12):
+            px(x, 2, white)
+        px(5, 8, white); px(8, 8, white)
+    else:
+        raise ValueError(f"unknown custom menu icon kind: {kind}")
+
+    return image
 
 
 def _sha256(path: Path) -> str:
@@ -259,6 +321,7 @@ def _localization_header(
         ("city", "build_city_instruction_lines"),
         ("about", "about_lines"),
         ("reset_city", "reset_city_confirmation_lines"),
+        ("overwrite_game", "overwrite_game_confirmation_lines"),
     ):
         max_lines = max(len(wrapped[locale.code][key]) for locale in locales)
         lines.append(f"inline constexpr int {cpp_name}_max_lines = {max_lines};")
@@ -700,6 +763,23 @@ def _export_strip_frames(
         records.append(record)
     return records
 
+def _export_vertical_strip_frames(
+    image: Image.Image,
+    frame_count: int,
+    name_prefix: str,
+    graphics_dir: Path,
+) -> list[dict[str, object]]:
+    if image.height % frame_count:
+        raise ValueError(f"{name_prefix} height is not divisible by {frame_count}")
+    frame_height = image.height // frame_count
+    records: list[dict[str, object]] = []
+    for frame in range(frame_count):
+        top = frame * frame_height
+        cropped = image.crop((0, top, image.width, top + frame_height))
+        _composite, record = _export_composite(cropped, f"{name_prefix}_f{frame}", graphics_dir)
+        records.append(record)
+    return records
+
 def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]:
     jar_path = Path(jar_path)
     project_dir = Path(project_dir)
@@ -718,6 +798,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         font_metrics = decode_resource_44(read_resource(jar, 44))
         font = Font44(font_atlas, font_metrics)
         tower_logo = Image.open(BytesIO(read_resource(jar, 7))).convert("RGBA")
+        support_nav = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["support_nav"])))).convert("RGBA")
+        digital_chocolate_logo = Image.open(BytesIO(read_resource(jar, int(SOURCE_RESOURCES["digital_chocolate_logo"])))).convert("RGBA")
         sumea_logo = Image.open(BytesIO(read_resource(jar, 10))).convert("RGBA")
         menu_icons = tuple(
             Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
@@ -795,7 +877,23 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
 
     asset_records: list[dict[str, object]] = []
     _tower_composite, tower_record = _export_composite(tower_logo, "tower_bloxx_logo", graphics_dir)
+    support_nav_records = _export_vertical_strip_frames(support_nav, 3, "support_nav", graphics_dir)
+    _digital_composite, digital_chocolate_record = _export_composite(
+        digital_chocolate_logo, "digital_chocolate_logo", graphics_dir
+    )
     _sumea_composite, sumea_record = _export_composite(sumea_logo, "sumea_logo", graphics_dir)
+
+    # Shared modal/dialog panel used by Build City events, construction
+    # messages and menu confirmations.  The source game draws a white center
+    # with nested dark/red-gray borders; export it once as a composite so all
+    # modal flows use exactly the same presentation.
+    dialog_window_image = Image.new("RGBA", (224, 112), (16, 8, 8, 255))
+    dialog_window_image.paste((120, 104, 104, 255), (1, 1, 223, 111))
+    dialog_window_image.paste((224, 208, 192, 255), (3, 3, 221, 109))
+    dialog_window_image.paste((248, 248, 248, 255), (5, 5, 219, 107))
+    _dialog_window_composite, dialog_window_record = _export_composite(
+        dialog_window_image, "dialog_window", graphics_dir
+    )
 
     # k.b(Graphics) palette entry b[6] is 0xFFDD46 in the default branch shown
     # by the reference JAR capture. Keep the source five-pixel side margins
@@ -856,9 +954,10 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         city_type_badge_records.append(badge_record)
 
     asset_records.extend((
-        tower_record, sumea_record, menu_highlight_record, city_progress_record,
+        tower_record, digital_chocolate_record, sumea_record, dialog_window_record, menu_highlight_record, city_progress_record,
         city_valid_lot_ring_record, city_selector_active_slot_record, city_comparison_panel_active_record,
     ))
+    asset_records.extend(support_nav_records)
     asset_records.extend(city_progress_tail_records)
     asset_records.extend(city_type_badge_records)
 
@@ -868,12 +967,20 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "menu_quick_game_icon",
         "menu_settings_icon",
         "menu_exit_icon",
+        "menu_high_scores_icon",
+        "menu_instructions_icon",
     )
+    menu_icon_images = (*menu_icons, _custom_menu_icon("high_scores"), _custom_menu_icon("instructions"))
     menu_icon_records: list[dict[str, object]] = []
-    for image, name in zip(menu_icons, menu_icon_names, strict=True):
+    for image, name in zip(menu_icon_images, menu_icon_names, strict=True):
         _composite, record = _export_composite(image, name, graphics_dir)
         menu_icon_records.append(record)
         asset_records.append(record)
+
+    # All root-menu icons are shown simultaneously.  Put them on one exact
+    # shared 4bpp palette so the two new icons cost no extra OBJ palette banks.
+    menu_icon_palette_entries = _share_bpp4_palette(graphics_dir, _record_asset_names(menu_icon_records))
+    _set_shared_palette_entries(menu_icon_records, menu_icon_palette_entries)
     menu_worker_blue_records = _export_strip_frames(menu_worker_strips[0], 10, "menu_worker_blue", graphics_dir)
     menu_worker_red_records = _export_strip_frames(menu_worker_strips[1], 10, "menu_worker_red", graphics_dir)
     asset_records.extend(menu_worker_blue_records)
@@ -1043,6 +1150,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         city_panel_state_records[0],
         city_panel_state_records[3],
         city_comparison_panel_active_record,
+        dialog_window_record,
     ]
     placement_panel_entries = _share_bpp4_palette(
         graphics_dir, _record_asset_names(placement_panel_records)
@@ -1090,6 +1198,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             "city": _wrap_text(font, adapted[locale.code]["city"]),
             "about": _wrap_text(font, about),
             "reset_city": _wrap_text(font, locale.strings[98], max_width=208),
+            "overwrite_game": _wrap_text(font, locale.strings[118], max_width=208),
         }
 
     city_modal_wrapped = {
@@ -1149,7 +1258,7 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         },
         "logos": [tower_record, sumea_record],
         "procedural_assets": [
-            "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
+            "dialog_window", "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
             "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
             "city_type_badge_3", "city_type_badge_4",
         ],

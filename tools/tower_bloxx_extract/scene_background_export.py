@@ -168,7 +168,7 @@ def render_construction_background(jar_path: Path) -> Image.Image:
     return image
 
 
-def render_city_background() -> Image.Image:
+def render_city_background(theme_index: int = 0) -> Image.Image:
     """Render the recovered 240x160 Build City compositor base.
 
     m.a(Graphics, boolean) draws this screen almost entirely with Java 2D:
@@ -212,9 +212,18 @@ def render_city_background() -> Image.Image:
     draw.rectangle((board_x, board_y, board_x + 87, board_y + 87), fill=(255, 255, 255, 255))
     draw.rectangle((board_x + 1, board_y + 1, board_x + 86, board_y + 86), fill=(64, 64, 64, 255))
 
-    # City level zero uses m.e[0]=#78BC28 and m.d[0]=#437817.
-    lot_outer = (120, 188, 40, 255)
-    lot_inner = (67, 120, 23, 255)
+    # m.e/m.d are four source lot palette themes selected by the same
+    # milestone tiers as the building unlocks: 0, 3, 6, 10.
+    lot_outer_colors = ((0x78, 0xBC, 0x28), (0x7F, 0xAF, 0x46),
+                        (0x84, 0xA5, 0x5D), (0x8A, 0x9C, 0x74))
+    lot_inner_colors = ((0x43, 0x78, 0x17), (0x50, 0x6E, 0x37),
+                        (0x58, 0x69, 0x50), (0x62, 0x61, 0x6A))
+    if theme_index < 0:
+        theme_index = 0
+    elif theme_index > 3:
+        theme_index = 3
+    lot_outer = (*lot_outer_colors[theme_index], 255)
+    lot_inner = (*lot_inner_colors[theme_index], 255)
     for row in range(5):
         for column in range(5):
             x = board_x + 3 + column * 17
@@ -283,9 +292,18 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
     graphics_dir.mkdir(parents=True, exist_ok=True)
     reference_dir.mkdir(parents=True, exist_ok=True)
 
+    # Fix 15.2 replaces the old single city_bg with the four recovered source themes.
+    for legacy_name in ("city_bg.bmp", "city_bg.json"):
+        legacy_path = graphics_dir / legacy_name
+        if legacy_path.exists():
+            legacy_path.unlink()
+
     assets = {
         "construction_bg": render_construction_background(jar_path),
-        "city_bg": render_city_background(),
+        "city_bg_theme_0": render_city_background(0),
+        "city_bg_theme_1": render_city_background(1),
+        "city_bg_theme_2": render_city_background(2),
+        "city_bg_theme_3": render_city_background(3),
         "menu_bg": render_menu_background(),
     }
     files: list[dict[str, object]] = []

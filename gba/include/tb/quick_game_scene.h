@@ -70,6 +70,9 @@ private:
     int _rendered_floor_count = -1;
     int _visible_floor_start = 0;
     int _rendered_current_mesh_id = -1;
+    int _rendered_tumble_stage = 0;
+    bool _rendered_tumble_z_negative = false;
+    bool _rendered_tumble_y_negative = false;
     int _rendered_crane_mesh_id = -1;
     int _rendered_crane_rotation_step = 999;
     int _last_hud_floor_count = -1;
