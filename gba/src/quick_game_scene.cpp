@@ -33,7 +33,11 @@ constexpr int world_screen_baseline_y = 0;
 constexpr int current_block_z_order = -20;
 constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
+constexpr int gameplay_worker_z_order = -30;
 constexpr int combo_meter_segments = 8;
+constexpr int combo_meter_max_width = 120;
+constexpr int combo_meter_fill_left = -57;
+constexpr int combo_meter_y = -69;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
@@ -256,12 +260,15 @@ void QuickGameScene::start(int language)
     _floor_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _combo_meter_fill_sprite.reset();
+    _combo_meter_flash_sprite.reset();
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
     _update_world_positions();
     _rebuild_hud(snapshot);
+    _update_combo_meter(snapshot);
 }
 
 QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveData& save)
@@ -341,6 +348,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     {
         _rebuild_hud(snapshot);
     }
+    _update_combo_meter(snapshot);
 
     return result;
 }
@@ -361,6 +369,8 @@ void QuickGameScene::suspend_presentation()
     _special_cable_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _combo_meter_fill_sprite.reset();
+    _combo_meter_flash_sprite.reset();
 }
 
 void QuickGameScene::resume_presentation()
@@ -390,6 +400,7 @@ void QuickGameScene::resume_presentation()
     _update_world_positions();
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
+    _update_combo_meter(snapshot);
 }
 
 void QuickGameScene::discard()
@@ -718,8 +729,49 @@ void QuickGameScene::_rebuild_worker_sprites(const QuickGameSnapshot& snapshot)
                 *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
         show_ui_composite(
                 asset, _screen_x(worker.x_fixed),
-                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites, 10);
+                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
+                gameplay_worker_z_order);
     }
+}
+
+void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
+{
+    if(snapshot.status != QuickGameStatus::Playing || snapshot.combo_meter_ms <= 0)
+    {
+        _combo_meter_fill_sprite.reset();
+        _combo_meter_flash_sprite.reset();
+        return;
+    }
+
+    int width = snapshot.combo_meter_ms * combo_meter_max_width / 6000;
+    if(width < 1)
+    {
+        width = 1;
+    }
+    else if(width > combo_meter_max_width)
+    {
+        width = combo_meter_max_width;
+    }
+
+    const bool flash = snapshot.combo_meter_ms > 5850;
+    bn::optional<bn::sprite_ptr>& active = flash ? _combo_meter_flash_sprite : _combo_meter_fill_sprite;
+    bn::optional<bn::sprite_ptr>& inactive = flash ? _combo_meter_fill_sprite : _combo_meter_flash_sprite;
+    inactive.reset();
+
+    if(! active)
+    {
+        const generated::UiCompositeAsset& asset = flash ? generated::quick_combo_meter_flash :
+                                                            generated::quick_combo_meter_fill;
+        const generated::UiSpritePartAsset& part = asset.parts[0];
+        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
+        sprite.set_z_order(-100);
+        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        active = sprite;
+    }
+
+    bn::sprite_ptr& sprite = *active;
+    sprite.set_horizontal_scale(bn::fixed(width) / 64);
+    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_y);
 }
 
 void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
@@ -734,7 +786,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
 
     if(snapshot.status == QuickGameStatus::Results)
     {
-        _text_generator.generate(0, -70, generated::localized_strings[_language][91], _hud_sprites);
+        show_ui_composite(generated::dialog_window, 0, 0, _hud_sprites, -90);
         const QuickGameResult final_result = _game.result();
         bn::string<64> population = format_result_line(generated::localized_strings[_language][93], final_result.population);
         bn::string<64> height = format_result_line(generated::localized_strings[_language][94], final_result.height);
@@ -743,13 +795,13 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         append_record_marker(population, _record_flags.population, record_marker);
         append_record_marker(height, _record_flags.height, record_marker);
         append_record_marker(combo, _record_flags.combo, record_marker);
-        _text_generator.generate(0, -28, population, _hud_sprites);
-        _text_generator.generate(0, -4, height, _hud_sprites);
-        _text_generator.generate(0, 20, combo, _hud_sprites);
+        _text_generator.generate(0, -24, population, _hud_sprites);
+        _text_generator.generate(0, 0, height, _hud_sprites);
+        _text_generator.generate(0, 24, combo, _hud_sprites);
 
-        bn::string<32> back_text("A/B  ");
+        bn::string<32> back_text("A  ");
         back_text.append(generated::localized_strings[_language][7]);
-        _text_generator.generate(0, 54, back_text, _hud_sprites);
+        _text_generator.generate(0, 52, back_text, _hud_sprites);
         return;
     }
 
@@ -777,9 +829,13 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         draw_source_number(snapshot.population, 5, 228, 141, hud_white_digit_frames, _hud_sprites);
     }
 
+    if(snapshot.combo_meter_ms > 0)
+    {
+        show_ui_composite(generated::quick_combo_meter_frame, 3, combo_meter_y, _hud_sprites, -101);
+    }
+
     // The source combo readout uses resource 15: cell 11 is the x marker,
-    // followed by one or two brown digits. The dynamic meter geometry itself
-    // remains a dedicated follow-up instead of being replaced by ASCII bars.
+    // followed by one or two brown digits.
     if(snapshot.combo_meter_ms > 0 && snapshot.combo_count > 1)
     {
         show_ui_composite(*hud_brown_digit_frames[11], 66, -67, _hud_sprites);

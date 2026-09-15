@@ -48,6 +48,7 @@ int main()
         construction.update(25, no_input());
     }
     assert(construction.snapshot().block_state == tb::TowerConstructionBlockState::Attached);
+    assert(construction.snapshot().current_z_angle_degrees == (construction.snapshot().crane_x >> 4));
     tb::InputFrame release{};
     release.pressed_mask = uint16_t(tb::Key::A);
     construction.update(25, release);

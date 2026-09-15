@@ -490,6 +490,7 @@ void TowerConstruction::_update_crane(int delta_ms)
 
     if(_block_state == TowerConstructionBlockState::Attached)
     {
+        _current_z_angle_degrees = _crane_x >> 4;
         _velocity_x = ((_crane_x - _previous_crane_x) * 256) / delta_ms;
         _velocity_y = ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }

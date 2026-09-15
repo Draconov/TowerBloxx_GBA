@@ -464,6 +464,7 @@ int main()
     quick_snapshot = quick.snapshot();
     assert(quick_snapshot.rope_length == 1664);
     assert(quick_snapshot.block_state == tb::QuickBlockState::Attached);
+    assert(quick_snapshot.current_z_angle_degrees == (quick_snapshot.crane_x >> 4));
 
     // A is fresh-drop only. A held without pressed does not release the block.
     tb::QuickGame held_only;
@@ -478,6 +479,7 @@ int main()
     quick.update(25, fresh(tb::Key::A));
     quick_snapshot = quick.snapshot();
     assert(quick_snapshot.block_state == tb::QuickBlockState::Falling);
+    assert(quick_snapshot.current_z_angle_degrees == before_drop.current_z_angle_degrees);
     assert(quick_snapshot.current_y < before_drop.current_y + 128);
     assert(quick_snapshot.drop_velocity_x != 0 || quick_snapshot.drop_velocity_y != 0);
     assert(quick_snapshot.crane_x != quick_snapshot.current_x || quick_snapshot.crane_y != quick_snapshot.current_y);

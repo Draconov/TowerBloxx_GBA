@@ -41,7 +41,8 @@ def test_fix14_export_has_exact_city_visual_primitives(tower_bloxx_jar: Path, tm
     assert manifest["procedural_assets"] == [
         "dialog_window", "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
         "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
-        "city_type_badge_3", "city_type_badge_4",
+        "city_type_badge_3", "city_type_badge_4", "quick_combo_meter_frame",
+        "quick_combo_meter_fill", "quick_combo_meter_flash",
     ]
 
     supplemental = manifest["city_assets"]["supplemental"]

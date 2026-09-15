@@ -31,6 +31,7 @@ constexpr int world_screen_baseline_y = 0;
 constexpr int current_block_z_order = -20;
 constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
+constexpr int gameplay_worker_z_order = -30;
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
 
@@ -737,7 +738,8 @@ void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnap
                 *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
         show_ui_composite(
                 asset, _screen_x(worker.x_fixed),
-                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites, 10);
+                _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
+                gameplay_worker_z_order);
     }
 }
 

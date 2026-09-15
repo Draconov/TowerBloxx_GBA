@@ -1051,6 +1051,27 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     _counter_composite, quick_counter_frame_record = _export_composite(
         quick_counter_frame, "quick_counter_frame", graphics_dir
     )
+
+    # House.i(Graphics) draws the Quick Game combo timer as Java2D geometry:
+    # a dark brown outline with a 120px live fill.  Export only the reusable
+    # masks; runtime scales the 64px fill source to the exact timer width.
+    quick_combo_meter_frame_image = Image.new("RGBA", (124, 8), (0, 0, 0, 0))
+    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 0, 124, 1))
+    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 7, 124, 8))
+    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 0, 1, 8))
+    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (123, 0, 124, 8))
+    _combo_frame_composite, quick_combo_meter_frame_record = _export_composite(
+        quick_combo_meter_frame_image, "quick_combo_meter_frame", graphics_dir
+    )
+
+    quick_combo_meter_fill_image = Image.new("RGBA", (64, 4), (252, 255, 0, 255))
+    _combo_fill_composite, quick_combo_meter_fill_record = _export_composite(
+        quick_combo_meter_fill_image, "quick_combo_meter_fill", graphics_dir
+    )
+    quick_combo_meter_flash_image = Image.new("RGBA", (64, 4), (255, 255, 255, 255))
+    _combo_flash_composite, quick_combo_meter_flash_record = _export_composite(
+        quick_combo_meter_flash_image, "quick_combo_meter_flash", graphics_dir
+    )
     _city_hanging_composite, city_hanging_ui_record = _export_composite(
         city_hanging_ui, "city_hanging_ui", graphics_dir
     )
@@ -1101,6 +1122,9 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     asset_records.extend(construction_meter_rails_records)
     asset_records.extend(hud_state_indicator_records)
     asset_records.append(quick_counter_frame_record)
+    asset_records.append(quick_combo_meter_frame_record)
+    asset_records.append(quick_combo_meter_fill_record)
+    asset_records.append(quick_combo_meter_flash_record)
     asset_records.append(city_hanging_ui_record)
     asset_records.append(city_continue_arrow_record)
     asset_records.extend(city_edge_clip_records)
@@ -1162,6 +1186,9 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         hud_state_indicator_records[6],
         hud_state_indicator_records[8],
         quick_counter_frame_record,
+        quick_combo_meter_frame_record,
+        quick_combo_meter_fill_record,
+        quick_combo_meter_flash_record,
     ]
     quick_hud_entries = _share_bpp4_palette(
         graphics_dir, _record_asset_names(quick_hud_shared_records)
@@ -1293,7 +1320,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "procedural_assets": [
             "dialog_window", "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
             "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
-            "city_type_badge_3", "city_type_badge_4",
+            "city_type_badge_3", "city_type_badge_4", "quick_combo_meter_frame",
+            "quick_combo_meter_fill", "quick_combo_meter_flash",
         ],
         "menu_highlight": menu_highlight_record,
         "city_progress_segment": city_progress_record,
@@ -1316,6 +1344,9 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
             "construction_meter_rails": construction_meter_rails_records,
             "state_indicators": hud_state_indicator_records,
             "quick_counter_frame": quick_counter_frame_record,
+            "quick_combo_meter_frame": quick_combo_meter_frame_record,
+            "quick_combo_meter_fill": quick_combo_meter_fill_record,
+            "quick_combo_meter_flash": quick_combo_meter_flash_record,
             "crane_hook_frames": crane_hook_frame_records,
             "accuracy_stars": accuracy_star_records,
         },

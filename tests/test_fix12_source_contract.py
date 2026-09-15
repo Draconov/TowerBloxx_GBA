@@ -38,4 +38,4 @@ def test_worker_render_uses_original_resource_11_12_frames() -> None:
         assert "menu_worker_blue_f0" in source
         assert "menu_worker_red_f0" in source
         assert "worker.variant == 1" in source
-        assert "_worker_sprites, 10)" in source
+        assert "gameplay_worker_z_order" in source

@@ -29,4 +29,4 @@ def test_quick_game_replay_is_deterministic_and_reaches_results(tmp_path: Path) 
     second = _build_and_run(tmp_path / "b")
     assert first == second
     assert first.rstrip().endswith(b"RESULTS 10 0 2 118 8")
-    assert hashlib.sha256(first).hexdigest() == "f986636e334981b3da37dd21c9eee9df7defc19af5ea6035f2dcbe0df26ae331"
+    assert hashlib.sha256(first).hexdigest() == "2278f4bea6a837f885d4440df17120f08bba3886557caf4dd54a43b994ba832a"

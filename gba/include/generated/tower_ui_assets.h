@@ -150,6 +150,10 @@
 #include "bn_sprite_items_hud_state_indicator_f8_p0.h"
 #include "bn_sprite_items_hud_state_indicator_f9_p0.h"
 #include "bn_sprite_items_quick_counter_frame_p0.h"
+#include "bn_sprite_items_quick_combo_meter_frame_p0.h"
+#include "bn_sprite_items_quick_combo_meter_frame_p1.h"
+#include "bn_sprite_items_quick_combo_meter_fill_p0.h"
+#include "bn_sprite_items_quick_combo_meter_flash_p0.h"
 #include "bn_sprite_items_city_hanging_ui_p0.h"
 #include "bn_sprite_items_city_continue_arrow_p0.h"
 #include "bn_sprite_items_city_edge_top_left_p0.h"
@@ -830,6 +834,22 @@ inline const UiSpritePartAsset quick_counter_frame_parts[] = {
     { &bn::sprite_items::quick_counter_frame_p0, 2, 2 },
 };
 inline const UiCompositeAsset quick_counter_frame = { quick_counter_frame_parts, 1 };
+
+inline const UiSpritePartAsset quick_combo_meter_frame_parts[] = {
+    { &bn::sprite_items::quick_combo_meter_frame_p0, -30, 12 },
+    { &bn::sprite_items::quick_combo_meter_frame_p1, 34, 12 },
+};
+inline const UiCompositeAsset quick_combo_meter_frame = { quick_combo_meter_frame_parts, 2 };
+
+inline const UiSpritePartAsset quick_combo_meter_fill_parts[] = {
+    { &bn::sprite_items::quick_combo_meter_fill_p0, 0, 14 },
+};
+inline const UiCompositeAsset quick_combo_meter_fill = { quick_combo_meter_fill_parts, 1 };
+
+inline const UiSpritePartAsset quick_combo_meter_flash_parts[] = {
+    { &bn::sprite_items::quick_combo_meter_flash_p0, 0, 14 },
+};
+inline const UiCompositeAsset quick_combo_meter_flash = { quick_combo_meter_flash_parts, 1 };
 
 inline const UiSpritePartAsset city_hanging_ui_parts[] = {
     { &bn::sprite_items::city_hanging_ui_p0, 2, 5 },

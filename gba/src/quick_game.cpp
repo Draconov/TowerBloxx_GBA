@@ -481,6 +481,9 @@ void QuickGame::_update_crane(int delta_ms)
 
     if(_block_state == QuickBlockState::Attached)
     {
+        // House keeps the hanging block's Z rotation coupled to the crane
+        // swing, which gives the suspended floor its slight 3D rocking pose.
+        _current_z_angle_degrees = _crane_x >> 4;
         _velocity_x = ((_crane_x - _previous_crane_x) * 256) / delta_ms;
         _velocity_y = ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }

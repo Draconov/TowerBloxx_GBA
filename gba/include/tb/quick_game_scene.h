@@ -48,6 +48,7 @@ private:
     [[nodiscard]] GameplayWorkerWorld _worker_world(const QuickGameSnapshot& snapshot) const;
     void _rebuild_worker_sprites(const QuickGameSnapshot& snapshot);
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
+    void _update_combo_meter(const QuickGameSnapshot& snapshot);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
@@ -65,6 +66,8 @@ private:
     bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
+    bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
+    bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;

@@ -642,10 +642,15 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         return;
     }
 
+    if(snapshot.mode == BuildCityMode::Placement)
+    {
+        // Resource 23 stays visible throughout placement in the source game,
+        // advertising that the left-hand slot is the demolition/discard lot.
+        _show_composite(generated::city_action_icon, centered_x(74), centered_y(103));
+    }
+
     if(snapshot.cursor_column < 0)
     {
-        // Resource 23 is the source demolish/action button shown beside the grid.
-        _show_composite(generated::city_action_icon, centered_x(74), centered_y(103));
         return;
     }
 

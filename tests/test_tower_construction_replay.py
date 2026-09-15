@@ -32,4 +32,4 @@ def test_tower_construction_replay_is_deterministic_and_pinned(tmp_path: Path) -
     assert first == second
     assert first.rstrip().endswith(b"RESULT 1 182 2 10 3")
     assert b"ROOF_RETRY " in first
-    assert hashlib.sha256(first).hexdigest() == "b761f89a5ab911c74430137a34d9f94d045ba472c86d9bfd09e70db0f9d8bcba"
+    assert hashlib.sha256(first).hexdigest() == "e2d4444e5a67c3989a5df197b0d50b798d1f02f0ca59cfad2a734cf2a42bef62"

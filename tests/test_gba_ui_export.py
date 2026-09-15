@@ -131,7 +131,8 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert manifest_a["procedural_assets"] == [
         "dialog_window", "menu_highlight", "city_progress_segment", "city_valid_lot_ring", "city_selector_active_slot",
         "city_comparison_panel_active", "city_type_badge_1", "city_type_badge_2",
-        "city_type_badge_3", "city_type_badge_4",
+        "city_type_badge_3", "city_type_badge_4", "quick_combo_meter_frame",
+        "quick_combo_meter_fill", "quick_combo_meter_flash",
     ]
     assert {record["name"] for record in manifest_a["menu_assets"]["icons"]} == {
         "menu_continue_icon", "menu_build_city_icon", "menu_quick_game_icon",
