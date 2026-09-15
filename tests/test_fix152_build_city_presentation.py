@@ -33,3 +33,9 @@ def test_population_roll_hides_changed_suffix_digits_while_cells_roll() -> None:
     source = (ROOT / "gba/src/build_city_scene.cpp").read_text(encoding="utf-8")
     assert "const int visible_population_digits = 5 - _population_roll.changed_cells();" in source
     assert "index < visible_population_digits" in source
+
+
+def test_comparison_digit_renderer_accepts_any_sprite_vector_capacity() -> None:
+    source = (ROOT / "gba/src/build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "bn::ivector<bn::sprite_ptr>& sprites" in source
+    assert "bn::vector<bn::sprite_ptr, 256>& sprites" not in source

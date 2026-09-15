@@ -222,7 +222,7 @@ bn::string<128> format_event_line(
 }
 
 void show_comparison_digits(
-        bn::vector<bn::sprite_ptr, 256>& sprites,
+        bn::ivector<bn::sprite_ptr>& sprites,
         const generated::UiCompositeAsset* const* digits,
         int value,
         int right_anchor,
