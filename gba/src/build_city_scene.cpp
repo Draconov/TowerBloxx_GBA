@@ -36,6 +36,9 @@ constexpr int selector_screen_top = grid_screen_top + 2;
 constexpr int building_widths[4] = {15, 16, 17, 19};
 constexpr int building_heights[4] = {14, 16, 17, 19};
 constexpr int modal_backdrop_z_order = -90;
+constexpr int modal_line_spacing = 12;
+constexpr int selected_preview_outline_z_order = -2;
+constexpr int selected_preview_tower_z_order = -3;
 
 const generated::UiCompositeAsset* const building_assets[4][4] = {
     { &generated::city_building_1_f0, &generated::city_building_1_f1,
@@ -577,9 +580,10 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.mode == BuildCityMode::Browse)
     {
+        int selected = 0;
         if(snapshot.selected_building_type >= 1 && snapshot.selected_building_type <= 4)
         {
-            const int selected = snapshot.selected_building_type;
+            selected = snapshot.selected_building_type;
 
             // Source m.t highlights the cursor row even when that type is
             // still locked; locked rows simply omit the tower/outline art.
@@ -592,43 +596,48 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                         centered_x(slot_left + 7),
                         centered_y(slot_top + 7));
             }
-
-            if(selected <= snapshot.max_unlocked_building_type)
-            {
-                int preview_left = selector_screen_left + 4;
-                int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
-                if(build_city_preview_raised(selected, snapshot.selected_building_type,
-                                             snapshot.max_unlocked_building_type))
-                {
-                    preview_left += 2;
-                    preview_baseline -= 2;
-                }
-                const int highlight_left = preview_left - 2;
-                const int highlight_top = preview_baseline - 21;
-                _show_composite(
-                        *lot_assets[snapshot.selected_building_type - 1],
-                        centered_x(highlight_left + 11),
-                        centered_y(highlight_top + 11));
-            }
         }
 
         // Recovered four-slot browser: every unlocked tower icon uses strip
-        // frame 3. GBA UX adaptation: the currently highlighted unlocked tower
-        // stays raised +2px right / -2px up with its outline.
+        // frame 3. Draw neighboring previews first so the selected outline can
+        // never be covered by an adjacent tower sprite.
         for(int type = 1; type <= snapshot.max_unlocked_building_type && type <= 4; ++type)
         {
+            if(type == selected)
+            {
+                continue;
+            }
             int screen_left = selector_screen_left + 4;
             int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
-            if(build_city_preview_raised(type, snapshot.selected_building_type,
-                                         snapshot.max_unlocked_building_type))
-            {
-                screen_left += 2;
-                screen_baseline -= 2;
-            }
             _show_composite(
                     building_asset(type, 3),
                     building_center_x(type, screen_left),
                     building_center_y(type, screen_baseline));
+        }
+
+        if(selected >= 1 && selected <= snapshot.max_unlocked_building_type && selected <= 4)
+        {
+            int preview_left = selector_screen_left + 4;
+            int preview_baseline = selector_screen_top + 15 + (selected - 1) * 16;
+            if(build_city_preview_raised(selected, snapshot.selected_building_type,
+                                         snapshot.max_unlocked_building_type))
+            {
+                preview_left += 2;
+                preview_baseline -= 2;
+            }
+
+            const int highlight_left = preview_left - 2;
+            const int highlight_top = preview_baseline - 21;
+            _show_composite(
+                    *lot_assets[selected - 1],
+                    centered_x(highlight_left + 11),
+                    centered_y(highlight_top + 11),
+                    selected_preview_outline_z_order);
+            _show_composite(
+                    building_asset(selected, 3),
+                    building_center_x(selected, preview_left),
+                    building_center_y(selected, preview_baseline),
+                    selected_preview_tower_z_order);
         }
         return;
     }
@@ -818,13 +827,13 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     const int line_count = generated::city_modal_line_counts[_language][modal_index];
     const int backdrop_rows = line_count <= 2 ? 4 : (line_count >= 6 ? 6 : 5);
     _show_modal_backdrop(8, 32, 7, backdrop_rows);
-    int y = -((line_count - 1) * 10) / 2;
+    int y = -((line_count - 1) * modal_line_spacing) / 2;
     for(int line = 0; line < line_count; ++line)
     {
         const bn::string<128> formatted = format_event_line(
                 generated::city_modal_lines[_language][modal_index][line], event, _language);
         _text_generator.generate(0, y, formatted, _sprites);
-        y += 10;
+        y += modal_line_spacing;
     }
     _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);
 }

@@ -33,6 +33,19 @@ def test_modal_backdrop_is_drawn_for_build_city_and_construction_messages() -> N
     assert "_show_modal_backdrop(line_count);" in construction_source
 
 
+def test_dialogue_text_uses_roomier_line_spacing_inside_shared_window() -> None:
+    build_city_source = read("gba/src/build_city_scene.cpp")
+    construction_source = read("gba/src/tower_construction_scene.cpp")
+
+    assert "constexpr int modal_line_spacing = 12;" in build_city_source
+    assert "int y = -((line_count - 1) * modal_line_spacing) / 2;" in build_city_source
+    assert "y += modal_line_spacing;" in build_city_source
+
+    assert "constexpr int modal_line_spacing = 12;" in construction_source
+    assert "int y = -((line_count - 1) * modal_line_spacing) / 2;" in construction_source
+    assert "y += modal_line_spacing;" in construction_source
+
+
 def test_current_block_is_layered_in_front_of_crane_and_special_cable() -> None:
     for relative in ("gba/src/quick_game_scene.cpp", "gba/src/tower_construction_scene.cpp"):
         source = read(relative)

@@ -107,6 +107,23 @@ def test_ui_export_is_complete_localized_and_deterministic(tower_bloxx_jar: Path
     assert "D-pad" in manifest_a["adapted_instructions"]["en-EN"]["city"]
     assert "20 milestones" in manifest_a["adapted_instructions"]["en-EN"]["city"]
 
+    # GBA port contract: none of the playable localized UI strings may still
+    # instruct the player to use Nokia numeric keypad buttons.
+    for stale in (
+        "Press 5", "Appuie sur 5", "Premi 5", "Drücke 5", "Pulsa 5",
+        "4, 6, 2, 8", "4, 6, 2 et 8", "4, 6, 2 and 8",
+        "2 and 8", "2 et 8", "2 e 8", "2 und 8", "2 y 8",
+    ):
+        assert stale not in localization
+    assert "Press A to select the blue Residential Tower" in localization
+    assert "Move the tower with the D-pad" in localization
+    assert "Use Up and Down to select" in localization
+
+    # Text shown inside the shared 224px dialogue frame keeps generous side
+    # margins instead of wrapping all the way to the border.
+    assert manifest_a["instruction_wrap_width"] == 184
+    assert manifest_a["city_modal_wrap_width"] == 184
+
     logo_files = [record["path"] for record in manifest_a["files"] if "tower_bloxx_logo" in record["path"]]
     sumea_files = [record["path"] for record in manifest_a["files"] if "sumea_logo" in record["path"]]
     assert logo_files

@@ -1,7 +1,7 @@
 {
   "adapted_instructions": {
     "de-DE": {
-      "city": "Baue eine Megalopolis! Errichte Hochhäuser und platziere sie geschickt im Stadtgitter, um dein Ziel zu erreichen. Indem du die Stufe und die Einwohnerzahl deiner Stadt erhöhst, schaltest du neue Gebäudearten frei. Die aktuelle Stufe und die Einwohnerzahl siehst du im oberen Bildschirmbereich. In der rechten oberen Ecke erscheint die Bewohnerzahl des Hochhauses, das du gerade gebaut hast, und des Hauses, das dadurch ersetzt wird.\\n\\nIm Bau-Modus musst du eine vorgegebene Höhe erreichen, die links unten angezeigt wird. Je besser du das Dach platzierst, desto mehr Bonuspunkte erhältst du. Du hast drei Versuche, das Hochhaus fertig zu stellen. Wenn du es nicht schaffst, kannst du das Gebäude auch ohne Dach in der Stadt platzieren.\\n\\nNachdem du ein Hochhaus gebaut hast, wählst du einen Platz auf einem der blinkenden Felder des Stadtgitters aus und platzierst das Haus mit A. Bewege das Haus mit dem D-pad. Alte Gebäude können durch neue ersetzt werden. Ungewollte Hochhäuser kannst du auf der Abrisshalde auf der linken Seite des Bildschirms abreissen.\\n\\nErste Stadtstufe erreicht! Deine Stadt hat eine Einwohnerzahl von mehr als %U! Dein Hauptziel besteht darin, in 20 Stufen eine Stadt mit so vielen Einwohnern wie möglich zu bauen. Dein Fortschritt wird im Stufenzähler oben links angezeigt.",
+      "city": "Baue eine Megalopolis! Errichte Hochhäuser und platziere sie geschickt im Stadtgitter, um dein Ziel zu erreichen. Indem du die Stufe und die Einwohnerzahl deiner Stadt erhöhst, schaltest du neue Gebäudearten frei. Die aktuelle Stufe und die Einwohnerzahl siehst du im oberen Bildschirmbereich. In der rechten oberen Ecke erscheint die Bewohnerzahl des Hochhauses, das du gerade gebaut hast, und des Hauses, das dadurch ersetzt wird.\\n\\nIm Bau-Modus musst du eine vorgegebene Höhe erreichen, die links unten angezeigt wird. Je besser du das Dach platzierst, desto mehr Bonuspunkte erhältst du. Du hast drei Versuche, das Hochhaus fertig zu stellen. Wenn du es nicht schaffst, kannst du das Gebäude auch ohne Dach in der Stadt platzieren.\\n\\nNachdem du ein Hochhaus gebaut hast, wählst du einen Platz auf einem der blinkenden Felder des Stadtgitters aus und platzierst das Haus mit A. Bewege das Haus mit dem Steuerkreuz. Alte Gebäude können durch neue ersetzt werden. Ungewollte Hochhäuser kannst du auf der Abrisshalde auf der linken Seite des Bildschirms abreissen.\\n\\nErste Stadtstufe erreicht! Deine Stadt hat eine Einwohnerzahl von mehr als %U! Dein Hauptziel besteht darin, in 20 Stufen eine Stadt mit so vielen Einwohnern wie möglich zu bauen. Dein Fortschritt wird im Stufenzähler oben links angezeigt.",
       "quick": "Errichte in Kürze einen Wolkenkratzer, der so hoch und stabil wie möglich ist.\\n\\nIm unteren Bereich siehst du die aktuelle Höhe des Gebäudes, wie viele Versuche du noch hast und die Anzahl der Bewohner.\\n\\nDrücke A, um einen Block abzuwerfen. Je höher dein Wolkenkratzer ist, desto mehr Bewohner ziehen pro abgeworfenen Block ein. Die Anzahl der Bewohner hängt ausserdem davon ab, wie gut du den Wohnungsblock platzierst.\\n\\nWenn du einen Block genau über einem anderen zentrierst, füllt sich die Combo-Anzeige. Platzierst du weitere Blocks, bevor sich die Anzeige leert, wird die Combo erweitert. Perfekte Abwürfe füllen die Anzeige auf. Jeder Block, den du während einer aktiven Combo platzierst, erhöht die Combopunkte. Die Combopunkte werden nach dem Ende der Combo zur Bewohner-Punktzahl addiert."
     },
     "en-EN": {
@@ -9,7 +9,7 @@
       "quick": "Build as high and as stable a building as possible.\\n\\nAt the bottom you'll see the current height of the building, how many tries you have left, and the current population of the building.\\n\\nPress A to drop the block. The higher your building the more people you'll get for each placed block. The amount of people also depends on how well the block is placed.\\n\\nCentering a block perfectly on top of another will fill the combo meter. Placing more blocks before the meter empties will add to the combo, and perfect drops will refill the meter. Every block that's placed while a combo is active will increase the combo score. The combo score is added to the population score after the combo ends."
     },
     "es-ES": {
-      "city": "¡Tu objetivo es crear una Megalópolis! Construye rascacielos y sitúalos adecuadamente en la cuadrícula de la ciudad para conseguir tu objetivo. Aumenta la población de tu ciudad y se desbloquearán nuevos tipos de edificios. Puedes consultar el nivel actual de la ciudad y su población en la parte superior de la pantalla. En la esquina superior derecha se muestra la población del rascacielos que acabas de construir y la del edificio al que va a sustituir.\\n\\nEn el modo construcción debes alcanzar la altura objetivo. La altura objetivo se muestra en la esquina inferior izquierda. Cuanto mejor coloques el tejado, mayor bonificación recibirás. Tienes tres oportunidades para terminar el rascacielos, si no lo consigues, puedes colocar el edificio sin terminar en la ciudad.\\n\\nCentra y coloca el rascacielos con A. Mueve el edificio con el D-pad. Los edificios antiguos pueden ser sustituidos por edificios nuevos. Si no quieres un rascacielos, lo puedes destruir en el icono de demoloción, a la izquierda.\\n\\n¡Primer nivel de ciudad conseguido! ¡Ya viven en tu ciudad más de %U ciudadanos! Tu objetivo principal es construir ciudades tan pobladas como te sea posible y superar los 20 niveles de ciudad. Consulta tu progreso en el indicador de niveles de ciudad en la esquina superior izquierda.",
+      "city": "¡Tu objetivo es crear una Megalópolis! Construye rascacielos y sitúalos adecuadamente en la cuadrícula de la ciudad para conseguir tu objetivo. Aumenta la población de tu ciudad y se desbloquearán nuevos tipos de edificios. Puedes consultar el nivel actual de la ciudad y su población en la parte superior de la pantalla. En la esquina superior derecha se muestra la población del rascacielos que acabas de construir y la del edificio al que va a sustituir.\\n\\nEn el modo construcción debes alcanzar la altura objetivo. La altura objetivo se muestra en la esquina inferior izquierda. Cuanto mejor coloques el tejado, mayor bonificación recibirás. Tienes tres oportunidades para terminar el rascacielos, si no lo consigues, puedes colocar el edificio sin terminar en la ciudad.\\n\\nCentra y coloca el rascacielos con A. Mueve el edificio con la cruceta. Los edificios antiguos pueden ser sustituidos por edificios nuevos. Si no quieres un rascacielos, lo puedes destruir en el icono de demoloción, a la izquierda.\\n\\n¡Primer nivel de ciudad conseguido! ¡Ya viven en tu ciudad más de %U ciudadanos! Tu objetivo principal es construir ciudades tan pobladas como te sea posible y superar los 20 niveles de ciudad. Consulta tu progreso en el indicador de niveles de ciudad en la esquina superior izquierda.",
       "quick": "Construye un edificio tan alto y estable como puedas.\\n\\nEn la parte inferior se muestra la altura del edificio, sus ocupantes actuales y cuántos intentos te quedan.\\n\\nPulsa A para colocar el bloque de ladrillos. Cuanto más alto sea el edificio, más personas conseguirás por cada bloque que coloques. La cantidad de personas también depende de lo bien colocados que estén los bloques.\\n\\nSi centras perfectamente un bloque encima de otro, se activará el medidor de combos. Si depositas más bloques antes de que el medidor se agote, se acumularán combos, y si los centras perfectamente, se volverá a llenar el medidor. Cada bloque que deposites mientras el combo está activo aumentará la puntuación de combos. La puntuación de combos se suma a la puntuación de población cuando el combo se desactiva."
     },
     "fr-FR": {
@@ -17,7 +17,7 @@
       "quick": "Construis une tour aussi haute et stable que possible.\\n\\nEn bas de l'écran sont affichés la taille actuelle de la tour, le nombre d'essais restants et la population de la tour.\\n\\nAppuie sur A pour faire tomber un bloc. Plus la tour est haute, plus chaque bloc ajouté augmente la population. L'augmentation de la population dépend également de la qualité avec laquelle le bloc est placé.\\n\\nUn bloc parfaitement placé sur un autre remplit le combomètre. Ajouter d'autres blocs avant que la jauge ne se vide augmente le combo, et les blocs parfaitement placés remplissent le combomètre. Tous les blocs placés quand le combo est actif augmentent le score du combo. Le score du combo s'ajoute à celui de la population quand le combo se termine."
     },
     "it-IT": {
-      "city": "Lo scopo del gioco è creare una Megalopoli! Costruisci dei palazzi e posizionali correttamente sulla griglia della città. Aumentando il numero di abitanti della città e passando al livello successivo, sbloccherai nuovi tipi di edifici. Il livello raggiunto e il numero di abitanti della città sono visualizzati sulla parte superiore dello schermo. L'angolo in alto a destra mostra il numero degli inquilini del palazzo che hai appena costruito e il numero degli inquilini dell'attuale palazzo che potrebbe sostituire.\\n\\nIn modalità Costruisci palazzi devi riuscire a raggiungere l'altezza visualizzata nell'angolo in basso a sinistra. Meglio posizioni il tetto, maggiori saranno i bonus ottenuti. Hai tre possibilità di completare il palazzo; se fallisci, l'edificio può essere collocato nella città senza tetto.\\n\\nDopo aver completato un palazzo, puoi scegliere una posizione su una delle caselle lampeggianti nella griglia della città e collocare il palazzo premendo A. Sposta il palazzo usando il D-pad. Gli edifici vecchi possono essere sostituiti con edifici nuovi. Se desideri eliminare un palazzo puoi distruggerlo nell'area di demolizione sulla sinistra.\\n\\nPrimo livello raggiunto! La tua città conta ormai più di %U abitanti! Il tuo obiettivo principale è quello di costruire una città con il maggior numero possibile di abitanti superando i 20 livelli. Controlla i tuoi progressi di gioco sul contatore di livelli nell'angolo in alto a sinistra.",
+      "city": "Lo scopo del gioco è creare una Megalopoli! Costruisci dei palazzi e posizionali correttamente sulla griglia della città. Aumentando il numero di abitanti della città e passando al livello successivo, sbloccherai nuovi tipi di edifici. Il livello raggiunto e il numero di abitanti della città sono visualizzati sulla parte superiore dello schermo. L'angolo in alto a destra mostra il numero degli inquilini del palazzo che hai appena costruito e il numero degli inquilini dell'attuale palazzo che potrebbe sostituire.\\n\\nIn modalità Costruisci palazzi devi riuscire a raggiungere l'altezza visualizzata nell'angolo in basso a sinistra. Meglio posizioni il tetto, maggiori saranno i bonus ottenuti. Hai tre possibilità di completare il palazzo; se fallisci, l'edificio può essere collocato nella città senza tetto.\\n\\nDopo aver completato un palazzo, puoi scegliere una posizione su una delle caselle lampeggianti nella griglia della città e collocare il palazzo premendo 5. Sposta il palazzo usando il D-pad. Gli edifici vecchi possono essere sostituiti con edifici nuovi. Se desideri eliminare un palazzo puoi distruggerlo nell'area di demolizione sulla sinistra.\\n\\nPrimo livello raggiunto! La tua città conta ormai più di %U abitanti! Il tuo obiettivo principale è quello di costruire una città con il maggior numero possibile di abitanti superando i 20 livelli. Controlla i tuoi progressi di gioco sul contatore di livelli nell'angolo in alto a sinistra.",
       "quick": "Devi costruire un edificio il più alto e stabile possibile.\\n\\nNella parte inferiore dello schermo sono visualizzati l'altezza dell'edificio, il numero dei tentativi ancora disponibili e il numero di inquilini dell'edificio.\\n\\nPremi A per lasciar cadere l'appartamento. Più alto è l'edificio, maggiore sarà il numero di inquilini per ogni appartamento collocato. Il numero di inquilini dipende anche da come hai posizionato l'appartamento. Se riesci ad allineare perfettamente due appartamenti, uno sopra l'altro, l'indicatore di combo si riempie completamente. Posizionando altri appartamenti prima che l'indicatore si svuoti, è possibile aumentare la combo; ad ogni allineamento perfetto l'indicatore si riempie di nuovo. Ogni appartamento posizionato con una combo attiva fa aumentare il punteggio combo che verrà sommato al punteggio inquilini al termine della combo."
     }
   },
@@ -1051,9 +1051,10 @@
       }
     }
   },
+  "city_modal_wrap_width": 184,
   "city_modal_wrapped_line_counts": {
     "de-DE": [
-      2,
+      3,
       3,
       2,
       3,
@@ -1063,40 +1064,40 @@
       1,
       2,
       1,
-      3,
-      5,
-      5,
-      3,
       4,
+      5,
+      6,
+      3,
+      5,
       3,
       4,
       3,
       3,
       4,
       2,
-      4,
+      5,
       3,
       3,
-      2
+      3
     ],
     "en-EN": [
-      2,
+      3,
       3,
       2,
       2,
       2,
+      6,
+      3,
+      1,
+      1,
+      1,
+      4,
+      4,
       5,
       3,
-      1,
-      1,
-      1,
-      4,
-      4,
       4,
       3,
       4,
-      2,
-      3,
       2,
       3,
       4,
@@ -1110,79 +1111,79 @@
       2,
       3,
       2,
+      3,
       2,
+      7,
+      4,
+      2,
+      1,
+      1,
+      4,
+      5,
+      6,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      5,
       2,
       6,
       3,
-      1,
-      1,
-      1,
-      3,
       4,
-      5,
-      3,
-      4,
-      3,
-      3,
-      3,
-      3,
-      4,
-      2,
-      5,
-      3,
-      3,
       2
     ],
     "fr-FR": [
       2,
       3,
       2,
-      2,
-      2,
-      5,
-      3,
-      1,
-      1,
-      1,
-      4,
-      5,
-      5,
-      3,
-      4,
-      3,
-      3,
-      2,
-      3,
-      4,
-      2,
-      3,
-      2,
-      3,
-      2
-    ],
-    "it-IT": [
-      2,
-      3,
-      2,
       3,
       2,
       6,
       3,
       1,
+      2,
       1,
-      1,
+      5,
+      5,
+      5,
       4,
+      4,
+      3,
+      4,
+      3,
       3,
       5,
+      2,
+      4,
+      2,
+      3,
+      2
+    ],
+    "it-IT": [
+      3,
+      3,
+      2,
+      3,
+      2,
+      7,
+      4,
+      1,
+      2,
+      1,
+      4,
+      4,
+      5,
+      4,
+      4,
       3,
       4,
       3,
       3,
-      2,
-      2,
       5,
       2,
-      4,
+      5,
       2,
       3,
       2
@@ -2837,7 +2838,7 @@
     },
     {
       "path": "gba/graphics/ui/menu_high_scores_icon_p0.bmp",
-      "sha256": "1b89321445fb2d89da7cd841d76465cf3be26aa14a32e4be749061c327476624",
+      "sha256": "83df2208876753270300e5b49740d9c1385edf011ce5861d5e0a12937ef30443",
       "size": 246
     },
     {
@@ -2887,7 +2888,7 @@
     },
     {
       "path": "gba/graphics/ui/menu_instructions_icon_p0.bmp",
-      "sha256": "2f710eda0c0c8a2974f5f035e4edd1bfaa5c29edf4fc48f17b38505faa7162ed",
+      "sha256": "6bc604491660506e44277597855b35b2172e317dfb96b5310c07207b5cc04e32",
       "size": 246
     },
     {
@@ -3377,7 +3378,7 @@
     },
     {
       "path": "gba/graphics/ui/tower_bloxx_logo_p1.bmp",
-      "sha256": "9840b56edef16dd8e6f1131f84366d891dc3aeeb9609baa69c1f275f3558feb6",
+      "sha256": "c734a793b3b358caac7b09adad01d6b87a1ecab26484c17ef1dca14bf1a4d8a1",
       "size": 1142
     },
     {
@@ -3412,8 +3413,8 @@
     },
     {
       "path": "gba/include/generated/tower_localization.h",
-      "sha256": "0868a08fe87cfb4289cfa757bd7643222d77a26a836ae4d539269daeb1193678",
-      "size": 113066
+      "sha256": "b41e5ade13df0cb889d9eaa79e1cc176d244da2f1c7bde84d08b86793de65399",
+      "size": 115566
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
@@ -4768,6 +4769,7 @@
       }
     ]
   },
+  "instruction_wrap_width": 184,
   "locale_codes": [
     "en-EN",
     "fr-FR",
@@ -5603,7 +5605,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "49da743c38ce2f3de12f15908240c0830e6beeda6028bac633800b6f650d2fd8",
+  "tree_hash": "2c3b49be01760a3502955deee7070bf3821d8f01e85d705594af244f0a03e60e",
   "utf8_characters": [
     "¡",
     "°",
@@ -5632,37 +5634,37 @@
   "wrapped_line_counts": {
     "de-DE": {
       "about": 20,
-      "city": 32,
+      "city": 37,
       "overwrite_game": 1,
-      "quick": 21,
+      "quick": 24,
       "reset_city": 3
     },
     "en-EN": {
       "about": 19,
-      "city": 28,
+      "city": 33,
       "overwrite_game": 2,
-      "quick": 18,
+      "quick": 21,
       "reset_city": 2
     },
     "es-ES": {
       "about": 17,
-      "city": 31,
+      "city": 36,
       "overwrite_game": 1,
-      "quick": 21,
+      "quick": 24,
       "reset_city": 3
     },
     "fr-FR": {
       "about": 19,
-      "city": 29,
+      "city": 34,
       "overwrite_game": 1,
-      "quick": 20,
+      "quick": 22,
       "reset_city": 2
     },
     "it-IT": {
       "about": 19,
-      "city": 32,
+      "city": 38,
       "overwrite_game": 1,
-      "quick": 20,
+      "quick": 23,
       "reset_city": 2
     }
   }

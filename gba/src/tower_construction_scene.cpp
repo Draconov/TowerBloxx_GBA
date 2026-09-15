@@ -32,6 +32,7 @@ constexpr int current_block_z_order = -20;
 constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
 constexpr int modal_backdrop_z_order = -90;
+constexpr int modal_line_spacing = 12;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
@@ -827,13 +828,13 @@ void TowerConstructionScene::_show_modal(int localization_index)
 
     const int line_count = generated::city_modal_line_counts[_language][modal_index];
     _show_modal_backdrop(line_count);
-    int y = -((line_count - 1) * 10) / 2;
+    int y = -((line_count - 1) * modal_line_spacing) / 2;
     for(int line = 0; line < line_count; ++line)
     {
         const bn::string<128> formatted = format_construction_modal_line(
                 generated::city_modal_lines[_language][modal_index][line]);
         _text_generator.generate(0, y, formatted, _hud_sprites);
-        y += 10;
+        y += modal_line_spacing;
     }
     show_ui_composite(generated::city_continue_arrow, 112, 72, _hud_sprites);
 }

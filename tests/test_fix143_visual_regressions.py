@@ -20,8 +20,17 @@ def _palette_rgb(path: Path, entries: int = 256) -> tuple[int, ...]:
 def test_build_city_browser_uses_preview_frame_and_type_highlight() -> None:
     scene = (_root() / "gba/src/build_city_scene.cpp").read_text()
     assert "building_asset(type, 3)" in scene
-    assert "*lot_assets[snapshot.selected_building_type - 1]" in scene
+    assert "*lot_assets[selected - 1]" in scene
     assert "type == snapshot.selected_building_type ? 1 : 3" not in scene
+
+
+def test_selected_browser_tower_and_outline_render_in_front_of_neighbor_previews() -> None:
+    scene = (_root() / "gba/src/build_city_scene.cpp").read_text()
+    assert "constexpr int selected_preview_outline_z_order = -2;" in scene
+    assert "constexpr int selected_preview_tower_z_order = -3;" in scene
+    assert "if(type == selected)" in scene
+    assert "selected_preview_outline_z_order" in scene
+    assert "selected_preview_tower_z_order" in scene
 
 
 def test_build_city_cursor_and_saved_buildings_match_recovered_grid_anchors() -> None:

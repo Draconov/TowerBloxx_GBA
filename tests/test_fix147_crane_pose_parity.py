@@ -45,6 +45,6 @@ def test_build_city_highlighted_unlocked_tower_stays_raised() -> None:
     # outline stay +2px right / -2px up for the full browse selection, not only
     # during the source confirmation timer. The orange pulse itself never moves it.
     assert "build_city_preview_raised(selected, snapshot.selected_building_type," in source
-    assert "build_city_preview_raised(type, snapshot.selected_building_type," in source
+    assert "if(type == selected)" in source
     assert "snapshot.construction_select_ms > 0 && snapshot.construction_select_ms < 250" not in source
     assert "_selector_flash_ms < 250" not in source

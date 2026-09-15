@@ -61,7 +61,7 @@ def test_scenes_use_initial_base_mesh_special_rig_and_source_selected_offset() -
     assert "floor_index == 0 ? initial_base_mesh_id" in quick
     assert "floor_index == 0 ? initial_base_mesh_id" in construction
     assert "build_city_preview_raised(selected, snapshot.selected_building_type," in city
-    assert "build_city_preview_raised(type, snapshot.selected_building_type," in city
+    assert "if(type == selected)" in city
     assert "preview_left += 2;" in city
     assert "preview_baseline -= 2;" in city
     # Orange browser cursor exists even when the highlighted type is locked.

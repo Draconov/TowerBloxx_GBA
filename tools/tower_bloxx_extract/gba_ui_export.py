@@ -268,6 +268,7 @@ def _font_header(font: Font44) -> str:
 
 def _localization_header(
     locales: tuple[LocalePack, ...],
+    localized_adapted: dict[str, tuple[str, ...]],
     adapted: dict[str, dict[str, str]],
     wrapped: dict[str, dict[str, tuple[str, ...]]],
     city_modal_wrapped: dict[str, tuple[tuple[str, ...], ...]],
@@ -296,7 +297,7 @@ def _localization_header(
     ])
     for locale in locales:
         lines.append("    {")
-        lines.extend(f"        {_cpp_string(value)}," for value in locale.strings)
+        lines.extend(f"        {_cpp_string(value)}," for value in localized_adapted[locale.code])
         lines.append("    },")
     lines.extend([
         "};",
@@ -421,43 +422,8 @@ def _logo_header(records: list[dict[str, object]]) -> str:
 
 
 def _adapt_instructions(locale: LocalePack) -> dict[str, str]:
-    quick = locale.strings[2]
-    city = locale.strings[3]
-
-    # The only content changes are control substitutions.  We replace the
-    # literal Nokia keypad tokens, leaving all other localized prose intact.
-    press5_phrases = {
-        "en-EN": ("Press 5", "Press A"),
-        "fr-FR": ("Appuie sur 5", "Appuie sur A"),
-        "it-IT": ("Premi 5", "Premi A"),
-        "de-DE": ("Drücke 5", "Drücke A"),
-        "es-ES": ("Pulsa 5", "Pulsa A"),
-    }
-    if locale.code in press5_phrases:
-        old, new = press5_phrases[locale.code]
-        quick = quick.replace(old, new)
-
-    city_place_phrases = {
-        "en-EN": ("place the tower with 5", "place the tower with A"),
-        "fr-FR": ("la placer avec 5", "la placer avec A"),
-        "it-IT": ("collocare il palazzo premendo 5", "collocare il palazzo premendo A"),
-        "de-DE": ("platzierst das Haus mit 5", "platzierst das Haus mit A"),
-        "es-ES": ("coloca el rascacielos con 5", "coloca el rascacielos con A"),
-    }
-    if locale.code in city_place_phrases:
-        old, new = city_place_phrases[locale.code]
-        city = city.replace(old, new)
-
-    movement_phrases = {
-        "en-EN": ("Move the tower with 4, 6, 2 and 8.", "Move the tower with the D-pad."),
-        "fr-FR": ("Déplace-la avec 4, 6, 2 et 8.", "Déplace-la avec le D-pad."),
-        "it-IT": ("Sposta il palazzo usando 4, 6, 2, 8.", "Sposta il palazzo usando il D-pad."),
-        "de-DE": ("Bewege das Haus mit 4, 6, 2, 8.", "Bewege das Haus mit dem D-pad."),
-        "es-ES": ("Mueve el edificio con 4, 6, 2, 8.", "Mueve el edificio con el D-pad."),
-    }
-    if locale.code in movement_phrases:
-        old, new = movement_phrases[locale.code]
-        city = city.replace(old, new)
+    quick = _adapt_controls(locale.code, locale.strings[2])
+    city = _adapt_controls(locale.code, locale.strings[3])
 
     # Preserve the proven 20-milestone rule in the playable City instructions.
     # The original long help text omits the count; its tutorial string (41)
@@ -467,6 +433,46 @@ def _adapt_instructions(locale: LocalePack) -> dict[str, str]:
         city = f"{city}\\n\\n{milestone}"
 
     return {"quick": quick, "city": city}
+
+
+def _adapt_controls(locale_code: str, value: str) -> str:
+    """Translate Nokia keypad instructions into the GBA control scheme."""
+    substitutions = {
+        "en-EN": (
+            ("Press 5", "Press A"),
+            ("with 4, 6, 2 and 8", "with the D-pad"),
+            ("with 4, 6, 2, 8", "with the D-pad"),
+            ("Use 2 and 8", "Use Up and Down"),
+            ("with 5", "with A"),
+        ),
+        "fr-FR": (
+            ("Appuie sur 5", "Appuie sur A"),
+            ("avec 4, 6, 2 et 8", "avec le D-pad"),
+            ("Utilise 2 et 8", "Utilise Haut et Bas"),
+            ("avec 5", "avec A"),
+        ),
+        "it-IT": (
+            ("Premi 5", "Premi A"),
+            ("usando 4, 6, 2, 8", "usando il D-pad"),
+            ("Usa 2 e 8", "Usa Su e Giù"),
+            ("con 5", "con A"),
+        ),
+        "de-DE": (
+            ("Drücke 5", "Drücke A"),
+            ("mit 4, 6, 2, 8", "mit dem Steuerkreuz"),
+            ("Benutze die Tasten 2 und 8", "Benutze Oben und Unten"),
+            ("mit 5", "mit A"),
+        ),
+        "es-ES": (
+            ("Pulsa 5", "Pulsa A"),
+            ("con 4, 6, 2, 8", "con la cruceta"),
+            ("Utiliza 2 y 8", "Utiliza Arriba y Abajo"),
+            ("con 5", "con A"),
+        ),
+    }
+    for old, new in substitutions.get(locale_code, ()):
+        value = value.replace(old, new)
+    return value
 
 
 def _export_composite(
@@ -1205,21 +1211,28 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     )
     _set_shared_palette_entries(construction_meter_fill_records, construction_meter_fill_entries)
 
+    localized_adapted = {
+        locale.code: tuple(_adapt_controls(locale.code, value) for value in locale.strings)
+        for locale in locales
+    }
     adapted = {locale.code: _adapt_instructions(locale) for locale in locales}
     wrapped: dict[str, dict[str, tuple[str, ...]]] = {}
     for locale in locales:
         about = _normalize_display_text(locale.strings[1])
         about = "\n".join(line for line in about.split("\n") if line.strip() != "img=10")
         wrapped[locale.code] = {
-            "quick": _wrap_text(font, adapted[locale.code]["quick"]),
-            "city": _wrap_text(font, adapted[locale.code]["city"]),
+            "quick": _wrap_text(font, adapted[locale.code]["quick"], max_width=184),
+            "city": _wrap_text(font, adapted[locale.code]["city"], max_width=184),
             "about": _wrap_text(font, about),
-            "reset_city": _wrap_text(font, locale.strings[98], max_width=208),
-            "overwrite_game": _wrap_text(font, locale.strings[118], max_width=208),
+            "reset_city": _wrap_text(font, localized_adapted[locale.code][98], max_width=184),
+            "overwrite_game": _wrap_text(font, localized_adapted[locale.code][118], max_width=184),
         }
 
     city_modal_wrapped = {
-        locale.code: tuple(_wrap_text(font, locale.strings[index], max_width=208) for index in range(36, 61))
+        locale.code: tuple(
+            _wrap_text(font, localized_adapted[locale.code][index], max_width=184)
+            for index in range(36, 61)
+        )
         for locale in locales
     }
 
@@ -1228,7 +1241,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     ui_assets_header = include_dir / "tower_ui_assets.h"
     font_header.write_text(_font_header(font), encoding="utf-8", newline="\n")
     localization_header.write_text(
-        _localization_header(locales, adapted, wrapped, city_modal_wrapped), encoding="utf-8", newline="\n"
+        _localization_header(locales, localized_adapted, adapted, wrapped, city_modal_wrapped),
+        encoding="utf-8", newline="\n"
     )
     ui_assets_header.write_text(_logo_header(asset_records), encoding="utf-8", newline="\n")
 
@@ -1266,6 +1280,8 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         "font_space_between_characters": font.space_between_characters,
         "font_line_height": font.line_height,
         "adapted_instructions": adapted,
+        "instruction_wrap_width": 184,
+        "city_modal_wrap_width": 184,
         "city_modal_wrapped_line_counts": {
             locale.code: [len(lines) for lines in city_modal_wrapped[locale.code]] for locale in locales
         },
