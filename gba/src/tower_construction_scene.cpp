@@ -214,6 +214,7 @@ void TowerConstructionScene::start(
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _construction.start(request.building_type, request.target_height, request.trophy_eligible);
     _gameplay_workers.reset();
+    _life_indicator_animation.reset(3);
     _frame_phase = 0;
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
@@ -297,6 +298,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     const bool workers_advanced = _gameplay_workers.begin_frame(delta_ms);
     _construction.update(delta_ms, input);
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
+    const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -358,7 +360,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         _rebuild_worker_sprites(snapshot);
     }
 
-    if(snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
+    if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.roof_phase != _last_hud_roof_phase ||
        snapshot.roof_result != _last_hud_roof_result || snapshot.status != _last_hud_status)
     {
@@ -788,8 +790,7 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     const int active_frame = building_index * 2;
     for(int slot = 0; slot < 3; ++slot)
     {
-        const int required_chances = 3 - slot;
-        const int frame = snapshot.chances_left >= required_chances ? active_frame : 8;
+        const int frame = _life_indicator_animation.frame_for_slot(slot, snapshot.chances_left, active_frame);
         const int top_y = 132 + slot * 6;
         show_ui_composite(*construction_state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
     }

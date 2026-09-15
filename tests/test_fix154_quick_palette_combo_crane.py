@@ -33,9 +33,32 @@ def test_quick_game_live_hud_states_share_palette_headroom(
         "hud_brown_digit_f0_p0.bmp",
         "hud_brown_digit_f11_p0.bmp",
         "hud_state_indicator_f6_p0.bmp",
-        "hud_state_indicator_f8_p0.bmp",
+        "hud_state_indicator_f7_p0.bmp",
     ):
         assert _palette16(graphics / name) == shared
+
+    # Exhausted + final-life warning states share a second tiny palette, so
+    # the 100ms break animation and 500ms warning blink never add more than
+    # one extra bank on top of the already-budgeted Quick Game HUD family.
+    common = _palette16(graphics / "hud_state_indicator_f8_p0.bmp")
+    assert _palette16(graphics / "hud_state_indicator_f9_p0.bmp") == common
+
+
+def test_construction_life_pairs_share_palettes_with_broken_frames(
+    tower_bloxx_jar: Path, tmp_path: Path
+) -> None:
+    project = tmp_path / "construction_life"
+    export_gba_ui_assets(tower_bloxx_jar, project)
+    graphics = project / "gba/graphics/ui"
+
+    for active, broken in ((0, 1), (2, 3), (4, 5), (6, 7)):
+        assert _palette16(graphics / f"hud_state_indicator_f{active}_p0.bmp") == _palette16(
+            graphics / f"hud_state_indicator_f{broken}_p0.bmp"
+        )
+
+    assert _palette16(graphics / "hud_state_indicator_f8_p0.bmp") == _palette16(
+        graphics / "hud_state_indicator_f9_p0.bmp"
+    )
 
 
 def test_quick_game_crane_platform_family_uses_one_bpp4_palette(

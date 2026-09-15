@@ -1175,16 +1175,37 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     )
     _set_shared_palette_entries(hud_brown_digit_records, brown_entries)
 
+    # House.i(Graphics) uses each building family's live/broken resource-18
+    # pair together for the 100ms lost-chance animation.  Canonicalize each
+    # pair so that transition does not temporarily consume an extra OBJ bank.
+    for active_index in (0, 2, 4, 6):
+        pair_records = [
+            hud_state_indicator_records[active_index],
+            hud_state_indicator_records[active_index + 1],
+        ]
+        pair_entries = _share_bpp4_palette(
+            graphics_dir, _record_asset_names(pair_records)
+        )
+        _set_shared_palette_entries(pair_records, pair_entries)
+
+    # Frame 8 is the common exhausted state and frame 9 is the common
+    # one-chance warning flash.  They can be alive together while a broken
+    # color-pair frame is still on screen, so keep them on one small bank.
+    life_common_records = [hud_state_indicator_records[8], hud_state_indicator_records[9]]
+    life_common_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(life_common_records)
+    )
+    _set_shared_palette_entries(life_common_records, life_common_entries)
+
     # Fix 15.4: Quick Game keeps a 128-color BPP8 tower palette live, leaving
-    # only eight OBJ BPP4 banks.  After the first miss resource 18 uses both
-    # frame 6 (remaining chance) and frame 8 (spent chance), and an active
-    # combo also uses resource 15.  These exact-color assets fit in one BPP4
-    # palette (13 opaque colors), so canonicalize them together and keep
-    # several banks of headroom instead of crashing when a chance is spent.
+    # only eight OBJ BPP4 banks.  Keep the orange live/broken pair with the
+    # combo/counter family (14 opaque colors), while exhausted/warning frames
+    # use the small common life bank above.  This preserves several banks of
+    # headroom even during the 100ms break animation and final-life blink.
     quick_hud_shared_records = [
         *hud_brown_digit_records,
         hud_state_indicator_records[6],
-        hud_state_indicator_records[8],
+        hud_state_indicator_records[7],
         quick_counter_frame_record,
         quick_combo_meter_frame_record,
         quick_combo_meter_fill_record,

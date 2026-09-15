@@ -14,6 +14,7 @@
 #include "tb/build_city.h"
 #include "tb/crane_presentation.h"
 #include "tb/gameplay_workers.h"
+#include "tb/life_indicator_animation.h"
 #include "tb/tower_construction.h"
 
 namespace tb
@@ -62,6 +63,7 @@ private:
 
     TowerConstruction _construction;
     GameplayWorkerField _gameplay_workers;
+    LifeIndicatorAnimation _life_indicator_animation;
     bn::optional<bn::regular_bg_ptr> _background;
     bn::sprite_affine_mat_ptr _current_affine_mat;
     bn::sprite_text_generator _text_generator;

@@ -238,6 +238,7 @@ void QuickGameScene::start(int language)
     _language = language >= 0 && language < generated::locale_count ? language : 0;
     _game.reset();
     _gameplay_workers.reset();
+    _life_indicator_animation.reset(3);
     _record_flags = {};
     _records_applied = false;
     _frame_phase = 0;
@@ -303,6 +304,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     _game.update(delta_ms, input);
 
     const QuickGameSnapshot snapshot = _game.snapshot();
+    const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -342,7 +344,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     }
 
     const int current_combo_bucket = combo_bucket(snapshot);
-    if(snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
+    if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.combo_count != _last_hud_combo_count ||
        current_combo_bucket != _last_hud_combo_bucket || snapshot.status != _last_hud_status)
     {
@@ -815,8 +817,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     // clips the four-row loop so only three 6x6 cells are visible.
     for(int slot = 0; slot < 3; ++slot)
     {
-        const int required_chances = 3 - slot;
-        const int frame = snapshot.chances_left >= required_chances ? 6 : 8;
+        const int frame = _life_indicator_animation.frame_for_slot(slot, snapshot.chances_left, 6);
         const int top_y = 132 + slot * 6;
         show_ui_composite(*hud_state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
     }

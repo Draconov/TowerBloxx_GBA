@@ -12,6 +12,7 @@
 #include "tb/app_state.h"
 #include "tb/crane_presentation.h"
 #include "tb/gameplay_workers.h"
+#include "tb/life_indicator_animation.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
 
@@ -54,6 +55,7 @@ private:
 
     QuickGame _game;
     GameplayWorkerField _gameplay_workers;
+    LifeIndicatorAnimation _life_indicator_animation;
     bn::optional<bn::regular_bg_ptr> _background;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
