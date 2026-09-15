@@ -6,6 +6,7 @@
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_math.h"
+#include "bn_sprite_double_size_mode.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_regular_bg_items_construction_bg.h"
@@ -558,6 +559,7 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     {
         bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(0, 0);
         sprite.set_z_order(special_cable_z_order);
+        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
         _special_cable_sprites.push_back(sprite);
     }
 
@@ -568,7 +570,7 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     bn::sprite_ptr& sprite = _special_cable_sprites[0];
     sprite.set_position(bn::fixed(start_x + end_x) / 2, bn::fixed(start_y + end_y) / 2);
     sprite.set_vertical_scale(bn::fixed(cable_draw_length) / 64);
-    sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));
+    sprite.set_rotation_angle_safe(bn::degrees_atan2(dx, dy));
 }
 
 void QuickGameScene::_update_world_positions()

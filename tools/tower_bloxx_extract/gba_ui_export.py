@@ -1145,6 +1145,23 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
     )
     _set_shared_palette_entries(hud_brown_digit_records, brown_entries)
 
+    # Fix 15.4: Quick Game keeps a 128-color BPP8 tower palette live, leaving
+    # only eight OBJ BPP4 banks.  After the first miss resource 18 uses both
+    # frame 6 (remaining chance) and frame 8 (spent chance), and an active
+    # combo also uses resource 15.  These exact-color assets fit in one BPP4
+    # palette (13 opaque colors), so canonicalize them together and keep
+    # several banks of headroom instead of crashing when a chance is spent.
+    quick_hud_shared_records = [
+        *hud_brown_digit_records,
+        hud_state_indicator_records[6],
+        hud_state_indicator_records[8],
+        quick_counter_frame_record,
+    ]
+    quick_hud_entries = _share_bpp4_palette(
+        graphics_dir, _record_asset_names(quick_hud_shared_records)
+    )
+    _set_shared_palette_entries(quick_hud_shared_records, quick_hud_entries)
+
     placement_panel_records = [
         *city_edge_clip_records,
         city_panel_state_records[0],

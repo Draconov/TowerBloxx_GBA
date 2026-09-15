@@ -2317,7 +2317,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f0_p0.bmp",
-      "sha256": "3af47a2203e294096b749ea3cc4a1ed6eef2862a5aeddd0dd9d3ab9b8dbf8810",
+      "sha256": "e044af5b58b3c15543c21ae5fa572f5a518758dc8c746b88c6551c513f22d429",
       "size": 150
     },
     {
@@ -2327,7 +2327,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f10_p0.bmp",
-      "sha256": "7f0e3e62d80033c8bb348262bbb562323e279c91ddaca6c29215ce97fc48a76a",
+      "sha256": "e64f23e2943d2cb00b10370e4778d86d50b33629ae256b9b8b4a2a37c06fb197",
       "size": 150
     },
     {
@@ -2337,7 +2337,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f11_p0.bmp",
-      "sha256": "b71f9131c76e77688b1e3da386eddb60c5f0ee6a682c68a0fac28cb7e019c15e",
+      "sha256": "fc90f33895ffc9ba31d3539ede98dcf5f2bf85c1bce9f54638ba37f2f1b97b50",
       "size": 150
     },
     {
@@ -2347,7 +2347,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f1_p0.bmp",
-      "sha256": "a01811b0c5b3951fae81dfa54f45da837a196109da6a30b78bea8fc00375e788",
+      "sha256": "7fc36e926783073874ad8305303761dc6dc6ad98e941c7c14f83d75bf3f77980",
       "size": 150
     },
     {
@@ -2357,7 +2357,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f2_p0.bmp",
-      "sha256": "15d21578fe73c0c454509e14b56f50b811c5792994080fbd54000b81d4a64580",
+      "sha256": "308d69fda7b3eca145134f9e5828eb2f4a93a19dcb854d4fa700b6909d61d2c4",
       "size": 150
     },
     {
@@ -2367,7 +2367,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f3_p0.bmp",
-      "sha256": "bdc4a7c81daf87ae0f812c1e3cacf169e7b7cd22f5feeacae239b40ee1238ff1",
+      "sha256": "2d03b93f476ff885960037138dcaa87776beeb9a4a4164bce11af8968dd53800",
       "size": 150
     },
     {
@@ -2377,7 +2377,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f4_p0.bmp",
-      "sha256": "544c071f4077e79536e2727e537a93c25216af8d4bc7135c9295ddce43c05cf8",
+      "sha256": "49e1077e0659eab7e04c501bfd300b886d01fa7387595c643f3370aef395e949",
       "size": 150
     },
     {
@@ -2387,7 +2387,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f5_p0.bmp",
-      "sha256": "7ab7fd6cb25ef359c7e7048981350f123154cdb6020b4306cc8668b3bd0ff602",
+      "sha256": "c878c384400f5b9c16190b7716179497c2e2f4753a38f569c1a96bbaa93d19b9",
       "size": 150
     },
     {
@@ -2397,7 +2397,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f6_p0.bmp",
-      "sha256": "3ba7cd9bdad4de58ba99243c14b8e081de3b09939863e0ece24a54ac1afd4a4c",
+      "sha256": "4f0c8879f11a7668731460e99319953dadd99e14fcb1c8517b041c92d3191eb4",
       "size": 150
     },
     {
@@ -2407,7 +2407,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f7_p0.bmp",
-      "sha256": "1eaa49c14dd69713c33a252ddb150527320a94b9eac2e2fe1099a6c66ba016e7",
+      "sha256": "87c34f512cb86020d5bcf5785641250bb099c185ba1ba25ff7f059399319e936",
       "size": 150
     },
     {
@@ -2417,7 +2417,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f8_p0.bmp",
-      "sha256": "cd91cf77760e0fac41ac14c5bb9d37b395116219e632174d235ee3ced8d94741",
+      "sha256": "e353bad6862c4c955ce2e5482b643fc28aac4dba843f9821bc9c64099858c27b",
       "size": 150
     },
     {
@@ -2427,7 +2427,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_brown_digit_f9_p0.bmp",
-      "sha256": "2d969af68211a81ad3e0da0e324ea7d7660fa62bc979b4782959e81c7d014e8d",
+      "sha256": "f8ac66645fd32a864cef316253f90b1b1c70396a1ba6fac4773372b28ec5012b",
       "size": 150
     },
     {
@@ -2617,7 +2617,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_state_indicator_f6_p0.bmp",
-      "sha256": "d7ee968535014a76925a0f705271a5fb027737ff744b4cfea2d3782ba9a155e1",
+      "sha256": "fb1ca54fe633625b56c1a27bbd93cf3ea801dd8d68215a02deccf79e7dcc02ec",
       "size": 150
     },
     {
@@ -2637,7 +2637,7 @@
     },
     {
       "path": "gba/graphics/ui/hud_state_indicator_f8_p0.bmp",
-      "sha256": "7a7574c18eacd4e6b40656a40039bce5b89814df0392bb81b61b1c4f6a576ec3",
+      "sha256": "f67933b24af76720936ff1c254342470cbce76eec89467c24588e9cf6ffc7801",
       "size": 150
     },
     {
@@ -3317,7 +3317,7 @@
     },
     {
       "path": "gba/graphics/ui/quick_counter_frame_p0.bmp",
-      "sha256": "37ffd313dc56ae31798522ae79412c246d901e2dbb9dd6c1e508c6ae6f0bfbcf",
+      "sha256": "8b31185c60261c0ca0d3313c3cc7ad4d3bc461d01c18a91ece37c34502aacb9f",
       "size": 374
     },
     {
@@ -3487,7 +3487,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f0",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f0_p0",
@@ -3505,7 +3505,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f1",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f1_p0",
@@ -3523,7 +3523,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f2",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f2_p0",
@@ -3541,7 +3541,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f3",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f3_p0",
@@ -3559,7 +3559,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f4",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f4_p0",
@@ -3577,7 +3577,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f5",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f5_p0",
@@ -3595,7 +3595,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f6",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f6_p0",
@@ -3613,7 +3613,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f7",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f7_p0",
@@ -3631,7 +3631,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f8",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f8_p0",
@@ -3649,7 +3649,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f9",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f9_p0",
@@ -3667,7 +3667,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f10",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f10_p0",
@@ -3685,7 +3685,7 @@
         "bpp": 4,
         "height": 7,
         "name": "hud_brown_digit_f11",
-        "palette_entries": 5,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_brown_digit_f11_p0",
@@ -4099,7 +4099,7 @@
       "bpp": 4,
       "height": 28,
       "name": "quick_counter_frame",
-      "palette_entries": 8,
+      "palette_entries": 14,
       "parts": [
         {
           "asset": "quick_counter_frame_p0",
@@ -4426,7 +4426,7 @@
         "bpp": 4,
         "height": 6,
         "name": "hud_state_indicator_f6",
-        "palette_entries": 4,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_state_indicator_f6_p0",
@@ -4462,7 +4462,7 @@
         "bpp": 4,
         "height": 6,
         "name": "hud_state_indicator_f8",
-        "palette_entries": 3,
+        "palette_entries": 14,
         "parts": [
           {
             "asset": "hud_state_indicator_f8_p0",
@@ -5603,7 +5603,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "b83abe613186e68ce361d405a0532a33237cf3686637c42027579a19a09e0ae6",
+  "tree_hash": "49da743c38ce2f3de12f15908240c0830e6beeda6028bac633800b6f650d2fd8",
   "utf8_characters": [
     "¡",
     "°",

@@ -698,14 +698,29 @@ def export_gba_project_assets(jar_path: Path, project_dir: Path) -> dict[str, ob
                 record["palette_entries"] = colors_count
 
     # Fix 13's special cable is a generated gameplay asset too. Recreate it
-    # after the clean graphics-directory reset, then share mesh 7's exact BPP4
-    # palette with the cable so the special rig costs one OBJ palette bank.
+    # after the clean graphics-directory reset.
     _export_special_cable(graphics_dir)
     mesh7_record = next(record for record in mesh_records if record["mesh_id"] == 7)
+    mesh8_record = next(record for record in mesh_records if record["mesh_id"] == 8)
+    mesh9_record = next(record for record in mesh_records if record["mesh_id"] == 9)
     mesh7_names = tuple(str(part["asset"]) for part in mesh7_record["parts"])
-    mesh7_record["palette_entries"] = _share_bpp4_asset_palette(
-        graphics_dir, (*mesh7_names, "crane_special_cable_segment")
+    mesh8_names = tuple(str(part["asset"]) for part in mesh8_record["parts"])
+    mesh9_names = tuple(str(part["asset"]) for part in mesh9_record["parts"])
+
+    # Fix 15.4: the special rig, normal pre-rendered hook and platform are
+    # mutually compatible exact-color BPP4 assets (nine opaque colors total).
+    # Put them on one hardware bank so the 128-color tower BPP8 palette still
+    # leaves enough banks for workers and the complete Quick Game HUD.
+    crane_hook_palette_entries = _share_bpp4_asset_palette(
+        graphics_dir,
+        (*mesh7_names, *mesh8_names, *mesh9_names, *crane_hook_asset_names,
+         "crane_special_cable_segment"),
     )
+    mesh7_record["palette_entries"] = crane_hook_palette_entries
+    mesh8_record["palette_entries"] = crane_hook_palette_entries
+    mesh9_record["palette_entries"] = crane_hook_palette_entries
+    for record in crane_hook_records:
+        record["palette_entries"] = crane_hook_palette_entries
 
     header_path = include_dir / "tower_mesh_assets.h"
     header_path.write_text(_header(composites, crane_hook_frames, tumble_poses), encoding="utf-8", newline="\n")

@@ -672,6 +672,18 @@ int main()
     assert(scoring_snapshot.combo_bonus_pending == 6);
     assert(scoring_snapshot.last_population_award == 6);
 
+    // The live combo/multiplier is not capped at x3. Four successful landings
+    // while the meter is active must expose x4 to the resource-15 HUD renderer.
+    tb::QuickGame combo_four;
+    combo_four.debug_resolve_landing_for_test(0);
+    combo_four.debug_resolve_landing_for_test(0);
+    combo_four.debug_resolve_landing_for_test(0);
+    combo_four.debug_resolve_landing_for_test(0);
+    scoring_snapshot = combo_four.snapshot();
+    assert(scoring_snapshot.combo_count == 4);
+    assert(scoring_snapshot.longest_combo == 4);
+    assert(scoring_snapshot.combo_meter_ms == 6000);
+
     tb::QuickGame combo_miss;
     combo_miss.debug_resolve_landing_for_test(0);
     combo_miss.debug_set_falling_state_for_test(500, -500, 0, 0);
