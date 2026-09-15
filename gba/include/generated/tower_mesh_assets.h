@@ -228,108 +228,108 @@ struct CraneHookFrameAsset
 };
 
 inline const MeshPartAsset crane_hook_pose_00_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_00_p0, 15, -48 },
-    { &bn::sprite_items::crane_hook_pose_00_p1, 15, -8 },
+    { &bn::sprite_items::crane_hook_pose_00_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_00_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_01_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_01_p0, 15, -48 },
-    { &bn::sprite_items::crane_hook_pose_01_p1, 15, -8 },
+    { &bn::sprite_items::crane_hook_pose_01_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_01_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_02_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_02_p0, 15, -48 },
-    { &bn::sprite_items::crane_hook_pose_02_p1, 15, -8 },
+    { &bn::sprite_items::crane_hook_pose_02_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_02_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_03_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_03_p0, 15, -48 },
-    { &bn::sprite_items::crane_hook_pose_03_p1, 15, -8 },
+    { &bn::sprite_items::crane_hook_pose_03_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_03_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_04_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_04_p0, 14, -48 },
-    { &bn::sprite_items::crane_hook_pose_04_p1, 14, -8 },
+    { &bn::sprite_items::crane_hook_pose_04_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_04_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_05_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_05_p0, 14, -48 },
-    { &bn::sprite_items::crane_hook_pose_05_p1, 14, -8 },
+    { &bn::sprite_items::crane_hook_pose_05_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_05_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_06_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_06_p0, 14, -48 },
-    { &bn::sprite_items::crane_hook_pose_06_p1, 14, -8 },
+    { &bn::sprite_items::crane_hook_pose_06_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_06_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_07_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_07_p0, 14, -48 },
-    { &bn::sprite_items::crane_hook_pose_07_p1, 14, -8 },
+    { &bn::sprite_items::crane_hook_pose_07_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_07_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_08_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_08_p0, 13, -48 },
-    { &bn::sprite_items::crane_hook_pose_08_p1, 13, -8 },
+    { &bn::sprite_items::crane_hook_pose_08_p0, 12, -48 },
+    { &bn::sprite_items::crane_hook_pose_08_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_09_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_09_p0, 13, -48 },
-    { &bn::sprite_items::crane_hook_pose_09_p1, 13, -8 },
+    { &bn::sprite_items::crane_hook_pose_09_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_09_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_10_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_10_p0, 13, -48 },
-    { &bn::sprite_items::crane_hook_pose_10_p1, 13, -8 },
+    { &bn::sprite_items::crane_hook_pose_10_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_10_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_11_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_11_p0, 13, -48 },
-    { &bn::sprite_items::crane_hook_pose_11_p1, 13, -8 },
+    { &bn::sprite_items::crane_hook_pose_11_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_11_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_12_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_12_p0, 12, -48 },
-    { &bn::sprite_items::crane_hook_pose_12_p1, 12, -8 },
+    { &bn::sprite_items::crane_hook_pose_12_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_12_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_13_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_13_p0, 12, -48 },
-    { &bn::sprite_items::crane_hook_pose_13_p1, 12, -8 },
+    { &bn::sprite_items::crane_hook_pose_13_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_13_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_14_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_14_p0, 12, -48 },
-    { &bn::sprite_items::crane_hook_pose_14_p1, 12, -8 },
+    { &bn::sprite_items::crane_hook_pose_14_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_14_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_15_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_15_p0, 12, -48 },
-    { &bn::sprite_items::crane_hook_pose_15_p1, 4, -8 },
+    { &bn::sprite_items::crane_hook_pose_15_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_15_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_16_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_16_p0, 12, -48 },
-    { &bn::sprite_items::crane_hook_pose_16_p1, 4, -8 },
+    { &bn::sprite_items::crane_hook_pose_16_p0, 11, -48 },
+    { &bn::sprite_items::crane_hook_pose_16_p1, 3, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_17_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_17_p0, 11, -48 },
-    { &bn::sprite_items::crane_hook_pose_17_p1, 3, -8 },
+    { &bn::sprite_items::crane_hook_pose_17_p0, 10, -48 },
+    { &bn::sprite_items::crane_hook_pose_17_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_18_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_18_p0, 11, -48 },
-    { &bn::sprite_items::crane_hook_pose_18_p1, 3, -8 },
+    { &bn::sprite_items::crane_hook_pose_18_p0, 10, -48 },
+    { &bn::sprite_items::crane_hook_pose_18_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_19_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_19_p0, 11, -48 },
-    { &bn::sprite_items::crane_hook_pose_19_p1, 3, -8 },
+    { &bn::sprite_items::crane_hook_pose_19_p0, 10, -48 },
+    { &bn::sprite_items::crane_hook_pose_19_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_20_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_20_p0, 11, -48 },
-    { &bn::sprite_items::crane_hook_pose_20_p1, 3, -8 },
+    { &bn::sprite_items::crane_hook_pose_20_p0, 10, -48 },
+    { &bn::sprite_items::crane_hook_pose_20_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_21_parts[] = {
@@ -353,8 +353,8 @@ inline const MeshPartAsset crane_hook_pose_24_parts[] = {
 };
 
 inline const MeshPartAsset crane_hook_pose_25_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_25_p0, 9, -48 },
-    { &bn::sprite_items::crane_hook_pose_25_p1, 1, -8 },
+    { &bn::sprite_items::crane_hook_pose_25_p0, 10, -48 },
+    { &bn::sprite_items::crane_hook_pose_25_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_26_parts[] = {
@@ -373,13 +373,13 @@ inline const MeshPartAsset crane_hook_pose_28_parts[] = {
 };
 
 inline const MeshPartAsset crane_hook_pose_29_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_29_p0, 8, -48 },
-    { &bn::sprite_items::crane_hook_pose_29_p1, 0, -8 },
+    { &bn::sprite_items::crane_hook_pose_29_p0, 9, -48 },
+    { &bn::sprite_items::crane_hook_pose_29_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_30_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_30_p0, 8, -48 },
-    { &bn::sprite_items::crane_hook_pose_30_p1, 0, -8 },
+    { &bn::sprite_items::crane_hook_pose_30_p0, 9, -48 },
+    { &bn::sprite_items::crane_hook_pose_30_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_31_parts[] = {

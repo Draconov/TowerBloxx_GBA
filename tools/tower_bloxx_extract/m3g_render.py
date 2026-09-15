@@ -280,9 +280,10 @@ def sample_texture_nearest(texture: TextureRGBA, u: float, v: float) -> tuple[in
     u = min(1.0, max(0.0, u))
     v = min(1.0, max(0.0, v))
     x = min(texture.width - 1, int(math.floor(u * (texture.width - 1) + 0.5)))
-    # M3G texture coordinates use the conventional lower-left texture origin;
-    # serialized Image2D scanlines are consumed top-to-bottom by the exporter.
-    y = min(texture.height - 1, int(math.floor((1.0 - v) * (texture.height - 1) + 0.5)))
+    # Tower Bloxx Image2D bytes and the mesh texture coordinates use the same
+    # serialized row order. Applying an extra (1-v) here vertically flips every
+    # textured mesh (most visibly the crane hook and the base-floor trim).
+    y = min(texture.height - 1, int(math.floor(v * (texture.height - 1) + 0.5)))
     offset = (y * texture.width + x) * 4
     return tuple(texture.rgba[offset : offset + 4])  # type: ignore[return-value]
 

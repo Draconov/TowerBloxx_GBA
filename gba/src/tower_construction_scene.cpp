@@ -507,32 +507,22 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
         return;
     }
 
-    // House.e(Graphics) draws a two-pixel cable independently of mesh 7.
-    // Its camera-space start is just above the 240x160 viewport; segment the
-    // visible portion so we retain the original thin black cable without
-    // spending an affine matrix per segment.
+    // House.e(Graphics) starts this Java2D line at the screen centre in X.
+    // Its source camera anchor is 1920 fixed units above the active camera:
+    // -(22 * 1920 >> 8) = -165 in Butano's screen-centred coordinates.
     constexpr int start_x = 0;
-    constexpr int start_y = -85;
+    constexpr int start_y = -165;
     const int end_x = _screen_x(snapshot.crane_x);
     const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
+    const int dx = end_x - start_x;
     const int dy = end_y - start_y;
-    const int abs_dy = dy < 0 ? -dy : dy;
-    int segment_count = (abs_dy + 15) / 16;
-    if(segment_count < 1)
+    const int cable_length = bn::sqrt(dx * dx + dy * dy);
+    if(cable_length > 0)
     {
-        segment_count = 1;
-    }
-    if(segment_count > 16)
-    {
-        segment_count = 16;
-    }
-    for(int index = 0; index < segment_count; ++index)
-    {
-        const int numerator = index * 2 + 1;
-        const int denominator = segment_count * 2;
-        const int x = start_x + ((end_x - start_x) * numerator) / denominator;
-        const int y = start_y + (dy * numerator) / denominator;
-        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(x, y);
+        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(
+                bn::fixed(start_x + end_x) / 2, bn::fixed(start_y + end_y) / 2);
+        sprite.set_vertical_scale(bn::fixed(cable_length) / 64);
+        sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));
         sprite.set_z_order(1);
         _special_cable_sprites.push_back(sprite);
     }

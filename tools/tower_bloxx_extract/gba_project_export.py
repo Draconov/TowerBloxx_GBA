@@ -204,15 +204,18 @@ def _share_bpp4_asset_palette(graphics_dir: Path, asset_names: tuple[str, ...]) 
     return len(canonical)
 
 def _export_special_cable(graphics_dir: Path) -> None:
-    """Regenerate House.e(Graphics)'s separate two-pixel special-roof cable."""
+    """Regenerate House.e(Graphics)'s separate two-pixel special crane cable."""
     asset = "crane_special_cable_segment"
-    width = 8
-    height = 16
+    # One 32x64 affine source line replaces the old chain of 8x16 segments.
+    # 32x64 is a native GBA sprite size and its doubled affine canvas can cover
+    # the full recovered cable length without introducing inter-segment gaps.
+    width = 32
+    height = 64
     indices = bytearray(width * height)
     for y in range(height):
-        indices[y * width + 3] = 1
-        indices[y * width + 4] = 1
-    # Transparent magenta + opaque black, matching the hand-recovered Fix 13 asset.
+        indices[y * width + 15] = 1
+        indices[y * width + 16] = 1
+    # Transparent magenta + opaque black.
     _write_indexed_bmp(
         graphics_dir / f"{asset}.bmp", width, height, bytes(indices), (0x7C1F, 0), 4
     )

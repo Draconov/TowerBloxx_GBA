@@ -1,4 +1,4 @@
-# Crane / M3G presentation analysis (Fix 13, corrected through Fix 14.7)
+# Crane / M3G presentation analysis (Fix 13, corrected through Fix 14.9)
 
 Canonical source: `Tower-Bloxx_v1522.jar`, primarily `House.e(Graphics)`, `House.u()`, the House landing/slip branches, `f.class`, and `n.class`.
 
@@ -36,9 +36,9 @@ Mesh 7 is translated to the crane position without the mesh-8 Z rotation.  This 
 
 ## Separate special cable
 
-The V-strap mesh is not the entire cable. In every special branch above, House projects world point `(p, q + 528, 0, 1)` through the active M3G camera and draws a black Java2D line to it twice, one pixel apart. The GBA port preserves that separation with a dedicated two-pixel cable-segment sprite chain.
+The V-strap mesh is not the entire cable. In every special branch above, House projects world point `(p, q + 528, 0, 1)` through the active M3G camera and draws a black Java2D line to it twice, one pixel apart. The Java line starts at `v + ((22 * (n - x)) >> 8), w - ((22 * (o - y)) >> 8)`. In gameplay `n == x == 0` and `o - y == 1920`, so in Butano's screen-centred coordinates the recovered start is `(0, -165)`.
 
-Fix 14.7 removes the earlier sprite-center guess (`+5,-18`). The cable now ends at the GBA projection of the recovered source point itself: `_screen_x(crane_x)` and `_screen_y(crane_y + 528, camera_y)`.
+Fix 14.7 removed the earlier sprite-center endpoint guess (`+5,-18`). Fix 14.9 also removes the segmented cable approximation: one 32x64 two-pixel source line is affine-scaled and rotated between `(0,-165)` and the exact GBA projection of `(p, q + 528)`. This preserves the continuous Java2D line without gaps between sprite segments.
 
 ## Bad-placement secondary tumble
 
@@ -65,6 +65,10 @@ This is a presentation approximation rather than a claim of bit-identical 3D ras
 - Build City construction: first block/base uses mesh 20..23 for the selected family; the same initial mesh-7 / hidden-first-fall / mesh-8 sequence applies; roof phase uses mesh 7 + cable; miss state also uses mesh 7 + cable.
 - Suspend/resume does not alter simulation angles or crane state. Presentation objects are rebuilt from the snapshot.
 
+## Texture orientation correction (Fix 14.9)
+
+The original exporter applied `1-v` while sampling decoded `Image2D` rows. Tower Bloxx's serialized texture rows and mesh coordinates already use matching row order, so that extra inversion vertically flipped all textured M3G meshes. Fix 14.9 samples `v` directly and regenerates meshes 7-13, 20-23, 30-33, 40-43 and all 49 mesh-8 hook poses. The most visible corrections are the hook orientation and the base-floor top/bottom trim.
+
 ## Remaining visual-only verification
 
-The normal mesh-8 shared-origin rasterization and special-cable endpoint are now source-derived rather than affine/chunk guesses. The remaining verification is live emulator comparison of the 49-step hook swing, first-floor special rig, and roof/miss special rig for any final camera/layout discrepancy.
+The normal mesh-8 shared-origin rasterization, texture orientation, and special cable are now source-derived instead of affine/chunk/segment guesses. The remaining verification is live emulator comparison of the hook swing and special rig for any final camera/layout discrepancy.

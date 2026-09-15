@@ -6,7 +6,7 @@
     {
       "angle_degrees": -16.0,
       "bbox": [
-        119,
+        116,
         0,
         148,
         75
@@ -17,18 +17,18 @@
         {
           "asset": "crane_hook_pose_00_p0",
           "height": 64,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_00_p1",
           "height": 16,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -38,7 +38,7 @@
     {
       "angle_degrees": -15.333333333333332,
       "bbox": [
-        119,
+        116,
         0,
         147,
         75
@@ -49,18 +49,18 @@
         {
           "asset": "crane_hook_pose_01_p0",
           "height": 64,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_01_p1",
           "height": 16,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -70,7 +70,7 @@
     {
       "angle_degrees": -14.666666666666666,
       "bbox": [
-        119,
+        116,
         0,
         145,
         75
@@ -81,18 +81,18 @@
         {
           "asset": "crane_hook_pose_02_p0",
           "height": 64,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_02_p1",
           "height": 16,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -102,7 +102,7 @@
     {
       "angle_degrees": -14.0,
       "bbox": [
-        119,
+        116,
         0,
         144,
         75
@@ -113,18 +113,18 @@
         {
           "asset": "crane_hook_pose_03_p0",
           "height": 64,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_03_p1",
           "height": 16,
-          "screen_x": 15,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 119,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -134,7 +134,7 @@
     {
       "angle_degrees": -13.333333333333332,
       "bbox": [
-        118,
+        116,
         0,
         143,
         75
@@ -145,18 +145,18 @@
         {
           "asset": "crane_hook_pose_04_p0",
           "height": 64,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_04_p1",
           "height": 16,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -166,7 +166,7 @@
     {
       "angle_degrees": -12.666666666666666,
       "bbox": [
-        118,
+        116,
         0,
         142,
         75
@@ -177,18 +177,18 @@
         {
           "asset": "crane_hook_pose_05_p0",
           "height": 64,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_05_p1",
           "height": 16,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -198,7 +198,7 @@
     {
       "angle_degrees": -12.0,
       "bbox": [
-        118,
+        116,
         0,
         141,
         75
@@ -209,18 +209,18 @@
         {
           "asset": "crane_hook_pose_06_p0",
           "height": 64,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_06_p1",
           "height": 16,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -230,7 +230,7 @@
     {
       "angle_degrees": -11.333333333333332,
       "bbox": [
-        118,
+        116,
         0,
         140,
         75
@@ -241,18 +241,18 @@
         {
           "asset": "crane_hook_pose_07_p0",
           "height": 64,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_07_p1",
           "height": 16,
-          "screen_x": 14,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 118,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -262,7 +262,7 @@
     {
       "angle_degrees": -10.666666666666666,
       "bbox": [
-        117,
+        116,
         0,
         139,
         75
@@ -273,18 +273,18 @@
         {
           "asset": "crane_hook_pose_08_p0",
           "height": 64,
-          "screen_x": 13,
+          "screen_x": 12,
           "screen_y": -48,
-          "source_x": 117,
+          "source_x": 116,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_08_p1",
           "height": 16,
-          "screen_x": 13,
+          "screen_x": 12,
           "screen_y": -8,
-          "source_x": 117,
+          "source_x": 116,
           "source_y": 64,
           "width": 32
         }
@@ -294,7 +294,7 @@
     {
       "angle_degrees": -10.0,
       "bbox": [
-        117,
+        115,
         0,
         138,
         75
@@ -305,18 +305,18 @@
         {
           "asset": "crane_hook_pose_09_p0",
           "height": 64,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_09_p1",
           "height": 16,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -326,7 +326,7 @@
     {
       "angle_degrees": -9.333333333333332,
       "bbox": [
-        117,
+        115,
         0,
         137,
         75
@@ -337,18 +337,18 @@
         {
           "asset": "crane_hook_pose_10_p0",
           "height": 64,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_10_p1",
           "height": 16,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -358,7 +358,7 @@
     {
       "angle_degrees": -8.666666666666666,
       "bbox": [
-        117,
+        115,
         0,
         136,
         75
@@ -369,18 +369,18 @@
         {
           "asset": "crane_hook_pose_11_p0",
           "height": 64,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_11_p1",
           "height": 16,
-          "screen_x": 13,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 117,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -390,7 +390,7 @@
     {
       "angle_degrees": -8.0,
       "bbox": [
-        116,
+        115,
         0,
         135,
         75
@@ -401,18 +401,18 @@
         {
           "asset": "crane_hook_pose_12_p0",
           "height": 64,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_12_p1",
           "height": 16,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -422,7 +422,7 @@
     {
       "angle_degrees": -7.333333333333333,
       "bbox": [
-        116,
+        115,
         0,
         134,
         75
@@ -433,18 +433,18 @@
         {
           "asset": "crane_hook_pose_13_p0",
           "height": 64,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_13_p1",
           "height": 16,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -454,7 +454,7 @@
     {
       "angle_degrees": -6.666666666666666,
       "bbox": [
-        116,
+        115,
         0,
         133,
         75
@@ -465,18 +465,18 @@
         {
           "asset": "crane_hook_pose_14_p0",
           "height": 64,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_14_p1",
           "height": 16,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 64,
           "width": 32
         }
@@ -486,7 +486,7 @@
     {
       "angle_degrees": -6.0,
       "bbox": [
-        116,
+        115,
         0,
         132,
         75
@@ -497,20 +497,20 @@
         {
           "asset": "crane_hook_pose_15_p0",
           "height": 64,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_15_p1",
           "height": 16,
-          "screen_x": 4,
+          "screen_x": 11,
           "screen_y": -8,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 64,
-          "width": 16
+          "width": 32
         }
       ],
       "rotation_step": -9
@@ -518,7 +518,7 @@
     {
       "angle_degrees": -5.333333333333333,
       "bbox": [
-        116,
+        115,
         0,
         130,
         75
@@ -529,18 +529,18 @@
         {
           "asset": "crane_hook_pose_16_p0",
           "height": 64,
-          "screen_x": 12,
+          "screen_x": 11,
           "screen_y": -48,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_16_p1",
           "height": 16,
-          "screen_x": 4,
+          "screen_x": 3,
           "screen_y": -8,
-          "source_x": 116,
+          "source_x": 115,
           "source_y": 64,
           "width": 16
         }
@@ -550,7 +550,7 @@
     {
       "angle_degrees": -4.666666666666666,
       "bbox": [
-        115,
+        114,
         0,
         129,
         75
@@ -561,18 +561,18 @@
         {
           "asset": "crane_hook_pose_17_p0",
           "height": 64,
-          "screen_x": 11,
+          "screen_x": 10,
           "screen_y": -48,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_17_p1",
           "height": 16,
-          "screen_x": 3,
+          "screen_x": 2,
           "screen_y": -8,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 64,
           "width": 16
         }
@@ -582,7 +582,7 @@
     {
       "angle_degrees": -4.0,
       "bbox": [
-        115,
+        114,
         0,
         128,
         75
@@ -593,18 +593,18 @@
         {
           "asset": "crane_hook_pose_18_p0",
           "height": 64,
-          "screen_x": 11,
+          "screen_x": 10,
           "screen_y": -48,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_18_p1",
           "height": 16,
-          "screen_x": 3,
+          "screen_x": 2,
           "screen_y": -8,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 64,
           "width": 16
         }
@@ -614,7 +614,7 @@
     {
       "angle_degrees": -3.333333333333333,
       "bbox": [
-        115,
+        114,
         0,
         127,
         75
@@ -625,18 +625,18 @@
         {
           "asset": "crane_hook_pose_19_p0",
           "height": 64,
-          "screen_x": 11,
+          "screen_x": 10,
           "screen_y": -48,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_19_p1",
           "height": 16,
-          "screen_x": 3,
+          "screen_x": 2,
           "screen_y": -8,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 64,
           "width": 16
         }
@@ -646,7 +646,7 @@
     {
       "angle_degrees": -2.6666666666666665,
       "bbox": [
-        115,
+        114,
         0,
         127,
         75
@@ -657,18 +657,18 @@
         {
           "asset": "crane_hook_pose_20_p0",
           "height": 64,
-          "screen_x": 11,
+          "screen_x": 10,
           "screen_y": -48,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_20_p1",
           "height": 16,
-          "screen_x": 3,
+          "screen_x": 2,
           "screen_y": -8,
-          "source_x": 115,
+          "source_x": 114,
           "source_y": 64,
           "width": 16
         }
@@ -806,7 +806,7 @@
     {
       "angle_degrees": 0.6666666666666666,
       "bbox": [
-        113,
+        114,
         0,
         126,
         75
@@ -817,18 +817,18 @@
         {
           "asset": "crane_hook_pose_25_p0",
           "height": 64,
-          "screen_x": 9,
+          "screen_x": 10,
           "screen_y": -48,
-          "source_x": 113,
+          "source_x": 114,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_25_p1",
           "height": 16,
-          "screen_x": 1,
+          "screen_x": 2,
           "screen_y": -8,
-          "source_x": 113,
+          "source_x": 114,
           "source_y": 64,
           "width": 16
         }
@@ -934,7 +934,7 @@
     {
       "angle_degrees": 3.333333333333333,
       "bbox": [
-        112,
+        113,
         0,
         125,
         75
@@ -945,18 +945,18 @@
         {
           "asset": "crane_hook_pose_29_p0",
           "height": 64,
-          "screen_x": 8,
+          "screen_x": 9,
           "screen_y": -48,
-          "source_x": 112,
+          "source_x": 113,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_29_p1",
           "height": 16,
-          "screen_x": 0,
+          "screen_x": 1,
           "screen_y": -8,
-          "source_x": 112,
+          "source_x": 113,
           "source_y": 64,
           "width": 16
         }
@@ -966,7 +966,7 @@
     {
       "angle_degrees": 4.0,
       "bbox": [
-        112,
+        113,
         0,
         125,
         75
@@ -977,18 +977,18 @@
         {
           "asset": "crane_hook_pose_30_p0",
           "height": 64,
-          "screen_x": 8,
+          "screen_x": 9,
           "screen_y": -48,
-          "source_x": 112,
+          "source_x": 113,
           "source_y": 0,
           "width": 32
         },
         {
           "asset": "crane_hook_pose_30_p1",
           "height": 16,
-          "screen_x": 0,
+          "screen_x": 1,
           "screen_y": -8,
-          "source_x": 112,
+          "source_x": 113,
           "source_y": 64,
           "width": 16
         }
@@ -1385,7 +1385,7 @@
         100,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1417,7 +1417,7 @@
         98,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1449,7 +1449,7 @@
         97,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1481,7 +1481,7 @@
         96,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1513,7 +1513,7 @@
         95,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1545,7 +1545,7 @@
         94,
         0,
         123,
-        75
+        76
       ],
       "bpp": 4,
       "palette_entries": 8,
@@ -1576,7 +1576,7 @@
   "files": [
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_00_p0.bmp",
-      "sha256": "051194f17b9b3ef3af5b23e5c38dc235501818d7b5c549fba19d8c132ad3199a",
+      "sha256": "604b07b3c3c1d01588aba59cdd0fbdad9f5b54140a14c417b0c2d6157554db88",
       "size": 1142
     },
     {
@@ -1586,7 +1586,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_00_p1.bmp",
-      "sha256": "250c5e62e5a9ea802dcf467475c44cd508828fee027462cc750a8894cb980e32",
+      "sha256": "584148ecf00a147e1804dbe7be5b1877e8faf0b005d22395a48f56de3f005357",
       "size": 374
     },
     {
@@ -1596,7 +1596,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_01_p0.bmp",
-      "sha256": "1c2e0fe5d04472caa4e4602a70051b53d804d61bbdc46b14ace6cac20315f979",
+      "sha256": "de1478fcddf5feb6a63f946099507d7f3b7f2ab09d764d783bf68cdbcc6b8363",
       "size": 1142
     },
     {
@@ -1606,7 +1606,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_01_p1.bmp",
-      "sha256": "8e1a1dc5ff1fdbd3689b2e3fe6afbf07c773452afc1c4a22915268083a1c8784",
+      "sha256": "fea37357bdbd1bd99c713766608a4e2ed300e3412f6312fdae49c155e71002ba",
       "size": 374
     },
     {
@@ -1616,7 +1616,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_02_p0.bmp",
-      "sha256": "5f2fa2bab7d8668613d3c41ce4ca92885d8b3262d73e9541b88928b2c4d604aa",
+      "sha256": "777cbeafcbd13952d02feb373d2e1ebfd0394de8a8cdb1a03a47a8c898423a95",
       "size": 1142
     },
     {
@@ -1626,7 +1626,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_02_p1.bmp",
-      "sha256": "ed646c37be640858a46fcf79e4b3babbdb3008b3f5681797147cb2f00b6de7e9",
+      "sha256": "359140264e63afddb24aeb79dce498d5c35ceabcb5639864bf28b97291b772e4",
       "size": 374
     },
     {
@@ -1636,7 +1636,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_03_p0.bmp",
-      "sha256": "ec9c16b0becfd29d0e4d36c44edbe07ab47054cea7c76e66bbf8ac3b3717c9dc",
+      "sha256": "3beddd7a780cbe134c998b92fa7406cd275c4431e745587c77c069a16957efe2",
       "size": 1142
     },
     {
@@ -1646,7 +1646,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_03_p1.bmp",
-      "sha256": "eff3d3f31ca728afb782bcb5b8f0410d38f9366e84be7e7edb789e31d5a65e08",
+      "sha256": "0149b403170dd9d7294887456b47234e8fee5dc460085e4c88719ac70c79272d",
       "size": 374
     },
     {
@@ -1656,7 +1656,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_04_p0.bmp",
-      "sha256": "26b4e774336d5ef336873ba3edec78088fd4a515a7009a26b7bc16b766cc7340",
+      "sha256": "7c3b87de11b9578d87c91599b91080d2961e0c21309e51c20fd5c0e8bbd47802",
       "size": 1142
     },
     {
@@ -1666,7 +1666,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_04_p1.bmp",
-      "sha256": "dc5ebd5c84d8199e7a0fabee4cdd3b4e098c2b58184e4f7f8932e3cadc668412",
+      "sha256": "108215f9e94e7e6b3a5c9191441a4ccdb62fc2b615d64d512ba8d97eefc6937f",
       "size": 374
     },
     {
@@ -1676,7 +1676,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_05_p0.bmp",
-      "sha256": "30faade4be623410126c5938eb435b327c8ce19faac4176f2891d3216a59c03a",
+      "sha256": "657d2db65e2f4f3ae29cd6aaf2a9d7207f9344e54c922fae728cafbf8377ae4e",
       "size": 1142
     },
     {
@@ -1686,7 +1686,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_05_p1.bmp",
-      "sha256": "bcea322a70353c97989a4011c7da19af2860d15f2722e47001a897b78d4bdc35",
+      "sha256": "56194af082555a09edf7ada6a8faf1a9fb3215292209b2bb2b704e09c377ee84",
       "size": 374
     },
     {
@@ -1696,7 +1696,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_06_p0.bmp",
-      "sha256": "3e5f837b198f61f67f4631de5197aaafddb10a8d9193ad1bc16c1ba43a311929",
+      "sha256": "f0e68501a02cbd0ccaddc64e0aafa227b5143f707ac59ae572bce7e1a431787e",
       "size": 1142
     },
     {
@@ -1706,7 +1706,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_06_p1.bmp",
-      "sha256": "c05264841ed85b781f83b74108d29cb382c4d020e4b05f7122f37c15cf3b0cc7",
+      "sha256": "fcb0c627d0d6187a6d69acab26b5b3c80ff23a802c89b82c072ffdc21e7ed31e",
       "size": 374
     },
     {
@@ -1716,7 +1716,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_07_p0.bmp",
-      "sha256": "150d88d60c4fbc12a7c734ba8a122b8ae06574b485ca63334de533e38789c8e9",
+      "sha256": "47ff84f063070db5a8a8ae4a6e9c7d296c9ffd2edaf1cd40f4b4ad02d43e669f",
       "size": 1142
     },
     {
@@ -1726,7 +1726,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_07_p1.bmp",
-      "sha256": "ceff5d40ef6f2841e4090330612914180d56f35a6cbe728d8101e420948d44f0",
+      "sha256": "07e957019710e32f66376e37a19041f14e026f06530b469a33c2d3f57f8977e6",
       "size": 374
     },
     {
@@ -1736,7 +1736,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_08_p0.bmp",
-      "sha256": "072739bdf73596ea4e81623087243fc4cbf9d57a7be90ba01d5271b08de04231",
+      "sha256": "60736adaf09425f5fb1213b6646784d690e0d68243d0cd0f5121fcde762bbb2d",
       "size": 1142
     },
     {
@@ -1746,7 +1746,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_08_p1.bmp",
-      "sha256": "1223765b29c12a33e1953976a50683022c8af73f666c53e11b520aa699381db6",
+      "sha256": "3098d4da792f54cf538005d3216046f4b2acec0fca513d061104e9683b0830bf",
       "size": 374
     },
     {
@@ -1756,7 +1756,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_09_p0.bmp",
-      "sha256": "6d8a6efdcba58f9050866ede100856df3f19e3429bef8a6af63c2fcb89364daa",
+      "sha256": "9df064bec2f1db68bf20ef73696965112078d50ac67a0d7e843ca1dbc8561c27",
       "size": 1142
     },
     {
@@ -1766,7 +1766,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_09_p1.bmp",
-      "sha256": "3d23940abbcb11c120be4fe19645af6f63e829f00a66607442cd358a428ceee7",
+      "sha256": "031d3a5e36da2210bd93254f67106331c6405445c563b4930b6159fa25cbeda7",
       "size": 374
     },
     {
@@ -1776,7 +1776,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_10_p0.bmp",
-      "sha256": "56b05f4aa34b2bcd2d07dd28d822f06f7c46681ed27718712c765d7e2b983c89",
+      "sha256": "de735f2079bf9243f5f0f84f78b300b2e78181020864de3d7f17f125bf47e000",
       "size": 1142
     },
     {
@@ -1786,7 +1786,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_10_p1.bmp",
-      "sha256": "424ff589ad891f011b934f8f9556f4cea7c1c1de238f507d97f75d1e34cbdf2a",
+      "sha256": "d0c8147b2519582a2fc462eb2072a844c9c91986f4483a6e576bf903b41adf46",
       "size": 374
     },
     {
@@ -1796,7 +1796,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_11_p0.bmp",
-      "sha256": "56af2f1737a94861c8abb9622c99858311c1c283b3c95ee92210830a4d1c40ca",
+      "sha256": "87c72c5c75854ce0094019a6ddba40d79521911e80eb1c8cb3a86f04a9bdef2e",
       "size": 1142
     },
     {
@@ -1806,7 +1806,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_11_p1.bmp",
-      "sha256": "6648e275ecca05728ff18f238bc94d6b1ddb898e9e07f78841785de8e25f38c7",
+      "sha256": "9346321c49ab216e5de80e1b8962dcab6a72dae007feb7eced88c0da178e8edc",
       "size": 374
     },
     {
@@ -1816,7 +1816,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_12_p0.bmp",
-      "sha256": "2187441d5baa8cdf4a13c3b9df4fa788a872ae4135d36280aa6453c6801da311",
+      "sha256": "76b52a1e01d4e7aac4297b6d622485805d45a63d45877f88f73e64cdae9212f6",
       "size": 1142
     },
     {
@@ -1826,7 +1826,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_12_p1.bmp",
-      "sha256": "66a3901fd7630003eb3ff537893694877ab737f4d2a081ccc83eb668fad1d63a",
+      "sha256": "209f969a70312f583e0546004ef3345234983d50848dd9ebc64b7f447fa5239d",
       "size": 374
     },
     {
@@ -1836,7 +1836,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_13_p0.bmp",
-      "sha256": "3a0ed15c76e10cc964268edbde58c2d0f8badde569285b70a22ad4b00787c9c6",
+      "sha256": "fa31dfcde552845622a30baad64c27411ea8034588cf8d2eaf65ab08253d4554",
       "size": 1142
     },
     {
@@ -1846,7 +1846,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_13_p1.bmp",
-      "sha256": "4a04b8fa581af8911928ca15e3270a058d5d5eba661b31f56d37af78e218d590",
+      "sha256": "3e97d05a76e14523be69aebbdbb8977776a1b39e989c2d48b237b564b25130c4",
       "size": 374
     },
     {
@@ -1856,7 +1856,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_14_p0.bmp",
-      "sha256": "b866f65c80d8c7cf06cac5d3e48be852c998ce177e4a46c34a51ac266b6da16e",
+      "sha256": "363e80bffbeaab054323a1d73d480ef61b0ed8c21150eb34744cb8e5a57a67b4",
       "size": 1142
     },
     {
@@ -1866,7 +1866,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_14_p1.bmp",
-      "sha256": "7824069abb8fb9c998e84dab164bf976ac949c36322f4ac7ca7cf0be92b0dfa3",
+      "sha256": "9b0bed94caef48943a06434ff6c9ef61a55d25433266ab936bce0d77ad53d4c2",
       "size": 374
     },
     {
@@ -1876,7 +1876,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_15_p0.bmp",
-      "sha256": "e50e7d63126787fafa1b23180c7b8ee0ffbf2c6a4e3591630f81c0ddaf999b1f",
+      "sha256": "de6026afceb849c759f9bc71da37b68d5774a991ab140b520a58f265217859b9",
       "size": 1142
     },
     {
@@ -1886,8 +1886,8 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_15_p1.bmp",
-      "sha256": "bf67517117dcca349daf57d62a70dacc259e821a0b1a8cc1bc722781f997e6c0",
-      "size": 246
+      "sha256": "7d97f13322984428948755ea6561df6ebe4a316d4cb82b9db36560be4ab44853",
+      "size": 374
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_15_p1.json",
@@ -1896,7 +1896,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_16_p0.bmp",
-      "sha256": "95ad06df422f225e26184bbca71381b6d465d7fac2515f48e925fa0722052f97",
+      "sha256": "debe03f97ba1f3109658ecb17ea9adaa4410b97169f299865a2136f220dd473f",
       "size": 1142
     },
     {
@@ -1906,7 +1906,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_16_p1.bmp",
-      "sha256": "211dccdbf1c7517edd8feabe87d9a8131be66d1f6dbf9fc5e97ae3dbc4b8a580",
+      "sha256": "ffd7485e72107a316662a1cc77f5c8422a38f7fdb5a19e046597fef3148ed0ea",
       "size": 246
     },
     {
@@ -1916,7 +1916,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_17_p0.bmp",
-      "sha256": "fb357f842b2d5e17060bb07252a6ae6a49688777b7a02c0d32d0a37d55dd22df",
+      "sha256": "91129bad90e3782432b7e857b554f035f4c119da4a966a8f8ad1993423bd82b9",
       "size": 1142
     },
     {
@@ -1926,7 +1926,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_17_p1.bmp",
-      "sha256": "8767d056b95c7b75d5f1af1dbba1bfd8ab49c789dd362058f293ac2684c80c93",
+      "sha256": "5ad8421912204b7b4acf81075524883dd57c68fe0f645e1f12c07e1626417083",
       "size": 246
     },
     {
@@ -1936,7 +1936,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_18_p0.bmp",
-      "sha256": "bfdfc3356cdd11e4b599ee123467d053fd02a3aba2b0687830c0ff600db52d31",
+      "sha256": "74c9455490f1d1e8af02c5a982eee5b45267ae65fea05293e8302690fd22960d",
       "size": 1142
     },
     {
@@ -1946,7 +1946,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_18_p1.bmp",
-      "sha256": "a6d189883f56467deb1f944eeaf5f9454cd733c7309f24bbfe974dba32ca1acf",
+      "sha256": "8690b952db99d8c1343e5c7e800fd84bfdada38c6213aa2749323e5115a52966",
       "size": 246
     },
     {
@@ -1956,7 +1956,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_19_p0.bmp",
-      "sha256": "a8041166fc5d9b164bb6fd9f177c34eadf43e7c4e09ebb9469c45624ab3cab82",
+      "sha256": "b6ca8c7fae2680c01981b6315d0c91d263652410a24d714615b05aec5d75b80a",
       "size": 1142
     },
     {
@@ -1966,7 +1966,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_19_p1.bmp",
-      "sha256": "001d9a8db0aa6abf50ecf7dfa18781c560feacd1bb9172c51665d4f6475d40e6",
+      "sha256": "48dab1bd1e919da280ca11f942b0410e9ee7c259fa79238624e3f5321d931da8",
       "size": 246
     },
     {
@@ -1976,7 +1976,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_20_p0.bmp",
-      "sha256": "cd245d9669ba330c5d2608750fa845f0f0fd296725f843a3ff694a42225c4ebe",
+      "sha256": "6a113431ddf0590b5fc69acdc6511f6489a86601347faa980552c8be3715a1cb",
       "size": 1142
     },
     {
@@ -1986,7 +1986,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_20_p1.bmp",
-      "sha256": "22a67c7b22eda0dd3a42a193b7e731434650f13dd5440b1569c270aac1fa58dc",
+      "sha256": "94e29abb78818da5d9ae4efe63058e66529cc433edb78b76dd832ea993e9836a",
       "size": 246
     },
     {
@@ -1996,7 +1996,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_21_p0.bmp",
-      "sha256": "17ea5894ebfb3ceedd366919bb31426ab56f9cebc215fcb2fe14a32cb2dbc9cb",
+      "sha256": "e2bd4871bbb6973881c1aeadf63b0d65538529a34ff01c9ca8ae88d210c9896a",
       "size": 1142
     },
     {
@@ -2006,7 +2006,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_21_p1.bmp",
-      "sha256": "fc26ed39962e1bf056c111030a8d7fc92bc742622ab9757e44e3e82e061c7d67",
+      "sha256": "31dc00ce7de6c4bea2ce4dab94d41bd18d0376b8bd627487ff4bdb93f2a0b8f7",
       "size": 246
     },
     {
@@ -2016,7 +2016,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_22_p0.bmp",
-      "sha256": "4d8bc9a4eb6d353b2a55e6b7a6220309579b8e6f7b5b44b1e2f8626db6fdbb12",
+      "sha256": "b5c3a959e2448f0eca7d959aa957e98c9fdbb65cbe25d3c3641ec97759e20b86",
       "size": 1142
     },
     {
@@ -2026,7 +2026,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_22_p1.bmp",
-      "sha256": "ce300035aebc4273c6583ed8e26d9822af33577e2a5dceda27584c6c18282db5",
+      "sha256": "a711b17bcf8be170f03876f4bd7601812849d121d6ea8b205a8efd037931e663",
       "size": 246
     },
     {
@@ -2036,7 +2036,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_23_p0.bmp",
-      "sha256": "5932462b27e48151e9c952fa4aa9aef17e7fff709dae505341b91ce249798b17",
+      "sha256": "4eade610daf2ffd0b4f0ce4ce6ee0778fcda8a205a95828dcc42634d83db3c26",
       "size": 1142
     },
     {
@@ -2046,7 +2046,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_23_p1.bmp",
-      "sha256": "69326d151993479d40ecf9feae67cba8be0fb7aeca8e658ff214e54a7bda4aab",
+      "sha256": "8f50d9af4cdf0ce27b6f0e950440410997d58fec86fba98b65ec30f304b6ebdb",
       "size": 246
     },
     {
@@ -2056,7 +2056,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_24_p0.bmp",
-      "sha256": "841dc5638cb6988fe8ce3c7d4a7419c0d86c7cd3bd7cd427c11c822d60de837b",
+      "sha256": "d851c50890a281a5a13ce8605b38d1264441dbc09382cceb41305fd720de9364",
       "size": 1142
     },
     {
@@ -2066,7 +2066,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_24_p1.bmp",
-      "sha256": "69326d151993479d40ecf9feae67cba8be0fb7aeca8e658ff214e54a7bda4aab",
+      "sha256": "7dcc60adecb2aea903bfac71c0c3af1036cfe8c8836caea7f13ed18896ad6729",
       "size": 246
     },
     {
@@ -2076,7 +2076,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_25_p0.bmp",
-      "sha256": "5ef5ec361b03802f818d2ab0d11f74ae2dc9498bcdbb993f3c17a61d38a5fa1c",
+      "sha256": "ebeb5d5b671fab1ecff1d64c1a0b789cb2651920ca172220eda6467c7fef1192",
       "size": 1142
     },
     {
@@ -2086,7 +2086,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_25_p1.bmp",
-      "sha256": "9ffb33a5771ae836a7557ffa67ea50bc3b141dd0d5825cdabf79435c9d8576ae",
+      "sha256": "6e7898a055eca2935bc1ef15e3a601fa196ed7c96119f0f5a9145a984503cde3",
       "size": 246
     },
     {
@@ -2096,7 +2096,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_26_p0.bmp",
-      "sha256": "1d1279704c5d132f48c500fc3da44b6cfddb6321cc7db6b0c93f51f5b37f4276",
+      "sha256": "f94333f4a680044d8685cd2eab826aa1a8ee5842890ae8b0cc8dede397932fb9",
       "size": 1142
     },
     {
@@ -2106,7 +2106,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_26_p1.bmp",
-      "sha256": "4046e7366bfb2dc89abdebd87814cc2ff9a9b55960b58469575280159ddd654a",
+      "sha256": "a032a057d22fa6c7e3b85fa8a9634ca902e6606ad1837a50f62a714daa4bcd54",
       "size": 246
     },
     {
@@ -2116,7 +2116,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_27_p0.bmp",
-      "sha256": "7bf3b53c20ebb676fd3533b95bbf2bde29a6081152f9224d0aa293fc57aba039",
+      "sha256": "c589f83029f02e8ed6f759f2537b4ef51a50c656b2bc206dabb44e8662626255",
       "size": 1142
     },
     {
@@ -2126,7 +2126,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_27_p1.bmp",
-      "sha256": "2abb2ffab2633458b5e7130ea5fe46ba13ba44ab8d6aee71acb5006c4f035bf6",
+      "sha256": "76513cf6838135d6c2ac3167d45540a0ded4f43812a9f13a09aa5b576e40ac5c",
       "size": 246
     },
     {
@@ -2136,7 +2136,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_28_p0.bmp",
-      "sha256": "828d5e51024cc26fddb0d33279a3b0bf8bbb4d81a6469f1c2c3ef98f085375a0",
+      "sha256": "d7cace1889404e60fc370443455b0e3fa17b0f919aaf109379f1072900f2dbaf",
       "size": 1142
     },
     {
@@ -2146,7 +2146,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_28_p1.bmp",
-      "sha256": "51d3da3a3db129cc739b694e04038b535ffd242ffb4e94c8a6f736f9989a96b2",
+      "sha256": "f6ad9a91a0b90aa0e57e009fbe312796637c118895a9231ffe10eea971016a1f",
       "size": 246
     },
     {
@@ -2156,7 +2156,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_29_p0.bmp",
-      "sha256": "1fc4c9b0ce2d0ef19f9bebabde2eeb2d266c4e80e3d6f4728dc0ec4a79529161",
+      "sha256": "c38d1516773c8d27e9062ed7ea28ac5c63306ef3fc8f5e11975cf51137214687",
       "size": 1142
     },
     {
@@ -2166,7 +2166,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_29_p1.bmp",
-      "sha256": "d2f4d5e5aea1d73b8f9be660107af05570e4cb935a8c33e51501b77fae1c78f3",
+      "sha256": "18921ef14a479ce11592e5b8e188ae9e4f49e84deea257e4a2262c94687a3d88",
       "size": 246
     },
     {
@@ -2176,7 +2176,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_30_p0.bmp",
-      "sha256": "4094faa87a4061470e41e6563a28700b825244f560145868c3cdb9515fcc33f8",
+      "sha256": "771b9d534177d0432ea87121f6fc3e823e5edd5e6428acd1c4e4f8f569904d91",
       "size": 1142
     },
     {
@@ -2186,7 +2186,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_30_p1.bmp",
-      "sha256": "cb95701ce1181fe017b936d88ef725bc9206e1e1a841dacdb27c55b16e7bb17c",
+      "sha256": "11826c23ec853e765eeb8672386203763ab510791dfc77726807b767bd27807b",
       "size": 246
     },
     {
@@ -2196,7 +2196,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_31_p0.bmp",
-      "sha256": "0865476b468dc15aed1d620e14e302a6bbc686e94d451eb886e3111934a2bc59",
+      "sha256": "8205d8e581a6464f66cbfc755bd1887a8453e52d7334c9c9a2f5538ad47b6fac",
       "size": 1142
     },
     {
@@ -2206,7 +2206,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_31_p1.bmp",
-      "sha256": "14b19d023f83bca371023016a22fcb00cb7e868ac43f6dc83de5cb5e2ee228ab",
+      "sha256": "f0bd2944d6fcff718eec0204d11fb530309cd05a96e07085cc85fea7637f8361",
       "size": 246
     },
     {
@@ -2216,7 +2216,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_32_p0.bmp",
-      "sha256": "062df89ded5ef58587b171ef2dcc8ad4f6a65acebb43bcbd6856e7e121fc984d",
+      "sha256": "d9c4e98abc0610c7a63aaa7b91373e7cbecd462a1b0eb3a2d8baf1ec40548b27",
       "size": 1142
     },
     {
@@ -2226,7 +2226,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_32_p1.bmp",
-      "sha256": "453db0edfb7f69d6bc9efa6595d2035428aa3d38967acc5928e93c64eab4ad87",
+      "sha256": "1c521e3dd18def917fb8df432a050b95ae79a2188a57963db8743a4669f820ff",
       "size": 246
     },
     {
@@ -2236,7 +2236,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_33_p0.bmp",
-      "sha256": "b374544e8bac1632a25c5670fdba82bbec054ee2eb7b7195edef29ae2b06c4b1",
+      "sha256": "94bfca502dda11ee30609bce7e8c4b851601071dee7fbf69127c3b0fab45b719",
       "size": 1142
     },
     {
@@ -2246,7 +2246,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_33_p1.bmp",
-      "sha256": "9aff8a2b1fca27eebe38b78365ff0389844dd5215be42914bdf77b2666a6b333",
+      "sha256": "0d91b506cc4a0a05b17de33bccce6eb4d9e5fb3ee6b6886458972046e2f28e9b",
       "size": 246
     },
     {
@@ -2256,7 +2256,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_34_p0.bmp",
-      "sha256": "dc30a050a38ac7434ace6e26338511518d2e14e1a1640a165e647c5f75d99002",
+      "sha256": "55383d593b63b69f72c56883fe41a397c30dc5dcace9f09d605e4016212ef3b3",
       "size": 1142
     },
     {
@@ -2266,7 +2266,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_34_p1.bmp",
-      "sha256": "ddae36533caad99dbbf010d679540831f41ee645a982b8d6481629963f0ec645",
+      "sha256": "d1764435f22d3fb6f839010451c5911b5330eae3404a11d6bd0a26f56a854c00",
       "size": 246
     },
     {
@@ -2276,7 +2276,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_35_p0.bmp",
-      "sha256": "d8b97476f9218d55af3f69b7fd4cb621f3edcc3c9d23fa88f75dd2d9a0f27065",
+      "sha256": "5ebb93a7f8cdc266dd685384618695b27a1b6f219b3bfddda65a7b88731a9aef",
       "size": 1142
     },
     {
@@ -2286,7 +2286,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_35_p1.bmp",
-      "sha256": "8af3699ad60487a5975443792d8d47570685b5924ab7a351e5df45fb80722b24",
+      "sha256": "4b387ed4ac7c2d7f1099e22293b51a9dcbbced5d2b64c66b6179dc622ea8dfdb",
       "size": 374
     },
     {
@@ -2296,7 +2296,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_36_p0.bmp",
-      "sha256": "78da73be6aec1c8c7c1dae42ea123e15949f71a83c7dc4eb74cf91817b0f2bf7",
+      "sha256": "cee6498b7ddce62011738f11841e44c9b17567439587085b0663bc8862baaad4",
       "size": 1142
     },
     {
@@ -2306,7 +2306,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_36_p1.bmp",
-      "sha256": "db6a47f02a89ed5dc1b779ea2490376ab1a3ead2f1b04cd551cb1ddf98fbe550",
+      "sha256": "32b5847d4ac08eb82b3963bb8ef72f76083bb086a29a2f755e722717c25aedbe",
       "size": 374
     },
     {
@@ -2316,7 +2316,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_37_p0.bmp",
-      "sha256": "57a253c742a47d5b496fb5cd580d7a1e92177c6bd3292334f6d76848989c8f56",
+      "sha256": "9d89fb048e3258b00a57bc3b2ead5c87de5c5212dd875ce1d77f7b7e7f0f0574",
       "size": 1142
     },
     {
@@ -2326,7 +2326,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_37_p1.bmp",
-      "sha256": "4f5d2d76eb5898e8e1162b2b4128effa88f23bfabb8f22498e947f2bef9faf44",
+      "sha256": "78a72f86906631b1d8cc75231db02e1395f5b73c1fd568121fe7549a37066661",
       "size": 374
     },
     {
@@ -2336,7 +2336,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_38_p0.bmp",
-      "sha256": "e6e44743a302548c91b9b11a90d565302ce223790b5c4f54a69aabfe25308d32",
+      "sha256": "d5dd6e343a9910598d8be97d7c7b4c95c6853bd9d90482c22b9613870ddeff31",
       "size": 1142
     },
     {
@@ -2346,7 +2346,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_38_p1.bmp",
-      "sha256": "24cec7622d15409de6b8a0088cb90158168c1c73c12d7883b5ef8de485bcce80",
+      "sha256": "1b5cf9cf6c993545c392bf8cf670c92d247e744e93966b036473697362ad0478",
       "size": 374
     },
     {
@@ -2356,7 +2356,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_39_p0.bmp",
-      "sha256": "7cfa92c791a55f4404bc432b8a15554891052eef40211d9911f082f8371b40ef",
+      "sha256": "b71219aa784f3071dd6fda53d50d72c39c2d945914803a881623295ad84279d2",
       "size": 1142
     },
     {
@@ -2366,7 +2366,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_39_p1.bmp",
-      "sha256": "00eddc33e0b2ec202b2b1a2726cc0e2ef88ef25494b60ebb84ef4011daf5e78e",
+      "sha256": "4afbb50a934fe8f96f36a123c281a97ad83ba60904c38d4f4f3b9f5575fe7582",
       "size": 374
     },
     {
@@ -2376,7 +2376,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_40_p0.bmp",
-      "sha256": "52e078ccece9f79aae5960fe17f28d2f22b0907128f521e8cd1648260009ad83",
+      "sha256": "d6d9ee9add152ebbb250148d4c2d2fc768e17913469271184a68e7a3d33da914",
       "size": 1142
     },
     {
@@ -2386,7 +2386,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_40_p1.bmp",
-      "sha256": "485079a3eb452d8dbe6e6bcd51cdb5c1a94a1d37579533ade35369a5b4df1061",
+      "sha256": "cae105f81cde24eb04293141b6c60a03cb30058a454c08b3c6e588d07692c728",
       "size": 374
     },
     {
@@ -2396,7 +2396,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_41_p0.bmp",
-      "sha256": "b46c42e54bbacec21413322bed7f72c3591a29435590dfce51020e57dda7f16e",
+      "sha256": "dbe3c664edb93a8d8cc17d15200d59bda655803896d653f84b663eb633aa1a7f",
       "size": 1142
     },
     {
@@ -2406,7 +2406,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_41_p1.bmp",
-      "sha256": "36c3f24a8d4e3049f76d9d6af922290b349088c7952ca00e1ec7319091024aaa",
+      "sha256": "6098ca5a36ced72b32532242f741c36181b02872d4129144ded8c79655dafc1c",
       "size": 374
     },
     {
@@ -2416,7 +2416,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_42_p0.bmp",
-      "sha256": "5d3d8e0d7ce79238e8e878f37b6b9d4f04fef2623a2fd7bc61184bc6253e7c25",
+      "sha256": "ae52af324fbf75eb5631da80b0808c6581507ddfbac39c0156194974bc4423d1",
       "size": 1142
     },
     {
@@ -2426,7 +2426,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_42_p1.bmp",
-      "sha256": "86cfb021a2d7639bd666cfe5964561e5cd11b99cbba33d1d51426d5c96c3b6e9",
+      "sha256": "34273edeb7b7c520bcd6182e1df8955a70df7e8196f566f860a951fe55330ce6",
       "size": 374
     },
     {
@@ -2436,7 +2436,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_43_p0.bmp",
-      "sha256": "07209a1a2ac919145e76605545fcf1215b4be990bedcce4556042e6a549f974e",
+      "sha256": "a69f2828dceeebadb359ce76c6ec1dfd7b9816df68d71f6c553cec3fc03ea3c0",
       "size": 1142
     },
     {
@@ -2446,7 +2446,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_43_p1.bmp",
-      "sha256": "a43e14f645fd33f8d8bf766f6ffc59e7b99655148b613caa94f27b59f3ceb2b4",
+      "sha256": "1656b8e6f6bf78416ef895bd610152efd15a5da188dfcfa30767a381030f6994",
       "size": 374
     },
     {
@@ -2456,7 +2456,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_44_p0.bmp",
-      "sha256": "1e4127118273c8507b7df592c287d6e4a723da845bd51da4ccc627fd3d415c68",
+      "sha256": "e1b80a402df2f5e761e1049a5b2cc26833e974f2891663670b44aad4ab32940f",
       "size": 1142
     },
     {
@@ -2466,7 +2466,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_44_p1.bmp",
-      "sha256": "78d8f5377a7110d295d5a673dc0189facf84ca90f750ddee7cedbc7742dab460",
+      "sha256": "64810c788fa68e08db5d109c334aae57579aaceb3d0bd0d161cbd35def829c1c",
       "size": 374
     },
     {
@@ -2476,7 +2476,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_45_p0.bmp",
-      "sha256": "63130f8a98eeb36cf6487a2a5f061ea3a2d8acc67aa5a92f0499baa03acd214a",
+      "sha256": "fb116864fcd698c8ec0d28290edc577f0ce97147150f64835172866e52c39637",
       "size": 1142
     },
     {
@@ -2486,7 +2486,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_45_p1.bmp",
-      "sha256": "a9d6f279adfe78a4cd0c09cd611a62db6e2a6b5a45177b00bc81a93514bc1b78",
+      "sha256": "1fd8398d1432324bb35e1365bef9e93462a5f637811dee5ecea50f41fa420549",
       "size": 374
     },
     {
@@ -2496,7 +2496,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_46_p0.bmp",
-      "sha256": "0251573d9d2588a832ca6934b745a21ce497bfb6ac546f70632dd549f1c29410",
+      "sha256": "188934ad7d3d514000dad0cb59caedc840fa81bed911ba417eb2ce6ce80db510",
       "size": 1142
     },
     {
@@ -2506,7 +2506,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_46_p1.bmp",
-      "sha256": "c22b4e2dd1a8e91e72464d5f78a3da7753e685055aed4ed4b0b69f4fdcecc6ba",
+      "sha256": "889a3fa042af60f5b95252025f92101e9552c9c4d19540efd8871604993fdbb7",
       "size": 374
     },
     {
@@ -2516,7 +2516,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_47_p0.bmp",
-      "sha256": "c8b3f250168864119c9419c9543a98340698637b5e5708c652a784561e759ff8",
+      "sha256": "4dcedca68618d1dd75dfb3641ea66d66329b8c4dff73ce8b62141c3f8f61bd92",
       "size": 1142
     },
     {
@@ -2526,7 +2526,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_47_p1.bmp",
-      "sha256": "86abcba278feb456e7092f930fabf346417f6efd9dd912b32fc812903e221dc4",
+      "sha256": "beac99bd8f5a17070d5112dd85e9b531077ab25564982ebd37f4a8aaa3a69cdb",
       "size": 374
     },
     {
@@ -2536,7 +2536,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_48_p0.bmp",
-      "sha256": "39e2629dd8bf6518d16b49910ce3bbad6a2740cefba3ea3babe44fe368de08ed",
+      "sha256": "c4cac5446855d062f8735d0fafa8e4e0893352cd3acd76ef60ad21e86f603f97",
       "size": 1142
     },
     {
@@ -2546,7 +2546,7 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_hook_pose_48_p1.bmp",
-      "sha256": "0fa181e297bab7e9a513b8a76ab7fb0542498bd52153a3015d0a52f4b94e5233",
+      "sha256": "27f72f990eb0dd331d8b01480cc65a2864bacb5849ee4b54f36f56cb22c2ee1a",
       "size": 374
     },
     {
@@ -2556,8 +2556,8 @@
     },
     {
       "path": "gba/graphics/gameplay/crane_special_cable_segment.bmp",
-      "sha256": "7bf8913b83c60118318eb57d69036e24ec12e9e8820448c8c84fdc19bfd63f5e",
-      "size": 182
+      "sha256": "2efadb0194a76cd69f3a7d6e13d8f9629e8f6a45176d15cab684047dcf138202",
+      "size": 1142
     },
     {
       "path": "gba/graphics/gameplay/crane_special_cable_segment.json",
@@ -2566,7 +2566,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_007_p0.bmp",
-      "sha256": "f75fb472b1f628276bb284051d04bdb961364ce7b644b87f2702467049fa4132",
+      "sha256": "c65b1de837967d2a1f53577e30e0039c89c5a3e12d34758f11b666a7c338a4d9",
       "size": 1142
     },
     {
@@ -2576,7 +2576,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_008_p0.bmp",
-      "sha256": "841dc5638cb6988fe8ce3c7d4a7419c0d86c7cd3bd7cd427c11c822d60de837b",
+      "sha256": "d851c50890a281a5a13ce8605b38d1264441dbc09382cceb41305fd720de9364",
       "size": 1142
     },
     {
@@ -2586,7 +2586,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_008_p1.bmp",
-      "sha256": "69326d151993479d40ecf9feae67cba8be0fb7aeca8e658ff214e54a7bda4aab",
+      "sha256": "7dcc60adecb2aea903bfac71c0c3af1036cfe8c8836caea7f13ed18896ad6729",
       "size": 246
     },
     {
@@ -2636,7 +2636,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_010_p0.bmp",
-      "sha256": "f7e61b8fcfb0e7ab70ddea4ef9d0082ced6a5c9421969783629ffc85faff74cd",
+      "sha256": "846fbb0ef8f3d4df3824468b918bcc4f896e52e6d73d85f8e9b802905cf7ad7d",
       "size": 2102
     },
     {
@@ -2646,7 +2646,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_011_p0.bmp",
-      "sha256": "f6da7d1152717ccd1de708557cc0dc3be1ae1ae2531c4ca8748b47f820240661",
+      "sha256": "fe7b93a6b7c53698071f84dc5353d1c38672d49d222c6df4317c2887eb0053cf",
       "size": 2102
     },
     {
@@ -2656,7 +2656,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_012_p0.bmp",
-      "sha256": "aa6284ee64d1c8210232c36a03cd1441b6a6b00cd562691f09982d3a7fb2c7f9",
+      "sha256": "4e141eeaa24c0b9322bd3e9bd753a7b01752a2ea46cf604090804a474b4196fc",
       "size": 2102
     },
     {
@@ -2666,17 +2666,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_013_p0.bmp",
-      "sha256": "848b9abd922bb9b200c279625ea048932f77f13c21f59ba1d6106ac908b7ea76",
+      "sha256": "d2b9a987f7d1266946f49b1e22b1fa4d8e19b26cf965a20150b01548702efd15",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_013_p0.json",
-      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
+      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_020_p0.bmp",
-      "sha256": "b47bca2857667b6bdeb67a7095d818c53e35ff95b8380f3b5a17ccc00acbe95a",
+      "sha256": "07056076f3c6de992908d03486f8cc7a0750cb7d086a5e7c919fa2606ddc8a0e",
       "size": 2102
     },
     {
@@ -2686,7 +2686,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_021_p0.bmp",
-      "sha256": "af886a3c3ce4f2e3772603ee185c1a040c39602de2b77842d3296f3d0893c8bb",
+      "sha256": "9799238d310d98ae8128d533b9e0f62d6fcac26931dfd496d443bb6ab67e06ca",
       "size": 2102
     },
     {
@@ -2696,7 +2696,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_022_p0.bmp",
-      "sha256": "64547ccd910f0e33e59767c74578177bd8a98a996d9b7622607c32687afbd42e",
+      "sha256": "f52076cad2a9d4608980a84b5380c0764573c4016dc00051fdc0e4ed406692c7",
       "size": 2102
     },
     {
@@ -2706,17 +2706,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_023_p0.bmp",
-      "sha256": "4a7edc1495de5e9a56b0e19cd22981f5257bb77f8a57dad0fed18ed3a547f9a0",
+      "sha256": "e52c47905d15eacb353c9ab43a0140538d977e3d7747081b8041d9057376d703",
       "size": 2102
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_023_p0.json",
-      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
+      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_030_p0.bmp",
-      "sha256": "a95e1bc10baaa9cd122a11daa5e87700299aa010a6f18e50bda8235c1076aed0",
+      "sha256": "0e2f24873d670cfc7f108c57dca9c7cfee75eba1d0a8ae5e6e821ba7b3ae1178",
       "size": 2102
     },
     {
@@ -2726,7 +2726,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_031_p0.bmp",
-      "sha256": "b15de87691c97cd1dd84760f7e3c5c33eeb8f599b3653a6a3c955b65a5e90577",
+      "sha256": "24e8a61a63325121de3dcd8ae0cdc046108327141a5dd6f897527504dd098e2d",
       "size": 3126
     },
     {
@@ -2736,7 +2736,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_032_p0.bmp",
-      "sha256": "3f4034056aab5a3243d0dbafd5cb901d7df705b32b0296363c3caefc265bb1b7",
+      "sha256": "1f0599f993a8c81b03e269122159f5fd80beda823305da683ddf19925830e9ea",
       "size": 3126
     },
     {
@@ -2746,17 +2746,17 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_033_p0.bmp",
-      "sha256": "80e5700c1d43c286e9a353cd80a8e0823d203650f4acab99ce55881cf0d23c90",
+      "sha256": "34a84ae6b4e9187c545556d23e382e1aee185278130f71b399fc679b1610ce94",
       "size": 3126
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_033_p0.json",
-      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
+      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
       "size": 68
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_040_p0.bmp",
-      "sha256": "4d334c3624f1eeb44452507e188c9898f3ee4688fefa72527e0307ce775549ee",
+      "sha256": "f192cc46bdb32ba0ac230975e15f28c5f433e76b9fb002fda8217bfd96782368",
       "size": 3126
     },
     {
@@ -2766,7 +2766,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_041_p0.bmp",
-      "sha256": "e5db88df84fa0c1d7718bdcb9e888ee426d5f2eec958e9f731d6fbacf2397029",
+      "sha256": "fdc6d947dda0a4d4fce7776f60d3101ccf93def2d29219052660d6fe9a6407a4",
       "size": 3126
     },
     {
@@ -2776,7 +2776,7 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_042_p0.bmp",
-      "sha256": "6426725d5de1e71eba07095982d69380fea21e14c4c352e5c0fdddaf9ffb4ffd",
+      "sha256": "df6f4faacf13747341d7733c321f186b81530227fef26b3421b98cab48bec206",
       "size": 3126
     },
     {
@@ -2786,18 +2786,18 @@
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_043_p0.bmp",
-      "sha256": "fdbac7745225d52f9b0cc9eb296d94a0186f064fee03849885c2f07ffb7cf8b9",
+      "sha256": "bb773ae605aa2d95ab2139b095e384e7e1af180c8dc14bd2139feb6db7f5256d",
       "size": 5174
     },
     {
       "path": "gba/graphics/gameplay/tb_mesh_043_p0.json",
-      "sha256": "a2e22ca12219c8f99944f0906cad3d8ad6d6743edcb78e4611cbed1af570b575",
+      "sha256": "c37a0c615d461d4c373574fb6921a9dc1656c55a5cea0d55b9c07205907e900d",
       "size": 68
     },
     {
       "path": "gba/include/generated/tower_mesh_assets.h",
-      "sha256": "94f2a7753e72acb891bc8f92d54b806c9aa3b0c3a07de3125098cfd986d76a8b",
-      "size": 20336
+      "sha256": "6cdbe2e9a75cfe52843178444831c02231efc54706c7815b57b4ee8931d5ab6f",
+      "size": 20338
     }
   ],
   "mesh_count": 19,
@@ -3000,7 +3000,7 @@
       ],
       "bpp": 8,
       "mesh_id": 13,
-      "palette_entries": 96,
+      "palette_entries": 80,
       "parts": [
         {
           "asset": "tb_mesh_013_p0",
@@ -3088,7 +3088,7 @@
       ],
       "bpp": 8,
       "mesh_id": 23,
-      "palette_entries": 96,
+      "palette_entries": 80,
       "parts": [
         {
           "asset": "tb_mesh_023_p0",
@@ -3176,7 +3176,7 @@
       ],
       "bpp": 8,
       "mesh_id": 33,
-      "palette_entries": 96,
+      "palette_entries": 80,
       "parts": [
         {
           "asset": "tb_mesh_033_p0",
@@ -3264,7 +3264,7 @@
       ],
       "bpp": 8,
       "mesh_id": 43,
-      "palette_entries": 96,
+      "palette_entries": 80,
       "parts": [
         {
           "asset": "tb_mesh_043_p0",
@@ -3279,5 +3279,5 @@
     }
   ],
   "render_pose": "house_gameplay_240x160",
-  "tree_hash": "2bc459a7141bfdef941c2c0bdd247947da48b12b0ace70d872450c8076d32041"
+  "tree_hash": "0936f70b53083cc7d370f97d4fe1cd33a3711ee23668342ed08532fab54ad522"
 }
