@@ -772,8 +772,10 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
     }
 
     bn::sprite_ptr& sprite = *active;
+    const int part_y = flash ? generated::quick_combo_meter_flash.parts[0].y :
+                               generated::quick_combo_meter_fill.parts[0].y;
     sprite.set_horizontal_scale(bn::fixed(width) / 64);
-    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_y);
+    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_y + part_y);
 }
 
 void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)

@@ -56,6 +56,17 @@ def test_quick_combo_meter_uses_source_120px_timer_geometry() -> None:
     assert "generated::quick_combo_meter_flash" in source
 
 
+def test_quick_combo_meter_fill_applies_generated_composite_y_offset() -> None:
+    """The 4px fill sits at the top of a 32px OBJ canvas and needs its +14px part offset."""
+    source = (ROOT / "gba/src/quick_game_scene.cpp").read_text(encoding="utf-8")
+    start = source.index("void QuickGameScene::_update_combo_meter")
+    end = source.index("void QuickGameScene::_rebuild_hud", start)
+    body = source[start:end]
+    assert "const int part_y = flash ? generated::quick_combo_meter_flash.parts[0].y" in body
+    assert "generated::quick_combo_meter_fill.parts[0].y;" in body
+    assert "combo_meter_y + part_y" in body
+
+
 def test_quick_results_use_dialog_window_and_gba_a_prompt() -> None:
     source = (ROOT / "gba/src/quick_game_scene.cpp").read_text(encoding="utf-8")
     start = source.index("if(snapshot.status == QuickGameStatus::Results)")
