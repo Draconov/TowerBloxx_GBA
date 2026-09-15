@@ -453,6 +453,17 @@ void TowerConstructionScene::_rebuild_floor_sprites()
 
 void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSnapshot& snapshot)
 {
+    const bool current_visible = snapshot.status == TowerConstructionStatus::Playing &&
+            (snapshot.block_state == TowerConstructionBlockState::Raising || snapshot.block_state == TowerConstructionBlockState::Attached ||
+             snapshot.block_state == TowerConstructionBlockState::Falling || snapshot.block_state == TowerConstructionBlockState::Slipping);
+    if(! current_visible)
+    {
+        _current_sprites.clear();
+        _rendered_current_mesh_id = -1;
+        _rendered_tumble_stage = 0;
+        return;
+    }
+
     const int mesh_id = snapshot.roof_phase ?
             (snapshot.trophy_eligible ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
             (snapshot.floor_count == 0 ? _initial_base_mesh_id() : _normal_floor_mesh_id());
@@ -547,9 +558,9 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
 
 void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnapshot& snapshot, CranePresentationMode mode)
 {
-    _special_cable_sprites.clear();
     if(mode != CranePresentationMode::Special)
     {
+        _special_cable_sprites.clear();
         return;
     }
 
@@ -558,20 +569,33 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
     // -(22 * 1920 >> 8) = -165 in Butano's screen-centred coordinates.
     constexpr int start_x = 0;
     constexpr int start_y = -165;
+    constexpr int endpoint_overlap = 2;
     const int end_x = _screen_x(snapshot.crane_x);
     const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
     const int dx = end_x - start_x;
     const int dy = end_y - start_y;
     const int cable_length = bn::sqrt(dx * dx + dy * dy);
-    if(cable_length > 0)
+    if(cable_length <= 0)
     {
-        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(
-                bn::fixed(start_x + end_x) / 2, bn::fixed(start_y + end_y) / 2);
-        sprite.set_vertical_scale(bn::fixed(cable_length) / 64);
-        sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));
+        _special_cable_sprites.clear();
+        return;
+    }
+
+    if(_special_cable_sprites.empty())
+    {
+        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(0, 0);
         sprite.set_z_order(special_cable_z_order);
         _special_cable_sprites.push_back(sprite);
     }
+
+    // Java2D drawLine() includes both endpoints. Give the affine replacement
+    // a two-pixel overlap at each end so fixed-point sampling cannot open a
+    // one-frame gap where the long cable meets the V-shaped sling.
+    const int cable_draw_length = cable_length + endpoint_overlap * 2;
+    bn::sprite_ptr& sprite = _special_cable_sprites[0];
+    sprite.set_position(bn::fixed(start_x + end_x) / 2, bn::fixed(start_y + end_y) / 2);
+    sprite.set_vertical_scale(bn::fixed(cable_draw_length) / 64);
+    sprite.set_rotation_angle_safe(bn::degrees_atan2(-dx, dy));
 }
 
 void TowerConstructionScene::_update_world_positions(const TowerConstructionSnapshot& snapshot)
