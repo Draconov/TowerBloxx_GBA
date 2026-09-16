@@ -33,6 +33,8 @@ constexpr int screen_half_width = 120;
 constexpr int screen_half_height = 80;
 constexpr int legacy_screen_width_eighths = 240 * 8;
 constexpr int legacy_screen_height_eighths = 160 * 8;
+constexpr int construction_sky_bg_z_order = 1;
+constexpr int construction_scenery_bg_z_order = 0;
 
 int sky_color_index(int band)
 {
@@ -86,7 +88,7 @@ void create_legacy_event_sprites(
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
         bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
-        sprite.set_bg_priority(2);
+        sprite.set_bg_priority(3);
         sprite.set_z_order(100);
         output.push_back(sprite);
     }
@@ -115,7 +117,7 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms)
         if(decoration.kind == 1)
         {
             bn::sprite_ptr blink = bn::sprite_items::construction_high_blink_p0.create_sprite(0, 0);
-            blink.set_bg_priority(2);
+            blink.set_bg_priority(3);
             blink.set_z_order(100);
             blink.set_visible(false);
             _blink_sprites.push_back(blink);
@@ -171,6 +173,7 @@ void ConstructionBackdrop::_update_sky(int camera_y)
     {
         _sky_background = create_sky_background(index);
         _sky_background->set_priority(3);
+        _sky_background->set_z_order(construction_sky_bg_z_order);
         _sky_index = index;
     }
     _sky_background->set_y(horizon - 80);
@@ -216,6 +219,7 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     {
         _scenery_background = create_scenery_background(chunk);
         _scenery_background->set_priority(3);
+        _scenery_background->set_z_order(construction_scenery_bg_z_order);
         _scenery_chunk = chunk;
     }
 

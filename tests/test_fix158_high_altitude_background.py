@@ -47,7 +47,7 @@ def test_high_altitude_type1_blink_uses_source_phase_and_background_priority() -
     source = (ROOT / "gba/src/construction_backdrop.cpp").read_text(encoding="utf-8")
     assert "((clock_ms + decoration.world_y) / 200) % 2 == 0" in source
     assert "decoration.kind == 1" in source
-    assert "blink.set_bg_priority(2);" in source
+    assert "blink.set_bg_priority(3);" in source
     assert "blink.set_position" in source
     assert "_update_legacy_events(camera_y, clock_ms);" in source
     assert "legacy_event_min_band" in source
