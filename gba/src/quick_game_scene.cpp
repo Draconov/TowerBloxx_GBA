@@ -36,8 +36,10 @@ constexpr int special_cable_z_order = -5;
 constexpr int gameplay_worker_z_order = -30;
 constexpr int combo_meter_segments = 8;
 constexpr int combo_meter_max_width = 120;
-constexpr int combo_meter_fill_left = -57;
-constexpr int combo_meter_y = -69;
+constexpr int combo_meter_fill_left = -62;
+constexpr int combo_meter_fill_y = -66;
+constexpr int combo_meter_frame_x = -1;
+constexpr int combo_meter_frame_y = -67;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
@@ -288,7 +290,15 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         result.suspend_requested = true;
         return result;
     }
-    if(before_status == QuickGameStatus::Results && (input.pressed(Key::A) || input.pressed(Key::B)))
+    if(before_status == QuickGameStatus::Results && input.pressed(Key::A))
+    {
+        const QuickGameResult final_result = _game.result();
+        _stop();
+        result.score_ready = true;
+        result.final_population = uint32_t(final_result.population);
+        return result;
+    }
+    if(before_status == QuickGameStatus::Results && input.pressed(Key::B))
     {
         _stop();
         result.exit = true;
@@ -327,8 +337,6 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         _record_flags = apply_quick_result(save, game_result);
         _records_applied = true;
         result.save_dirty = _record_flags.any();
-        result.score_ready = true;
-        result.final_population = uint32_t(game_result.population);
     }
 
     if(snapshot.floor_count != _rendered_floor_count)
@@ -775,7 +783,7 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
     const int part_y = flash ? generated::quick_combo_meter_flash.parts[0].y :
                                generated::quick_combo_meter_fill.parts[0].y;
     sprite.set_horizontal_scale(bn::fixed(width) / 64);
-    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_y + part_y);
+    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_fill_y + part_y);
 }
 
 void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
@@ -834,7 +842,9 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
 
     if(snapshot.combo_meter_ms > 0)
     {
-        show_ui_composite(generated::quick_combo_meter_frame, 3, combo_meter_y, _hud_sprites, -101);
+        show_ui_composite(
+                generated::quick_combo_meter_frame, combo_meter_frame_x, combo_meter_frame_y,
+                _hud_sprites, -101);
     }
 
     // The source combo readout uses resource 15: cell 11 is the x marker,

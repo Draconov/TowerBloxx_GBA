@@ -15,7 +15,7 @@
   "files": [
     {
       "path": "gba/graphics/backgrounds/city_bg_theme_0.bmp",
-      "sha256": "0a07537302c9c294531cb597a25d6bb184bf0c01227c3de688c8182dbb2c8f65",
+      "sha256": "f560a4ad4e46d905e23851ecdd52a9e6a3eedeb0bcfa06213f42c52d05d3c450",
       "size": 66614
     },
     {
@@ -25,7 +25,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/city_bg_theme_1.bmp",
-      "sha256": "4dfd2041418acf65fb12f8a8c5822e627d9d290a81a2e5e1ab340aea9efab014",
+      "sha256": "dadebac1ca71d34cf7255539443ef412f2a7c0d5ce7cec8ef2eb7a1fff6b635f",
       "size": 66614
     },
     {
@@ -35,7 +35,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/city_bg_theme_2.bmp",
-      "sha256": "28f5018063f9607610a3662ecbb936edfd3cedc44a5a73e261903f638eae16dd",
+      "sha256": "8f47a99f1c0cd5e0b347d1c0c51440a24fe39f56e550c7e7ee47a8ed59a195ed",
       "size": 66614
     },
     {
@@ -45,7 +45,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/city_bg_theme_3.bmp",
-      "sha256": "7ed0bb567dba4d4c1eb2af1098ed35fadcafd5eeb0fc32fd475b2d0b0d52770a",
+      "sha256": "d37132050a0381dfa377a3b2f3bf994f811aecf6afbba44a7c95bef4fc37613c",
       "size": 66614
     },
     {
@@ -65,7 +65,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/menu_bg.bmp",
-      "sha256": "ff6352ef5249b036b00b058573f005b08bb428d2ff0ef0fead9e76ec5ecac89f",
+      "sha256": "e108cf9cc308348cd75914e47e9312e599e5fa4e7b6322270f375c3fea46fbf9",
       "size": 66614
     },
     {

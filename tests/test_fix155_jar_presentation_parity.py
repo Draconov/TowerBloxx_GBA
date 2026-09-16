@@ -64,7 +64,7 @@ def test_quick_combo_meter_fill_applies_generated_composite_y_offset() -> None:
     body = source[start:end]
     assert "const int part_y = flash ? generated::quick_combo_meter_flash.parts[0].y" in body
     assert "generated::quick_combo_meter_fill.parts[0].y;" in body
-    assert "combo_meter_y + part_y" in body
+    assert "combo_meter_fill_y + part_y" in body
 
 
 def test_quick_results_use_dialog_window_and_gba_a_prompt() -> None:

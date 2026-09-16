@@ -261,9 +261,16 @@ def render_city_background(theme_index: int = 0) -> Image.Image:
     return image
 
 
-def _indexed_background(image: Image.Image) -> tuple[bytes, tuple[int, ...]]:
+def _indexed_background(
+    image: Image.Image, *, reserve_transparent_index: bool = False
+) -> tuple[bytes, tuple[int, ...]]:
     rgba = image.convert("RGBA")
-    palette: list[int] = []
+    # Butano treats regular-BG palette index 0 as transparent.  City screens
+    # are fully opaque Java2D compositions, so reserve slot 0 and place every
+    # visible source color at index >= 1.  Without this, the very common source
+    # white becomes index 0 and the bottom message panel shows the blue
+    # backdrop through it instead of white.
+    palette: list[int] = [0] if reserve_transparent_index else []
     mapping: dict[int, int] = {}
     indices = bytearray(rgba.width * rgba.height)
     for index, (red, green, blue, _alpha) in enumerate(rgba.get_flattened_data()):
@@ -309,7 +316,9 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
     files: list[dict[str, object]] = []
     for name, visible in assets.items():
         padded = _pad_visible(visible)
-        indices, palette = _indexed_background(padded)
+        indices, palette = _indexed_background(
+            padded, reserve_transparent_index=name.startswith("city_bg_theme_")
+        )
         bmp_path = graphics_dir / f"{name}.bmp"
         json_path = graphics_dir / f"{name}.json"
         _write_indexed_bmp(bmp_path, ASSET_SIZE, ASSET_SIZE, indices, palette, 8)
