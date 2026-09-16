@@ -272,7 +272,7 @@ void ConstructionBackdrop::_clear_legacy_event(LegacySkyEventSlot& slot, int clo
     slot.type = 0;
     slot.sprites.clear();
     slot.rendered_frame = -1;
-    slot.next_spawn_ms = clock_ms + 2000 + _legacy_random(2000);
+    slot.next_spawn_ms = clock_ms + _legacy_random(2000);
 }
 
 void ConstructionBackdrop::_spawn_legacy_event(
@@ -353,23 +353,32 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
 
         const int type = slot.type;
         const generated::LegacySkyEventAsset& event_asset = generated::legacy_sky_event_assets[type];
+        const int extent = generated::legacy_event_extent_eighths[type];
         slot.x_eighths += generated::legacy_event_x_speed[type] * movement_steps;
-        // House.e projects to top-left screen coordinates by adding (v,w),
-        // but Butano sprite positions are already screen-centred. Cancel that
-        // source screen-centre translation instead of adding it a second time.
-        const int x = slot.x_eighths / 8;
-        const int y = -((slot.y_eighths - camera_three_quarters) / 8);
-        const int half_width = event_asset.width / 2;
-        const int half_height = event_asset.height / 2;
-        const bool in_band = band >= generated::legacy_event_min_band[type] &&
-                band < generated::legacy_event_max_band[type];
-        const bool onscreen_or_approaching = x >= -140 - half_width && x <= 140 + half_width &&
-                y >= -100 - half_height && y <= 180 + half_height;
-        if(! in_band || ! onscreen_or_approaching)
+
+        // House.k removes an event only after it has travelled beyond the
+        // source horizontal bounds or after the rising camera has pushed it
+        // below the bottom edge.  There is deliberately no upper-Y or current
+        // band cull: stationary Moon/planet/whale events can wait above the
+        // viewport until the camera reaches them.
+        const bool outside_source_bounds =
+                slot.x_eighths > legacy_screen_width_eighths + extent ||
+                slot.x_eighths < -extent ||
+                camera_three_quarters - slot.y_eighths > legacy_screen_height_eighths + extent;
+        if(outside_source_bounds)
         {
             _clear_legacy_event(slot, clock_ms);
             continue;
         }
+
+        // House.e first projects to normal top-left Java screen coordinates:
+        //   (v + 32 * x) >> 8, (w - 32 * (y - 3*camera/4)) >> 8.
+        // After specializing v/w to the 240x160 GBA viewport, subtract the
+        // screen centre once to convert those coordinates to Butano's origin.
+        const int source_screen_x = screen_half_width + (slot.x_eighths >> 3);
+        const int source_screen_y = screen_half_height + ((camera_three_quarters - slot.y_eighths) >> 3);
+        const int x = source_screen_x - screen_half_width;
+        const int y = source_screen_y - screen_half_height;
 
         const int frame = event_asset.frame_count > 1 ? (clock_ms / 400) % event_asset.frame_count : 0;
         if(frame != slot.rendered_frame)
@@ -377,7 +386,24 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
             create_legacy_event_sprites(*event_asset.frames[frame], slot.sprites);
             slot.rendered_frame = frame;
         }
-        position_legacy_event_sprites(*event_asset.frames[frame], x, y, slot.sprites);
+
+        // Java Graphics clips off-screen drawing automatically. GBA OBJ
+        // coordinates wrap, so explicitly hide composites outside the viewport
+        // while keeping their source event slot alive for future camera motion.
+        const int half_width = event_asset.width / 2;
+        const int half_height = event_asset.height / 2;
+        const bool visible = x + half_width >= -screen_half_width &&
+                x - half_width < screen_half_width &&
+                y + half_height >= -screen_half_height &&
+                y - half_height < screen_half_height;
+        for(bn::sprite_ptr& sprite : slot.sprites)
+        {
+            sprite.set_visible(visible);
+        }
+        if(visible)
+        {
+            position_legacy_event_sprites(*event_asset.frames[frame], x, y, slot.sprites);
+        }
     }
 }
 

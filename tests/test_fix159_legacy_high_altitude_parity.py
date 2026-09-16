@@ -100,6 +100,12 @@ def test_combo_star_uses_resource46_four_frame_source_animation() -> None:
     assert '_combo_star_affine_mat' not in source
 
 
+def _java_shift_eighths(value: int) -> int:
+    # House.e multiplies world deltas by 32 then arithmetic-shifts by 8,
+    # which is exactly an arithmetic >> 3 in the stored 1/8-pixel space.
+    return value >> 3
+
+
 def test_legacy_event_spawn_projection_uses_house_coordinate_math_for_gba() -> None:
     source = (ROOT / 'gba/src/construction_backdrop.cpp').read_text(encoding='utf-8')
     generated = (ROOT / 'gba/include/generated/legacy_high_altitude_assets.h').read_text(encoding='utf-8')
@@ -109,26 +115,64 @@ def test_legacy_event_spawn_projection_uses_house_coordinate_math_for_gba() -> N
     assert 'const int camera_three_quarters = (3 * camera_y) / 4;' in source
     assert 'slot.y_eighths = camera_three_quarters + extent + _legacy_random(512);' in source
     assert 'slot.y_eighths = camera_three_quarters - legacy_screen_height_eighths / 2 - 512 +' in source
-    # House.e first projects into ordinary top-left screen coordinates using
-    # the screen centre. Butano sprite positions are already centre-origin, so
-    # those half-screen offsets must cancel during the port.
-    assert 'const int x = slot.x_eighths / 8;' in source
-    assert 'const int y = -((slot.y_eighths - camera_three_quarters) / 8);' in source
-    assert 'screen_half_width + slot.x_eighths / 8' not in source
-    assert 'screen_half_height - (slot.y_eighths - camera_three_quarters) / 8' not in source
+    # House.e projects to ordinary top-left coordinates first.  The GBA port
+    # then subtracts the 120x80 screen centre to obtain Butano coordinates.
+    assert 'const int source_screen_x = screen_half_width + (slot.x_eighths >> 3);' in source
+    assert 'const int source_screen_y = screen_half_height + ((camera_three_quarters - slot.y_eighths) >> 3);' in source
+    assert 'const int x = source_screen_x - screen_half_width;' in source
+    assert 'const int y = source_screen_y - screen_half_height;' in source
 
 
-def test_legacy_event_projection_places_source_viewport_inside_butano_viewport() -> None:
-    # Numeric guard for the centre-origin conversion: source screen (120,80)
-    # must become Butano (0,0), not (120,80). A stationary event at source
-    # world x=0 therefore sits on the screen centre line, while the original
-    # 240px spawn width spans centred x=0..240 as House.l/House.e dictate.
+def test_legacy_event_projection_maps_java_viewport_to_butano_center_origin() -> None:
+    # Exact House.e arithmetic-shift behavior, including negative coordinates.
     camera_y = 4096
     camera_three_quarters = (3 * camera_y) // 4
-    assert 0 // 8 == 0
-    assert (240 * 8) // 8 == 240
-    assert -((camera_three_quarters - camera_three_quarters) // 8) == 0
-    assert -(((camera_three_quarters + 512) - camera_three_quarters) // 8) == -64
+
+    def project(x_eighths: int, y_eighths: int) -> tuple[int, int]:
+        source_x = 120 + _java_shift_eighths(x_eighths)
+        source_y = 80 + _java_shift_eighths(camera_three_quarters - y_eighths)
+        return source_x - 120, source_y - 80
+
+    assert project(0, camera_three_quarters) == (0, 0)
+    assert project(-960, camera_three_quarters) == (-120, 0)
+    assert project(952, camera_three_quarters) == (119, 0)
+    assert project(0, camera_three_quarters + 640) == (0, -80)
+    assert project(0, camera_three_quarters - 632) == (0, 79)
+    # Negative non-multiples prove Java's arithmetic shift is preserved rather
+    # than C++ integer division truncating toward zero.
+    assert project(-1, camera_three_quarters) == (-1, 0)
+    assert project(0, camera_three_quarters + 1) == (0, -1)
+
+
+def test_legacy_event_lifecycle_matches_house_k_bounds_and_respawn_delay() -> None:
+    source = (ROOT / 'gba/src/construction_backdrop.cpp').read_text(encoding='utf-8')
+    # House.k clears only after an event has passed the horizontal edges or
+    # fallen below the screen.  Events above the viewport must survive while
+    # the camera climbs toward them; event-band changes do not kill them.
+    assert 'slot.x_eighths > legacy_screen_width_eighths + extent' in source
+    assert 'slot.x_eighths < -extent' in source
+    assert 'camera_three_quarters - slot.y_eighths > legacy_screen_height_eighths + extent' in source
+    assert 'if(outside_source_bounds)' in source
+    update_body = source[source.index('void ConstructionBackdrop::_update_legacy_events'): ]
+    assert 'const bool in_band =' not in update_body
+    assert 'onscreen_or_approaching' not in update_body
+    # House.k schedules the cleared slot at as + random(2000), not +2000.
+    assert 'slot.next_spawn_ms = clock_ms + _legacy_random(2000);' in source
+    assert 'clock_ms + 2000 + _legacy_random(2000)' not in source
+
+
+def test_event_far_above_viewport_is_retained_until_camera_reaches_it() -> None:
+    # Numeric guard for the source House.k vertical condition.  A stationary
+    # moon/planet can be hundreds of source pixels above the viewport and must
+    # remain alive. It is removed only once the camera has passed far enough
+    # that the event is below the bottom edge.
+    height_eighths = 160 * 8
+    extent = 352  # Moon resource width/extent in the recovered source table.
+    event_y = 4096 + 1200
+    camera_three_quarters = 4096
+    assert not (camera_three_quarters - event_y > height_eighths + extent)
+    camera_three_quarters = event_y + height_eighths + extent + 1
+    assert camera_three_quarters - event_y > height_eighths + extent
 
 
 def test_resource47_sparkle_tracks_current_attached_or_falling_block_every_100ms() -> None:
