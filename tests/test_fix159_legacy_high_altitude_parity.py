@@ -2,17 +2,30 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
+import os
 import struct
 import zipfile
+
+import pytest
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-LEGACY_JAR = Path('/mnt/data/Tower Bloxx [208x208] (Nokia 6230i [v1.3.37]) (andrew-lviv.net).jar')
+LEGACY_JAR_ENV = 'TOWER_BLOXX_LEGACY_JAR'
+
+
+def _legacy_jar_path() -> Path:
+    value = os.environ.get(LEGACY_JAR_ENV)
+    if not value:
+        pytest.skip(f'{LEGACY_JAR_ENV} is not set; CI validates the checked-in JAR-derived export instead')
+    path = Path(value)
+    if not path.is_file():
+        pytest.skip(f'{LEGACY_JAR_ENV} does not point to an available file: {path}')
+    return path
 
 
 def _legacy_resources() -> dict[int, bytes]:
-    with zipfile.ZipFile(LEGACY_JAR) as jar:
+    with zipfile.ZipFile(_legacy_jar_path()) as jar:
         raw = jar.read('r0')
         table_bytes = struct.unpack('>i', raw[:4])[0]
         assert table_bytes == 392
