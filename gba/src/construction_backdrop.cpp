@@ -215,7 +215,7 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     if(! _scenery_background || chunk != _scenery_chunk)
     {
         _scenery_background = create_scenery_background(chunk);
-        _scenery_background->set_priority(2);
+        _scenery_background->set_priority(3);
         _scenery_chunk = chunk;
     }
 
