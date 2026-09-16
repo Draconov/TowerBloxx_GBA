@@ -3318,7 +3318,7 @@
     },
     {
       "path": "gba/graphics/ui/quick_combo_meter_fill_p0.bmp",
-      "sha256": "28afa9aaeba801c48e8abaff2114a1088e15ddc0ca24f40474ef2148d6012c9b",
+      "sha256": "30c4bfc5368dc475b0ec537a086b03cc4d900ead12220655ebe79680cdf2245f",
       "size": 1142
     },
     {
@@ -3328,7 +3328,7 @@
     },
     {
       "path": "gba/graphics/ui/quick_combo_meter_flash_p0.bmp",
-      "sha256": "b4e7589609ad4756ca144201e1f87d084bcaa2bf64b85cc4d3a0fc8f91d113f3",
+      "sha256": "4f62b2a8032e9f979e5a736753b452d51b3a938d956473f8c2de8540edcde4e4",
       "size": 1142
     },
     {
@@ -3338,7 +3338,7 @@
     },
     {
       "path": "gba/graphics/ui/quick_combo_meter_frame_p0.bmp",
-      "sha256": "c7646e0d8262f1dd8a19ed4b259325e4c72129ffa08c21338277b280d3cd01b8",
+      "sha256": "07436ba6eba56c6e8fcb877eec7267abd678ad66842b1ffad1af76599f743df1",
       "size": 1142
     },
     {
@@ -3348,7 +3348,7 @@
     },
     {
       "path": "gba/graphics/ui/quick_combo_meter_frame_p1.bmp",
-      "sha256": "5a3ce1c83b9b5509a21d3aceab9d2e8879f0b5c0e2cf31cefab1f589000d8f89",
+      "sha256": "385b90b127b399e36a8a72de35ed90fe282738740305c308aacc65f2df2dee54",
       "size": 1142
     },
     {
@@ -3458,7 +3458,7 @@
     },
     {
       "path": "gba/include/generated/tower_ui_assets.h",
-      "sha256": "63718829d09d109886839d0557f0bc4f3f2ddf81064cceea5489be32a0bdff7c",
+      "sha256": "f5513601cfc9e6ced527c05c93ba180e71568034792406f6f849d4b89a629c3f",
       "size": 49676
     }
   ],
@@ -4138,7 +4138,7 @@
     },
     "quick_combo_meter_fill": {
       "bpp": 4,
-      "height": 4,
+      "height": 3,
       "name": "quick_combo_meter_fill",
       "palette_entries": 15,
       "parts": [
@@ -4146,7 +4146,7 @@
           "asset": "quick_combo_meter_fill_p0",
           "height": 32,
           "screen_x": 0,
-          "screen_y": 14,
+          "screen_y": 15,
           "source_x": 0,
           "source_y": 0,
           "width": 64
@@ -4156,7 +4156,7 @@
     },
     "quick_combo_meter_flash": {
       "bpp": 4,
-      "height": 4,
+      "height": 3,
       "name": "quick_combo_meter_flash",
       "palette_entries": 15,
       "parts": [
@@ -4164,7 +4164,7 @@
           "asset": "quick_combo_meter_flash_p0",
           "height": 32,
           "screen_x": 0,
-          "screen_y": 14,
+          "screen_y": 15,
           "source_x": 0,
           "source_y": 0,
           "width": 64
@@ -4174,14 +4174,14 @@
     },
     "quick_combo_meter_frame": {
       "bpp": 4,
-      "height": 8,
+      "height": 9,
       "name": "quick_combo_meter_frame",
       "palette_entries": 15,
       "parts": [
         {
           "asset": "quick_combo_meter_frame_p0",
           "height": 32,
-          "screen_x": -30,
+          "screen_x": -31,
           "screen_y": 12,
           "source_x": 0,
           "source_y": 0,
@@ -4190,14 +4190,14 @@
         {
           "asset": "quick_combo_meter_frame_p1",
           "height": 32,
-          "screen_x": 34,
+          "screen_x": 33,
           "screen_y": 12,
           "source_x": 64,
           "source_y": 0,
           "width": 64
         }
       ],
-      "width": 124
+      "width": 126
     },
     "quick_counter_frame": {
       "bpp": 4,
@@ -5711,7 +5711,7 @@
     "tower_logo": 7
   },
   "strings_per_locale": 134,
-  "tree_hash": "c3704209f27b8687c97018cf643092be30e2923ded138a6a88ace90de388be71",
+  "tree_hash": "e80ae00429e423d332cb49b4f0f6bf1a28857490858ec2cf010b7053fd08fb3c",
   "utf8_characters": [
     "¡",
     "°",

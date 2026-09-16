@@ -86,6 +86,13 @@ int build_city_placement_effect_frame(bool replacing, int placement_timer_ms)
     return 5 - (4 * local_timer / 750);
 }
 
+int build_city_discard_effect_frame(int placement_timer_ms)
+{
+    // The bulldozer destroys the newly-built tower with the same resource-29
+    // six-frame destruction pass used when an occupied city cell is replaced.
+    return build_city_placement_effect_frame(true, placement_timer_ms);
+}
+
 int build_city_changed_population_cells(int old_population, int new_population)
 {
     if(old_population / 10000 != new_population / 10000)

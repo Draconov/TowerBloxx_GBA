@@ -7,6 +7,7 @@
 int main()
 {
     using tb::build_city_placement_effect_frame;
+    using tb::build_city_discard_effect_frame;
     using tb::build_city_preview_raised;
     using tb::build_city_selector_slot_active;
     using tb::build_city_valid_lot_rgb;
@@ -64,6 +65,14 @@ int main()
     {
         const int frame = build_city_placement_effect_frame(false, timer);
         assert(frame >= 2 && frame <= 5);
+    }
+
+    // The bulldozer/discard slot must use the same six-frame destruction
+    // sequence as replacing an occupied regular city cell.
+    for(int timer = -50; timer <= 3050; timer += 25)
+    {
+        assert(build_city_discard_effect_frame(timer) ==
+               build_city_placement_effect_frame(true, timer));
     }
 
 

@@ -40,6 +40,9 @@ constexpr int modal_line_spacing = 12;
 constexpr int selected_preview_outline_z_order = -2;
 constexpr int selected_preview_tower_z_order = -3;
 constexpr int placement_pending_z_order = -4;
+constexpr int discard_effect_z_order = -5;
+constexpr int discard_cell_center_x = 72;
+constexpr int discard_cell_center_y = 117;
 
 const generated::UiCompositeAsset* const building_assets[4][4] = {
     { &generated::city_building_1_f0, &generated::city_building_1_f1,
@@ -645,28 +648,39 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.mode == BuildCityMode::Placement)
     {
-        // Resource 23 stays visible throughout placement in the source game,
-        // advertising that the left-hand slot is the demolition/discard lot.
-        // m.a() draws resource 23 at source top-left (62,97), so its 20x20
-        // visible bounds are centered at (72,107).
-        _show_composite(generated::city_action_icon, centered_x(72), centered_y(107));
+        // Keep the demolition/discard cell visible throughout placement.  The
+        // GBA presentation intentionally moves it 10px lower than the source
+        // Java anchor so it lines up with the left selector column.
+        _show_composite(
+                generated::city_action_icon,
+                centered_x(discard_cell_center_x), centered_y(discard_cell_center_y));
     }
 
     if(snapshot.cursor_column < 0)
     {
-        // Keep the tower visible when the demolition/discard slot is selected.
-        // The old early return hid the pending tower entirely, making the
-        // bulldozer look like an empty cursor target instead of a discard drop.
+        // Center the pending tower inside the bulldozer cell.  Keep it visible
+        // under the resource-29 destruction effect until the 3s discard commit
+        // finishes, mirroring replacement of an occupied regular city cell.
         if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
         {
             const int type = snapshot.pending_building_type;
-            const int screen_left = 72 - building_widths[type - 1] / 2;
-            constexpr int screen_baseline = 117;
             _show_composite(
                     building_asset(type, snapshot.pending_roof),
-                    building_center_x(type, screen_left),
-                    building_center_y(type, screen_baseline),
+                    centered_x(discard_cell_center_x),
+                    centered_y(discard_cell_center_y),
                     placement_pending_z_order);
+        }
+
+        if(snapshot.placement_committing && snapshot.placement_timer_ms >= 0)
+        {
+            const int effect_frame = build_city_discard_effect_frame(snapshot.placement_timer_ms);
+            if(effect_frame >= 0)
+            {
+                _show_composite(
+                        *city_effects[effect_frame],
+                        centered_x(discard_cell_center_x), centered_y(discard_cell_center_y),
+                        discard_effect_z_order);
+            }
         }
         return;
     }

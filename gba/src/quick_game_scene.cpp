@@ -36,9 +36,9 @@ constexpr int special_cable_z_order = -5;
 constexpr int gameplay_worker_z_order = -30;
 constexpr int combo_meter_segments = 8;
 constexpr int combo_meter_max_width = 120;
-constexpr int combo_meter_fill_left = -62;
-constexpr int combo_meter_fill_y = -66;
-constexpr int combo_meter_frame_x = -1;
+constexpr int combo_meter_fill_left = -60;
+constexpr int combo_meter_fill_y = -67;
+constexpr int combo_meter_frame_x = 0;
 constexpr int combo_meter_frame_y = -67;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {

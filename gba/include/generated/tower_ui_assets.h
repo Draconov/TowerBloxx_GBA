@@ -836,18 +836,18 @@ inline const UiSpritePartAsset quick_counter_frame_parts[] = {
 inline const UiCompositeAsset quick_counter_frame = { quick_counter_frame_parts, 1 };
 
 inline const UiSpritePartAsset quick_combo_meter_frame_parts[] = {
-    { &bn::sprite_items::quick_combo_meter_frame_p0, -30, 12 },
-    { &bn::sprite_items::quick_combo_meter_frame_p1, 34, 12 },
+    { &bn::sprite_items::quick_combo_meter_frame_p0, -31, 12 },
+    { &bn::sprite_items::quick_combo_meter_frame_p1, 33, 12 },
 };
 inline const UiCompositeAsset quick_combo_meter_frame = { quick_combo_meter_frame_parts, 2 };
 
 inline const UiSpritePartAsset quick_combo_meter_fill_parts[] = {
-    { &bn::sprite_items::quick_combo_meter_fill_p0, 0, 14 },
+    { &bn::sprite_items::quick_combo_meter_fill_p0, 0, 15 },
 };
 inline const UiCompositeAsset quick_combo_meter_fill = { quick_combo_meter_fill_parts, 1 };
 
 inline const UiSpritePartAsset quick_combo_meter_flash_parts[] = {
-    { &bn::sprite_items::quick_combo_meter_flash_p0, 0, 14 },
+    { &bn::sprite_items::quick_combo_meter_flash_p0, 0, 15 },
 };
 inline const UiCompositeAsset quick_combo_meter_flash = { quick_combo_meter_flash_parts, 1 };
 

@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_combo_meter_uses_exact_240x160_jar_anchor() -> None:
     source = (ROOT / "gba/src/quick_game_scene.cpp").read_text(encoding="utf-8")
-    assert "constexpr int combo_meter_fill_left = -62;" in source
-    assert "constexpr int combo_meter_frame_x = -1;" in source
+    assert "constexpr int combo_meter_fill_left = -60;" in source
+    assert "constexpr int combo_meter_frame_x = 0;" in source
     assert "constexpr int combo_meter_frame_y = -67;" in source
-    assert "constexpr int combo_meter_fill_y = -66;" in source
+    assert "constexpr int combo_meter_fill_y = -67;" in source
     assert "generated::quick_combo_meter_frame, combo_meter_frame_x, combo_meter_frame_y" in source
     assert "show_ui_composite(*hud_brown_digit_frames[11], 66, -67" in source
 
@@ -40,15 +40,16 @@ def test_city_background_keeps_source_white_message_panel_opaque(
     assert rgb == (248, 248, 248)
 
 
-def test_build_city_bulldozer_uses_jar_position_and_pending_tower_remains_visible() -> None:
+def test_build_city_bulldozer_uses_adjusted_position_and_pending_tower_remains_visible() -> None:
     source = (ROOT / "gba/src/build_city_scene.cpp").read_text(encoding="utf-8")
     start = source.index("if(snapshot.mode == BuildCityMode::Placement)")
     end = source.index("const int cell_center_x", start)
     placement = source[start:end]
 
-    # Resource 23 is drawn by m.a() at source top-left (62,97); its 20x20
-    # visible bounds therefore have centre (72,107).
-    assert "generated::city_action_icon, centered_x(72), centered_y(107)" in placement
+    assert "constexpr int discard_cell_center_x = 72;" in source
+    assert "constexpr int discard_cell_center_y = 117;" in source
+    compact = " ".join(placement.split())
+    assert "generated::city_action_icon, centered_x(discard_cell_center_x), centered_y(discard_cell_center_y)" in compact
     assert "if(snapshot.cursor_column < 0)" in placement
     discard = placement[placement.index("if(snapshot.cursor_column < 0)") :]
     assert "building_asset(type, snapshot.pending_roof)" in discard

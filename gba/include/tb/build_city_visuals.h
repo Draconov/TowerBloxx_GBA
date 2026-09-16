@@ -9,6 +9,7 @@ namespace tb
 [[nodiscard]] bool build_city_selector_slot_active(int flash_ms);
 [[nodiscard]] bool build_city_preview_raised(int type, int selected_type, int max_unlocked_type);
 [[nodiscard]] int build_city_placement_effect_frame(bool replacing, int placement_timer_ms);
+[[nodiscard]] int build_city_discard_effect_frame(int placement_timer_ms);
 [[nodiscard]] int build_city_changed_population_cells(int old_population, int new_population);
 
 class BuildCityPopulationRoll

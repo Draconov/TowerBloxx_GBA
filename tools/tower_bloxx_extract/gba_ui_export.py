@@ -1052,23 +1052,32 @@ def export_gba_ui_assets(jar_path: Path, project_dir: Path) -> dict[str, object]
         quick_counter_frame, "quick_counter_frame", graphics_dir
     )
 
-    # House.i(Graphics) draws the Quick Game combo timer as Java2D geometry:
-    # a dark brown outline with a 120px live fill.  Export only the reusable
-    # masks; runtime scales the 64px fill source to the exact timer width.
-    quick_combo_meter_frame_image = Image.new("RGBA", (124, 8), (0, 0, 0, 0))
-    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 0, 124, 1))
-    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 7, 124, 8))
-    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (0, 0, 1, 8))
-    quick_combo_meter_frame_image.paste((107, 26, 0, 255), (123, 0, 124, 8))
+    # House.i(Graphics) draws the Quick Game combo timer with two nested
+    # Java2D drawRect calls.  In the 240x160 specialization they are:
+    #   brown  drawRect(57,  9, 125, 8) -> 126x9 inclusive pixel bounds
+    #   yellow drawRect(58, 10, 123, 6) -> 124x7 inclusive pixel bounds
+    # followed by fillRect(60, 12, timer*120/6000, 3).  Preserve the exact
+    # inclusive drawRect geometry instead of approximating it as one brown box.
+    quick_combo_meter_frame_image = Image.new("RGBA", (126, 9), (0, 0, 0, 0))
+    brown = (107, 26, 0, 255)
+    yellow = (252, 255, 0, 255)
+    quick_combo_meter_frame_image.paste(brown, (0, 0, 126, 1))
+    quick_combo_meter_frame_image.paste(brown, (0, 8, 126, 9))
+    quick_combo_meter_frame_image.paste(brown, (0, 0, 1, 9))
+    quick_combo_meter_frame_image.paste(brown, (125, 0, 126, 9))
+    quick_combo_meter_frame_image.paste(yellow, (1, 1, 125, 2))
+    quick_combo_meter_frame_image.paste(yellow, (1, 7, 125, 8))
+    quick_combo_meter_frame_image.paste(yellow, (1, 1, 2, 8))
+    quick_combo_meter_frame_image.paste(yellow, (124, 1, 125, 8))
     _combo_frame_composite, quick_combo_meter_frame_record = _export_composite(
         quick_combo_meter_frame_image, "quick_combo_meter_frame", graphics_dir
     )
 
-    quick_combo_meter_fill_image = Image.new("RGBA", (64, 4), (252, 255, 0, 255))
+    quick_combo_meter_fill_image = Image.new("RGBA", (64, 3), (252, 255, 0, 255))
     _combo_fill_composite, quick_combo_meter_fill_record = _export_composite(
         quick_combo_meter_fill_image, "quick_combo_meter_fill", graphics_dir
     )
-    quick_combo_meter_flash_image = Image.new("RGBA", (64, 4), (255, 255, 255, 255))
+    quick_combo_meter_flash_image = Image.new("RGBA", (64, 3), (255, 255, 255, 255))
     _combo_flash_composite, quick_combo_meter_flash_record = _export_composite(
         quick_combo_meter_flash_image, "quick_combo_meter_flash", graphics_dir
     )
