@@ -70,7 +70,7 @@ private:
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
-    bn::vector<bn::sprite_ptr, 2> _block_sparkle_sprites;
+    bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
     int _language = 0;
@@ -88,8 +88,8 @@ private:
     int _last_hud_population = -1;
     int _last_hud_combo_count = -1;
     int _last_hud_combo_bucket = -1;
+    int _last_hud_combo_bonus_bucket = -1;
     int _combo_star_frame = -1;
-    int _block_sparkle_frame = -1;
     QuickGameStatus _last_hud_status = QuickGameStatus::GameOver;
     bool _records_applied = false;
     bool _active = false;

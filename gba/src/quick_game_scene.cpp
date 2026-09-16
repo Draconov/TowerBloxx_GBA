@@ -92,7 +92,7 @@ void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
 }
 
 
-void draw_source_number(int value, int min_digits, int right_x, int top_y,
+int draw_source_number(int value, int min_digits, int right_x, int top_y,
                         const generated::UiCompositeAsset* const* digits,
                         bn::ivector<bn::sprite_ptr>& output)
 {
@@ -114,6 +114,7 @@ void draw_source_number(int value, int min_digits, int right_x, int top_y,
         ++rendered;
     }
     while(value > 0 || rendered < min_digits);
+    return left;
 }
 
 const generated::MeshAsset& mesh_by_id(int mesh_id)
@@ -230,6 +231,16 @@ int combo_bucket(const QuickGameSnapshot& snapshot)
     }
     return bucket;
 }
+
+int combo_bonus_blink_bucket(const QuickGameSnapshot& snapshot)
+{
+    if(snapshot.combo_bonus_pending == 0 || snapshot.combo_meter_ms > 0 || snapshot.combo_meter_ms <= -2000)
+    {
+        return -1;
+    }
+    return (-snapshot.combo_meter_ms) / 100;
+}
+
 }
 
 QuickGameScene::QuickGameScene() :
@@ -260,6 +271,7 @@ void QuickGameScene::start(int language)
     _last_hud_population = -1;
     _last_hud_combo_count = -1;
     _last_hud_combo_bucket = -1;
+    _last_hud_combo_bonus_bucket = -1;
     _last_hud_status = QuickGameStatus::GameOver;
     _active = true;
     _background_clock_ms = 0;
@@ -273,9 +285,6 @@ void QuickGameScene::start(int language)
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
-    _block_sparkle_frame = -1;
-    _block_sparkle_sprites.clear();
-    _block_sparkle_frame = -1;
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
@@ -368,9 +377,11 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     }
 
     const int current_combo_bucket = combo_bucket(snapshot);
+    const int current_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.combo_count != _last_hud_combo_count ||
-       current_combo_bucket != _last_hud_combo_bucket || snapshot.status != _last_hud_status)
+       current_combo_bucket != _last_hud_combo_bucket || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
+       snapshot.status != _last_hud_status)
     {
         _rebuild_hud(snapshot);
     }
@@ -418,6 +429,7 @@ void QuickGameScene::resume_presentation()
     _last_hud_population = -1;
     _last_hud_combo_count = -1;
     _last_hud_combo_bucket = -1;
+    _last_hud_combo_bonus_bucket = -1;
     _last_hud_status = QuickGameStatus::GameOver;
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
@@ -827,35 +839,36 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
 
 void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
 {
-    // Nokia v1.3.37 House.i(Graphics): resource 47 surrounds the active block
-    // only while state 1/2 is active (Attached/Falling), cycling 3 frames at
-    // 100 ms.  The GBA compositor keeps the source 44x44 frame centred on the
-    // current block world position.
-    const bool visible = snapshot.status == QuickGameStatus::Playing &&
-            (snapshot.block_state == QuickBlockState::Attached ||
-             snapshot.block_state == QuickBlockState::Falling);
-    if(! visible)
+    _block_sparkle_sprites.clear();
+    if(snapshot.status != QuickGameStatus::Playing || snapshot.combo_count <= 0 || snapshot.floor_count <= 0)
     {
-        _block_sparkle_sprites.clear();
-        _block_sparkle_frame = -1;
         return;
     }
 
-    const int frame = (_background_clock_ms / 100) % 3;
-    const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
-    if(frame != _block_sparkle_frame)
+    // Nokia v1.3.37 House.j(Graphics): resource 47 is attached to the most
+    // recent landed floors in the active combo chain. House only retains five
+    // visible floor slots, so clip the combo chain to the same visible window.
+    int first_floor = snapshot.floor_count - snapshot.combo_count;
+    if(first_floor < _visible_floor_start)
     {
-        _block_sparkle_sprites.clear();
-        show_ui_composite(asset, 0, 0, _block_sparkle_sprites, -21);
-        _block_sparkle_frame = frame;
+        first_floor = _visible_floor_start;
+    }
+    if(first_floor < 0)
+    {
+        first_floor = 0;
     }
 
-    const int center_x = _screen_x(snapshot.current_x);
-    const int center_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
-    for(int index = 0; index < asset.part_count; ++index)
+    const int animation_bucket = _background_clock_ms / 100;
+    for(int floor_index = snapshot.floor_count - 1; floor_index >= first_floor; --floor_index)
     {
-        const generated::UiSpritePartAsset& part = asset.parts[index];
-        _block_sparkle_sprites[index].set_position(center_x + part.x, center_y + part.y);
+        const QuickFloor& floor = _game.floor(floor_index);
+        const int visible_slot = floor_index - _visible_floor_start;
+        const int frame = (animation_bucket + visible_slot) % 3;
+        const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
+        show_ui_composite(
+                asset, _screen_x(floor.x),
+                _screen_y(floor.y, snapshot.presentation_camera_y),
+                _block_sparkle_sprites, -21);
     }
 }
 
@@ -867,6 +880,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     _last_hud_population = snapshot.population;
     _last_hud_combo_count = snapshot.combo_count;
     _last_hud_combo_bucket = combo_bucket(snapshot);
+    _last_hud_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     _last_hud_status = snapshot.status;
 
     if(snapshot.status == QuickGameStatus::Results)
@@ -928,6 +942,16 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         const int digits = snapshot.combo_count > 9 ? 2 : 1;
         draw_source_number(snapshot.combo_count, digits, 191 + digits * 5, 12,
                            hud_brown_digit_frames, _hud_sprites);
+    }
+
+    // House.i(Graphics): once r() banks the combo, Z is flashed as a
+    // source-15 "+NNN" population award for 2 seconds at 100 ms intervals.
+    if(snapshot.combo_bonus_pending != 0 && snapshot.combo_meter_ms <= 0 &&
+       snapshot.combo_meter_ms > -2000 && (-snapshot.combo_meter_ms / 100) % 2 == 0)
+    {
+        const int plus_left = draw_source_number(snapshot.combo_bonus_pending, 3, 130, 10,
+                                                 hud_brown_digit_frames, _hud_sprites);
+        show_ui_composite(*hud_brown_digit_frames[10], plus_left + 2 - 120, 13 - 80, _hud_sprites);
     }
 
     if(snapshot.status == QuickGameStatus::GameOver)

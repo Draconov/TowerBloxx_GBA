@@ -625,6 +625,44 @@ def _indexed_transparent(image: Image.Image, bpp: int = 8) -> tuple[bytes, tuple
         indices[index] = palette_index
     return bytes(indices), tuple(palette)
 
+def _shared_construction_palette(images: list[Image.Image]) -> tuple[int, ...]:
+    """Build one deterministic 8bpp palette for every construction BG layer.
+
+    Regular 8bpp backgrounds share GBA BG palette memory.  Keeping independent
+    palettes per sky/scenery chunk makes a chunk swap recolor the other layer.
+    Slot 0 stays reserved for scenery transparency; opaque colors, including
+    black, are always assigned an index >= 1.
+    """
+    palette: list[int] = [0]
+    mapping: dict[int, int] = {}
+    for image in images:
+        for red, green, blue, alpha in image.convert("RGBA").get_flattened_data():
+            if alpha == 0:
+                continue
+            value = (red >> 3) | ((green >> 3) << 5) | ((blue >> 3) << 10)
+            if value not in mapping:
+                if len(palette) >= 256:
+                    raise ValueError("construction layers exceed shared 256-color BG palette")
+                mapping[value] = len(palette)
+                palette.append(value)
+    return tuple(palette)
+
+
+def _indexed_shared_construction(
+    image: Image.Image, palette: tuple[int, ...]
+) -> tuple[bytes, tuple[int, ...]]:
+    mapping = {value: index for index, value in enumerate(palette[1:], start=1)}
+    rgba = image.convert("RGBA")
+    indices = bytearray(rgba.width * rgba.height)
+    for index, (red, green, blue, alpha) in enumerate(rgba.get_flattened_data()):
+        if alpha == 0:
+            indices[index] = 0
+            continue
+        value = (red >> 3) | ((green >> 3) << 5) | ((blue >> 3) << 10)
+        indices[index] = mapping[value]
+    return bytes(indices), palette
+
+
 def _pad_visible(image: Image.Image) -> Image.Image:
     canvas = Image.new("RGBA", (ASSET_SIZE, ASSET_SIZE), image.getpixel((0, 0)))
     canvas.alpha_composite(image, ((ASSET_SIZE - VISIBLE_WIDTH) // 2, (ASSET_SIZE - VISIBLE_HEIGHT) // 2))
@@ -666,6 +704,12 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
         "menu_bg": render_menu_background(),
     })
 
+    construction_names = [
+        name for name in assets
+        if name.startswith("construction_sky_") or name.startswith("construction_scenery_")
+    ]
+    construction_palette = _shared_construction_palette([assets[name] for name in construction_names])
+
     files: list[dict[str, object]] = []
     for name, image in assets.items():
         construction_layer = name.startswith("construction_sky_") or name.startswith("construction_scenery_")
@@ -674,8 +718,8 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
         else:
             output = _pad_visible(image)
 
-        if name.startswith("construction_scenery_"):
-            indices, palette = _indexed_transparent(output, bpp=8)
+        if construction_layer:
+            indices, palette = _indexed_shared_construction(output, construction_palette)
         else:
             indices, palette = _indexed_background(
                 output, reserve_transparent_index=name.startswith("city_bg_theme_")

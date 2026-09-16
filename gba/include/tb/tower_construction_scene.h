@@ -75,7 +75,7 @@ private:
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
     bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
-    bn::vector<bn::sprite_ptr, 2> _block_sparkle_sprites;
+    bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     BuildCityConstructionRequest _request{};
     int _language = 0;
@@ -91,7 +91,7 @@ private:
     int _last_hud_floor_count = -1;
     int _last_hud_chances = -1;
     int _last_hud_population = -1;
-    int _block_sparkle_frame = -1;
+    int _last_hud_combo_bonus_bucket = -1;
     bool _last_hud_roof_phase = false;
     uint8_t _last_hud_roof_result = 0;
     TowerConstructionStatus _last_hud_status = TowerConstructionStatus::Results;

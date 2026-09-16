@@ -175,26 +175,23 @@ def test_event_far_above_viewport_is_retained_until_camera_reaches_it() -> None:
     assert camera_three_quarters - event_y > height_eighths + extent
 
 
-def test_resource47_sparkle_tracks_current_attached_or_falling_block_every_100ms() -> None:
+def test_resource47_sparkle_tracks_visible_landed_combo_floors_every_100ms() -> None:
     generated = (ROOT / 'gba/include/generated/legacy_high_altitude_assets.h').read_text(encoding='utf-8')
     assert 'legacy_block_sparkle_frames' in generated
 
-    quick_source = (ROOT / 'gba/src/quick_game_scene.cpp').read_text(encoding='utf-8')
-    quick_header = (ROOT / 'gba/include/tb/quick_game_scene.h').read_text(encoding='utf-8')
-    assert 'void _update_block_sparkle(const QuickGameSnapshot& snapshot);' in quick_header
-    assert 'snapshot.block_state == QuickBlockState::Attached ||' in quick_source
-    assert 'snapshot.block_state == QuickBlockState::Falling' in quick_source
-    assert '(_background_clock_ms / 100) % 3' in quick_source
-    assert 'legacy_block_sparkle_frames[frame]' in quick_source
-    assert '_screen_x(snapshot.current_x)' in quick_source
-    assert '_screen_y(snapshot.current_y, snapshot.presentation_camera_y)' in quick_source
+    for source_name, header_name, snapshot_type, floor_accessor in (
+        ('quick_game_scene.cpp', 'quick_game_scene.h', 'QuickGameSnapshot', '_game.floor'),
+        ('tower_construction_scene.cpp', 'tower_construction_scene.h', 'TowerConstructionSnapshot', '_construction.floor'),
+    ):
+        source = (ROOT / 'gba/src' / source_name).read_text(encoding='utf-8')
+        header = (ROOT / 'gba/include/tb' / header_name).read_text(encoding='utf-8')
+        assert f'void _update_block_sparkle(const {snapshot_type}& snapshot);' in header
+        body = source[source.index('::_update_block_sparkle'): source.index('::_rebuild_hud')]
+        assert 'snapshot.combo_count' in body
+        assert '_visible_floor_start' in body
+        assert floor_accessor in body
+        assert '_background_clock_ms / 100' in body
+        assert 'legacy_block_sparkle_frames[frame]' in body
+        assert 'snapshot.current_x' not in body
+        assert 'snapshot.current_y' not in body
 
-    city_source = (ROOT / 'gba/src/tower_construction_scene.cpp').read_text(encoding='utf-8')
-    city_header = (ROOT / 'gba/include/tb/tower_construction_scene.h').read_text(encoding='utf-8')
-    assert 'void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);' in city_header
-    assert 'snapshot.block_state == TowerConstructionBlockState::Attached ||' in city_source
-    assert 'snapshot.block_state == TowerConstructionBlockState::Falling' in city_source
-    assert '(_background_clock_ms / 100) % 3' in city_source
-    assert 'legacy_block_sparkle_frames[frame]' in city_source
-    assert '_screen_x(snapshot.current_x)' in city_source
-    assert '_screen_y(snapshot.current_y, snapshot.presentation_camera_y)' in city_source

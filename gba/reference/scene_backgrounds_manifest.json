@@ -78,7 +78,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_scenery_0.bmp",
-      "sha256": "9124a951b0da649deb3e583221722fc2f472266dc2e7d4ea8ad1e5b224ced2e9",
+      "sha256": "4707c2bf78f884749cd5636deec7b5072a8db87a3d72e0265c39d12bb9403a1b",
       "size": 132150
     },
     {
@@ -88,7 +88,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_scenery_1.bmp",
-      "sha256": "cb3582b7a8c5026b096fd201d73bf9e9fe79a4e8449f4043897938a0ea15d9aa",
+      "sha256": "efda4da1d8c52de793060f07c3e9197815f068710f445f00995f0d1008187afc",
       "size": 132150
     },
     {
@@ -98,7 +98,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_scenery_2.bmp",
-      "sha256": "2c2b7de0ebe851648348632b49ada6ff05c895d38fa3745797ca5a3a2b9fd270",
+      "sha256": "c975847886867d9fa81207fdd65607b33048d77c76a3dd7f0556b9d00dbf7f1f",
       "size": 132150
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_00.bmp",
-      "sha256": "7111fdb5a392d32065c5bd6ba9fd83b2ec696370ae771eb608f3a84f189171c2",
+      "sha256": "8078595629f36216234b04d0fe3f98d59ffc17ec4cbdfd4e3c4bd5a5366a22cf",
       "size": 132150
     },
     {
@@ -118,7 +118,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_01.bmp",
-      "sha256": "b69abf2616e7175b66b8181a8674bb86038944f3af891a87a240e17bfdf0d1e3",
+      "sha256": "60b61edfe0f30de407447efbe94fca4e3f94ae5aeab579023e9430ad53f78735",
       "size": 132150
     },
     {
@@ -128,7 +128,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_02.bmp",
-      "sha256": "8a52c445f6c14663bc536714daff35fed205f4bddb14682c785a02fa7ee82e0e",
+      "sha256": "feb05898e03792471dd177152f84d2797c1c7b8002287a370257365c54c5562f",
       "size": 132150
     },
     {
@@ -138,7 +138,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_03.bmp",
-      "sha256": "5da44fada16ee930ce0f8e58edc60c0e32f5ffd9a66b063daf6da1e58d87c839",
+      "sha256": "d538270d23a118775fa24c7d0df0df2655983f6d036d9dc7ecdf8cffac8b7e85",
       "size": 132150
     },
     {
@@ -148,7 +148,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_04.bmp",
-      "sha256": "194bf7054a859af46feeffc6d178fdc1d8aaac92445897855d41c5a8abe17ed7",
+      "sha256": "8803f7827556a349a5f3707ff596ed2330db259ae2c7551e665dbb9127f8cacd",
       "size": 132150
     },
     {
@@ -158,7 +158,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_05.bmp",
-      "sha256": "8efc1eca7fa78b17f06c41a4117d9bbfc44a1520081b10947daadb82c1454d9a",
+      "sha256": "b98fbdf0a62881b69622a0a10957e00b306f12a215e01a6a54d691c388721cfd",
       "size": 132150
     },
     {
@@ -168,7 +168,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_06.bmp",
-      "sha256": "b20b05757d6299303d39f7f18da10a2b81f74e3bb84e41d011b89e932fc23aa1",
+      "sha256": "cbba7e966b32403d0c680e7b52bc8bb19c5bc11a52f4657ba5c43c3f3dbb069f",
       "size": 132150
     },
     {
@@ -178,7 +178,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_07.bmp",
-      "sha256": "c2b66a3644fe181287b9619f81070b173e7de88ddfa07e7988c802c03bceeda4",
+      "sha256": "5be2df1aee70d96cf3e6e51a60541ae8222bd06c8ca1783e80c5d69d1c67344a",
       "size": 132150
     },
     {
@@ -188,7 +188,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_08.bmp",
-      "sha256": "6612c5134db457665df5b7ca4074069a4f13fa00fda0195e93a85b447b7ffdce",
+      "sha256": "24692b637c28b9b8d9f78fd49ec74a169bb6eef40dd00bd42df4773e10119367",
       "size": 132150
     },
     {
@@ -198,7 +198,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_09.bmp",
-      "sha256": "13d62f9218eee54615373d99481f270c6dbc3081ca93c32374287fd81300cce5",
+      "sha256": "675ca8057408a3c3ffcc9bfe3306fe0a12fc6898369c368ce20baf15fc6abab8",
       "size": 132150
     },
     {
@@ -208,7 +208,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_10.bmp",
-      "sha256": "316d9930b221fe0475316b7420654205d8710c90adb66f4f56686e1117e321d8",
+      "sha256": "71d03d8119c6054f9951ac8eef2a9e6e4e4c95bb4f62b83343c87f273381e68e",
       "size": 132150
     },
     {
@@ -218,7 +218,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_11.bmp",
-      "sha256": "690100923e13d7fd04a8d93facfc8bb0e17f521e1fe354986eeb2caf8f998e55",
+      "sha256": "dcc9f1476307788e577f22e6a7c536e9546526dab8d70e38f51051be8f76999a",
       "size": 132150
     },
     {
@@ -228,7 +228,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_12.bmp",
-      "sha256": "836b0f7d55ef2048206efe4bf8ecfac02d6c8546678e6dd50ce923bbbe68c70b",
+      "sha256": "b83b3465742e22ed0f0b71dc0ac18844a5ac438d0f645438a006c0b0cd8ad37f",
       "size": 132150
     },
     {
@@ -238,7 +238,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_13.bmp",
-      "sha256": "c760653514a60ddf22e48e64b2e317ff4fd7b069ec51d3d973e3b027750a2853",
+      "sha256": "f88bfa6e93e05340e7e3b213590b9712edbb09d77b0cc0309c65625a69b75bfd",
       "size": 132150
     },
     {
@@ -248,7 +248,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_14.bmp",
-      "sha256": "11fa53961db5f2f24a9ff9c90e35dd5bad5178571f3fd545132828fa568cd911",
+      "sha256": "968cdfa4ed108e6309ce2fd36ed9d6178a01130897412a67d9e2cca7c8e8b59d",
       "size": 132150
     },
     {
@@ -258,7 +258,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_15.bmp",
-      "sha256": "59657fa49abdb28ea4dd9117da9d6d5fc597bb17f7a69547998cb76f8b20d83f",
+      "sha256": "29b0bbe6e9c33432c9e6b40b754a47c106dde197df7eac53ab84ff51112d0d93",
       "size": 132150
     },
     {
@@ -268,7 +268,7 @@
     },
     {
       "path": "gba/graphics/backgrounds/construction_sky_16.bmp",
-      "sha256": "ab57c39657f92db985abf2cdb1513548acc19db6c2d69a3cc7e864b3c1d28525",
+      "sha256": "11763744abaaca3ca26d74eea3c4d4ac3dd47996b36536894ceb4ed08eb3084d",
       "size": 132150
     },
     {

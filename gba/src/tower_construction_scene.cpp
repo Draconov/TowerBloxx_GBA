@@ -75,6 +75,12 @@ constexpr const generated::UiCompositeAsset* construction_white_digit_frames[] =
     &generated::hud_white_digit_f6, &generated::hud_white_digit_f7, &generated::hud_white_digit_f8,
     &generated::hud_white_digit_f9,
 };
+constexpr const generated::UiCompositeAsset* hud_brown_digit_frames[] = {
+    &generated::hud_brown_digit_f0, &generated::hud_brown_digit_f1, &generated::hud_brown_digit_f2,
+    &generated::hud_brown_digit_f3, &generated::hud_brown_digit_f4, &generated::hud_brown_digit_f5,
+    &generated::hud_brown_digit_f6, &generated::hud_brown_digit_f7, &generated::hud_brown_digit_f8,
+    &generated::hud_brown_digit_f9, &generated::hud_brown_digit_f10, &generated::hud_brown_digit_f11,
+};
 
 void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
                        bn::ivector<bn::sprite_ptr>& output, int z_order = -100)
@@ -89,7 +95,7 @@ void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
 }
 
 
-void draw_source_number(int value, int min_digits, int right_x, int top_y,
+int draw_source_number(int value, int min_digits, int right_x, int top_y,
                         const generated::UiCompositeAsset* const* digits,
                         bn::ivector<bn::sprite_ptr>& output)
 {
@@ -108,6 +114,16 @@ void draw_source_number(int value, int min_digits, int right_x, int top_y,
         ++rendered;
     }
     while(value > 0 || rendered < min_digits);
+    return left;
+}
+
+int combo_bonus_blink_bucket(const TowerConstructionSnapshot& snapshot)
+{
+    if(snapshot.combo_bonus_pending == 0 || snapshot.combo_meter_ms > 0 || snapshot.combo_meter_ms <= -2000)
+    {
+        return -1;
+    }
+    return (-snapshot.combo_meter_ms) / 100;
 }
 
 bn::string<128> format_construction_modal_line(bn::string_view text)
@@ -226,6 +242,7 @@ void TowerConstructionScene::start(
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
+    _last_hud_combo_bonus_bucket = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -244,7 +261,6 @@ void TowerConstructionScene::start(
     _worker_sprites.clear();
     _hud_sprites.clear();
     _block_sparkle_sprites.clear();
-    _block_sparkle_frame = -1;
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
@@ -368,9 +384,11 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         _rebuild_worker_sprites(snapshot);
     }
 
+    const int current_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
-       snapshot.population != _last_hud_population || snapshot.roof_phase != _last_hud_roof_phase ||
-       snapshot.roof_result != _last_hud_roof_result || snapshot.status != _last_hud_status)
+       snapshot.population != _last_hud_population || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
+       snapshot.roof_phase != _last_hud_roof_phase || snapshot.roof_result != _last_hud_roof_result ||
+       snapshot.status != _last_hud_status)
     {
         _rebuild_hud(snapshot);
     }
@@ -394,7 +412,6 @@ void TowerConstructionScene::suspend_presentation()
     _worker_sprites.clear();
     _hud_sprites.clear();
     _block_sparkle_sprites.clear();
-    _block_sparkle_frame = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
@@ -416,6 +433,7 @@ void TowerConstructionScene::resume_presentation()
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
+    _last_hud_combo_bonus_bucket = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -757,31 +775,33 @@ void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnap
 
 void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapshot& snapshot)
 {
-    const bool visible = snapshot.status == TowerConstructionStatus::Playing &&
-            (snapshot.block_state == TowerConstructionBlockState::Attached ||
-             snapshot.block_state == TowerConstructionBlockState::Falling);
-    if(! visible)
+    _block_sparkle_sprites.clear();
+    if(snapshot.status != TowerConstructionStatus::Playing || snapshot.combo_count <= 0 || snapshot.floor_count <= 0)
     {
-        _block_sparkle_sprites.clear();
-        _block_sparkle_frame = -1;
         return;
     }
 
-    const int frame = (_background_clock_ms / 100) % 3;
-    const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
-    if(frame != _block_sparkle_frame)
+    int first_floor = snapshot.floor_count - snapshot.combo_count;
+    if(first_floor < _visible_floor_start)
     {
-        _block_sparkle_sprites.clear();
-        show_ui_composite(asset, 0, 0, _block_sparkle_sprites, -21);
-        _block_sparkle_frame = frame;
+        first_floor = _visible_floor_start;
+    }
+    if(first_floor < 0)
+    {
+        first_floor = 0;
     }
 
-    const int center_x = _screen_x(snapshot.current_x);
-    const int center_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
-    for(int index = 0; index < asset.part_count; ++index)
+    const int animation_bucket = _background_clock_ms / 100;
+    for(int floor_index = snapshot.floor_count - 1; floor_index >= first_floor; --floor_index)
     {
-        const generated::UiSpritePartAsset& part = asset.parts[index];
-        _block_sparkle_sprites[index].set_position(center_x + part.x, center_y + part.y);
+        const TowerConstructionFloor& floor = _construction.floor(floor_index);
+        const int visible_slot = floor_index - _visible_floor_start;
+        const int frame = (animation_bucket + visible_slot) % 3;
+        const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
+        show_ui_composite(
+                asset, _screen_x(floor.x),
+                _screen_y(floor.y, snapshot.presentation_camera_y),
+                _block_sparkle_sprites, -21);
     }
 }
 
@@ -791,6 +811,7 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     _last_hud_floor_count = snapshot.floor_count;
     _last_hud_chances = snapshot.chances_left;
     _last_hud_population = snapshot.population;
+    _last_hud_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     _last_hud_roof_phase = snapshot.roof_phase;
     _last_hud_roof_result = snapshot.roof_result;
     _last_hud_status = snapshot.status;
@@ -847,6 +868,14 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     {
         show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
+    }
+
+    if(snapshot.combo_bonus_pending != 0 && snapshot.combo_meter_ms <= 0 &&
+       snapshot.combo_meter_ms > -2000 && (-snapshot.combo_meter_ms / 100) % 2 == 0)
+    {
+        const int plus_left = draw_source_number(snapshot.combo_bonus_pending, 3, 130, 10,
+                                                 hud_brown_digit_frames, _hud_sprites);
+        show_ui_composite(*hud_brown_digit_frames[10], plus_left + 2 - 120, 13 - 80, _hud_sprites);
     }
 
     if(_modal_localization_index >= 0)
