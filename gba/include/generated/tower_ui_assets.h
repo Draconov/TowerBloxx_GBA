@@ -9,15 +9,11 @@
 #include "bn_sprite_items_sumea_logo_p0.h"
 #include "bn_sprite_items_dialog_window_p0.h"
 #include "bn_sprite_items_dialog_window_p1.h"
-#include "bn_sprite_items_dialog_window_p2.h"
 #include "bn_sprite_items_dialog_window_p3.h"
 #include "bn_sprite_items_dialog_window_p4.h"
 #include "bn_sprite_items_dialog_window_p5.h"
-#include "bn_sprite_items_dialog_window_p6.h"
 #include "bn_sprite_items_dialog_window_p7.h"
 #include "bn_sprite_items_menu_highlight_p0.h"
-#include "bn_sprite_items_menu_highlight_p1.h"
-#include "bn_sprite_items_menu_highlight_p2.h"
 #include "bn_sprite_items_menu_highlight_p3.h"
 #include "bn_sprite_items_city_progress_segment_p0.h"
 #include "bn_sprite_items_city_valid_lot_ring_p0.h"
@@ -57,13 +53,9 @@
 #include "bn_sprite_items_menu_worker_blue_f5_p0.h"
 #include "bn_sprite_items_menu_worker_blue_f5_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f6_p0.h"
-#include "bn_sprite_items_menu_worker_blue_f6_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f7_p0.h"
-#include "bn_sprite_items_menu_worker_blue_f7_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f8_p0.h"
-#include "bn_sprite_items_menu_worker_blue_f8_p1.h"
 #include "bn_sprite_items_menu_worker_blue_f9_p0.h"
-#include "bn_sprite_items_menu_worker_blue_f9_p1.h"
 #include "bn_sprite_items_menu_worker_red_f0_p0.h"
 #include "bn_sprite_items_menu_worker_red_f0_p1.h"
 #include "bn_sprite_items_menu_worker_red_f1_p0.h"
@@ -247,19 +239,19 @@ inline const UiCompositeAsset sumea_logo = { sumea_logo_parts, 1 };
 inline const UiSpritePartAsset dialog_window_parts[] = {
     { &bn::sprite_items::dialog_window_p0, -80, -24 },
     { &bn::sprite_items::dialog_window_p1, -16, -24 },
-    { &bn::sprite_items::dialog_window_p2, 48, -24 },
+    { &bn::sprite_items::dialog_window_p1, 48, -24 },
     { &bn::sprite_items::dialog_window_p3, 96, -24 },
     { &bn::sprite_items::dialog_window_p4, -80, 40 },
     { &bn::sprite_items::dialog_window_p5, -16, 40 },
-    { &bn::sprite_items::dialog_window_p6, 48, 40 },
+    { &bn::sprite_items::dialog_window_p5, 48, 40 },
     { &bn::sprite_items::dialog_window_p7, 96, 40 },
 };
 inline const UiCompositeAsset dialog_window = { dialog_window_parts, 8 };
 
 inline const UiSpritePartAsset menu_highlight_parts[] = {
     { &bn::sprite_items::menu_highlight_p0, -83, 8 },
-    { &bn::sprite_items::menu_highlight_p1, -19, 8 },
-    { &bn::sprite_items::menu_highlight_p2, 45, 8 },
+    { &bn::sprite_items::menu_highlight_p0, -19, 8 },
+    { &bn::sprite_items::menu_highlight_p0, 45, 8 },
     { &bn::sprite_items::menu_highlight_p3, 109, 8 },
 };
 inline const UiCompositeAsset menu_highlight = { menu_highlight_parts, 4 };
@@ -427,25 +419,25 @@ inline const UiCompositeAsset menu_worker_blue_f5 = { menu_worker_blue_f5_parts,
 
 inline const UiSpritePartAsset menu_worker_blue_f6_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f6_p0, 4, 0 },
-    { &bn::sprite_items::menu_worker_blue_f6_p1, 4, 0 },
+    { &bn::sprite_items::menu_worker_blue_f0_p1, 4, 0 },
 };
 inline const UiCompositeAsset menu_worker_blue_f6 = { menu_worker_blue_f6_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f7_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f7_p0, 4, 0 },
-    { &bn::sprite_items::menu_worker_blue_f7_p1, 4, 0 },
+    { &bn::sprite_items::menu_worker_blue_f0_p1, 4, 0 },
 };
 inline const UiCompositeAsset menu_worker_blue_f7 = { menu_worker_blue_f7_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f8_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f8_p0, 1, -2 },
-    { &bn::sprite_items::menu_worker_blue_f8_p1, 1, -2 },
+    { &bn::sprite_items::menu_worker_blue_f0_p1, 1, -2 },
 };
 inline const UiCompositeAsset menu_worker_blue_f8 = { menu_worker_blue_f8_parts, 2 };
 
 inline const UiSpritePartAsset menu_worker_blue_f9_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f9_p0, 6, -2 },
-    { &bn::sprite_items::menu_worker_blue_f9_p1, 6, -2 },
+    { &bn::sprite_items::menu_worker_blue_f0_p1, 6, -2 },
 };
 inline const UiCompositeAsset menu_worker_blue_f9 = { menu_worker_blue_f9_parts, 2 };
 

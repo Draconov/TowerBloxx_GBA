@@ -196,7 +196,6 @@ void UiShell::_rebuild(const UiController& controller, const SaveData& save)
     case UiScene::ScoreQualification: _show_score_message(controller, true); break;
     case UiScene::ScoreFailure: _show_score_message(controller, false); break;
     case UiScene::NameEntry: _show_name_entry(controller); break;
-    case UiScene::TowerGallery: break;
     }
 }
 

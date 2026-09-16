@@ -4,14 +4,14 @@ The repository includes `.github/workflows/gba-release.yml`, which makes GitHub 
 
 ## What happens on every push and pull request
 
-1. `host-tests` runs the complete Python/host parity suite with Python 3.11.
+1. `host-tests` runs the permanent host regression suite with Python 3.11.
 2. `gba-build` runs in the official `devkitpro/devkitarm` container.
 3. The build job clones **Butano 21.7.1** into `.ci/butano` and builds the existing `gba/Makefile` with an explicit `LIBBUTANO` path.
 4. `gba/TowerBloxxGBA.gba` is copied to `dist/TowerBloxx.gba`.
 5. A SHA-256 file is generated as `dist/TowerBloxx.gba.sha256` and verified before upload.
 6. GitHub Actions uploads both files as a workflow artifact named `TowerBloxx-GBA-<commit SHA>`.
 
-The workflow does not require the original Nokia JAR. All graphics needed by the current runtime are already present as generated project assets.
+All graphics and audio needed by the runtime are committed as final GBA-ready assets; no external game data is required to build the ROM.
 
 ## Manual build or release from GitHub Actions
 

@@ -1,18 +1,14 @@
-# User-supplied proprietary reference package and raw extraction output
-Tower-Bloxx_v1522.jar
-reference-original/
+# Build outputs
 build/
+*.gba
+*.elf
+*.elfbin
+*.map
 
-# Local isolated implementation worktrees
+# Local implementation worktrees
 .worktrees/
 
 # Python generated files
 __pycache__/
 *.py[cod]
 .pytest_cache/
-
-# Native GBA build outputs
-*.gba
-*.elf
-*.elfbin
-*.map

@@ -433,9 +433,6 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
         else if(input.pressed(Key::Start)) _confirm_name(save, result);
         break;
 
-    case UiScene::TowerGallery:
-        if(input.pressed(Key::B)) _return_to_root(0);
-        break;
     }
 
     return result;

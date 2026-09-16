@@ -74,6 +74,7 @@ private:
     bn::vector<bn::sprite_ptr, 4> _platform_sprites;
     bn::vector<bn::sprite_ptr, 2> _crane_hook_sprites;
     bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
+    bn::vector<bn::sprite_ptr, 3> _special_boom_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;

@@ -53,7 +53,7 @@ private:
     bn::sprite_text_generator _selected_text_generator;
     bn::optional<bn::regular_bg_ptr> _background;
     bn::vector<bn::sprite_ptr, 256> _sprites;
-    UiScene _last_scene = UiScene::TowerGallery;
+    UiScene _last_scene = UiScene::Title;
     int _last_selection = -1;
     int _last_language = -1;
     int _last_sound = -1;

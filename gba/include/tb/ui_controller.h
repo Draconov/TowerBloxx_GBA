@@ -27,7 +27,6 @@ enum class UiScene : uint8_t
     ScoreQualification,
     ScoreFailure,
     NameEntry,
-    TowerGallery,
 };
 
 enum class RootMenuItem : uint8_t

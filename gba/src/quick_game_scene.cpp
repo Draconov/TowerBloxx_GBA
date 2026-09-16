@@ -10,6 +10,9 @@
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
+#include "bn_sprite_items_crane_special_boom_p0.h"
+#include "bn_sprite_items_crane_special_boom_p1.h"
+#include "bn_sprite_items_crane_special_boom_p2.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -33,6 +36,7 @@ constexpr int world_screen_baseline_y = 0;
 constexpr int current_block_z_order = -20;
 constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
+constexpr int special_boom_z_order = -4;
 constexpr int gameplay_worker_z_order = -30;
 constexpr int combo_meter_segments = 8;
 constexpr int combo_meter_max_width = 120;
@@ -404,6 +408,7 @@ void QuickGameScene::suspend_presentation()
     _platform_sprites.clear();
     _crane_hook_sprites.clear();
     _special_cable_sprites.clear();
+    _special_boom_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
@@ -586,6 +591,7 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     if(mode != CranePresentationMode::Special)
     {
         _special_cable_sprites.clear();
+        _special_boom_sprites.clear();
         return;
     }
 
@@ -593,7 +599,7 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     // Its source camera anchor is 1920 fixed units above the active camera:
     // -(22 * 1920 >> 8) = -165 in Butano's screen-centred coordinates.
     constexpr int start_x = 0;
-    constexpr int start_y = -165;
+    const int start_y = special_crane_cable_start_y(snapshot.floor_count, snapshot.rope_length);
     constexpr int endpoint_overlap = 3;
     const int end_x = _screen_x(snapshot.crane_x);
     const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
@@ -603,6 +609,7 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     if(cable_length <= 0)
     {
         _special_cable_sprites.clear();
+        _special_boom_sprites.clear();
         return;
     }
 
@@ -612,6 +619,25 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
         sprite.set_z_order(special_cable_z_order);
         sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
         _special_cable_sprites.push_back(sprite);
+    }
+
+    if(_special_boom_sprites.empty())
+    {
+        bn::sprite_ptr p0 = bn::sprite_items::crane_special_boom_p0.create_sprite(0, 0);
+        bn::sprite_ptr p1 = bn::sprite_items::crane_special_boom_p1.create_sprite(0, 0);
+        bn::sprite_ptr p2 = bn::sprite_items::crane_special_boom_p2.create_sprite(0, 0);
+        p0.set_z_order(special_boom_z_order);
+        p1.set_z_order(special_boom_z_order);
+        p2.set_z_order(special_boom_z_order);
+        _special_boom_sprites.push_back(p0);
+        _special_boom_sprites.push_back(p1);
+        _special_boom_sprites.push_back(p2);
+    }
+    const int boom_y = special_crane_boom_center_y(start_y);
+    for(int part_index = 0; part_index < _special_boom_sprites.size(); ++part_index)
+    {
+        _special_boom_sprites[part_index].set_position(
+                special_crane_boom_part_center_x(start_x, part_index), boom_y);
     }
 
     // Java2D drawLine() includes both endpoints. Give the affine replacement

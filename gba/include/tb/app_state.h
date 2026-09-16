@@ -8,7 +8,6 @@ namespace tb
 enum class SceneId : uint8_t
 {
     UiShell = 0,
-    TowerGallery,
 };
 
 enum class Key : uint16_t

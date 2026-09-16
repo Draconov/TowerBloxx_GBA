@@ -73,8 +73,6 @@
 #include "bn_sprite_items_crane_hook_pose_22_p1.h"
 #include "bn_sprite_items_crane_hook_pose_23_p0.h"
 #include "bn_sprite_items_crane_hook_pose_23_p1.h"
-#include "bn_sprite_items_crane_hook_pose_24_p0.h"
-#include "bn_sprite_items_crane_hook_pose_24_p1.h"
 #include "bn_sprite_items_crane_hook_pose_25_p0.h"
 #include "bn_sprite_items_crane_hook_pose_25_p1.h"
 #include "bn_sprite_items_crane_hook_pose_26_p0.h"
@@ -732,8 +730,8 @@ inline const MeshPartAsset crane_hook_pose_23_parts[] = {
 };
 
 inline const MeshPartAsset crane_hook_pose_24_parts[] = {
-    { &bn::sprite_items::crane_hook_pose_24_p0, 10, -48 },
-    { &bn::sprite_items::crane_hook_pose_24_p1, 2, -8 },
+    { &bn::sprite_items::tb_mesh_008_p0, 10, -48 },
+    { &bn::sprite_items::tb_mesh_008_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_25_parts[] = {

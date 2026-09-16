@@ -17,7 +17,6 @@
 #include "bn_sprite_items_legacy_sky_birds_f1_p0.h"
 #include "bn_sprite_items_legacy_sky_cloud_bank_a_f0_p0.h"
 #include "bn_sprite_items_legacy_sky_cloud_bank_b_f0_p0.h"
-#include "bn_sprite_items_legacy_sky_cloud_bank_c_f0_p0.h"
 #include "bn_sprite_items_legacy_sky_cloud_line_a_f0_p0.h"
 #include "bn_sprite_items_legacy_sky_cloud_line_a_f0_p1.h"
 #include "bn_sprite_items_legacy_sky_cloud_line_a_f0_p2.h"
@@ -163,7 +162,7 @@ inline const UiSpritePartAsset legacy_sky_cloud_strip_f0_parts[] = {
 inline const UiCompositeAsset legacy_sky_cloud_strip_f0 = { legacy_sky_cloud_strip_f0_parts, 2 };
 
 inline const UiSpritePartAsset legacy_sky_cloud_bank_c_f0_parts[] = {
-    { &bn::sprite_items::legacy_sky_cloud_bank_c_f0_p0, 4, 1 },
+    { &bn::sprite_items::legacy_sky_cloud_bank_b_f0_p0, 4, 1 },
 };
 inline const UiCompositeAsset legacy_sky_cloud_bank_c_f0 = { legacy_sky_cloud_bank_c_f0_parts, 1 };
 
