@@ -9,7 +9,6 @@
 #include "bn_sprite_double_size_mode.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
-#include "bn_regular_bg_items_construction_bg.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
 
 #include "generated/tower_localization.h"
@@ -32,6 +31,7 @@ constexpr int current_block_z_order = -20;
 constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
 constexpr int gameplay_worker_z_order = -30;
+constexpr int construction_sky_band_step = 3072;
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
 
@@ -86,6 +86,7 @@ void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
         output.push_back(sprite);
     }
 }
+
 
 void draw_source_number(int value, int min_digits, int right_x, int top_y,
                         const generated::UiCompositeAsset* const* digits,
@@ -235,8 +236,7 @@ void TowerConstructionScene::start(
     _pending_result = {};
     _pending_result_valid = false;
     _active = true;
-    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
-    _background->set_priority(3);
+    _background_clock_ms = 0;
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
@@ -246,6 +246,7 @@ void TowerConstructionScene::start(
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _rebuild_hud(snapshot);
 }
@@ -354,6 +355,8 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     }
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
+    _background_clock_ms += delta_ms;
+    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     if(workers_advanced || floor_added)
     {
@@ -376,7 +379,7 @@ bool TowerConstructionScene::active() const
 
 void TowerConstructionScene::suspend_presentation()
 {
-    _background.reset();
+    _backdrop.reset();
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
@@ -398,8 +401,6 @@ void TowerConstructionScene::resume_presentation()
         return;
     }
     set_gameplay_backdrop();
-    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
-    _background->set_priority(3);
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
@@ -415,6 +416,7 @@ void TowerConstructionScene::resume_presentation()
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);

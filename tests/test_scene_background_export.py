@@ -8,13 +8,65 @@ from PIL import Image
 
 from tower_bloxx_extract.scene_background_export import (
     SKY_COLORS,
+    construction_sky_state,
+    deterministic_high_altitude_decorations,
     export_scene_backgrounds,
+    java_sky_color_index,
     render_city_background,
     render_construction_background,
     render_menu_background,
+    scaled_resource43_extent,
 )
 
 
+
+
+def test_gameplay_sky_uses_all_17_colors_then_cycles_9_through_16() -> None:
+    assert [java_sky_color_index(index) for index in range(17)] == list(range(17))
+    assert [java_sky_color_index(index) for index in range(17, 25)] == list(range(9, 17))
+    assert [java_sky_color_index(index) for index in range(25, 33)] == list(range(9, 17))
+
+
+def test_gameplay_sky_horizon_and_band_follow_house_math() -> None:
+    opening = construction_sky_state(512)
+    assert opening.band == 0
+    assert opening.current_color_index == 0
+    assert opening.next_color_index == 1
+    assert opening.horizon == 29
+
+    threshold = construction_sky_state(3072)
+    assert threshold.band == 1
+    assert threshold.current_color_index == 1
+    assert threshold.next_color_index == 2
+    assert threshold.horizon == 0
+
+    band_16 = construction_sky_state(16 * 3072)
+    assert band_16.current_color_index == 16
+    assert band_16.next_color_index == 9
+
+    band_17 = construction_sky_state(17 * 3072)
+    assert band_17.current_color_index == 9
+    assert band_17.next_color_index == 10
+
+
+def test_resource43_full_scaled_extent_is_preserved(tower_bloxx_jar: Path) -> None:
+    assert scaled_resource43_extent(tower_bloxx_jar) == 621
+
+
+def test_high_altitude_decorations_match_house_ranges_and_are_deterministic() -> None:
+    first = deterministic_high_altitude_decorations(240)
+    second = deterministic_high_altitude_decorations(240)
+    assert first == second
+    assert len(first) == 12
+    allowed_colors = {0x6FA7D0, 0x5CA0D1, 0x4F98CD}
+    for index, decoration in enumerate(first):
+        assert 5 <= decoration.width <= 9
+        assert 440 <= decoration.world_y <= 615
+        assert 11 <= decoration.height <= 21
+        assert decoration.color in allowed_colors
+        assert decoration.kind in {0, 1, 2}
+        cell_width = 240 // 12
+        assert index * cell_width - decoration.width + 1 <= decoration.x <= index * cell_width
 
 def test_menu_background_matches_reference_jar_sky_band() -> None:
     # House.<clinit> t[] recovered from the canonical v1.5.22 bytecode.
@@ -102,23 +154,60 @@ def test_city_background_exports_all_four_source_lot_themes() -> None:
         assert image.getpixel((120, 136))[:3] == (90, 142, 255)
 
 
-def test_export_scene_backgrounds_writes_butano_regular_bg_assets(
+def test_export_scene_backgrounds_writes_layered_construction_assets(
     tower_bloxx_jar: Path, tmp_path: Path
 ) -> None:
+    graphics = tmp_path / "gba" / "graphics" / "backgrounds"
+    graphics.mkdir(parents=True)
+    for legacy in ("construction_bg_b1", "construction_bg_b2", "construction_bg_b3"):
+        (graphics / f"{legacy}.bmp").write_bytes(b"legacy")
+        (graphics / f"{legacy}.json").write_text("legacy")
+
     manifest = export_scene_backgrounds(tower_bloxx_jar, tmp_path)
     assert manifest["visible_size"] == [240, 160]
-    assert manifest["asset_size"] == [256, 256]
+    assert manifest["construction_layer_size"] == [256, 512]
+    assert manifest["resource43_entry_count"] == 88
+    assert manifest["resource43_scaled_extent"] == 621
+    assert manifest["scenery_chunk_centers"] == [0, 256, 512]
+
+    sky_assets = [f"construction_sky_{index:02d}" for index in range(17)]
+    scenery_assets = [f"construction_scenery_{index}" for index in range(3)]
     assert manifest["assets"] == [
-        "construction_bg", "city_bg_theme_0", "city_bg_theme_1",
-        "city_bg_theme_2", "city_bg_theme_3", "menu_bg",
+        *sky_assets, *scenery_assets,
+        "city_bg_theme_0", "city_bg_theme_1", "city_bg_theme_2", "city_bg_theme_3", "menu_bg",
     ]
 
-    graphics = tmp_path / "gba" / "graphics" / "backgrounds"
-    for name in manifest["assets"]:
-        bmp = Image.open(graphics / f"{name}.bmp")
-        assert bmp.size == (256, 256)
+    hashes = set()
+    for name in sky_assets:
+        bmp_path = graphics / f"{name}.bmp"
+        bmp = Image.open(bmp_path)
+        assert bmp.size == (256, 512)
+        hashes.add(hashlib.sha256(bmp_path.read_bytes()).hexdigest())
         metadata = json.loads((graphics / f"{name}.json").read_text())
         assert metadata["type"] == "regular_bg"
+    assert len(hashes) == 17
+
+    for name in scenery_assets:
+        bmp = Image.open(graphics / f"{name}.bmp")
+        assert bmp.size == (256, 512)
+        metadata = json.loads((graphics / f"{name}.json").read_text())
+        assert metadata["type"] == "regular_bg"
+        # Transparent scenery reserves palette index zero for empty pixels.
+        assert 0 in set(bmp.get_flattened_data())
+
+    for legacy in ("construction_bg_b1", "construction_bg_b2", "construction_bg_b3"):
+        assert not (graphics / f"{legacy}.bmp").exists()
+        assert not (graphics / f"{legacy}.json").exists()
+
+    generated_header = tmp_path / "gba" / "include" / "generated" / "construction_background_data.h"
+    header = generated_header.read_text(encoding="utf-8")
+    assert "construction_background_decorations" in header
+    assert header.count("ConstructionBackgroundDecoration{") == 12
+    assert "construction_scenery_chunk_centers" in header
+
+    blink_bmp = Image.open(tmp_path / "gba" / "graphics" / "ui" / "construction_high_blink_p0.bmp")
+    assert blink_bmp.size == (8, 8)
+    assert len(set(blink_bmp.get_flattened_data())) == 2
 
 
 def test_scene_background_export_removes_legacy_single_city_background(

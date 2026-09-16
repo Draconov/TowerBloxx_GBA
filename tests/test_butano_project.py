@@ -345,12 +345,12 @@ def test_playability_fix3_uses_original_scene_background_items() -> None:
     construction = (root / "gba/src/tower_construction_scene.cpp").read_text()
 
     assert "graphics/backgrounds" in makefile
-    assert "bn::optional<bn::regular_bg_ptr> _background" in quick_h
-    assert "bn_regular_bg_items_construction_bg.h" in quick
-    assert "bn::regular_bg_items::construction_bg.create_bg" in quick
-    assert "bn::optional<bn::regular_bg_ptr> _background" in construction_h
-    assert "bn_regular_bg_items_construction_bg.h" in construction
-    assert "bn::regular_bg_items::construction_bg.create_bg" in construction
+    assert '#include "tb/construction_backdrop.h"' in quick_h
+    assert "ConstructionBackdrop _backdrop" in quick_h
+    assert "construction_bg_b1" not in quick
+    assert '#include "tb/construction_backdrop.h"' in construction_h
+    assert "ConstructionBackdrop _backdrop" in construction_h
+    assert "construction_bg_b1" not in construction
     assert "bn::optional<bn::regular_bg_ptr> _background" in city_h
     for theme in range(4):
         assert f"bn_regular_bg_items_city_bg_theme_{theme}.h" in city

@@ -84,3 +84,20 @@ def test_gameplay_workers_render_in_front_of_tower_meshes() -> None:
     end = source.index("void QuickGameScene::_rebuild_hud", start)
     body = source[start:end]
     assert "gameplay_worker_z_order" in body
+
+
+def test_construction_and_quick_scenes_use_shared_camera_aware_backdrop() -> None:
+    construction = (ROOT / "gba/src/tower_construction_scene.cpp").read_text(encoding="utf-8")
+    quick = (ROOT / "gba/src/quick_game_scene.cpp").read_text(encoding="utf-8")
+    for source in (construction, quick):
+        assert "_backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);" in source
+        assert "construction_bg_b1" not in source
+
+
+def test_build_city_bulldozer_hides_pending_tower_after_two_destroy_frames() -> None:
+    source = (ROOT / "gba/src/build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "discard_building_center_x = discard_cell_center_x + 2" in source
+    assert "discard_building_center_y = discard_cell_center_y - 2" in source
+    assert "effect_frame >= 4" in source
+    assert "centered_x(discard_building_center_x)" in source
+    assert "centered_y(discard_building_center_y)" in source

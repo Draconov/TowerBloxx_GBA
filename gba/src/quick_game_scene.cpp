@@ -9,7 +9,6 @@
 #include "bn_sprite_double_size_mode.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
-#include "bn_regular_bg_items_construction_bg.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
 
 #include "generated/tower_localization.h"
@@ -40,6 +39,9 @@ constexpr int combo_meter_fill_left = -60;
 constexpr int combo_meter_fill_y = -67;
 constexpr int combo_meter_frame_x = 0;
 constexpr int combo_meter_frame_y = -67;
+constexpr int combo_readout_x = 68;
+constexpr int combo_readout_y = -65;
+constexpr int construction_sky_band_step = 3072;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
@@ -85,6 +87,7 @@ void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
         output.push_back(sprite);
     }
 }
+
 
 void draw_source_number(int value, int min_digits, int right_x, int top_y,
                         const generated::UiCompositeAsset* const* digits,
@@ -256,8 +259,7 @@ void QuickGameScene::start(int language)
     _last_hud_combo_bucket = -1;
     _last_hud_status = QuickGameStatus::GameOver;
     _active = true;
-    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
-    _background->set_priority(3);
+    _background_clock_ms = 0;
 
     _floor_affine_mats.clear();
     _floor_sprites.clear();
@@ -269,6 +271,7 @@ void QuickGameScene::start(int language)
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -345,6 +348,8 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     }
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
+    _background_clock_ms += delta_ms;
+    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     if(workers_advanced || floor_added)
     {
@@ -370,7 +375,7 @@ bool QuickGameScene::active() const
 
 void QuickGameScene::suspend_presentation()
 {
-    _background.reset();
+    _backdrop.reset();
     _floor_affine_mats.clear();
     _floor_sprites.clear();
     _current_sprites.clear();
@@ -390,8 +395,6 @@ void QuickGameScene::resume_presentation()
         return;
     }
     set_gameplay_backdrop();
-    _background = bn::regular_bg_items::construction_bg.create_bg(0, 0);
-    _background->set_priority(3);
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
@@ -407,6 +410,7 @@ void QuickGameScene::resume_presentation()
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
@@ -851,9 +855,9 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     // followed by one or two brown digits.
     if(snapshot.combo_meter_ms > 0 && snapshot.combo_count > 1)
     {
-        show_ui_composite(*hud_brown_digit_frames[11], 66, -67, _hud_sprites);
+        show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y, _hud_sprites);
         const int digits = snapshot.combo_count > 9 ? 2 : 1;
-        draw_source_number(snapshot.combo_count, digits, 190 + digits * 5, 10,
+        draw_source_number(snapshot.combo_count, digits, 191 + digits * 5, 12,
                            hud_brown_digit_frames, _hud_sprites);
     }
 

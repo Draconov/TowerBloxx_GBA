@@ -16,7 +16,9 @@ def test_combo_meter_uses_exact_240x160_jar_anchor() -> None:
     assert "constexpr int combo_meter_frame_y = -67;" in source
     assert "constexpr int combo_meter_fill_y = -67;" in source
     assert "generated::quick_combo_meter_frame, combo_meter_frame_x, combo_meter_frame_y" in source
-    assert "show_ui_composite(*hud_brown_digit_frames[11], 66, -67" in source
+    assert "constexpr int combo_readout_x = 68;" in source
+    assert "constexpr int combo_readout_y = -65;" in source
+    assert "show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y" in source
 
 
 def test_city_background_keeps_source_white_message_panel_opaque(

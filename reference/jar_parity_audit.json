@@ -1,60 +1,22 @@
 {
   "canonical_jar": "Tower-Bloxx_v1522.jar",
   "fix": 13,
-  "remaining": [
-    {
-      "id": "city_visual_tuning",
-      "status": "partial",
-      "priority": 1,
-      "summary": "Finish source color interpolation for 800 ms valid-lot flashing and emulator-tune recovered Build City clip anchors."
-    },
-    {
-      "id": "support_graphics",
-      "status": "partial",
-      "priority": 2,
-      "summary": "Resource 8 is now used by modal flows; wire original resources 1 and 9 into their navigation/about contexts."
-    },
-    {
-      "id": "audio_state_machine",
-      "status": "partial",
-      "priority": 3,
-      "summary": "Match original transition, loop, pause/resume and jingle timing."
-    }
-  ],
-  "fix9": {
-    "reset_city": {
-      "status": "complete",
-      "clears": [
-        "25 city tiles",
-        "46 city tutorial/event flags"
-      ],
-      "preserves": [
-        "language",
-        "sound enabled",
-        "Quick Game best population",
-        "Quick Game best height",
-        "Quick Game best combo"
-      ],
-      "confirmation_default": "No",
-      "localization_indices": [
-        81,
-        98,
-        9,
-        10
-      ]
-    }
-  },
-  "intentionally_omitted": [
-    "vibration",
-    "backlight",
-    "SMS sharing",
-    "Mobile League/network",
-    "Game Lobby/Get More Games",
-    "license/trial/payment/operator flows"
-  ],
   "fix10": {
-    "root_menu": {
+    "hall_of_fame": {
+      "clear_preserves_last_player_name": true,
+      "default_name": "SUMEA",
+      "default_score": 0,
+      "entries_per_table": 3,
+      "max_name_length": 8,
       "status": "complete",
+      "strict_third_place_qualification": true,
+      "tables": [
+        "Build City population",
+        "Quick Game population"
+      ]
+    },
+    "root_menu": {
+      "exit": "intentionally omitted on GBA",
       "items": [
         "Continue game (conditional)",
         "Build City",
@@ -63,29 +25,15 @@
         "Settings",
         "Instructions"
       ],
-      "exit": "intentionally omitted on GBA",
       "overwrite_confirmation_default": "No",
+      "status": "complete",
       "suspended_sessions": [
         "Quick Game",
         "Build City tower construction"
       ],
       "suspension_persistence": "RAM only"
     },
-    "hall_of_fame": {
-      "status": "complete",
-      "tables": [
-        "Build City population",
-        "Quick Game population"
-      ],
-      "entries_per_table": 3,
-      "default_name": "SUMEA",
-      "default_score": 0,
-      "strict_third_place_qualification": true,
-      "max_name_length": 8,
-      "clear_preserves_last_player_name": true
-    },
     "save_v4": {
-      "status": "complete",
       "migrates_from_v3": true,
       "preserves": [
         "language",
@@ -95,116 +43,189 @@
         "Quick Game best combo",
         "25 city tiles",
         "46 city tutorial/event flags"
-      ]
+      ],
+      "status": "complete"
     }
   },
   "fix11": {
     "build_city_events": {
-      "status": "complete",
-      "persistent_ids": "0-45",
       "count": 46,
+      "interrupted_chain_recovery": true,
+      "legacy_progressed_all_zero_flags": "does not replay obsolete onboarding",
+      "persistent_ids": "0-45",
       "reference_files": [
         "reference/BUILD_CITY_EVENTS.csv",
         "reference/build_city_events.json"
       ],
-      "interrupted_chain_recovery": true,
-      "legacy_progressed_all_zero_flags": "does not replay obsolete onboarding"
-    },
-    "construction_messages": {
-      "status": "complete",
-      "localization_indices": [
-        55,
-        56,
-        57
-      ],
-      "instruction_persistence": "SaveData.reserved[0] bit 0",
-      "reset_city_preserves_instruction_state": true,
-      "failure_and_trophy_repeat_per_run": true
+      "status": "complete"
     },
     "city_hud": {
-      "status": "substantially recovered",
+      "comparison_values": [
+        "new tower population",
+        "replaced tower population"
+      ],
       "placement_entry_ms": 750,
-      "valid_sector_flash_period_ms": 800,
+      "remaining": "exact source color interpolation and final screenshot anchor tuning",
       "source_resources": [
         8,
         20,
         21,
         22
       ],
-      "comparison_values": [
-        "new tower population",
-        "replaced tower population"
+      "status": "substantially recovered",
+      "valid_sector_flash_period_ms": 800
+    },
+    "construction_messages": {
+      "failure_and_trophy_repeat_per_run": true,
+      "instruction_persistence": "SaveData.reserved[0] bit 0",
+      "localization_indices": [
+        55,
+        56,
+        57
       ],
-      "remaining": "exact source color interpolation and final screenshot anchor tuning"
+      "reset_city_preserves_instruction_state": true,
+      "status": "complete"
     },
     "save_version": 4
   },
   "fix12": {
+    "construction_scenery": {
+      "note": "resource 31-34 foreground/procedural skyline was already present; the recovered missing gameplay layer was House's 8-worker compositor",
+      "status": "unchanged in Fix 12"
+    },
     "gameplay_workers": {
-      "status": "complete",
-      "worker_slots": 8,
-      "source_resources": [
-        11,
-        12
-      ],
       "landing_spawn_bands": {
         "<25": 4,
         "<50": 3,
         "<80": 2,
         "otherwise": 1
       },
-      "update_gate_ms": 25,
-      "source_frame_rule": "direction < 0 uses 7 - frame",
-      "scatter_reuse_preserves_variant": true,
+      "randomness": "deterministic cosmetic PRNG; exact historical J2ME random seed is not claimed",
+      "reference_file": "reference/GAMEPLAY_WORKERS_ANALYSIS.md",
       "roof_phase_normal_spawn_suppressed": true,
-      "suspend_resume_preserves_simulation": true,
+      "scatter_reuse_preserves_variant": true,
       "scenes": [
         "Quick Game",
         "Tower Construction"
       ],
-      "reference_file": "reference/GAMEPLAY_WORKERS_ANALYSIS.md",
-      "randomness": "deterministic cosmetic PRNG; exact historical J2ME random seed is not claimed"
-    },
-    "construction_scenery": {
-      "status": "unchanged in Fix 12",
-      "note": "resource 31-34 foreground/procedural skyline was already present; the recovered missing gameplay layer was House's 8-worker compositor"
+      "source_frame_rule": "direction < 0 uses 7 - frame",
+      "source_resources": [
+        11,
+        12
+      ],
+      "status": "complete",
+      "suspend_resume_preserves_simulation": true,
+      "update_gate_ms": 25,
+      "worker_slots": 8
     }
   },
   "fix13": {
     "crane_m3g_presentation": {
-      "status": "substantially recovered",
-      "normal_crane_mesh": 8,
-      "special_roof_mesh": 7,
-      "special_mesh_z_rotation": "none",
-      "special_cable": "separate two-pixel black line adapted to sprite segments",
+      "bad_slip_interpolation_ms": 500,
       "bad_slip_y_target_degrees": [
         -60,
         60
       ],
-      "bad_slip_interpolation_ms": 500,
+      "gba_projection": "affine abs(cos(Y)) horizontal foreshortening; exact M3G rasterization is not claimed",
+      "normal_crane_mesh": 8,
+      "reference_file": "reference/CRANE_M3G_ANALYSIS.md",
+      "remaining": "final emulator screenshot tuning of special-cable attachment and Y-foreshortening",
       "scenes": [
         "Quick Game",
         "Tower Construction"
       ],
-      "gba_projection": "affine abs(cos(Y)) horizontal foreshortening; exact M3G rasterization is not claimed",
-      "remaining": "final emulator screenshot tuning of special-cable attachment and Y-foreshortening",
-      "reference_file": "reference/CRANE_M3G_ANALYSIS.md"
+      "special_cable": "separate two-pixel black line adapted to sprite segments",
+      "special_mesh_z_rotation": "none",
+      "special_roof_mesh": 7,
+      "status": "substantially recovered"
     }
   },
   "fix14_7": {
     "crane_shared_origin_rasterization": {
-      "status": "recovered",
+      "angle_degrees": "r * 2 / 3",
+      "frame_count": 49,
       "normal_crane_mesh": 8,
+      "reference_file": "reference/CRANE_M3G_ANALYSIS.md",
       "rotation_step_source": "r = crane_x >> 4",
       "rotation_steps": [
         -24,
         24
       ],
-      "frame_count": 49,
-      "angle_degrees": "r * 2 / 3",
       "runtime": "pre-rendered shared-origin M3G frames; no per-chunk crane affine pivot",
       "special_cable_endpoint": "screen(crane_x, crane_y + 528)",
-      "reference_file": "reference/CRANE_M3G_ANALYSIS.md"
+      "status": "recovered"
     }
-  }
+  },
+  "fix9": {
+    "reset_city": {
+      "clears": [
+        "25 city tiles",
+        "46 city tutorial/event flags"
+      ],
+      "confirmation_default": "No",
+      "localization_indices": [
+        81,
+        98,
+        9,
+        10
+      ],
+      "preserves": [
+        "language",
+        "sound enabled",
+        "Quick Game best population",
+        "Quick Game best height",
+        "Quick Game best combo"
+      ],
+      "status": "complete"
+    }
+  },
+  "high_altitude_background": {
+    "post_band_16_cycle": "9..16",
+    "procedural_rooftop_decorations": 12,
+    "removed_broken_assets": [
+      "construction_bg_b1",
+      "construction_bg_b2",
+      "construction_bg_b3"
+    ],
+    "resource43_entries": 88,
+    "resource43_scaled_extent": 621,
+    "scenery_chunk_centers": [
+      0,
+      256,
+      512
+    ],
+    "scenery_max_scroll": 672,
+    "shared_runtime_component": "ConstructionBackdrop",
+    "sky_colors": 17,
+    "status": "complete for canonical v1.5.22 evidence",
+    "whale_planet_assets": "not present as PNG or M3G assets in canonical v1.5.22; not fabricated"
+  },
+  "intentionally_omitted": [
+    "vibration",
+    "backlight",
+    "SMS sharing",
+    "Mobile League/network",
+    "Game Lobby/Get More Games",
+    "license/trial/payment/operator flows"
+  ],
+  "remaining": [
+    {
+      "id": "city_visual_tuning",
+      "priority": 1,
+      "status": "partial",
+      "summary": "Finish source color interpolation for 800 ms valid-lot flashing and emulator-tune recovered Build City clip anchors."
+    },
+    {
+      "id": "support_graphics",
+      "priority": 2,
+      "status": "partial",
+      "summary": "Resource 8 is now used by modal flows; wire original resources 1 and 9 into their navigation/about contexts."
+    },
+    {
+      "id": "audio_state_machine",
+      "priority": 3,
+      "status": "partial",
+      "summary": "Match original transition, loop, pause/resume and jingle timing."
+    }
+  ]
 }

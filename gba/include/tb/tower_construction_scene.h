@@ -5,13 +5,13 @@
 
 #include "bn_sprite_affine_mat_ptr.h"
 #include "bn_optional.h"
-#include "bn_regular_bg_ptr.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
 
 #include "generated/tower_font.h"
 #include "tb/build_city.h"
+#include "tb/construction_backdrop.h"
 #include "tb/crane_presentation.h"
 #include "tb/gameplay_workers.h"
 #include "tb/life_indicator_animation.h"
@@ -64,7 +64,7 @@ private:
     TowerConstruction _construction;
     GameplayWorkerField _gameplay_workers;
     LifeIndicatorAnimation _life_indicator_animation;
-    bn::optional<bn::regular_bg_ptr> _background;
+    ConstructionBackdrop _backdrop;
     bn::sprite_affine_mat_ptr _current_affine_mat;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
@@ -93,6 +93,7 @@ private:
     uint8_t _last_hud_roof_result = 0;
     TowerConstructionStatus _last_hud_status = TowerConstructionStatus::Results;
     bool _active = false;
+    int _background_clock_ms = 0;
     int _modal_localization_index = -1;
     TowerConstructionResult _pending_result{};
     bool _pending_result_valid = false;

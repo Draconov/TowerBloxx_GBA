@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 import zipfile
@@ -16,6 +17,10 @@ from .resources import read_resource
 VISIBLE_WIDTH = 240
 VISIBLE_HEIGHT = 160
 ASSET_SIZE = 256
+CONSTRUCTION_LAYER_WIDTH = 256
+CONSTRUCTION_LAYER_HEIGHT = 512
+SCENERY_CHUNK_CENTERS = (0, 256, 512)
+SCENERY_MAX_SCROLL = 672
 # House.<clinit> t[] palette, recovered directly from the canonical bytecode.
 SKY_COLORS = (
     0xB2D6F2, 0x9AC8EA, 0x80BBE7, 0x66AFE4, 0x518EE4, 0x407ABE,
@@ -25,6 +30,93 @@ SKY_COLORS = (
 GROUND_EDGE = 0x463C14
 GROUND_FILL = 0x1E190F
 
+
+
+@dataclass(frozen=True)
+class ConstructionSkyState:
+    band: int
+    current_color_index: int
+    next_color_index: int
+    horizon: int
+    middle_color: int
+
+
+@dataclass(frozen=True)
+class HighAltitudeDecoration:
+    x: int
+    width: int
+    world_y: int
+    height: int
+    color: int
+    kind: int
+
+
+class _JavaRandom:
+    _multiplier = 0x5DEECE66D
+    _addend = 0xB
+    _mask = (1 << 48) - 1
+
+    def __init__(self, seed: int) -> None:
+        self._state = (seed ^ self._multiplier) & self._mask
+
+    def next_int(self) -> int:
+        self._state = (self._state * self._multiplier + self._addend) & self._mask
+        value = self._state >> 16
+        return value - (1 << 32) if value & 0x80000000 else value
+
+    def source_mod(self, bound: int) -> int:
+        value = self.next_int()
+        remainder = value % bound if value >= 0 else -((-value) % bound)
+        return abs(remainder)
+
+
+def java_sky_color_index(band: int) -> int:
+    if band < 0:
+        band = 0
+    if band <= 16:
+        return band
+    return 9 + ((band - 9) % 8)
+
+
+def construction_sky_state(camera_y: int) -> ConstructionSkyState:
+    ar = max(256 * VISIBLE_HEIGHT // 22, 2048)
+    scaled = (2 * max(0, camera_y)) // 3
+    horizon = (22 * (scaled % ar)) >> 8
+    band = scaled // ar
+    current_index = java_sky_color_index(band)
+    next_index = java_sky_color_index(band + 1)
+    return ConstructionSkyState(
+        band=band,
+        current_color_index=current_index,
+        next_color_index=next_index,
+        horizon=horizon,
+        middle_color=_average_rgb(SKY_COLORS[current_index], SKY_COLORS[next_index]),
+    )
+
+
+def deterministic_high_altitude_decorations(width: int = VISIBLE_WIDTH) -> tuple[HighAltitudeDecoration, ...]:
+    # House uses an unseeded java.util.Random, so positions legitimately vary
+    # between launches.  Use a fixed seed for deterministic clean-room assets
+    # while preserving House.v()'s exact ranges and call order.
+    random = _JavaRandom(0x54424C4F5858)
+    colors = (0x6FA7D0, 0x5CA0D1, 0x4F98CD)
+    cell_width = width // 12
+    result: list[HighAltitudeDecoration] = []
+    for index in range(12):
+        item_width = 5 + random.source_mod(5)
+        x = index * cell_width - random.source_mod(item_width)
+        world_y = 440 + random.source_mod(176)
+        height = 11 + random.source_mod(11)
+        color = colors[random.source_mod(3)]
+        kind = random.source_mod(3)
+        result.append(HighAltitudeDecoration(x, item_width, world_y, height, color, kind))
+    return tuple(result)
+
+
+def scaled_resource43_extent(jar_path: Path) -> int:
+    with zipfile.ZipFile(Path(jar_path)) as jar:
+        data = decode_resource_43(read_resource(jar, 43))
+    return max(44 * (entry.y_start + entry.height) // 32 for entry in data.entries)
 
 def _rgb(color: int) -> tuple[int, int, int, int]:
     return ((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, 255)
@@ -38,14 +130,11 @@ def _average_rgb(left: int, right: int) -> int:
 
 
 def _draw_java_sky(image: Image.Image, camera_y: int = 512) -> None:
-    # House.o(): I = 256*height/22; House.m(): ar=max(I,2048).
-    ar = max(256 * VISIBLE_HEIGHT // 22, 2048)
-    scaled = (2 * camera_y) // 3
-    horizon = (22 * (scaled % ar)) >> 8
-    band = scaled // ar
-    left = SKY_COLORS[max(0, min(9, band))]
-    right = SKY_COLORS[max(0, min(9, band + 1))]
-    middle = _average_rgb(left, right)
+    state = construction_sky_state(camera_y)
+    horizon = state.horizon
+    left = SKY_COLORS[state.current_color_index]
+    right = SKY_COLORS[state.next_color_index]
+    middle = state.middle_color
 
     draw = ImageDraw.Draw(image)
     draw.rectangle((0, 0, VISIBLE_WIDTH - 1, VISIBLE_HEIGHT - 1), fill=_rgb(left))
@@ -126,10 +215,10 @@ def _paste_png(image: Image.Image, png: Image.Image, x: int, y: int) -> None:
     image.alpha_composite(png.convert("RGBA"), (x, y))
 
 
-def render_construction_background(jar_path: Path) -> Image.Image:
+def render_construction_background(jar_path: Path, camera_y: int = 512) -> Image.Image:
     jar_path = Path(jar_path)
     image = Image.new("RGBA", (VISIBLE_WIDTH, VISIBLE_HEIGHT), _rgb(SKY_COLORS[0]))
-    _draw_java_sky(image)
+    _draw_java_sky(image, camera_y=camera_y)
     ground_line = _construction_ground_line()
 
     with zipfile.ZipFile(jar_path) as jar:
@@ -167,6 +256,234 @@ def render_construction_background(jar_path: Path) -> Image.Image:
             draw.rectangle((0, ground_y + 2, VISIBLE_WIDTH - 1, VISIBLE_HEIGHT - 1), fill=_rgb(GROUND_FILL))
     return image
 
+
+
+def _next_sky_color_index(current_index: int) -> int:
+    return 9 if current_index == 16 else current_index + 1
+
+
+def render_construction_sky_layer(current_index: int) -> Image.Image:
+    if current_index < 0 or current_index >= len(SKY_COLORS):
+        raise ValueError("construction sky color index out of range")
+    next_index = _next_sky_color_index(current_index)
+    current = SKY_COLORS[current_index]
+    following = SKY_COLORS[next_index]
+    middle = _average_rgb(current, following)
+    image = Image.new(
+        "RGBA", (CONSTRUCTION_LAYER_WIDTH, CONSTRUCTION_LAYER_HEIGHT), _rgb(current)
+    )
+    draw = ImageDraw.Draw(image)
+    transition_y = CONSTRUCTION_LAYER_HEIGHT // 2
+    draw.rectangle(
+        (0, 0, CONSTRUCTION_LAYER_WIDTH - 1, transition_y - 1), fill=_rgb(following)
+    )
+
+    # House chooses a random center within the middle half of the screen when
+    # the color band changes.  The Java RNG is unseeded; the clean-room port
+    # uses the deterministic midpoint while preserving the exact 7px motif.
+    visible_left = (CONSTRUCTION_LAYER_WIDTH - VISIBLE_WIDTH) // 2
+    center = visible_left + VISIBLE_WIDTH // 2
+    draw.rectangle(
+        (visible_left, transition_y - 7, center - 1, transition_y - 1), fill=_rgb(middle)
+    )
+    draw.rectangle(
+        (center, transition_y - 1, visible_left + VISIBLE_WIDTH - 1, transition_y + 5),
+        fill=_rgb(middle),
+    )
+    for half_width, y_delta, height in (
+        (24, -2, 3), (18, -3, 5), (16, -5, 9), (15, -6, 11), (13, -7, 13)
+    ):
+        draw.rectangle(
+            (
+                center - half_width,
+                transition_y + y_delta,
+                center + half_width - 1,
+                transition_y + y_delta + height - 1,
+            ),
+            fill=_rgb(middle),
+        )
+    return image
+
+
+def _opening_resource43_geometry(entry) -> tuple[int, int, int, int]:
+    x = VISIBLE_WIDTH * entry.x_ref // 176
+    width = max(1, VISIBLE_WIDTH * (entry.x_ref + entry.width_ref) // 176 - x)
+    y_start = 44 * entry.y_start // 32
+    height = max(1, 44 * (entry.y_start + entry.height) // 32 - y_start)
+    y = VISIBLE_HEIGHT // 2 - y_start - height + _construction_ground_line()
+    return x, y, width, height
+
+
+def _draw_procedural_skyline(
+    image: Image.Image, chunk_center: int, decorations: tuple[HighAltitudeDecoration, ...]
+) -> None:
+    draw = ImageDraw.Draw(image)
+    x_offset = (CONSTRUCTION_LAYER_WIDTH - VISIBLE_WIDTH) // 2
+    y_offset = (CONSTRUCTION_LAYER_HEIGHT - VISIBLE_HEIGHT) // 2
+    opening_ground_bottom = VISIBLE_HEIGHT // 2 + (22 * 512 >> 8)  # House.w + camera pixel offset = 124.
+    for decoration in decorations:
+        top = opening_ground_bottom - decoration.world_y + chunk_center
+        bottom = opening_ground_bottom + chunk_center
+        left = x_offset + decoration.x
+        draw.rectangle(
+            (left, y_offset + top, left + decoration.width - 1, y_offset + bottom - 1),
+            fill=_rgb(decoration.color),
+        )
+        if decoration.kind == 1:
+            antenna_x = left + decoration.width // 2
+            draw.rectangle(
+                (
+                    antenna_x,
+                    y_offset + top - decoration.height,
+                    antenna_x + 1,
+                    y_offset + top - 1,
+                ),
+                fill=_rgb(decoration.color),
+            )
+        elif decoration.kind == 2:
+            cap_height = decoration.width - decoration.width // 5
+            cap_x = left + decoration.width // 10
+            draw.rectangle(
+                (
+                    cap_x,
+                    y_offset + top - 11,
+                    cap_x + decoration.width - 1,
+                    y_offset + top - 12 + cap_height,
+                ),
+                fill=_rgb(decoration.color),
+            )
+
+
+def render_construction_scenery_chunk(
+    jar_path: Path,
+    chunk_center: int,
+    decorations: tuple[HighAltitudeDecoration, ...] | None = None,
+) -> Image.Image:
+    if chunk_center not in SCENERY_CHUNK_CENTERS:
+        raise ValueError("invalid scenery chunk center")
+    if decorations is None:
+        decorations = deterministic_high_altitude_decorations()
+
+    jar_path = Path(jar_path)
+    image = Image.new(
+        "RGBA", (CONSTRUCTION_LAYER_WIDTH, CONSTRUCTION_LAYER_HEIGHT), (0, 0, 0, 0)
+    )
+    x_offset = (CONSTRUCTION_LAYER_WIDTH - VISIBLE_WIDTH) // 2
+    y_offset = (CONSTRUCTION_LAYER_HEIGHT - VISIBLE_HEIGHT) // 2
+    _draw_procedural_skyline(image, chunk_center, decorations)
+
+    with zipfile.ZipFile(jar_path) as jar:
+        skyline = decode_resource_43(read_resource(jar, 43))
+        foreground = [
+            Image.open(BytesIO(read_resource(jar, resource_id))).convert("RGBA")
+            for resource_id in (31, 32, 33, 34)
+        ]
+
+    draw = ImageDraw.Draw(image)
+    for entry in skyline.entries:
+        x, y, width, height = _opening_resource43_geometry(entry)
+        y += chunk_center
+        draw.rectangle(
+            (
+                x_offset + x,
+                y_offset + y,
+                x_offset + x + width - 1,
+                y_offset + y + height - 1,
+            ),
+            fill=_rgb(skyline.int_values[entry.kind]),
+        )
+
+    site, left_repeat, right_repeat, tree = foreground
+    ground_line = _construction_ground_line() + chunk_center
+    center = VISIBLE_WIDTH // 2
+    site_left = center - site.width // 2
+    tree_center_x = center + site.width // 2
+    _paste_png(
+        image,
+        tree,
+        x_offset + tree_center_x - tree.width // 2,
+        y_offset + ground_line - tree.height + 7,
+    )
+    _paste_png(image, site, x_offset + site_left, y_offset + ground_line)
+    x = site_left - left_repeat.width
+    while x > -left_repeat.width:
+        _paste_png(image, left_repeat, x_offset + x, y_offset + ground_line)
+        x -= left_repeat.width
+    x = center + site.width // 2
+    while x < VISIBLE_WIDTH:
+        _paste_png(image, right_repeat, x_offset + x, y_offset + ground_line)
+        x += right_repeat.width
+
+    ground_y = ground_line + site.height
+    if y_offset + ground_y < CONSTRUCTION_LAYER_HEIGHT:
+        draw.rectangle(
+            (
+                x_offset,
+                y_offset + ground_y,
+                x_offset + VISIBLE_WIDTH - 1,
+                min(CONSTRUCTION_LAYER_HEIGHT - 1, y_offset + ground_y + 1),
+            ),
+            fill=_rgb(GROUND_EDGE),
+        )
+        if y_offset + ground_y + 2 < CONSTRUCTION_LAYER_HEIGHT:
+            draw.rectangle(
+                (
+                    x_offset,
+                    y_offset + ground_y + 2,
+                    x_offset + VISIBLE_WIDTH - 1,
+                    CONSTRUCTION_LAYER_HEIGHT - 1,
+                ),
+                fill=_rgb(GROUND_FILL),
+            )
+    return image
+
+
+def _write_construction_background_header(
+    project_dir: Path, decorations: tuple[HighAltitudeDecoration, ...]
+) -> Path:
+    generated_dir = Path(project_dir) / "gba" / "include" / "generated"
+    generated_dir.mkdir(parents=True, exist_ok=True)
+    path = generated_dir / "construction_background_data.h"
+    records = "\n".join(
+        "    ConstructionBackgroundDecoration{" +
+        f"{item.x}, {item.width}, {item.world_y}, {item.height}, 0x{item.color:06X}u, {item.kind}" +
+        "},"
+        for item in decorations
+    )
+    centers = ", ".join(str(value) for value in SCENERY_CHUNK_CENTERS)
+    path.write_text(
+        "#ifndef GENERATED_CONSTRUCTION_BACKGROUND_DATA_H\n"
+        "#define GENERATED_CONSTRUCTION_BACKGROUND_DATA_H\n\n"
+        "#include <cstdint>\n\n"
+        "namespace tb::generated\n{\n"
+        "struct ConstructionBackgroundDecoration\n{\n"
+        "    int x;\n    int width;\n    int world_y;\n    int roof_height;\n"
+        "    uint32_t color;\n    int kind;\n};\n\n"
+        f"inline constexpr int construction_scenery_chunk_centers[] = {{{centers}}};\n"
+        f"inline constexpr int construction_scenery_max_scroll = {SCENERY_MAX_SCROLL};\n"
+        "inline constexpr ConstructionBackgroundDecoration construction_background_decorations[] = {\n"
+        f"{records}\n"
+        "};\n}\n\n#endif\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def _write_high_altitude_blink_sprite(project_dir: Path) -> tuple[Path, Path]:
+    ui_dir = Path(project_dir) / "gba" / "graphics" / "ui"
+    ui_dir.mkdir(parents=True, exist_ok=True)
+    image = Image.new("RGBA", (8, 8), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((3, 3, 4, 4), fill=(255, 0, 0, 255))
+    indices, palette = _indexed_transparent(image, bpp=4)
+    bmp_path = ui_dir / "construction_high_blink_p0.bmp"
+    json_path = ui_dir / "construction_high_blink_p0.json"
+    _write_indexed_bmp(bmp_path, 8, 8, indices, palette, 4)
+    json_path.write_text(
+        json.dumps({"bpp_mode": "bpp_4", "type": "sprite"}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return bmp_path, json_path
 
 def render_city_background(theme_index: int = 0) -> Image.Image:
     """Render the recovered 240x160 Build City compositor base.
@@ -286,6 +603,28 @@ def _indexed_background(
     return bytes(indices), tuple(palette)
 
 
+
+def _indexed_transparent(image: Image.Image, bpp: int = 8) -> tuple[bytes, tuple[int, ...]]:
+    rgba = image.convert("RGBA")
+    palette: list[int] = [0]
+    mapping: dict[int, int] = {}
+    indices = bytearray(rgba.width * rgba.height)
+    max_colors = 16 if bpp == 4 else 256
+    for index, (red, green, blue, alpha) in enumerate(rgba.get_flattened_data()):
+        if alpha == 0:
+            indices[index] = 0
+            continue
+        value = (red >> 3) | ((green >> 3) << 5) | ((blue >> 3) << 10)
+        palette_index = mapping.get(value)
+        if palette_index is None:
+            if len(palette) >= max_colors:
+                raise ValueError("transparent asset exceeds palette capacity")
+            palette_index = len(palette)
+            mapping[value] = palette_index
+            palette.append(value)
+        indices[index] = palette_index
+    return bytes(indices), tuple(palette)
+
 def _pad_visible(image: Image.Image) -> Image.Image:
     canvas = Image.new("RGBA", (ASSET_SIZE, ASSET_SIZE), image.getpixel((0, 0)))
     canvas.alpha_composite(image, ((ASSET_SIZE - VISIBLE_WIDTH) // 2, (ASSET_SIZE - VISIBLE_HEIGHT) // 2))
@@ -294,35 +633,59 @@ def _pad_visible(image: Image.Image) -> Image.Image:
 
 def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, object]:
     project_dir = Path(project_dir)
+    jar_path = Path(jar_path)
     graphics_dir = project_dir / "gba" / "graphics" / "backgrounds"
     reference_dir = project_dir / "gba" / "reference"
     graphics_dir.mkdir(parents=True, exist_ok=True)
     reference_dir.mkdir(parents=True, exist_ok=True)
 
-    # Fix 15.2 replaces the old single city_bg with the four recovered source themes.
-    for legacy_name in ("city_bg.bmp", "city_bg.json"):
+    for legacy_name in (
+        "city_bg.bmp", "city_bg.json",
+        "construction_bg.bmp", "construction_bg.json",
+        "construction_bg_b1.bmp", "construction_bg_b1.json",
+        "construction_bg_b2.bmp", "construction_bg_b2.json",
+        "construction_bg_b3.bmp", "construction_bg_b3.json",
+    ):
         legacy_path = graphics_dir / legacy_name
         if legacy_path.exists():
             legacy_path.unlink()
 
-    assets = {
-        "construction_bg": render_construction_background(jar_path),
+    decorations = deterministic_high_altitude_decorations()
+    assets: dict[str, Image.Image] = {}
+    for index in range(len(SKY_COLORS)):
+        assets[f"construction_sky_{index:02d}"] = render_construction_sky_layer(index)
+    for index, center in enumerate(SCENERY_CHUNK_CENTERS):
+        assets[f"construction_scenery_{index}"] = render_construction_scenery_chunk(
+            jar_path, center, decorations
+        )
+    assets.update({
         "city_bg_theme_0": render_city_background(0),
         "city_bg_theme_1": render_city_background(1),
         "city_bg_theme_2": render_city_background(2),
         "city_bg_theme_3": render_city_background(3),
         "menu_bg": render_menu_background(),
-    }
+    })
+
     files: list[dict[str, object]] = []
-    for name, visible in assets.items():
-        padded = _pad_visible(visible)
-        indices, palette = _indexed_background(
-            padded, reserve_transparent_index=name.startswith("city_bg_theme_")
-        )
+    for name, image in assets.items():
+        construction_layer = name.startswith("construction_sky_") or name.startswith("construction_scenery_")
+        if construction_layer:
+            output = image
+        else:
+            output = _pad_visible(image)
+
+        if name.startswith("construction_scenery_"):
+            indices, palette = _indexed_transparent(output, bpp=8)
+        else:
+            indices, palette = _indexed_background(
+                output, reserve_transparent_index=name.startswith("city_bg_theme_")
+            )
         bmp_path = graphics_dir / f"{name}.bmp"
         json_path = graphics_dir / f"{name}.json"
-        _write_indexed_bmp(bmp_path, ASSET_SIZE, ASSET_SIZE, indices, palette, 8)
-        json_path.write_text(json.dumps({"bpp_mode": "bpp_8", "type": "regular_bg"}, sort_keys=True) + "\n")
+        _write_indexed_bmp(bmp_path, output.width, output.height, indices, palette, 8)
+        json_path.write_text(
+            json.dumps({"bpp_mode": "bpp_8", "type": "regular_bg"}, sort_keys=True) + "\n"
+        )
         for path in (bmp_path, json_path):
             files.append({
                 "path": path.relative_to(project_dir).as_posix(),
@@ -330,14 +693,34 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
                 "size": path.stat().st_size,
             })
 
+    header_path = _write_construction_background_header(project_dir, decorations)
+    blink_paths = _write_high_altitude_blink_sprite(project_dir)
+    for path in (header_path, *blink_paths):
+        files.append({
+            "path": path.relative_to(project_dir).as_posix(),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "size": path.stat().st_size,
+        })
+
+    with zipfile.ZipFile(jar_path) as jar:
+        resource43 = decode_resource_43(read_resource(jar, 43))
     manifest = {
         "visible_size": [VISIBLE_WIDTH, VISIBLE_HEIGHT],
         "asset_size": [ASSET_SIZE, ASSET_SIZE],
+        "construction_layer_size": [CONSTRUCTION_LAYER_WIDTH, CONSTRUCTION_LAYER_HEIGHT],
         "assets": list(assets),
         "construction_ground_line": _construction_ground_line(),
+        "resource43_entry_count": len(resource43.entries),
+        "resource43_scaled_extent": max(
+            44 * (entry.y_start + entry.height) // 32 for entry in resource43.entries
+        ),
+        "scenery_chunk_centers": list(SCENERY_CHUNK_CENTERS),
+        "scenery_max_scroll": SCENERY_MAX_SCROLL,
+        "high_altitude_decoration_count": len(decorations),
         "files": sorted(files, key=lambda record: str(record["path"])),
     }
     (reference_dir / "scene_backgrounds_manifest.json").write_text(
         json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8"
     )
     return manifest
+

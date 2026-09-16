@@ -45,7 +45,9 @@ def test_combo_meter_matches_exact_240x160_jar_geometry(
     assert "constexpr int combo_meter_fill_y = -67;" in source
     assert "constexpr int combo_meter_frame_x = 0;" in source
     assert "constexpr int combo_meter_frame_y = -67;" in source
-    assert "show_ui_composite(*hud_brown_digit_frames[11], 66, -67" in source
+    assert "constexpr int combo_readout_x = 68;" in source
+    assert "constexpr int combo_readout_y = -65;" in source
+    assert "show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y" in source
 
 
 def test_bulldozer_slot_is_lower_centered_and_uses_replacement_destruction_effect() -> None:

@@ -43,6 +43,8 @@ constexpr int placement_pending_z_order = -4;
 constexpr int discard_effect_z_order = -5;
 constexpr int discard_cell_center_x = 72;
 constexpr int discard_cell_center_y = 117;
+constexpr int discard_building_center_x = discard_cell_center_x + 2;
+constexpr int discard_building_center_y = discard_cell_center_y - 2;
 
 const generated::UiCompositeAsset* const building_assets[4][4] = {
     { &generated::city_building_1_f0, &generated::city_building_1_f1,
@@ -658,29 +660,34 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
 
     if(snapshot.cursor_column < 0)
     {
-        // Center the pending tower inside the bulldozer cell.  Keep it visible
-        // under the resource-29 destruction effect until the 3s discard commit
-        // finishes, mirroring replacement of an occupied regular city cell.
-        if(snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
+        int effect_frame = -1;
+        if(snapshot.placement_committing && snapshot.placement_timer_ms >= 0)
+        {
+            effect_frame = build_city_discard_effect_frame(snapshot.placement_timer_ms);
+        }
+
+        // The pending building sits slightly up-right inside the bulldozer
+        // cell. Once the shared replacement/discard effect has shown its first
+        // two destruction frames, hide the tower sprite so the latter frames
+        // match the source demolition pass.
+        const bool show_pending_building = snapshot.pending_building_type >= 1 &&
+                snapshot.pending_building_type <= 4 && (! snapshot.placement_committing || effect_frame >= 4);
+        if(show_pending_building)
         {
             const int type = snapshot.pending_building_type;
             _show_composite(
                     building_asset(type, snapshot.pending_roof),
-                    centered_x(discard_cell_center_x),
-                    centered_y(discard_cell_center_y),
+                    centered_x(discard_building_center_x),
+                    centered_y(discard_building_center_y),
                     placement_pending_z_order);
         }
 
-        if(snapshot.placement_committing && snapshot.placement_timer_ms >= 0)
+        if(effect_frame >= 0)
         {
-            const int effect_frame = build_city_discard_effect_frame(snapshot.placement_timer_ms);
-            if(effect_frame >= 0)
-            {
-                _show_composite(
-                        *city_effects[effect_frame],
-                        centered_x(discard_cell_center_x), centered_y(discard_cell_center_y),
-                        discard_effect_z_order);
-            }
+            _show_composite(
+                    *city_effects[effect_frame],
+                    centered_x(discard_cell_center_x), centered_y(discard_cell_center_y),
+                    discard_effect_z_order);
         }
         return;
     }
