@@ -287,6 +287,86 @@
       "size": 44
     },
     {
+      "path": "gba/graphics/ui/construction_event_balloon_p0.bmp",
+      "sha256": "cc13c9a14bc41b1d7b823d7e9016ae6df3507ab835b3faf6ca2ca4d312102b22",
+      "size": 310
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_balloon_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_birds_p0.bmp",
+      "sha256": "ddaff8e77541b56c067a17306067161a50bdc6936fc248062e2cc64ecd2a316f",
+      "size": 182
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_birds_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_moon_p0.bmp",
+      "sha256": "cd1f63460cbd58803aaaf13ac49e6064896cfca0fb9bd353df24fec8fe75a58f",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_moon_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_plane_p0.bmp",
+      "sha256": "ea5b070f4e18b628a5357f7f61456dc2c09d60408a65a4116b2b04f427efcf7a",
+      "size": 262
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_plane_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_blue_p0.bmp",
+      "sha256": "6d9e7542fe9f431a3f7c7d0d7a0e05fed931a67d4eabaf2715a29cd7fa918aa4",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_blue_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_red_p0.bmp",
+      "sha256": "ea07e9dc5f763068b6e3db31386c966d34ea55fd16c6354dffb0d893af5e4ee8",
+      "size": 246
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_red_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_ring_p0.bmp",
+      "sha256": "8aa8f4d2ef4499788cfe87b8d872dabd069f8ee282ad82de5cf6a31f65a8fd52",
+      "size": 438
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_planet_ring_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_whale_p0.bmp",
+      "sha256": "e89dcfb9e99b7fa1cc8943992170536bfcfc898a0489a899c4645dd2776c795e",
+      "size": 374
+    },
+    {
+      "path": "gba/graphics/ui/construction_event_whale_p0.json",
+      "sha256": "d78eb91d63cdd37f34257f10a836f96452b9c947bcbb4cd8d993113f08daff64",
+      "size": 40
+    },
+    {
       "path": "gba/graphics/ui/construction_high_blink_p0.bmp",
       "sha256": "031c526110e93959f132a883793a4373d51cf3bd0a751a406745bc3b1bffa321",
       "size": 150
@@ -314,5 +394,15 @@
   "visible_size": [
     240,
     160
+  ],
+  "high_altitude_event_assets": [
+    "construction_event_balloon_p0",
+    "construction_event_birds_p0",
+    "construction_event_plane_p0",
+    "construction_event_moon_p0",
+    "construction_event_planet_red_p0",
+    "construction_event_planet_blue_p0",
+    "construction_event_planet_ring_p0",
+    "construction_event_whale_p0"
   ]
 }

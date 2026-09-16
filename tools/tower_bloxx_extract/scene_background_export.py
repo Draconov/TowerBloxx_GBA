@@ -469,21 +469,123 @@ def _write_construction_background_header(
     return path
 
 
+def _write_sprite_asset(ui_dir: Path, name: str, image: Image.Image, *, bpp: int = 4) -> tuple[Path, Path]:
+    indices, palette = _indexed_transparent(image, bpp=bpp)
+    bmp_path = ui_dir / f"{name}.bmp"
+    json_path = ui_dir / f"{name}.json"
+    _write_indexed_bmp(bmp_path, image.width, image.height, indices, palette, bpp)
+    json_path.write_text(
+        json.dumps({"bpp_mode": f"bpp_{bpp}", "type": "sprite"}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return bmp_path, json_path
+
+
+def _draw_high_altitude_event_sprite(kind: str) -> Image.Image:
+    if kind == "balloon":
+        image = Image.new("RGBA", (16, 24), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((2, 1, 13, 14), fill=(210, 60, 48, 255), outline=(120, 24, 16, 255))
+        draw.rectangle((4, 7, 11, 8), fill=(248, 208, 160, 255))
+        draw.line((6, 14, 5, 18), fill=(80, 56, 24, 255))
+        draw.line((9, 14, 10, 18), fill=(80, 56, 24, 255))
+        draw.rectangle((5, 18, 10, 21), fill=(120, 88, 32, 255), outline=(72, 48, 16, 255))
+        return image
+    if kind == "birds":
+        image = Image.new("RGBA", (16, 8), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        bird = (80, 96, 112, 255)
+        for x, y in ((2, 4), (7, 2), (11, 5)):
+            draw.line((x, y, x + 2, y - 2), fill=bird)
+            draw.line((x + 2, y - 2, x + 4, y), fill=bird)
+        return image
+    if kind == "plane":
+        image = Image.new("RGBA", (24, 12), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        body = (150, 182, 210, 255)
+        outline = (88, 112, 136, 255)
+        draw.rectangle((4, 5, 18, 6), fill=body, outline=outline)
+        draw.polygon(((18, 4), (22, 5), (18, 7)), fill=body, outline=outline)
+        draw.polygon(((7, 4), (11, 1), (12, 1), (10, 4)), fill=body, outline=outline)
+        draw.polygon(((7, 7), (11, 10), (12, 10), (10, 7)), fill=body, outline=outline)
+        draw.polygon(((4, 5), (1, 3), (2, 5), (1, 7)), fill=body, outline=outline)
+        return image
+    if kind == "moon":
+        image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((1, 1, 14, 14), fill=(214, 216, 220, 255), outline=(136, 140, 148, 255))
+        draw.ellipse((4, 3, 13, 13), fill=(186, 190, 196, 255))
+        for box in ((4, 5, 6, 7), (9, 6, 11, 8), (6, 10, 9, 12)):
+            draw.ellipse(box, fill=(156, 160, 166, 255))
+        return image
+    if kind == "planet_red":
+        image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((1, 1, 14, 14), fill=(198, 92, 58, 255), outline=(126, 54, 32, 255))
+        draw.arc((2, 5, 13, 10), start=200, end=340, fill=(236, 160, 120, 255), width=1)
+        draw.arc((3, 8, 13, 13), start=20, end=160, fill=(236, 160, 120, 255), width=1)
+        return image
+    if kind == "planet_blue":
+        image = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        draw.ellipse((1, 1, 14, 14), fill=(88, 136, 220, 255), outline=(40, 76, 136, 255))
+        draw.polygon(((4, 5), (6, 4), (8, 6), (7, 9), (4, 8)), fill=(84, 176, 112, 255))
+        draw.polygon(((9, 7), (11, 6), (12, 9), (9, 11)), fill=(84, 176, 112, 255))
+        draw.arc((2, 4, 13, 11), start=210, end=320, fill=(232, 248, 255, 255), width=1)
+        return image
+    if kind == "planet_ring":
+        image = Image.new("RGBA", (32, 20), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        ring = (176, 192, 120, 255)
+        ring_shadow = (112, 128, 72, 255)
+        draw.ellipse((2, 8, 29, 13), outline=ring_shadow, width=2)
+        draw.ellipse((4, 9, 27, 12), outline=ring, width=1)
+        draw.ellipse((9, 3, 22, 16), fill=(88, 190, 176, 255), outline=(32, 112, 104, 255))
+        draw.arc((8, 2, 23, 17), start=200, end=340, fill=(160, 232, 220, 255), width=1)
+        draw.rectangle((2, 10, 29, 11), fill=(0, 0, 0, 0))
+        return image
+    if kind == "whale":
+        image = Image.new("RGBA", (32, 16), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(image)
+        body = (120, 170, 196, 255)
+        outline = (64, 104, 128, 255)
+        draw.ellipse((4, 4, 24, 13), fill=body, outline=outline)
+        draw.polygon(((20, 8), (30, 3), (28, 8), (30, 13)), fill=body, outline=outline)
+        draw.polygon(((9, 4), (13, 1), (16, 4)), fill=body, outline=outline)
+        draw.line((10, 4, 9, 1), fill=(224, 240, 255, 255))
+        draw.line((10, 4, 11, 1), fill=(224, 240, 255, 255))
+        draw.point((8, 8), fill=(16, 32, 48, 255))
+        return image
+    raise ValueError(f"unknown event sprite kind: {kind}")
+
+
+def _write_high_altitude_event_sprites(project_dir: Path) -> list[Path]:
+    ui_dir = Path(project_dir) / "gba" / "graphics" / "ui"
+    ui_dir.mkdir(parents=True, exist_ok=True)
+    written: list[Path] = []
+    for name in (
+        "construction_event_balloon_p0",
+        "construction_event_birds_p0",
+        "construction_event_plane_p0",
+        "construction_event_moon_p0",
+        "construction_event_planet_red_p0",
+        "construction_event_planet_blue_p0",
+        "construction_event_planet_ring_p0",
+        "construction_event_whale_p0",
+    ):
+        kind = name.removeprefix("construction_event_").removesuffix("_p0")
+        bmp_path, json_path = _write_sprite_asset(ui_dir, name, _draw_high_altitude_event_sprite(kind), bpp=4)
+        written.extend((bmp_path, json_path))
+    return written
+
+
 def _write_high_altitude_blink_sprite(project_dir: Path) -> tuple[Path, Path]:
     ui_dir = Path(project_dir) / "gba" / "graphics" / "ui"
     ui_dir.mkdir(parents=True, exist_ok=True)
     image = Image.new("RGBA", (8, 8), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
     draw.rectangle((3, 3, 4, 4), fill=(255, 0, 0, 255))
-    indices, palette = _indexed_transparent(image, bpp=4)
-    bmp_path = ui_dir / "construction_high_blink_p0.bmp"
-    json_path = ui_dir / "construction_high_blink_p0.json"
-    _write_indexed_bmp(bmp_path, 8, 8, indices, palette, 4)
-    json_path.write_text(
-        json.dumps({"bpp_mode": "bpp_4", "type": "sprite"}, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    return bmp_path, json_path
+    return _write_sprite_asset(ui_dir, "construction_high_blink_p0", image, bpp=4)
 
 def render_city_background(theme_index: int = 0) -> Image.Image:
     """Render the recovered 240x160 Build City compositor base.
@@ -695,7 +797,8 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
 
     header_path = _write_construction_background_header(project_dir, decorations)
     blink_paths = _write_high_altitude_blink_sprite(project_dir)
-    for path in (header_path, *blink_paths):
+    event_sprite_paths = _write_high_altitude_event_sprites(project_dir)
+    for path in (header_path, *blink_paths, *event_sprite_paths):
         files.append({
             "path": path.relative_to(project_dir).as_posix(),
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -717,6 +820,16 @@ def export_scene_backgrounds(jar_path: Path, project_dir: Path) -> dict[str, obj
         "scenery_chunk_centers": list(SCENERY_CHUNK_CENTERS),
         "scenery_max_scroll": SCENERY_MAX_SCROLL,
         "high_altitude_decoration_count": len(decorations),
+        "high_altitude_event_assets": [
+            "construction_event_balloon_p0",
+            "construction_event_birds_p0",
+            "construction_event_plane_p0",
+            "construction_event_moon_p0",
+            "construction_event_planet_red_p0",
+            "construction_event_planet_blue_p0",
+            "construction_event_planet_ring_p0",
+            "construction_event_whale_p0",
+        ],
         "files": sorted(files, key=lambda record: str(record["path"])),
     }
     (reference_dir / "scene_backgrounds_manifest.json").write_text(

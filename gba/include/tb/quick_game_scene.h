@@ -59,6 +59,7 @@ private:
     ConstructionBackdrop _backdrop;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
+    bn::sprite_affine_mat_ptr _combo_star_affine_mat;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;
@@ -70,6 +71,7 @@ private:
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
+    bn::optional<bn::sprite_ptr> _combo_star_sprite;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;

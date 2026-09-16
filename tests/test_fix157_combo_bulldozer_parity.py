@@ -45,9 +45,19 @@ def test_combo_meter_matches_exact_240x160_jar_geometry(
     assert "constexpr int combo_meter_fill_y = -67;" in source
     assert "constexpr int combo_meter_frame_x = 0;" in source
     assert "constexpr int combo_meter_frame_y = -67;" in source
+    assert "constexpr int combo_star_x = -69;" in source
+    assert "constexpr int combo_star_y = -67;" in source
     assert "constexpr int combo_readout_x = 68;" in source
     assert "constexpr int combo_readout_y = -65;" in source
     assert "show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y" in source
+    assert "bn_sprite_items_quick_combo_star_p0.h" in source
+    assert "quick_combo_star_p0.create_sprite(combo_star_x, combo_star_y)" in source
+    assert "_combo_star_affine_mat.set_rotation_angle" in source
+
+    star_json = ROOT / "gba/graphics/ui/quick_combo_star_p0.json"
+    star_bmp = ROOT / "gba/graphics/ui/quick_combo_star_p0.bmp"
+    assert star_json.read_text(encoding="utf-8").strip() == '{"bpp_mode": "bpp_4", "type": "sprite"}'
+    assert Image.open(star_bmp).size == (16, 16)
 
 
 def test_bulldozer_slot_is_lower_centered_and_uses_replacement_destruction_effect() -> None:

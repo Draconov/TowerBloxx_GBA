@@ -20,6 +20,14 @@
 #include "bn_regular_bg_items_construction_sky_14.h"
 #include "bn_regular_bg_items_construction_sky_15.h"
 #include "bn_regular_bg_items_construction_sky_16.h"
+#include "bn_sprite_items_construction_event_balloon_p0.h"
+#include "bn_sprite_items_construction_event_birds_p0.h"
+#include "bn_sprite_items_construction_event_moon_p0.h"
+#include "bn_sprite_items_construction_event_plane_p0.h"
+#include "bn_sprite_items_construction_event_planet_blue_p0.h"
+#include "bn_sprite_items_construction_event_planet_red_p0.h"
+#include "bn_sprite_items_construction_event_planet_ring_p0.h"
+#include "bn_sprite_items_construction_event_whale_p0.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
 
 #include "generated/construction_background_data.h"
@@ -30,6 +38,38 @@ namespace
 {
 constexpr int screen_half_width = 120;
 constexpr int screen_half_height = 80;
+
+enum class HighAltitudeEventKind
+{
+    Balloon,
+    Birds,
+    Plane,
+    Moon,
+    RedPlanet,
+    BluePlanet,
+    RingPlanet,
+    Whale,
+};
+
+struct HighAltitudeEvent
+{
+    HighAltitudeEventKind kind;
+    int x;
+    int world_y;
+    int width;
+    int height;
+};
+
+constexpr HighAltitudeEvent high_altitude_events[] = {
+    {HighAltitudeEventKind::Balloon, 36, 310, 16, 24},
+    {HighAltitudeEventKind::Birds, 176, 430, 16, 8},
+    {HighAltitudeEventKind::Plane, 26, 560, 24, 12},
+    {HighAltitudeEventKind::Moon, 182, 820, 16, 16},
+    {HighAltitudeEventKind::RedPlanet, 54, 980, 16, 16},
+    {HighAltitudeEventKind::BluePlanet, 156, 1140, 16, 16},
+    {HighAltitudeEventKind::RingPlanet, 24, 1300, 32, 20},
+    {HighAltitudeEventKind::Whale, 170, 1560, 32, 16},
+};
 
 int sky_color_index(int band)
 {
@@ -73,6 +113,29 @@ bn::regular_bg_ptr create_scenery_background(int index)
     default: return bn::regular_bg_items::construction_scenery_2.create_bg(0, 0);
     }
 }
+
+bn::sprite_ptr create_high_altitude_event_sprite(HighAltitudeEventKind kind)
+{
+    switch(kind)
+    {
+    case HighAltitudeEventKind::Balloon:
+        return bn::sprite_items::construction_event_balloon_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::Birds:
+        return bn::sprite_items::construction_event_birds_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::Plane:
+        return bn::sprite_items::construction_event_plane_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::Moon:
+        return bn::sprite_items::construction_event_moon_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::RedPlanet:
+        return bn::sprite_items::construction_event_planet_red_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::BluePlanet:
+        return bn::sprite_items::construction_event_planet_blue_p0.create_sprite(0, 0);
+    case HighAltitudeEventKind::RingPlanet:
+        return bn::sprite_items::construction_event_planet_ring_p0.create_sprite(0, 0);
+    default:
+        return bn::sprite_items::construction_event_whale_p0.create_sprite(0, 0);
+    }
+}
 }
 
 void ConstructionBackdrop::start(int camera_y, int clock_ms)
@@ -90,6 +153,14 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms)
             _blink_sprites.push_back(blink);
         }
     }
+    for(const HighAltitudeEvent& event : high_altitude_events)
+    {
+        bn::sprite_ptr sprite = create_high_altitude_event_sprite(event.kind);
+        sprite.set_bg_priority(3);
+        sprite.set_z_order(110);
+        sprite.set_visible(false);
+        _event_sprites.push_back(sprite);
+    }
     update(camera_y, clock_ms);
 }
 
@@ -102,6 +173,7 @@ void ConstructionBackdrop::update(int camera_y, int clock_ms)
     _update_sky(camera_y);
     _update_scenery(camera_y);
     _update_blinks(camera_y, clock_ms);
+    _update_high_altitude_events(camera_y);
 }
 
 void ConstructionBackdrop::reset()
@@ -109,6 +181,7 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
+    _event_sprites.clear();
     _sky_index = -1;
     _scenery_chunk = -1;
 }
@@ -199,6 +272,25 @@ void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
             const int x = decoration.x + decoration.width / 2 + 1 - screen_half_width;
             const int y = screen_top + 1 - screen_half_height;
             blink.set_position(x, y);
+        }
+    }
+}
+
+void ConstructionBackdrop::_update_high_altitude_events(int camera_y)
+{
+    const int camera_pixels = (22 * camera_y) >> 8;
+    for(int index = 0; index < int(_event_sprites.size()); ++index)
+    {
+        const HighAltitudeEvent& event = high_altitude_events[index];
+        bn::sprite_ptr& sprite = _event_sprites[index];
+        const int screen_top = screen_half_height - event.world_y + camera_pixels - event.height;
+        const bool visible = screen_top >= -event.height && screen_top < 160;
+        sprite.set_visible(visible);
+        if(visible)
+        {
+            const int x = event.x + event.width / 2 - screen_half_width;
+            const int y = screen_top + event.height / 2 - screen_half_height;
+            sprite.set_position(x, y);
         }
     }
 }

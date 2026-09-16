@@ -19,10 +19,12 @@ private:
     void _update_sky(int camera_y);
     void _update_scenery(int camera_y);
     void _update_blinks(int camera_y, int clock_ms);
+    void _update_high_altitude_events(int camera_y);
 
     bn::optional<bn::regular_bg_ptr> _sky_background;
     bn::optional<bn::regular_bg_ptr> _scenery_background;
     bn::vector<bn::sprite_ptr, 12> _blink_sprites;
+    bn::vector<bn::sprite_ptr, 8> _event_sprites;
     int _sky_index = -1;
     int _scenery_chunk = -1;
 };

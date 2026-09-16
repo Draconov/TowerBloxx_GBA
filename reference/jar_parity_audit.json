@@ -197,8 +197,17 @@
     "scenery_max_scroll": 672,
     "shared_runtime_component": "ConstructionBackdrop",
     "sky_colors": 17,
-    "status": "complete for canonical v1.5.22 evidence",
-    "whale_planet_assets": "not present as PNG or M3G assets in canonical v1.5.22; not fabricated"
+    "status": "complete for JAR evidence plus article-driven overlay polish",
+    "article_driven_high_altitude_events": [
+      "balloon",
+      "birds",
+      "plane",
+      "moon",
+      "red planet",
+      "blue planet",
+      "ringed planet",
+      "whale"
+    ]
   },
   "intentionally_omitted": [
     "vibration",

@@ -10,6 +10,7 @@
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
+#include "bn_sprite_items_quick_combo_star_p0.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -39,6 +40,8 @@ constexpr int combo_meter_fill_left = -60;
 constexpr int combo_meter_fill_y = -67;
 constexpr int combo_meter_frame_x = 0;
 constexpr int combo_meter_frame_y = -67;
+constexpr int combo_star_x = -69;
+constexpr int combo_star_y = -67;
 constexpr int combo_readout_x = 68;
 constexpr int combo_readout_y = -65;
 constexpr int construction_sky_band_step = 3072;
@@ -231,6 +234,7 @@ int combo_bucket(const QuickGameSnapshot& snapshot)
 
 QuickGameScene::QuickGameScene() :
     _current_affine_mat(bn::sprite_affine_mat_ptr::create()),
+    _combo_star_affine_mat(bn::sprite_affine_mat_ptr::create()),
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
@@ -267,6 +271,7 @@ void QuickGameScene::start(int language)
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_star_sprite.reset();
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
@@ -386,6 +391,7 @@ void QuickGameScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_star_sprite.reset();
 }
 
 void QuickGameScene::resume_presentation()
@@ -754,6 +760,7 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
     {
         _combo_meter_fill_sprite.reset();
         _combo_meter_flash_sprite.reset();
+        _combo_star_sprite.reset();
         return;
     }
 
@@ -788,6 +795,26 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
                                generated::quick_combo_meter_fill.parts[0].y;
     sprite.set_horizontal_scale(bn::fixed(width) / 64);
     sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_fill_y + part_y);
+
+    if(snapshot.combo_count > 1)
+    {
+        if(! _combo_star_sprite)
+        {
+            bn::sprite_ptr star = bn::sprite_items::quick_combo_star_p0.create_sprite(combo_star_x, combo_star_y);
+            star.set_z_order(-102);
+            star.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+            star.set_affine_mat(_combo_star_affine_mat);
+            _combo_star_sprite = star;
+        }
+
+        const bn::fixed spin_angle = bn::safe_degrees_angle((_background_clock_ms * 3 / 10) % 360);
+        _combo_star_affine_mat.set_rotation_angle(spin_angle);
+        _combo_star_sprite->set_position(combo_star_x, combo_star_y);
+    }
+    else
+    {
+        _combo_star_sprite.reset();
+    }
 }
 
 void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)

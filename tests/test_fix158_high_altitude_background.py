@@ -21,6 +21,13 @@ def test_shared_construction_backdrop_owns_layered_sky_and_scenery() -> None:
     for index in range(3):
         assert f"bn_regular_bg_items_construction_scenery_{index}.h" in source
     assert "bn_sprite_items_construction_high_blink_p0.h" in source
+    for asset in (
+        "construction_event_balloon_p0", "construction_event_birds_p0",
+        "construction_event_plane_p0", "construction_event_moon_p0",
+        "construction_event_planet_red_p0", "construction_event_planet_blue_p0",
+        "construction_event_planet_ring_p0", "construction_event_whale_p0",
+    ):
+        assert f"bn_sprite_items_{asset}.h" in source
     assert "generated/construction_background_data.h" in source
 
 
@@ -48,6 +55,9 @@ def test_high_altitude_type1_blink_uses_source_phase_and_background_priority() -
     assert "decoration.kind == 1" in source
     assert "blink.set_bg_priority(2);" in source
     assert "blink.set_position" in source
+    assert "_update_high_altitude_events(camera_y);" in source
+    assert "HighAltitudeEventKind::Whale" in source
+    assert "sprite.set_bg_priority(3);" in source
 
 
 def test_both_tower_scenes_delegate_to_shared_construction_backdrop() -> None:
@@ -74,14 +84,15 @@ def test_bulldozer_offset_and_two_frame_visibility_are_preserved() -> None:
     assert "effect_frame >= 4" in source
 
 
-def test_high_altitude_audit_records_proven_scope_without_fabricated_whale_planet() -> None:
+def test_high_altitude_audit_records_article_driven_event_overlay() -> None:
     markdown = (ROOT / "reference/JAR_PARITY_AUDIT.md").read_text(encoding="utf-8")
     audit = (ROOT / "reference/jar_parity_audit.json").read_text(encoding="utf-8")
     assert "all 17 recovered colors" in markdown
     assert "88-entry resource-43" in markdown
     assert "12 `House.v()` procedural rooftop columns" in markdown
-    assert "no separate whale or planet PNG/M3G asset" in markdown
+    assert "Game Developer postmortem height chart" in markdown
+    assert "clean-room event overlay" in markdown
     assert '"sky_colors": 17' in audit
     assert '"resource43_entries": 88' in audit
     assert '"procedural_rooftop_decorations": 12' in audit
-    assert '"whale_planet_assets"' in audit
+    assert '"article_driven_high_altitude_events"' in audit
