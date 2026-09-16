@@ -354,8 +354,11 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
         const int type = slot.type;
         const generated::LegacySkyEventAsset& event_asset = generated::legacy_sky_event_assets[type];
         slot.x_eighths += generated::legacy_event_x_speed[type] * movement_steps;
-        const int x = screen_half_width + slot.x_eighths / 8;
-        const int y = screen_half_height - (slot.y_eighths - camera_three_quarters) / 8;
+        // House.e projects to top-left screen coordinates by adding (v,w),
+        // but Butano sprite positions are already screen-centred. Cancel that
+        // source screen-centre translation instead of adding it a second time.
+        const int x = slot.x_eighths / 8;
+        const int y = -((slot.y_eighths - camera_three_quarters) / 8);
         const int half_width = event_asset.width / 2;
         const int half_height = event_asset.height / 2;
         const bool in_band = band >= generated::legacy_event_min_band[type] &&

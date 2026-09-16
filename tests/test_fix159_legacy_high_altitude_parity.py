@@ -109,8 +109,26 @@ def test_legacy_event_spawn_projection_uses_house_coordinate_math_for_gba() -> N
     assert 'const int camera_three_quarters = (3 * camera_y) / 4;' in source
     assert 'slot.y_eighths = camera_three_quarters + extent + _legacy_random(512);' in source
     assert 'slot.y_eighths = camera_three_quarters - legacy_screen_height_eighths / 2 - 512 +' in source
-    assert 'const int x = screen_half_width + slot.x_eighths / 8;' in source
-    assert 'const int y = screen_half_height - (slot.y_eighths - camera_three_quarters) / 8;' in source
+    # House.e first projects into ordinary top-left screen coordinates using
+    # the screen centre. Butano sprite positions are already centre-origin, so
+    # those half-screen offsets must cancel during the port.
+    assert 'const int x = slot.x_eighths / 8;' in source
+    assert 'const int y = -((slot.y_eighths - camera_three_quarters) / 8);' in source
+    assert 'screen_half_width + slot.x_eighths / 8' not in source
+    assert 'screen_half_height - (slot.y_eighths - camera_three_quarters) / 8' not in source
+
+
+def test_legacy_event_projection_places_source_viewport_inside_butano_viewport() -> None:
+    # Numeric guard for the centre-origin conversion: source screen (120,80)
+    # must become Butano (0,0), not (120,80). A stationary event at source
+    # world x=0 therefore sits on the screen centre line, while the original
+    # 240px spawn width spans centred x=0..240 as House.l/House.e dictate.
+    camera_y = 4096
+    camera_three_quarters = (3 * camera_y) // 4
+    assert 0 // 8 == 0
+    assert (240 * 8) // 8 == 240
+    assert -((camera_three_quarters - camera_three_quarters) // 8) == 0
+    assert -(((camera_three_quarters + 512) - camera_three_quarters) // 8) == -64
 
 
 def test_resource47_sparkle_tracks_current_attached_or_falling_block_every_100ms() -> None:
