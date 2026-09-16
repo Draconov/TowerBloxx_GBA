@@ -365,6 +365,17 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         result.save_dirty = _record_flags.any();
     }
 
+    // Release the special-crane OBJ palette before allocating the falling/current
+    // block palette. This avoids a one-frame overlap that can exhaust BPP4 banks.
+    const CranePresentationMode presentation_mode = crane_presentation_mode(
+            snapshot.status == QuickGameStatus::Playing, snapshot.floor_count, false,
+            snapshot.block_state == QuickBlockState::Falling, snapshot.block_state == QuickBlockState::Missed);
+    if(presentation_mode != CranePresentationMode::Special)
+    {
+        _special_cable_sprites.clear();
+        _special_boom_sprites.clear();
+    }
+
     if(snapshot.floor_count != _rendered_floor_count)
     {
         _rebuild_floor_sprites();

@@ -32,14 +32,8 @@ enum class CranePresentationMode : uint8_t
 
 
 inline constexpr int special_crane_fixed_start_y = -165;
-inline constexpr int special_crane_intro_anchor_rope_length = 333;
-
-[[nodiscard]] constexpr int special_crane_cable_start_y(int floor_count, int rope_length)
+[[nodiscard]] constexpr int special_crane_cable_start_y(int /*floor_count*/, int /*rope_length*/)
 {
-    if(floor_count == 0 && rope_length < special_crane_intro_anchor_rope_length)
-    {
-        return (special_crane_fixed_start_y * rope_length) / special_crane_intro_anchor_rope_length;
-    }
     return special_crane_fixed_start_y;
 }
 

@@ -52,6 +52,7 @@ private:
     [[nodiscard]] GameplayWorkerWorld _worker_world(const TowerConstructionSnapshot& snapshot) const;
     void _rebuild_worker_sprites(const TowerConstructionSnapshot& snapshot);
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
+    void _update_combo_meter(const TowerConstructionSnapshot& snapshot);
     void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);
     void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
@@ -78,6 +79,9 @@ private:
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
+    bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
+    bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
+    bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;
@@ -92,7 +96,10 @@ private:
     int _last_hud_floor_count = -1;
     int _last_hud_chances = -1;
     int _last_hud_population = -1;
+    int _last_hud_combo_count = -1;
+    int _last_hud_combo_bucket = -1;
     int _last_hud_combo_bonus_bucket = -1;
+    int _combo_star_frame = -1;
     bool _last_hud_roof_phase = false;
     uint8_t _last_hud_roof_result = 0;
     TowerConstructionStatus _last_hud_status = TowerConstructionStatus::Results;

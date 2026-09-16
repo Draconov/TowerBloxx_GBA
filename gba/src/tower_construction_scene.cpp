@@ -39,6 +39,16 @@ constexpr int gameplay_worker_z_order = -30;
 constexpr int construction_sky_band_step = 3072;
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
+constexpr int combo_meter_segments = 8;
+constexpr int combo_meter_max_width = 120;
+constexpr int combo_meter_fill_left = -60;
+constexpr int combo_meter_fill_y = -67;
+constexpr int combo_meter_frame_x = 0;
+constexpr int combo_meter_frame_y = -67;
+constexpr int combo_star_x = -60;
+constexpr int combo_star_y = -67;
+constexpr int combo_readout_x = 68;
+constexpr int combo_readout_y = -65;
 
 constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
     &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
@@ -119,6 +129,24 @@ int draw_source_number(int value, int min_digits, int right_x, int top_y,
     }
     while(value > 0 || rendered < min_digits);
     return left;
+}
+
+int combo_bucket(const TowerConstructionSnapshot& snapshot)
+{
+    if(snapshot.combo_meter_ms <= 0)
+    {
+        return 0;
+    }
+    int bucket = (snapshot.combo_meter_ms * combo_meter_segments + 5999) / 6000;
+    if(bucket < 1)
+    {
+        bucket = 1;
+    }
+    if(bucket > combo_meter_segments)
+    {
+        bucket = combo_meter_segments;
+    }
+    return bucket;
 }
 
 int combo_bonus_blink_bucket(const TowerConstructionSnapshot& snapshot)
@@ -246,7 +274,10 @@ void TowerConstructionScene::start(
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
+    _last_hud_combo_count = -1;
+    _last_hud_combo_bucket = -1;
     _last_hud_combo_bonus_bucket = -1;
+    _combo_star_frame = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -264,6 +295,10 @@ void TowerConstructionScene::start(
     _current_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _combo_meter_fill_sprite.reset();
+    _combo_meter_flash_sprite.reset();
+    _combo_star_sprites.clear();
+    _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
@@ -273,6 +308,7 @@ void TowerConstructionScene::start(
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
     _rebuild_hud(snapshot);
+    _update_combo_meter(snapshot);
 }
 
 TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input, SaveData& save)
@@ -373,6 +409,19 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         return result;
     }
 
+    // Release the special-crane OBJ palette before allocating the falling/current
+    // block palette. On the first release frame both otherwise coexist briefly,
+    // which can exhaust the GBA's 16 BPP4 OBJ palette banks for some block colors.
+    const CranePresentationMode presentation_mode = crane_presentation_mode(
+            snapshot.status == TowerConstructionStatus::Playing, snapshot.floor_count,
+            snapshot.roof_phase, snapshot.block_state == TowerConstructionBlockState::Falling,
+            snapshot.block_state == TowerConstructionBlockState::Missed);
+    if(presentation_mode != CranePresentationMode::Special)
+    {
+        _special_cable_sprites.clear();
+        _special_boom_sprites.clear();
+    }
+
     if(snapshot.floor_count != _rendered_floor_count)
     {
         _rebuild_floor_sprites();
@@ -388,14 +437,17 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         _rebuild_worker_sprites(snapshot);
     }
 
+    const int current_combo_bucket = combo_bucket(snapshot);
     const int current_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
-       snapshot.population != _last_hud_population || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
+       snapshot.population != _last_hud_population || snapshot.combo_count != _last_hud_combo_count ||
+       current_combo_bucket != _last_hud_combo_bucket || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
        snapshot.roof_phase != _last_hud_roof_phase || snapshot.roof_result != _last_hud_roof_result ||
        snapshot.status != _last_hud_status)
     {
         _rebuild_hud(snapshot);
     }
+    _update_combo_meter(snapshot);
     return result;
 }
 
@@ -416,6 +468,10 @@ void TowerConstructionScene::suspend_presentation()
     _special_boom_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _combo_meter_fill_sprite.reset();
+    _combo_meter_flash_sprite.reset();
+    _combo_star_sprites.clear();
+    _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
@@ -438,7 +494,10 @@ void TowerConstructionScene::resume_presentation()
     _last_hud_floor_count = -1;
     _last_hud_chances = -1;
     _last_hud_population = -1;
+    _last_hud_combo_count = -1;
+    _last_hud_combo_bucket = -1;
     _last_hud_combo_bonus_bucket = -1;
+    _combo_star_frame = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -451,6 +510,7 @@ void TowerConstructionScene::resume_presentation()
     _update_block_sparkle(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
+    _update_combo_meter(snapshot);
 }
 
 void TowerConstructionScene::discard()
@@ -799,6 +859,67 @@ void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnap
     }
 }
 
+void TowerConstructionScene::_update_combo_meter(const TowerConstructionSnapshot& snapshot)
+{
+    if(snapshot.status != TowerConstructionStatus::Playing || snapshot.combo_meter_ms <= 0)
+    {
+        _combo_meter_fill_sprite.reset();
+        _combo_meter_flash_sprite.reset();
+        _combo_star_sprites.clear();
+        _combo_star_frame = -1;
+        return;
+    }
+
+    int width = snapshot.combo_meter_ms * combo_meter_max_width / 6000;
+    if(width < 1)
+    {
+        width = 1;
+    }
+    else if(width > combo_meter_max_width)
+    {
+        width = combo_meter_max_width;
+    }
+
+    const bool flash = snapshot.combo_meter_ms > 5850;
+    bn::optional<bn::sprite_ptr>& active = flash ? _combo_meter_flash_sprite : _combo_meter_fill_sprite;
+    bn::optional<bn::sprite_ptr>& inactive = flash ? _combo_meter_fill_sprite : _combo_meter_flash_sprite;
+    inactive.reset();
+
+    if(! active)
+    {
+        const generated::UiCompositeAsset& asset = flash ? generated::quick_combo_meter_flash :
+                                                            generated::quick_combo_meter_fill;
+        const generated::UiSpritePartAsset& part = asset.parts[0];
+        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
+        sprite.set_z_order(-100);
+        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        active = sprite;
+    }
+
+    bn::sprite_ptr& sprite = *active;
+    const int part_y = flash ? generated::quick_combo_meter_flash.parts[0].y :
+                               generated::quick_combo_meter_fill.parts[0].y;
+    sprite.set_horizontal_scale(bn::fixed(width) / 64);
+    sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_fill_y + part_y);
+
+    if(snapshot.combo_count > 1)
+    {
+        const int frame = (_background_clock_ms / 80) % 4;
+        if(frame != _combo_star_frame)
+        {
+            _combo_star_sprites.clear();
+            show_ui_composite(*generated::legacy_combo_star_frames[frame],
+                              combo_star_x, combo_star_y, _combo_star_sprites, -102);
+            _combo_star_frame = frame;
+        }
+    }
+    else
+    {
+        _combo_star_sprites.clear();
+        _combo_star_frame = -1;
+    }
+}
+
 void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapshot& snapshot)
 {
     _block_sparkle_sprites.clear();
@@ -837,6 +958,8 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     _last_hud_floor_count = snapshot.floor_count;
     _last_hud_chances = snapshot.chances_left;
     _last_hud_population = snapshot.population;
+    _last_hud_combo_count = snapshot.combo_count;
+    _last_hud_combo_bucket = combo_bucket(snapshot);
     _last_hud_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     _last_hud_roof_phase = snapshot.roof_phase;
     _last_hud_roof_result = snapshot.roof_result;
@@ -894,6 +1017,21 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     {
         show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
+    }
+
+    if(snapshot.combo_meter_ms > 0)
+    {
+        show_ui_composite(
+                generated::quick_combo_meter_frame, combo_meter_frame_x, combo_meter_frame_y,
+                _hud_sprites, -101);
+    }
+
+    if(snapshot.combo_meter_ms > 0 && snapshot.combo_count > 1)
+    {
+        show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y, _hud_sprites);
+        const int digits = snapshot.combo_count > 9 ? 2 : 1;
+        draw_source_number(snapshot.combo_count, digits, 191 + digits * 5, 12,
+                           hud_brown_digit_frames, _hud_sprites);
     }
 
     if(snapshot.combo_bonus_pending != 0 && snapshot.combo_meter_ms <= 0 &&

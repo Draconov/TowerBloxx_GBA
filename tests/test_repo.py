@@ -143,6 +143,61 @@ def test_combo_feedback_contract_is_retained() -> None:
         assert "combo_meter_ms > -2000" in source
         assert "(-snapshot.combo_meter_ms / 100) % 2 == 0" in source
         assert "hud_brown_digit_frames[10]" in source
+        # House.i(Graphics) draws the combo meter after the mode-specific HUD
+        # branch, so the meter is common to Quick Game and Build City.
+        assert "quick_combo_meter_frame" in source
+        assert "_update_combo_meter(snapshot)" in source
+
+    construction_header = (GBA / "include" / "tb" / "tower_construction_scene.h").read_text(encoding="utf-8")
+    assert "_combo_meter_fill_sprite" in construction_header
+    assert "_combo_meter_flash_sprite" in construction_header
+    assert "_combo_star_sprites" in construction_header
+
+
+
+def test_all_building_color_palette_budget_contracts() -> None:
+    def palette(path: Path) -> tuple[int, ...]:
+        image = Image.open(path)
+        values = tuple(image.getpalette() or ())
+        image.close()
+        return values
+
+    gameplay = GBA / "graphics" / "gameplay"
+    # Every building color uses one BPP8 palette across its base/floor/roof
+    # family, so changing phases never allocates a second 8-bit palette.
+    for color in range(4):
+        family = (10 + color, 20 + color, 30 + color, 40 + color)
+        signatures: set[tuple[int, ...]] = set()
+        for mesh_id in family:
+            json_path = gameplay / f"tb_mesh_{mesh_id:03d}_p0.json"
+            assert '"bpp_mode": "bpp_8"' in json_path.read_text(encoding="utf-8")
+            for bmp in gameplay.glob(f"tb_mesh_{mesh_id:03d}_p*.bmp"):
+                signatures.add(palette(bmp))
+        assert len(signatures) == 1, f"building color {color + 1} uses multiple BPP8 palettes"
+
+    # The special rig/cable/platform retain their established shared BPP4 bank.
+    shared = palette(gameplay / "tb_mesh_007_p0.bmp")[: 16 * 3]
+    for name in (
+        "crane_special_cable_segment.bmp",
+        "crane_hook_pose_00_p0.bmp",
+        "crane_hook_pose_00_p1.bmp",
+        "tb_mesh_009_p0.bmp",
+        "tb_mesh_009_p1.bmp",
+        "tb_mesh_009_p2.bmp",
+        "tb_mesh_009_p3.bmp",
+    ):
+        assert palette(gameplay / name)[: 16 * 3] == shared
+
+def test_special_crane_palette_is_released_before_falling_sprite_rebuild() -> None:
+    for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        source = (GBA / "src" / source_name).read_text(encoding="utf-8")
+        update_start = source.index("::update(")
+        class_name = "QuickGameScene" if source_name == "quick_game_scene.cpp" else "TowerConstructionScene"
+        update_end = source.index(f"bool {class_name}::active() const", update_start)
+        body = source[update_start:update_end]
+        release = body.index("_special_boom_sprites.clear()")
+        current = body.index("_rebuild_current_sprites(snapshot)")
+        assert release < current
 
 
 def test_makefile_builds_only_live_asset_roots() -> None:

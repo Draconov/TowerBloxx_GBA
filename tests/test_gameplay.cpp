@@ -114,8 +114,10 @@ void test_first_block_intro_and_release_gate()
 
 void test_special_crane_screen_anchor()
 {
-    assert(tb::special_crane_cable_start_y(0, 0) == 0);
-    assert(tb::special_crane_cable_start_y(0, 166) < 0);
+    // The JAR keeps the special crane/cable anchor fixed while the first
+    // block itself lowers from rope length 0 to 1664.
+    assert(tb::special_crane_cable_start_y(0, 0) == -165);
+    assert(tb::special_crane_cable_start_y(0, 166) == -165);
     assert(tb::special_crane_cable_start_y(0, 333) == -165);
     assert(tb::special_crane_cable_start_y(1, 0) == -165);
     assert(tb::special_crane_boom_part_center_x(0, 0) == -115);
