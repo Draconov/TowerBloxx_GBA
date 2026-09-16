@@ -205,24 +205,10 @@ def test_export_scene_backgrounds_writes_layered_construction_assets(
     assert header.count("ConstructionBackgroundDecoration{") == 12
     assert "construction_scenery_chunk_centers" in header
 
-    assert manifest["high_altitude_event_assets"] == [
-        "construction_event_balloon_p0",
-        "construction_event_birds_p0",
-        "construction_event_plane_p0",
-        "construction_event_moon_p0",
-        "construction_event_planet_red_p0",
-        "construction_event_planet_blue_p0",
-        "construction_event_planet_ring_p0",
-        "construction_event_whale_p0",
-    ]
-
     ui_dir = tmp_path / "gba" / "graphics" / "ui"
     blink_bmp = Image.open(ui_dir / "construction_high_blink_p0.bmp")
     assert blink_bmp.size == (8, 8)
     assert len(set(blink_bmp.get_flattened_data())) == 2
-    assert Image.open(ui_dir / "construction_event_moon_p0.bmp").size == (16, 16)
-    assert Image.open(ui_dir / "construction_event_planet_ring_p0.bmp").size == (32, 20)
-    assert Image.open(ui_dir / "construction_event_whale_p0.bmp").size == (32, 16)
 
 
 def test_scene_background_export_removes_legacy_single_city_background(

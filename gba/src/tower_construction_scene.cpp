@@ -11,6 +11,7 @@
 #include "bn_string_view.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
 
+#include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
 #include "generated/tower_ui_assets.h"
@@ -242,12 +243,15 @@ void TowerConstructionScene::start(
     _current_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _block_sparkle_sprites.clear();
+    _block_sparkle_frame = -1;
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
+    _update_block_sparkle(snapshot);
     _rebuild_hud(snapshot);
 }
 
@@ -358,6 +362,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _background_clock_ms += delta_ms;
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
+    _update_block_sparkle(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -388,6 +393,8 @@ void TowerConstructionScene::suspend_presentation()
     _special_cable_sprites.clear();
     _worker_sprites.clear();
     _hud_sprites.clear();
+    _block_sparkle_sprites.clear();
+    _block_sparkle_frame = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
@@ -418,6 +425,7 @@ void TowerConstructionScene::resume_presentation()
     _rebuild_current_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
+    _update_block_sparkle(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
 }
@@ -744,6 +752,36 @@ void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnap
                 asset, _screen_x(worker.x_fixed),
                 _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
                 gameplay_worker_z_order);
+    }
+}
+
+void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapshot& snapshot)
+{
+    const bool visible = snapshot.status == TowerConstructionStatus::Playing &&
+            (snapshot.block_state == TowerConstructionBlockState::Attached ||
+             snapshot.block_state == TowerConstructionBlockState::Falling);
+    if(! visible)
+    {
+        _block_sparkle_sprites.clear();
+        _block_sparkle_frame = -1;
+        return;
+    }
+
+    const int frame = (_background_clock_ms / 100) % 3;
+    const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
+    if(frame != _block_sparkle_frame)
+    {
+        _block_sparkle_sprites.clear();
+        show_ui_composite(asset, 0, 0, _block_sparkle_sprites, -21);
+        _block_sparkle_frame = frame;
+    }
+
+    const int center_x = _screen_x(snapshot.current_x);
+    const int center_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        _block_sparkle_sprites[index].set_position(center_x + part.x, center_y + part.y);
     }
 }
 

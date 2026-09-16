@@ -10,10 +10,10 @@
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
-#include "bn_sprite_items_quick_combo_star_p0.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
+#include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_ui_assets.h"
 
 namespace tb
@@ -40,7 +40,7 @@ constexpr int combo_meter_fill_left = -60;
 constexpr int combo_meter_fill_y = -67;
 constexpr int combo_meter_frame_x = 0;
 constexpr int combo_meter_frame_y = -67;
-constexpr int combo_star_x = -69;
+constexpr int combo_star_x = -60;
 constexpr int combo_star_y = -67;
 constexpr int combo_readout_x = 68;
 constexpr int combo_readout_y = -65;
@@ -234,7 +234,6 @@ int combo_bucket(const QuickGameSnapshot& snapshot)
 
 QuickGameScene::QuickGameScene() :
     _current_affine_mat(bn::sprite_affine_mat_ptr::create()),
-    _combo_star_affine_mat(bn::sprite_affine_mat_ptr::create()),
     _text_generator(generated::tower_font)
 {
     _text_generator.set_center_alignment();
@@ -271,13 +270,19 @@ void QuickGameScene::start(int language)
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_star_sprite.reset();
+    _combo_star_sprites.clear();
+    _combo_star_frame = -1;
+    _block_sparkle_sprites.clear();
+    _block_sparkle_frame = -1;
+    _block_sparkle_sprites.clear();
+    _block_sparkle_frame = -1;
     _rebuild_floor_sprites();
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
+    _update_block_sparkle(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
 }
@@ -356,6 +361,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     _background_clock_ms += delta_ms;
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
+    _update_block_sparkle(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -391,7 +397,8 @@ void QuickGameScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_star_sprite.reset();
+    _combo_star_sprites.clear();
+    _combo_star_frame = -1;
 }
 
 void QuickGameScene::resume_presentation()
@@ -418,6 +425,7 @@ void QuickGameScene::resume_presentation()
     _ensure_crane_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
+    _update_block_sparkle(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -760,7 +768,8 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
     {
         _combo_meter_fill_sprite.reset();
         _combo_meter_flash_sprite.reset();
-        _combo_star_sprite.reset();
+        _combo_star_sprites.clear();
+        _combo_star_frame = -1;
         return;
     }
 
@@ -796,24 +805,57 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
     sprite.set_horizontal_scale(bn::fixed(width) / 64);
     sprite.set_position(bn::fixed(combo_meter_fill_left * 2 + width) / 2, combo_meter_fill_y + part_y);
 
+    // Nokia v1.3.37 House.i(Graphics): resource 46 is a 4-frame 22x22
+    // combo star and advances on the global game clock every 80 ms.
     if(snapshot.combo_count > 1)
     {
-        if(! _combo_star_sprite)
+        const int frame = (_background_clock_ms / 80) % 4;
+        if(frame != _combo_star_frame)
         {
-            bn::sprite_ptr star = bn::sprite_items::quick_combo_star_p0.create_sprite(combo_star_x, combo_star_y);
-            star.set_z_order(-102);
-            star.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-            star.set_affine_mat(_combo_star_affine_mat);
-            _combo_star_sprite = star;
+            _combo_star_sprites.clear();
+            show_ui_composite(*generated::legacy_combo_star_frames[frame],
+                              combo_star_x, combo_star_y, _combo_star_sprites, -102);
+            _combo_star_frame = frame;
         }
-
-        const bn::fixed spin_angle = bn::safe_degrees_angle((_background_clock_ms * 3 / 10) % 360);
-        _combo_star_affine_mat.set_rotation_angle(spin_angle);
-        _combo_star_sprite->set_position(combo_star_x, combo_star_y);
     }
     else
     {
-        _combo_star_sprite.reset();
+        _combo_star_sprites.clear();
+        _combo_star_frame = -1;
+    }
+}
+
+void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
+{
+    // Nokia v1.3.37 House.i(Graphics): resource 47 surrounds the active block
+    // only while state 1/2 is active (Attached/Falling), cycling 3 frames at
+    // 100 ms.  The GBA compositor keeps the source 44x44 frame centred on the
+    // current block world position.
+    const bool visible = snapshot.status == QuickGameStatus::Playing &&
+            (snapshot.block_state == QuickBlockState::Attached ||
+             snapshot.block_state == QuickBlockState::Falling);
+    if(! visible)
+    {
+        _block_sparkle_sprites.clear();
+        _block_sparkle_frame = -1;
+        return;
+    }
+
+    const int frame = (_background_clock_ms / 100) % 3;
+    const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
+    if(frame != _block_sparkle_frame)
+    {
+        _block_sparkle_sprites.clear();
+        show_ui_composite(asset, 0, 0, _block_sparkle_sprites, -21);
+        _block_sparkle_frame = frame;
+    }
+
+    const int center_x = _screen_x(snapshot.current_x);
+    const int center_y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        _block_sparkle_sprites[index].set_position(center_x + part.x, center_y + part.y);
     }
 }
 

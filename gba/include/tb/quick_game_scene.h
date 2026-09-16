@@ -50,6 +50,7 @@ private:
     void _rebuild_worker_sprites(const QuickGameSnapshot& snapshot);
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
     void _update_combo_meter(const QuickGameSnapshot& snapshot);
+    void _update_block_sparkle(const QuickGameSnapshot& snapshot);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
@@ -59,7 +60,6 @@ private:
     ConstructionBackdrop _backdrop;
     QuickRecordFlags _record_flags;
     bn::sprite_affine_mat_ptr _current_affine_mat;
-    bn::sprite_affine_mat_ptr _combo_star_affine_mat;
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_affine_mat_ptr, 5> _floor_affine_mats;
     bn::vector<bn::sprite_ptr, 32> _floor_sprites;
@@ -69,9 +69,10 @@ private:
     bn::vector<bn::sprite_ptr, 16> _special_cable_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
+    bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
+    bn::vector<bn::sprite_ptr, 2> _block_sparkle_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
-    bn::optional<bn::sprite_ptr> _combo_star_sprite;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
@@ -87,6 +88,8 @@ private:
     int _last_hud_population = -1;
     int _last_hud_combo_count = -1;
     int _last_hud_combo_bucket = -1;
+    int _combo_star_frame = -1;
+    int _block_sparkle_frame = -1;
     QuickGameStatus _last_hud_status = QuickGameStatus::GameOver;
     bool _records_applied = false;
     bool _active = false;

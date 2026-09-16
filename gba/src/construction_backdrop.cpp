@@ -20,17 +20,10 @@
 #include "bn_regular_bg_items_construction_sky_14.h"
 #include "bn_regular_bg_items_construction_sky_15.h"
 #include "bn_regular_bg_items_construction_sky_16.h"
-#include "bn_sprite_items_construction_event_balloon_p0.h"
-#include "bn_sprite_items_construction_event_birds_p0.h"
-#include "bn_sprite_items_construction_event_moon_p0.h"
-#include "bn_sprite_items_construction_event_plane_p0.h"
-#include "bn_sprite_items_construction_event_planet_blue_p0.h"
-#include "bn_sprite_items_construction_event_planet_red_p0.h"
-#include "bn_sprite_items_construction_event_planet_ring_p0.h"
-#include "bn_sprite_items_construction_event_whale_p0.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
 
 #include "generated/construction_background_data.h"
+#include "generated/legacy_high_altitude_assets.h"
 
 namespace tb
 {
@@ -38,38 +31,8 @@ namespace
 {
 constexpr int screen_half_width = 120;
 constexpr int screen_half_height = 80;
-
-enum class HighAltitudeEventKind
-{
-    Balloon,
-    Birds,
-    Plane,
-    Moon,
-    RedPlanet,
-    BluePlanet,
-    RingPlanet,
-    Whale,
-};
-
-struct HighAltitudeEvent
-{
-    HighAltitudeEventKind kind;
-    int x;
-    int world_y;
-    int width;
-    int height;
-};
-
-constexpr HighAltitudeEvent high_altitude_events[] = {
-    {HighAltitudeEventKind::Balloon, 36, 310, 16, 24},
-    {HighAltitudeEventKind::Birds, 176, 430, 16, 8},
-    {HighAltitudeEventKind::Plane, 26, 560, 24, 12},
-    {HighAltitudeEventKind::Moon, 182, 820, 16, 16},
-    {HighAltitudeEventKind::RedPlanet, 54, 980, 16, 16},
-    {HighAltitudeEventKind::BluePlanet, 156, 1140, 16, 16},
-    {HighAltitudeEventKind::RingPlanet, 24, 1300, 32, 20},
-    {HighAltitudeEventKind::Whale, 170, 1560, 32, 16},
-};
+constexpr int legacy_screen_width_eighths = 240 * 8;
+constexpr int legacy_screen_height_eighths = 160 * 8;
 
 int sky_color_index(int band)
 {
@@ -114,28 +77,33 @@ bn::regular_bg_ptr create_scenery_background(int index)
     }
 }
 
-bn::sprite_ptr create_high_altitude_event_sprite(HighAltitudeEventKind kind)
+void create_legacy_event_sprites(
+        const generated::UiCompositeAsset& asset,
+        bn::ivector<bn::sprite_ptr>& output)
 {
-    switch(kind)
+    output.clear();
+    for(int index = 0; index < asset.part_count; ++index)
     {
-    case HighAltitudeEventKind::Balloon:
-        return bn::sprite_items::construction_event_balloon_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::Birds:
-        return bn::sprite_items::construction_event_birds_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::Plane:
-        return bn::sprite_items::construction_event_plane_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::Moon:
-        return bn::sprite_items::construction_event_moon_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::RedPlanet:
-        return bn::sprite_items::construction_event_planet_red_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::BluePlanet:
-        return bn::sprite_items::construction_event_planet_blue_p0.create_sprite(0, 0);
-    case HighAltitudeEventKind::RingPlanet:
-        return bn::sprite_items::construction_event_planet_ring_p0.create_sprite(0, 0);
-    default:
-        return bn::sprite_items::construction_event_whale_p0.create_sprite(0, 0);
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
+        sprite.set_bg_priority(2);
+        sprite.set_z_order(100);
+        output.push_back(sprite);
     }
 }
+
+void position_legacy_event_sprites(
+        const generated::UiCompositeAsset& asset, int x, int y,
+        bn::ivector<bn::sprite_ptr>& sprites)
+{
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        sprites[index].set_position(x + part.x, y + part.y);
+    }
+}
+
+
 }
 
 void ConstructionBackdrop::start(int camera_y, int clock_ms)
@@ -153,14 +121,19 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms)
             _blink_sprites.push_back(blink);
         }
     }
-    for(const HighAltitudeEvent& event : high_altitude_events)
+
+    _legacy_events.clear();
+    for(int index = 0; index < 9; ++index)
     {
-        bn::sprite_ptr sprite = create_high_altitude_event_sprite(event.kind);
-        sprite.set_bg_priority(3);
-        sprite.set_z_order(110);
-        sprite.set_visible(false);
-        _event_sprites.push_back(sprite);
+        _legacy_events.push_back(LegacySkyEventSlot());
     }
+    for(int type = 0; type < 29; ++type)
+    {
+        _legacy_remaining[type] = generated::legacy_event_instance_limits[type];
+    }
+    _legacy_rng = 0x1337B10Cu;
+    _legacy_event_clock_ms = clock_ms;
+    _legacy_event_step_accumulator_ms = 0;
     update(camera_y, clock_ms);
 }
 
@@ -173,7 +146,7 @@ void ConstructionBackdrop::update(int camera_y, int clock_ms)
     _update_sky(camera_y);
     _update_scenery(camera_y);
     _update_blinks(camera_y, clock_ms);
-    _update_high_altitude_events(camera_y);
+    _update_legacy_events(camera_y, clock_ms);
 }
 
 void ConstructionBackdrop::reset()
@@ -181,7 +154,9 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
-    _event_sprites.clear();
+    _legacy_events.clear();
+    _legacy_event_clock_ms = 0;
+    _legacy_event_step_accumulator_ms = 0;
     _sky_index = -1;
     _scenery_chunk = -1;
 }
@@ -276,22 +251,131 @@ void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
     }
 }
 
-void ConstructionBackdrop::_update_high_altitude_events(int camera_y)
+
+
+int ConstructionBackdrop::_legacy_random(int bound)
 {
-    const int camera_pixels = (22 * camera_y) >> 8;
-    for(int index = 0; index < int(_event_sprites.size()); ++index)
+    if(bound <= 1)
     {
-        const HighAltitudeEvent& event = high_altitude_events[index];
-        bn::sprite_ptr& sprite = _event_sprites[index];
-        const int screen_top = screen_half_height - event.world_y + camera_pixels - event.height;
-        const bool visible = screen_top >= -event.height && screen_top < 160;
-        sprite.set_visible(visible);
-        if(visible)
+        return 0;
+    }
+    _legacy_rng = _legacy_rng * 1664525u + 1013904223u;
+    return int((_legacy_rng >> 8) % uint32_t(bound));
+}
+
+void ConstructionBackdrop::_clear_legacy_event(LegacySkyEventSlot& slot, int clock_ms)
+{
+    if(slot.type > 0 && generated::legacy_event_instance_limits[slot.type] >= 0)
+    {
+        ++_legacy_remaining[slot.type];
+    }
+    slot.type = 0;
+    slot.sprites.clear();
+    slot.rendered_frame = -1;
+    slot.next_spawn_ms = clock_ms + 2000 + _legacy_random(2000);
+}
+
+void ConstructionBackdrop::_spawn_legacy_event(
+        LegacySkyEventSlot& slot, int band, int camera_y, int clock_ms)
+{
+    int type = 0;
+    for(int candidate = 1; candidate <= 28; ++candidate)
+    {
+        const bool in_band = band >= generated::legacy_event_min_band[candidate] &&
+                band < generated::legacy_event_max_band[candidate];
+        const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
+                _legacy_remaining[candidate] > 0;
+        if(in_band && available && _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
         {
-            const int x = event.x + event.width / 2 - screen_half_width;
-            const int y = screen_top + event.height / 2 - screen_half_height;
-            sprite.set_position(x, y);
+            type = candidate;
+            break;
         }
     }
+
+    if(type == 0)
+    {
+        slot.next_spawn_ms = clock_ms + 1000 + _legacy_random(2500);
+        return;
+    }
+
+    if(generated::legacy_event_instance_limits[type] >= 0)
+    {
+        --_legacy_remaining[type];
+    }
+
+    const int speed = generated::legacy_event_x_speed[type];
+    const int extent = generated::legacy_event_extent_eighths[type];
+    const int camera_three_quarters = (3 * camera_y) / 4;
+    // House.l(int), specialized to the 240x160 GBA viewport. Coordinates stay
+    // in the source's 1/8-pixel space until House.e-style projection below.
+    if(speed == 0 || _legacy_random(2) == 0)
+    {
+        slot.x_eighths = _legacy_random(legacy_screen_width_eighths);
+        slot.y_eighths = camera_three_quarters + extent + _legacy_random(512);
+    }
+    else
+    {
+        slot.x_eighths = speed > 0 ? -extent : legacy_screen_width_eighths + extent;
+        slot.y_eighths = camera_three_quarters - legacy_screen_height_eighths / 2 - 512 +
+                _legacy_random(1024);
+    }
+    slot.type = type;
+    slot.rendered_frame = -1;
+    slot.next_spawn_ms = 0;
 }
+
+void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
+{
+    int delta_ms = clock_ms - _legacy_event_clock_ms;
+    if(delta_ms < 0)
+    {
+        delta_ms = 0;
+    }
+    _legacy_event_clock_ms = clock_ms;
+    _legacy_event_step_accumulator_ms += delta_ms;
+    const int movement_steps = _legacy_event_step_accumulator_ms / 25;
+    _legacy_event_step_accumulator_ms %= 25;
+
+    const int scaled = (2 * camera_y) / 3;
+    const int band = scaled / 2048;
+    const int camera_three_quarters = (3 * camera_y) / 4;
+
+    for(LegacySkyEventSlot& slot : _legacy_events)
+    {
+        if(slot.type == 0)
+        {
+            if(clock_ms > slot.next_spawn_ms)
+            {
+                _spawn_legacy_event(slot, band, camera_y, clock_ms);
+            }
+            continue;
+        }
+
+        const int type = slot.type;
+        const generated::LegacySkyEventAsset& event_asset = generated::legacy_sky_event_assets[type];
+        slot.x_eighths += generated::legacy_event_x_speed[type] * movement_steps;
+        const int x = screen_half_width + slot.x_eighths / 8;
+        const int y = screen_half_height - (slot.y_eighths - camera_three_quarters) / 8;
+        const int half_width = event_asset.width / 2;
+        const int half_height = event_asset.height / 2;
+        const bool in_band = band >= generated::legacy_event_min_band[type] &&
+                band < generated::legacy_event_max_band[type];
+        const bool onscreen_or_approaching = x >= -140 - half_width && x <= 140 + half_width &&
+                y >= -100 - half_height && y <= 180 + half_height;
+        if(! in_band || ! onscreen_or_approaching)
+        {
+            _clear_legacy_event(slot, clock_ms);
+            continue;
+        }
+
+        const int frame = event_asset.frame_count > 1 ? (clock_ms / 400) % event_asset.frame_count : 0;
+        if(frame != slot.rendered_frame)
+        {
+            create_legacy_event_sprites(*event_asset.frames[frame], slot.sprites);
+            slot.rendered_frame = frame;
+        }
+        position_legacy_event_sprites(*event_asset.frames[frame], x, y, slot.sprites);
+    }
+}
+
 }

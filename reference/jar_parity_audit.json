@@ -197,17 +197,23 @@
     "scenery_max_scroll": 672,
     "shared_runtime_component": "ConstructionBackdrop",
     "sky_colors": 17,
-    "status": "complete for JAR evidence plus article-driven overlay polish",
-    "article_driven_high_altitude_events": [
-      "balloon",
-      "birds",
-      "plane",
-      "moon",
-      "red planet",
-      "blue planet",
-      "ringed planet",
-      "whale"
-    ]
+    "status": "JAR-backed layered scenery plus v1.3.37 source event resources/rules",
+    "legacy_1337_high_altitude_reference": {
+      "source_version": "Nokia 6230i 208x208 v1.3.37",
+      "combo_star_resource": 46,
+      "sky_event_resources": "50-76",
+      "event_types": 28,
+      "live_slots": 9,
+      "event_animation_ms": 400,
+      "combo_star_frame_ms": 80,
+      "rng": "deterministic cosmetic adaptation; does not touch gameplay RNG",
+      "block_sparkle_resource": 47,
+      "block_sparkle_frame_ms": 100,
+      "block_sparkle_states": [
+        "Attached",
+        "Falling"
+      ]
+    }
   },
   "intentionally_omitted": [
     "vibration",
