@@ -61,6 +61,28 @@ def test_release_is_tag_gated_and_uses_github_token():
     assert "GH_TOKEN: ${{ github.token }}" in text
 
 
+
+def test_manual_dispatch_accepts_optional_version_and_blank_runs_build_only():
+    text = _workflow_text()
+    assert "workflow_dispatch:" in text
+    assert "version:" in text
+    assert "required: false" in text
+    assert "0.1.0" in text
+    assert "github.event_name == 'workflow_dispatch'" in text
+    assert "inputs.version != ''" in text
+
+
+def test_manual_release_normalizes_version_and_moves_tag_to_current_commit():
+    text = _workflow_text()
+    assert 'RELEASE_VERSION: ${{ inputs.version }}' in text
+    assert 'release_tag="${RELEASE_VERSION}"' in text
+    assert 'release_tag="v${release_tag}"' in text
+    assert '^v[0-9]+\\.[0-9]+\\.[0-9]+$' in text
+    assert 'git tag -f "${RELEASE_TAG}" "${GITHUB_SHA}"' in text
+    assert 'git push origin "refs/tags/${RELEASE_TAG}" --force' in text
+    assert 'gh release upload "${RELEASE_TAG}"' in text
+    assert '--clobber' in text
+
 def test_package_rom_script_verifies_checksum_from_dist_directory(tmp_path):
     import subprocess
 

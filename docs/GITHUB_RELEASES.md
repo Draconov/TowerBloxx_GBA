@@ -13,6 +13,24 @@ The repository includes `.github/workflows/gba-release.yml`, which makes GitHub 
 
 The workflow does not require the original Nokia JAR. All graphics needed by the current runtime are already present as generated project assets.
 
+## Manual build or release from GitHub Actions
+
+Open the repository on GitHub, choose **Actions** → **GBA ROM CI and Release** → **Run workflow**.
+
+The `version` field is optional:
+
+- Leave it blank to run the full tests/build and create only the normal downloadable Actions artifact.
+- Enter `0.1.0` or `v0.1.0` to build and publish a GitHub Release. A missing `v` is added automatically.
+
+For a versioned manual run, the workflow accepts semantic versions in `vX.Y.Z` form, points that version tag at the commit being built, then creates or updates the matching GitHub Release. Running `0.1.0` again therefore refreshes `v0.1.0` with the ROM from the new successful run rather than creating a duplicate release.
+
+The release contains:
+
+- `TowerBloxx.gba`
+- `TowerBloxx.gba.sha256`
+
+If those assets already exist on the release, they are replaced with `--clobber`.
+
 ## Downloading a ROM from an ordinary build
 
 Open the repository on GitHub, choose **Actions**, open a successful **GBA ROM CI and Release** run, then download the `TowerBloxx-GBA-<commit SHA>` artifact. GitHub wraps workflow artifacts in a ZIP; inside are:
@@ -22,21 +40,16 @@ Open the repository on GitHub, choose **Actions**, open a successful **GBA ROM C
 
 These ordinary build artifacts are retained for 30 days.
 
-## Creating a GitHub Release
+## Creating a release by pushing a tag
 
-Push a version tag whose name begins with `v`, for example:
+The original tag-driven route remains supported. Push a version tag whose name begins with `v`, for example:
 
 ```bash
 git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The same host tests and ARM build must pass first. The `release` job then creates a GitHub Release named from the tag and attaches:
-
-- `TowerBloxx.gba`
-- `TowerBloxx.gba.sha256`
-
-If the release job is rerun for a tag that already has a release, the two assets are uploaded again with `--clobber` instead of failing.
+The same host tests and ARM build must pass first. The `release` job then creates or updates the GitHub Release named from that tag and attaches the same ROM and checksum assets.
 
 ## Build environment
 
@@ -52,4 +65,4 @@ so the checked-out project never needs to vendor Butano.
 
 ## Release permissions
 
-The workflow has read-only repository contents permission by default. Only the tag-gated `release` job requests `contents: write`, which is required to create or update GitHub Releases.
+The workflow has read-only repository contents permission by default. Only the release job requests `contents: write`, which is required to create/update tags and GitHub Releases.

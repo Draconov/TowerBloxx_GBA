@@ -7,7 +7,7 @@ This directory is the native GBA half of the faithful Tower Bloxx port. The runt
 
 The repository now includes `.github/workflows/gba-release.yml`. Every push and pull request runs the host parity suite and builds the GBA project in the official devkitPro `devkitarm` container with Butano 21.7.1. Successful runs upload `TowerBloxx.gba` plus `TowerBloxx.gba.sha256` as a workflow artifact.
 
-Pushing a version tag such as `v0.1.0` additionally creates or updates a GitHub Release and attaches the same two files. See `docs/GITHUB_RELEASES.md` for the exact workflow and download/release steps.
+From **Actions → GBA ROM CI and Release → Run workflow**, leave the optional `version` field blank for a build-only run, or enter `0.1.0` / `v0.1.0` to create or update that GitHub Release and replace the ROM/checksum assets. Pushing a `v*` tag remains supported too. See `docs/GITHUB_RELEASES.md` for the exact workflow and release steps.
 
 ## External toolchain
 

@@ -8,6 +8,12 @@ on:
       - "v*"
   pull_request:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (for example 0.1.0 or v0.1.0). Leave blank for build only."
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -81,7 +87,7 @@ jobs:
 
   release:
     name: Publish GitHub Release
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.version != '')
     needs: [host-tests, gba-build]
     runs-on: ubuntu-latest
     permissions:
@@ -89,6 +95,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: release_meta
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            release_tag="${RELEASE_VERSION}"
+            if [[ "${release_tag}" != v* ]]; then
+              release_tag="v${release_tag}"
+            fi
+            if [[ ! "${release_tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "error: version must look like 0.1.0 or v0.1.0" >&2
+              exit 1
+            fi
+          else
+            release_tag="${GITHUB_REF_NAME}"
+          fi
+          echo "release_tag=${release_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Download verified ROM artifact
         uses: actions/download-artifact@v4
@@ -100,20 +127,32 @@ jobs:
         working-directory: dist
         run: sha256sum --check TowerBloxx.gba.sha256
 
+      - name: Point manual release tag at this commit
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          RELEASE_TAG: ${{ steps.release_meta.outputs.release_tag }}
+        run: |
+          git fetch --tags --force
+          git tag -f "${RELEASE_TAG}" "${GITHUB_SHA}"
+          git push origin "refs/tags/${RELEASE_TAG}" --force
+
       - name: Create or update GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release_meta.outputs.release_tag }}
         run: |
-          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-            gh release upload "${GITHUB_REF_NAME}" \
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" \
               dist/TowerBloxx.gba \
               dist/TowerBloxx.gba.sha256 \
               --clobber
+            gh release edit "${RELEASE_TAG}" \
+              --title "Tower Bloxx GBA ${RELEASE_TAG}"
           else
-            gh release create "${GITHUB_REF_NAME}" \
+            gh release create "${RELEASE_TAG}" \
               dist/TowerBloxx.gba \
               dist/TowerBloxx.gba.sha256 \
               --verify-tag \
-              --title "Tower Bloxx GBA ${GITHUB_REF_NAME}" \
+              --title "Tower Bloxx GBA ${RELEASE_TAG}" \
               --generate-notes
           fi
