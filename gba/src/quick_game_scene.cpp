@@ -973,8 +973,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         _text_generator.generate(0, 0, height, _hud_sprites);
         _text_generator.generate(0, 24, combo, _hud_sprites);
 
-        show_ui_composite(generated::support_nav_f2, -28, 52, _hud_sprites);
-        _text_generator.generate(10, 52, generated::localized_strings[_language][7], _hud_sprites);
+        show_ui_composite(generated::support_nav_f2, 0, 52, _hud_sprites);
         return;
     }
 
@@ -997,7 +996,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     // draws a five-digit resource-14 number to its right once the tower exists.
     if(snapshot.floor_count > 0)
     {
-        show_ui_composite(generated::city_population_icon, 82, 63, _hud_sprites);
+        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, hud_white_digit_frames, _hud_sprites);
     }
 

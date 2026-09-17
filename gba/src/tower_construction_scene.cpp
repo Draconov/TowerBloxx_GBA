@@ -1053,7 +1053,7 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     // appear after at least one floor has landed.
     if(snapshot.floor_count > 0)
     {
-        show_ui_composite(generated::city_population_icon, 82, 63, _hud_sprites);
+        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
     }
 
