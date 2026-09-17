@@ -114,7 +114,7 @@ void QuickGame::reset()
     _floor_count = 0;
     _chances_left = 3;
     _status = QuickGameStatus::Playing;
-    _block_state = QuickBlockState::Raising;
+    _block_state = QuickBlockState::Attached;
     _last_accuracy = QuickAccuracyBand::None;
     _population = 0;
     _combo_count = 0;
@@ -131,20 +131,20 @@ void QuickGame::reset()
     _swing_amplitude_y = 64;
     _vertical_swing_bias = 0;
     _world_anchor_y = 2432;
-    _rope_length = 0;
+    _rope_length = 1664;
 
     _crane_x = 0;
-    _crane_y = 2432;
+    _crane_y = 768;
     _previous_crane_x = 0;
-    _previous_crane_y = 2432;
+    _previous_crane_y = 768;
     _current_x = 0;
-    _current_y = 2432;
+    _current_y = 768;
     _velocity_x = 0;
     _velocity_y = 0;
     _drop_velocity_x = 0;
     _drop_velocity_y = 0;
     _drop_start_x = 0;
-    _drop_start_y = 2432;
+    _drop_start_y = 768;
     _drop_start_ms = 0;
     _current_z_angle_degrees = 0;
     _slip_target_z_angle_degrees = 0;
@@ -153,10 +153,10 @@ void QuickGame::reset()
     _current_y_angle_degrees = 0;
     _slip_target_y_angle_degrees = 0;
 
-    _camera_y = 512;
+    _camera_y = 2432;
     _camera_target_y = 512;
-    _camera_transition_start_ms = 0;
-    _presentation_camera_y = 512;
+    _camera_transition_start_ms = 3000;
+    _presentation_camera_y = 2432;
     _camera_impact_start_ms = -1000000;
     _visual_random_state = visual_random_seed;
     _transition_start_ms = 0;
@@ -342,7 +342,12 @@ void QuickGame::_update_camera()
         _camera_y = max_value(_camera_target_y, candidate);
     }
 
-    _world_anchor_y = _camera_y + 1792 + 128;
+    const bool intro_camera_active = _floor_count == 0 &&
+            _block_state == QuickBlockState::Attached && _camera_y != _camera_target_y;
+    if(! intro_camera_active)
+    {
+        _world_anchor_y = _camera_y + 1792 + 128;
+    }
 }
 
 void QuickGame::_update_presentation(int delta_ms)

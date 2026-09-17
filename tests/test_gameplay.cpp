@@ -87,44 +87,56 @@ void test_first_block_intro_and_release_gate()
     construction.start(1, 10, false);
     auto snapshot = construction.snapshot();
     assert(snapshot.status == tb::TowerConstructionStatus::Playing);
-    assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
-    assert(snapshot.rope_length == 0);
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
+    assert(snapshot.rope_length == 1664);
+    assert(snapshot.camera_y == 2432);
+    assert(snapshot.camera_target_y == 512);
 
     construction.update(25, fresh(tb::Key::A));
     snapshot = construction.snapshot();
-    assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
-    assert(snapshot.rope_length == 16);
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
+    assert(snapshot.camera_y < 2432);
+    assert(snapshot.camera_y > 512);
 
     int elapsed_ms = 25;
-    while(construction.snapshot().block_state != tb::TowerConstructionBlockState::Attached && elapsed_ms < 4000)
+    while(construction.snapshot().camera_y != construction.snapshot().camera_target_y && elapsed_ms < 5000)
     {
         construction.update(25, no_input());
         elapsed_ms += 25;
     }
 
     snapshot = construction.snapshot();
-    assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
+    assert(snapshot.camera_y == 512);
     assert(snapshot.rope_length == 1664);
-    assert(elapsed_ms >= 2500 && elapsed_ms <= 2700);
+    assert(elapsed_ms >= 3400 && elapsed_ms <= 3600);
 
     construction.update(25, fresh(tb::Key::A));
     assert(construction.snapshot().block_state == tb::TowerConstructionBlockState::Falling);
+
+    tb::QuickGame quick;
+    auto quick_snapshot = quick.snapshot();
+    assert(quick_snapshot.block_state == tb::QuickBlockState::Attached);
+    assert(quick_snapshot.rope_length == 1664);
+    assert(quick_snapshot.camera_y == 2432);
+    quick.update(25, fresh(tb::Key::A));
+    assert(quick.snapshot().block_state == tb::QuickBlockState::Attached);
 }
 
 
 void test_special_crane_screen_anchor()
 {
-    // The JAR keeps the special crane/cable anchor fixed while the first
-    // block itself lowers from rope length 0 to 1664.
-    assert(tb::special_crane_cable_start_y(0, 0) == -165);
-    assert(tb::special_crane_cable_start_y(0, 166) == -165);
-    assert(tb::special_crane_cable_start_y(0, 333) == -165);
-    assert(tb::special_crane_cable_start_y(1, 0) == -165);
+    // The first JAR camera reveal starts with the crane world anchor at 2432
+    // and camera at 2432, then moves the camera toward 512 while the anchor
+    // stays fixed. Once gameplay settles, the source anchor is -165 px.
+    assert(tb::special_crane_cable_start_y(2432, true) == 0);
+    assert(tb::special_crane_cable_start_y(512, true) == -165);
+    assert(tb::special_crane_cable_start_y(512, false) == -165);
     assert(tb::special_crane_boom_part_center_x(0, 0) == -115);
     assert(tb::special_crane_boom_part_center_x(0, 1) == -51);
     assert(tb::special_crane_boom_part_center_x(0, 2) == -3);
     assert(tb::special_crane_boom_center_y(0) == -15);
 }
+
 
 void test_tower_combo_roof_and_failure_rules()
 {

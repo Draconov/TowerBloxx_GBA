@@ -116,10 +116,11 @@ def test_yellow_crane_boom_is_live_and_split_for_gba_obj_limits() -> None:
 
 def test_first_block_intro_contract_is_permanent() -> None:
     test = (ROOT / "tests" / "test_gameplay.cpp").read_text(encoding="utf-8")
-    assert "TowerConstructionBlockState::Raising" in test
-    assert "snapshot.rope_length == 0" in test
+    assert "TowerConstructionBlockState::Attached" in test
     assert "snapshot.rope_length == 1664" in test
-    assert "elapsed_ms >= 2500" in test
+    assert "snapshot.camera_y == 2432" in test
+    assert "snapshot.camera_target_y == 512" in test
+    assert "elapsed_ms >= 3400" in test
     assert "TowerConstructionBlockState::Falling" in test
 
 
@@ -154,6 +155,26 @@ def test_combo_feedback_contract_is_retained() -> None:
     assert "_combo_star_sprites" in construction_header
 
 
+
+
+
+def test_quick_hud_assets_share_one_lossless_bpp4_palette() -> None:
+    ui = GBA / "graphics" / "ui"
+    names = [
+        *[f"hud_white_digit_f{i}_p0" for i in range(14)],
+        *[f"hud_brown_digit_f{i}_p0" for i in range(12)],
+        "quick_counter_frame_p0",
+        "hud_population_icon_p0",
+        "quick_combo_meter_frame_p0",
+        "quick_combo_meter_frame_p1",
+        "quick_combo_meter_fill_p0",
+        "quick_combo_meter_flash_p0",
+    ]
+    palettes = []
+    for name in names:
+        with Image.open(ui / f"{name}.bmp") as image:
+            palettes.append(tuple((image.getpalette() or [])[: 16 * 3]))
+    assert all(palette == palettes[0] for palette in palettes[1:])
 
 def test_all_building_color_palette_budget_contracts() -> None:
     def palette(path: Path) -> tuple[int, ...]:

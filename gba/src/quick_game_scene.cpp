@@ -610,7 +610,9 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
     // Its source camera anchor is 1920 fixed units above the active camera:
     // -(22 * 1920 >> 8) = -165 in Butano's screen-centred coordinates.
     constexpr int start_x = 0;
-    const int start_y = special_crane_cable_start_y(snapshot.floor_count, snapshot.rope_length);
+    const bool intro_camera_active = snapshot.floor_count == 0 &&
+            snapshot.block_state == QuickBlockState::Attached && snapshot.camera_y != snapshot.camera_target_y;
+    const int start_y = special_crane_cable_start_y(snapshot.presentation_camera_y, intro_camera_active);
     constexpr int endpoint_overlap = 3;
     const int end_x = _screen_x(snapshot.crane_x);
     const int end_y = _screen_y(snapshot.crane_y + 528, snapshot.presentation_camera_y);
