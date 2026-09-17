@@ -344,6 +344,7 @@ void TowerConstructionScene::start(
     _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
     _perfect_landing_elapsed_ms = -1;
     _perfect_landing_floor_index = -1;
+    _perfect_landing_seed = 0;
     _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
@@ -424,6 +425,9 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     {
         _perfect_landing_elapsed_ms = 0;
         _perfect_landing_floor_index = snapshot.floor_count - 1;
+        const TowerConstructionFloor& landed = _construction.floor(_perfect_landing_floor_index);
+        _perfect_landing_seed = ((snapshot.floor_count * 19) + (before.floor_count * 13) +
+                ((landed.offset < 0 ? -landed.offset : landed.offset) * 3) + (_background_clock_ms / 17)) & 31;
     }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -1043,17 +1047,24 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
     const int x = _screen_x(floor.x + pose.x_delta);
     const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    if(_perfect_landing_elapsed_ms < 80)
+    if(_perfect_landing_elapsed_ms < 70)
     {
-        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -24);
+        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -25);
     }
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
-        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms);
-        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms);
-        const generated::UiCompositeAsset& star =
-                ((index + _perfect_landing_elapsed_ms / 70) & 1) ?
-                generated::accuracy_star_f1 : generated::accuracy_star_f2;
+        const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 0);
+        if(trail_elapsed > 0)
+        {
+            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
+            show_ui_composite(generated::accuracy_star_f0, trail_x, trail_y, _perfect_star_sprites, -24);
+        }
+
+        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 120 ?
+                generated::accuracy_star_f0 : generated::accuracy_star_f1;
         show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
     }
 
@@ -1140,11 +1151,10 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     // B==3 construction branch: resource 13 selects frame L-1 and is placed
     // at x=au-2, y=c-av-12-2*J. J is the target floor count (10/20/30/40).
     const int badge_top_y = 160 - 10 - 12 - 2 * snapshot.target_height;
-    if(! snapshot.roof_phase || _last_hud_roof_blink_bucket == 0)
-    {
-        show_ui_composite(*construction_target_badge_frames[building_index], -105,
-                          badge_top_y + 6 - 80, _hud_sprites);
-    }
+    const generated::UiCompositeAsset& badge =
+            (snapshot.roof_phase && _last_hud_roof_blink_bucket != 0) ?
+            generated::construction_target_badge_f4 : *construction_target_badge_frames[building_index];
+    show_ui_composite(badge, -105, badge_top_y + 6 - 80, _hud_sprites);
 
     // The population marker/digits are part of the common House HUD and only
     // appear after at least one floor has landed.

@@ -142,6 +142,7 @@ void test_perfect_landing_feedback_geometry()
 {
     assert(tb::perfect_landing_star_count == 8);
     assert(tb::perfect_landing_star_duration_ms == 420);
+    assert(tb::perfect_landing_star_trail_delay_ms == 55);
 
     for(int index = 0; index < tb::perfect_landing_star_count; ++index)
     {
@@ -155,6 +156,12 @@ void test_perfect_landing_feedback_geometry()
     assert(tb::perfect_landing_star_offset_x(6, tb::perfect_landing_star_duration_ms) >= 32);
     assert(tb::perfect_landing_star_offset_y(3, tb::perfect_landing_star_duration_ms) <= -28);
     assert(tb::perfect_landing_star_offset_y(7, tb::perfect_landing_star_duration_ms) >= 26);
+    assert(tb::perfect_landing_star_offset_x(0, tb::perfect_landing_star_duration_ms, 7) <
+           tb::perfect_landing_star_offset_x(0, tb::perfect_landing_star_duration_ms));
+    assert(tb::perfect_landing_star_offset_y(7, tb::perfect_landing_star_duration_ms, 7) !=
+           tb::perfect_landing_star_offset_y(7, tb::perfect_landing_star_duration_ms));
+    assert(tb::perfect_landing_star_trail_elapsed(20, 0) == 0);
+    assert(tb::perfect_landing_star_trail_elapsed(80, 0) == 25);
 
     assert(tb::perfect_landing_seam_phase(0) == tb::PerfectLandingSeamPhase::White);
     assert(tb::perfect_landing_seam_phase(49) == tb::PerfectLandingSeamPhase::White);

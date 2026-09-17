@@ -79,7 +79,7 @@ private:
     bn::vector<bn::sprite_ptr, 3> _special_boom_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
-    bn::vector<bn::sprite_ptr, 9> _perfect_star_sprites;
+    bn::vector<bn::sprite_ptr, 25> _perfect_star_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
@@ -88,6 +88,7 @@ private:
     PerfectLandingSeamPhase _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
     int _perfect_landing_elapsed_ms = -1;
     int _perfect_landing_floor_index = -1;
+    int _perfect_landing_seed = 0;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;

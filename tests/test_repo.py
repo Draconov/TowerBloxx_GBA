@@ -156,6 +156,16 @@ def test_combo_feedback_contract_is_retained() -> None:
     assert "_combo_star_sprites" in construction_header
 
 
+def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
+    source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "constexpr int status_row_y = 8;" in source
+    assert source.count("centered_y(status_row_y)") >= 8
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, status_row_y)" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, status_row_y)" in source
+    assert "constexpr int population_icon_x = 55;" in source
+    assert "constexpr int population_counter_x = 66;" in source
+
+
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     ui = GBA / "graphics" / "ui"
     assert (ui / "combo_seam_flash_white_p0.bmp").is_file()
@@ -172,8 +182,10 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     for source in (quick, construction):
         assert "_update_perfect_landing_effect" in source
+        assert "accuracy_star_f0" in source
         assert "accuracy_star_f1" in source
-        assert "accuracy_star_f2" in source
+        assert "perfect_landing_star_trail_elapsed" in source
+        assert "_perfect_landing_seed" in source
         assert "combo_seam_flash_white" in source
 
     assert "support_nav_f2" in quick
@@ -181,6 +193,9 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "support_nav_f2" in build_city
     assert "current_roof_blink_bucket" in construction
     assert "_last_hud_roof_blink_bucket" in construction
+    assert "construction_target_badge_f4" in construction
+    assert "generated::hud_population_icon" in build_city
+    assert "generated::city_status_icon_f1" not in build_city
 
 
 def test_build_city_top_bar_is_only_three_pixels_taller() -> None:

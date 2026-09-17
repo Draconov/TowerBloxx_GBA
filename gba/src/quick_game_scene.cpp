@@ -332,6 +332,7 @@ void QuickGameScene::start(int language)
     _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
     _perfect_landing_elapsed_ms = -1;
     _perfect_landing_floor_index = -1;
+    _perfect_landing_seed = 0;
     _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
@@ -404,6 +405,9 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     {
         _perfect_landing_elapsed_ms = 0;
         _perfect_landing_floor_index = snapshot.floor_count - 1;
+        const QuickFloor& landed = _game.floor(_perfect_landing_floor_index);
+        _perfect_landing_seed = ((snapshot.floor_count * 19) + (before.floor_count * 13) +
+                ((landed.offset < 0 ? -landed.offset : landed.offset) * 3) + (_background_clock_ms / 17)) & 31;
     }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -989,20 +993,27 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
     const int x = _screen_x(floor.x + pose.x_delta);
     const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    // The JAR burst starts at the exact center of the landed block and then
-    // fans farther out than the older combo sparkle. Keep this independent
-    // from the persistent combo-chain sparkle so both effects can coexist.
-    if(_perfect_landing_elapsed_ms < 80)
+    // The burst starts dead-center on the landed block, adds a small random
+    // spread per perfect hit, and leaves a short trail behind each travelling
+    // star. Keep it independent from the combo sparkle so both can coexist.
+    if(_perfect_landing_elapsed_ms < 70)
     {
-        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -24);
+        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -25);
     }
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
-        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms);
-        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms);
-        const generated::UiCompositeAsset& star =
-                ((index + _perfect_landing_elapsed_ms / 70) & 1) ?
-                generated::accuracy_star_f1 : generated::accuracy_star_f2;
+        const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 0);
+        if(trail_elapsed > 0)
+        {
+            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
+            show_ui_composite(generated::accuracy_star_f0, trail_x, trail_y, _perfect_star_sprites, -24);
+        }
+
+        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 120 ?
+                generated::accuracy_star_f0 : generated::accuracy_star_f1;
         show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
     }
 

@@ -21,6 +21,7 @@ enum class PerfectLandingSeamPhase : uint8_t
 
 inline constexpr int perfect_landing_star_count = 8;
 inline constexpr int perfect_landing_star_duration_ms = 420;
+inline constexpr int perfect_landing_star_trail_delay_ms = 55;
 inline constexpr int perfect_landing_seam_white_ms = 50;
 inline constexpr int perfect_landing_seam_total_ms = 130;
 
@@ -56,6 +57,18 @@ inline constexpr int perfect_landing_seam_total_ms = 130;
     }
 }
 
+[[nodiscard]] constexpr int perfect_landing_star_jitter_x(int index, int seed)
+{
+    const int value = ((seed + 3) * 17 + index * 11) & 7;
+    return value - 3;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_jitter_y(int index, int seed)
+{
+    const int value = ((seed + 5) * 13 + index * 7) & 5;
+    return value - 2;
+}
+
 [[nodiscard]] constexpr int perfect_landing_effect_elapsed(int elapsed_ms)
 {
     if(elapsed_ms < 0)
@@ -75,6 +88,26 @@ inline constexpr int perfect_landing_seam_total_ms = 130;
 {
     const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
     return perfect_landing_star_target_y(index) * elapsed / perfect_landing_star_duration_ms;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_offset_x(int index, int elapsed_ms, int seed)
+{
+    const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
+    return (perfect_landing_star_target_x(index) + perfect_landing_star_jitter_x(index, seed)) * elapsed /
+            perfect_landing_star_duration_ms;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_offset_y(int index, int elapsed_ms, int seed)
+{
+    const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
+    return (perfect_landing_star_target_y(index) + perfect_landing_star_jitter_y(index, seed)) * elapsed /
+            perfect_landing_star_duration_ms;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_trail_elapsed(int elapsed_ms, int trail_index)
+{
+    const int delayed = elapsed_ms - (trail_index + 1) * perfect_landing_star_trail_delay_ms;
+    return delayed > 0 ? delayed : 0;
 }
 
 [[nodiscard]] constexpr PerfectLandingSeamPhase perfect_landing_seam_phase(int elapsed_ms)

@@ -798,11 +798,11 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     _show_composite(generated::city_edge_bottom_left, centered_x(1), centered_y(148));
     _show_composite(generated::city_edge_bottom_right, centered_x(238), centered_y(148));
 
-    // House city-map HUD: milestone counter first, then the small people
-    // marker and the six-cell population counter.  The older port started the
-    // population counter at x=7 with the large construction-HUD people icon,
-    // which both hid the milestone counter and made the icon visibly oversized.
-    _show_composite(generated::city_milestone_badge, centered_x(24), centered_y(5));
+    // The taller Build City top bar keeps the source-sized milestone and people
+    // sprites; shift the entire HUD row down so their full height is centered
+    // inside the expanded bar instead of clipping against its old Y anchor.
+    constexpr int status_row_y = 8;
+    _show_composite(generated::city_milestone_badge, centered_x(24), centered_y(status_row_y));
 
     int milestone = snapshot.milestone;
     if(milestone < 0) { milestone = 0; }
@@ -810,18 +810,22 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     int milestone_x = milestone >= 10 ? 20 : 23;
     if(milestone >= 10)
     {
-        _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(5));
+        _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(status_row_y));
         milestone_x += 5;
     }
-    _show_composite(*white_digits[milestone % 10], centered_x(milestone_x), centered_y(5));
+    _show_composite(*white_digits[milestone % 10], centered_x(milestone_x), centered_y(status_row_y));
     milestone_x += 5;
-    _show_composite(generated::hud_white_digit_f12, centered_x(milestone_x), centered_y(5));
+    _show_composite(generated::hud_white_digit_f12, centered_x(milestone_x), centered_y(status_row_y));
     milestone_x += 5;
-    _show_composite(*white_digits[2], centered_x(milestone_x), centered_y(5));
+    _show_composite(*white_digits[2], centered_x(milestone_x), centered_y(status_row_y));
     milestone_x += 5;
-    _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(5));
+    _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(status_row_y));
 
-    _show_composite(generated::city_status_icon_f1, centered_x(55), centered_y(5));
+    // Use the common House HUD population marker here too. It is narrower than
+    // the temporary city-only substitute, which gives the taller top bar enough
+    // breathing room and keeps the milestone counter/comparison panels readable.
+    constexpr int population_icon_x = 55;
+    _show_composite(generated::hud_population_icon, centered_x(population_icon_x), centered_y(status_row_y));
 
     // Resource 22 is the six-cell population backdrop. The JAR uses state 0
     // for the five digit cells and state 3 for the terminal cap when no
@@ -830,7 +834,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     for(int cell = 0; cell < 6; ++cell)
     {
         const int state = _population_roll.panel_state_for_cell(cell);
-        _show_composite(*city_panel_states[state], centered_x(population_counter_x + cell * 8), centered_y(5));
+        _show_composite(*city_panel_states[state], centered_x(population_counter_x + cell * 8), centered_y(status_row_y));
     }
 
     int population = snapshot.total_population;
@@ -845,7 +849,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         const int digit = (population / divisor) % 10;
         if(index < visible_population_digits)
         {
-            _show_composite(*population_digits[digit], centered_x(population_counter_x + index * 8), centered_y(5));
+            _show_composite(*population_digits[digit], centered_x(population_counter_x + index * 8), centered_y(status_row_y));
         }
         divisor /= 10;
     }
@@ -854,14 +858,14 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     const bool active_placement = placement && snapshot.placement_transition_ms == 0;
     _show_composite(
             active_placement ? generated::city_status_placement : generated::city_status_browse,
-            centered_x(183), centered_y(5));
+            centered_x(183), centered_y(status_row_y));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
     {
-        _show_composite(generated::city_comparison_panel_active, centered_x(201), centered_y(5));
+        _show_composite(generated::city_comparison_panel_active, centered_x(201), centered_y(status_row_y));
         _show_composite(
-                *city_type_badges[snapshot.pending_building_type - 1], centered_x(192), centered_y(5));
-        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, 5);
+                *city_type_badges[snapshot.pending_building_type - 1], centered_x(192), centered_y(status_row_y));
+        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, status_row_y);
 
         int existing_type = 0;
         if(snapshot.cursor_column >= 0 && snapshot.cursor_column < 5 &&
@@ -871,9 +875,9 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
         if(existing_type >= 1 && existing_type <= 4)
         {
-            _show_composite(generated::city_comparison_panel_active, centered_x(225), centered_y(5));
-            _show_composite(*city_type_badges[existing_type - 1], centered_x(216), centered_y(5));
-            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, 5);
+            _show_composite(generated::city_comparison_panel_active, centered_x(225), centered_y(status_row_y));
+            _show_composite(*city_type_badges[existing_type - 1], centered_x(216), centered_y(status_row_y));
+            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, status_row_y);
         }
     }
 
