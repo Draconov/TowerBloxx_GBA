@@ -51,7 +51,7 @@ private:
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
     void _update_combo_meter(const QuickGameSnapshot& snapshot);
     void _update_block_sparkle(const QuickGameSnapshot& snapshot);
-    void _update_combo_seam(const QuickGameSnapshot& snapshot);
+    void _update_perfect_landing_effect(const QuickGameSnapshot& snapshot, int delta_ms);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
@@ -73,10 +73,9 @@ private:
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
+    bn::vector<bn::sprite_ptr, 10> _perfect_effect_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
-    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
-    int _combo_seam_ms = 0;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
@@ -98,6 +97,9 @@ private:
     bool _records_applied = false;
     bool _active = false;
     int _background_clock_ms = 0;
+    int _perfect_effect_ms = 0;
+    int _perfect_effect_world_x = 0;
+    int _perfect_effect_world_y = 0;
 };
 }
 
