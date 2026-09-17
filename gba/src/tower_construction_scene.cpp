@@ -50,18 +50,60 @@ constexpr int combo_star_y = -67;
 constexpr int combo_readout_x = 68;
 constexpr int combo_readout_y = -65;
 
-constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
-    &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
-    &generated::menu_worker_blue_f2, &generated::menu_worker_blue_f3,
-    &generated::menu_worker_blue_f4, &generated::menu_worker_blue_f5,
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_flying_frames[] = {
+    &generated::menu_worker_blue_f1, &generated::menu_worker_blue_f2,
+    &generated::menu_worker_blue_f3, &generated::menu_worker_blue_f4,
+    &generated::menu_worker_blue_f5,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_flying_frames[] = {
+    &generated::menu_worker_red_f1, &generated::menu_worker_red_f2,
+    &generated::menu_worker_red_f3, &generated::menu_worker_red_f4,
+    &generated::menu_worker_red_f5,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_crawling_frames[] = {
     &generated::menu_worker_blue_f6, &generated::menu_worker_blue_f7,
+    &generated::menu_worker_blue_f8, &generated::menu_worker_blue_f9,
 };
-constexpr const generated::UiCompositeAsset* gameplay_worker_red_frames[] = {
-    &generated::menu_worker_red_f0, &generated::menu_worker_red_f1,
-    &generated::menu_worker_red_f2, &generated::menu_worker_red_f3,
-    &generated::menu_worker_red_f4, &generated::menu_worker_red_f5,
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_crawling_frames[] = {
     &generated::menu_worker_red_f6, &generated::menu_worker_red_f7,
+    &generated::menu_worker_red_f8, &generated::menu_worker_red_f9,
 };
+
+const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& worker)
+{
+    const bool blue = worker.variant == 1;
+    switch(worker.state)
+    {
+    case 1:
+    case 3:
+    {
+        int index = worker.frame - 1;
+        if(index < 0)
+        {
+            index = 0;
+        }
+        else if(index > 4)
+        {
+            index = 4;
+        }
+        return blue ? *gameplay_worker_blue_flying_frames[index] :
+                      *gameplay_worker_red_flying_frames[index];
+    }
+
+    case 2:
+    case 5:
+    {
+        int base = worker.walk_direction < 0 ? 2 : 0;
+        int step = worker.frame <= 6 ? 0 : 1;
+        return blue ? *gameplay_worker_blue_crawling_frames[base + step] :
+                      *gameplay_worker_red_crawling_frames[base + step];
+    }
+
+    case 4:
+    default:
+        return blue ? generated::menu_worker_blue_f0 : generated::menu_worker_red_f0;
+    }
+}
 
 constexpr const generated::UiCompositeAsset* construction_target_badge_frames[] = {
     &generated::construction_target_badge_f0, &generated::construction_target_badge_f1,
@@ -847,13 +889,7 @@ void TowerConstructionScene::_rebuild_worker_sprites(const TowerConstructionSnap
         {
             continue;
         }
-        const int frame = GameplayWorkerField::source_frame(worker);
-        if(frame < 0 || frame >= 8)
-        {
-            continue;
-        }
-        const generated::UiCompositeAsset& asset = worker.variant == 1 ?
-                *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
+        const generated::UiCompositeAsset& asset = gameplay_worker_asset(worker);
         show_ui_composite(
                 asset, _screen_x(worker.x_fixed),
                 _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
@@ -1017,7 +1053,7 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     // appear after at least one floor has landed.
     if(snapshot.floor_count > 0)
     {
-        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
+        show_ui_composite(generated::city_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, construction_white_digit_frames, _hud_sprites);
     }
 

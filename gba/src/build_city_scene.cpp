@@ -517,7 +517,7 @@ void BuildCityScene::_show_valid_lot_ring(
 void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnapshot& snapshot)
 {
     int pulse_building_type = 0;
-    if(! _events.has_event() && snapshot.placement_transition_ms == 0 && ! snapshot.placement_committing)
+    if(! _events.has_event())
     {
         if(snapshot.mode == BuildCityMode::Browse && snapshot.selected_building_type >= 1 &&
            snapshot.selected_building_type <= snapshot.max_unlocked_building_type &&

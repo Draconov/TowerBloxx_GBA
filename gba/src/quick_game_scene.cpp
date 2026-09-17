@@ -50,18 +50,60 @@ constexpr int combo_readout_x = 68;
 constexpr int combo_readout_y = -65;
 constexpr int construction_sky_band_step = 3072;
 
-constexpr const generated::UiCompositeAsset* gameplay_worker_blue_frames[] = {
-    &generated::menu_worker_blue_f0, &generated::menu_worker_blue_f1,
-    &generated::menu_worker_blue_f2, &generated::menu_worker_blue_f3,
-    &generated::menu_worker_blue_f4, &generated::menu_worker_blue_f5,
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_flying_frames[] = {
+    &generated::menu_worker_blue_f1, &generated::menu_worker_blue_f2,
+    &generated::menu_worker_blue_f3, &generated::menu_worker_blue_f4,
+    &generated::menu_worker_blue_f5,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_flying_frames[] = {
+    &generated::menu_worker_red_f1, &generated::menu_worker_red_f2,
+    &generated::menu_worker_red_f3, &generated::menu_worker_red_f4,
+    &generated::menu_worker_red_f5,
+};
+constexpr const generated::UiCompositeAsset* gameplay_worker_blue_crawling_frames[] = {
     &generated::menu_worker_blue_f6, &generated::menu_worker_blue_f7,
+    &generated::menu_worker_blue_f8, &generated::menu_worker_blue_f9,
 };
-constexpr const generated::UiCompositeAsset* gameplay_worker_red_frames[] = {
-    &generated::menu_worker_red_f0, &generated::menu_worker_red_f1,
-    &generated::menu_worker_red_f2, &generated::menu_worker_red_f3,
-    &generated::menu_worker_red_f4, &generated::menu_worker_red_f5,
+constexpr const generated::UiCompositeAsset* gameplay_worker_red_crawling_frames[] = {
     &generated::menu_worker_red_f6, &generated::menu_worker_red_f7,
+    &generated::menu_worker_red_f8, &generated::menu_worker_red_f9,
 };
+
+const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& worker)
+{
+    const bool blue = worker.variant == 1;
+    switch(worker.state)
+    {
+    case 1:
+    case 3:
+    {
+        int index = worker.frame - 1;
+        if(index < 0)
+        {
+            index = 0;
+        }
+        else if(index > 4)
+        {
+            index = 4;
+        }
+        return blue ? *gameplay_worker_blue_flying_frames[index] :
+                      *gameplay_worker_red_flying_frames[index];
+    }
+
+    case 2:
+    case 5:
+    {
+        int base = worker.walk_direction < 0 ? 2 : 0;
+        int step = worker.frame <= 6 ? 0 : 1;
+        return blue ? *gameplay_worker_blue_crawling_frames[base + step] :
+                      *gameplay_worker_red_crawling_frames[base + step];
+    }
+
+    case 4:
+    default:
+        return blue ? generated::menu_worker_blue_f0 : generated::menu_worker_red_f0;
+    }
+}
 
 constexpr const generated::UiCompositeAsset* hud_white_digit_frames[] = {
     &generated::hud_white_digit_f0, &generated::hud_white_digit_f1, &generated::hud_white_digit_f2,
@@ -799,13 +841,7 @@ void QuickGameScene::_rebuild_worker_sprites(const QuickGameSnapshot& snapshot)
         {
             continue;
         }
-        const int frame = GameplayWorkerField::source_frame(worker);
-        if(frame < 0 || frame >= 8)
-        {
-            continue;
-        }
-        const generated::UiCompositeAsset& asset = worker.variant == 1 ?
-                *gameplay_worker_blue_frames[frame] : *gameplay_worker_red_frames[frame];
+        const generated::UiCompositeAsset& asset = gameplay_worker_asset(worker);
         show_ui_composite(
                 asset, _screen_x(worker.x_fixed),
                 _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
@@ -937,9 +973,8 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         _text_generator.generate(0, 0, height, _hud_sprites);
         _text_generator.generate(0, 24, combo, _hud_sprites);
 
-        bn::string<32> back_text("A  ");
-        back_text.append(generated::localized_strings[_language][7]);
-        _text_generator.generate(0, 52, back_text, _hud_sprites);
+        show_ui_composite(generated::support_nav_f2, -28, 52, _hud_sprites);
+        _text_generator.generate(10, 52, generated::localized_strings[_language][7], _hud_sprites);
         return;
     }
 
@@ -962,7 +997,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     // draws a five-digit resource-14 number to its right once the tower exists.
     if(snapshot.floor_count > 0)
     {
-        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
+        show_ui_composite(generated::city_population_icon, 82, 63, _hud_sprites);
         draw_source_number(snapshot.population, 5, 228, 141, hud_white_digit_frames, _hud_sprites);
     }
 
@@ -995,7 +1030,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
 
     if(snapshot.status == QuickGameStatus::GameOver)
     {
-        _text_generator.generate(0, 0, generated::localized_strings[_language][114], _hud_sprites);
+        return;
     }
 }
 

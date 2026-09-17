@@ -297,12 +297,12 @@ void UiShell::_show_root_menu(const UiController& controller)
 
         switch(item)
         {
-        case RootMenuItem::ContinueGame: _show_composite(generated::menu_continue_icon, -103, y); break;
-        case RootMenuItem::BuildCity: _show_composite(generated::menu_build_city_icon, -103, y); break;
-        case RootMenuItem::QuickGame: _show_composite(generated::menu_quick_game_icon, -103, y); break;
-        case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -101, y - 1); break;
-        case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -100, y - 1); break;
-        case RootMenuItem::Settings: _show_composite(generated::menu_settings_icon, -103, y); break;
+        case RootMenuItem::ContinueGame: _show_composite(generated::menu_continue_icon, -89, y); break;
+        case RootMenuItem::BuildCity: _show_composite(generated::menu_build_city_icon, -89, y); break;
+        case RootMenuItem::QuickGame: _show_composite(generated::menu_quick_game_icon, -89, y); break;
+        case RootMenuItem::HighScores: _show_composite(generated::menu_high_scores_icon, -87, y - 1); break;
+        case RootMenuItem::Instructions: _show_composite(generated::menu_instructions_icon, -86, y - 1); break;
+        case RootMenuItem::Settings: _show_composite(generated::menu_settings_icon, -89, y); break;
         }
     }
 
