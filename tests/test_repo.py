@@ -156,6 +156,45 @@ def test_combo_feedback_contract_is_retained() -> None:
     assert "_combo_star_sprites" in construction_header
 
 
+def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
+    ui = GBA / "graphics" / "ui"
+    assert (ui / "combo_seam_flash_white_p0.bmp").is_file()
+    assert (ui / "combo_seam_flash_white_p0.json").is_file()
+    with Image.open(ui / "combo_seam_flash_p0.bmp") as yellow_seam, \
+         Image.open(ui / "combo_seam_flash_white_p0.bmp") as white_seam:
+        # White reuses the existing HUD palette bank: the seam pixels switch
+        # from palette index 13 (yellow) to index 14 (white), not to a new palette.
+        assert yellow_seam.getpalette() == white_seam.getpalette()
+        assert set(white_seam.get_flattened_data()) <= {0, 14}
+
+    quick = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    construction = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    for source in (quick, construction):
+        assert "_update_perfect_landing_effect" in source
+        assert "accuracy_star_f1" in source
+        assert "accuracy_star_f2" in source
+        assert "combo_seam_flash_white" in source
+
+    assert "support_nav_f2" in quick
+    assert "support_nav_f2" in construction
+    assert "support_nav_f2" in build_city
+    assert "current_roof_blink_bucket" in construction
+    assert "_last_hud_roof_blink_bucket" in construction
+
+
+def test_build_city_top_bar_is_only_three_pixels_taller() -> None:
+    backgrounds = GBA / "graphics" / "backgrounds"
+    for theme in range(4):
+        with Image.open(backgrounds / f"city_bg_theme_{theme}.bmp") as image:
+            rgb = image.convert("RGB")
+            # A 256x256 regular background is centred on the 240x160 GBA view,
+            # so source y=48 is screen y=0.  The original bar ended at y=14;
+            # the approved compact pass extends it by exactly three pixels.
+            assert rgb.getpixel((128, 48 + 17)) == (16, 8, 8)
+            assert rgb.getpixel((128, 48 + 18)) != (16, 8, 8)
+
+
 
 
 

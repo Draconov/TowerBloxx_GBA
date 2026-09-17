@@ -51,7 +51,7 @@ private:
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
     void _update_combo_meter(const QuickGameSnapshot& snapshot);
     void _update_block_sparkle(const QuickGameSnapshot& snapshot);
-    void _update_combo_seam(const QuickGameSnapshot& snapshot);
+    void _update_perfect_landing_effect(const QuickGameSnapshot& snapshot);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
@@ -73,10 +73,13 @@ private:
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
+    bn::vector<bn::sprite_ptr, 9> _perfect_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
-    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
-    int _combo_seam_ms = 0;
+    bn::optional<bn::sprite_ptr> _perfect_seam_sprite;
+    PerfectLandingSeamPhase _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    int _perfect_landing_elapsed_ms = -1;
+    int _perfect_landing_floor_index = -1;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;

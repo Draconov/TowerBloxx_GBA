@@ -12,6 +12,81 @@ enum class CranePresentationMode : uint8_t
     Special,
 };
 
+enum class PerfectLandingSeamPhase : uint8_t
+{
+    Hidden = 0,
+    White,
+    Yellow,
+};
+
+inline constexpr int perfect_landing_star_count = 8;
+inline constexpr int perfect_landing_star_duration_ms = 420;
+inline constexpr int perfect_landing_seam_white_ms = 50;
+inline constexpr int perfect_landing_seam_total_ms = 130;
+
+[[nodiscard]] constexpr int perfect_landing_star_target_x(int index)
+{
+    switch(index)
+    {
+    case 0: return -34;
+    case 1: return -26;
+    case 2: return -14;
+    case 3: return 0;
+    case 4: return 14;
+    case 5: return 26;
+    case 6: return 34;
+    case 7: return 0;
+    default: return 0;
+    }
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_target_y(int index)
+{
+    switch(index)
+    {
+    case 0: return -16;
+    case 1: return 4;
+    case 2: return 22;
+    case 3: return -30;
+    case 4: return 22;
+    case 5: return 4;
+    case 6: return -16;
+    case 7: return 28;
+    default: return 0;
+    }
+}
+
+[[nodiscard]] constexpr int perfect_landing_effect_elapsed(int elapsed_ms)
+{
+    if(elapsed_ms < 0)
+    {
+        return 0;
+    }
+    return elapsed_ms > perfect_landing_star_duration_ms ? perfect_landing_star_duration_ms : elapsed_ms;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_offset_x(int index, int elapsed_ms)
+{
+    const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
+    return perfect_landing_star_target_x(index) * elapsed / perfect_landing_star_duration_ms;
+}
+
+[[nodiscard]] constexpr int perfect_landing_star_offset_y(int index, int elapsed_ms)
+{
+    const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
+    return perfect_landing_star_target_y(index) * elapsed / perfect_landing_star_duration_ms;
+}
+
+[[nodiscard]] constexpr PerfectLandingSeamPhase perfect_landing_seam_phase(int elapsed_ms)
+{
+    if(elapsed_ms < 0 || elapsed_ms >= perfect_landing_seam_total_ms)
+    {
+        return PerfectLandingSeamPhase::Hidden;
+    }
+    return elapsed_ms < perfect_landing_seam_white_ms ?
+            PerfectLandingSeamPhase::White : PerfectLandingSeamPhase::Yellow;
+}
+
 [[nodiscard]] constexpr CranePresentationMode crane_presentation_mode(
         bool playing, int floor_count, bool roof_phase, bool falling, bool missed)
 {

@@ -328,8 +328,11 @@ void QuickGameScene::start(int language)
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_seam_sprite.reset();
-    _combo_seam_ms = 0;
+    _perfect_seam_sprite.reset();
+    _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    _perfect_landing_elapsed_ms = -1;
+    _perfect_landing_floor_index = -1;
+    _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
@@ -340,7 +343,7 @@ void QuickGameScene::start(int language)
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
 }
@@ -387,17 +390,20 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     const QuickGameSnapshot snapshot = _game.snapshot();
     const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
+
+    if(_perfect_landing_elapsed_ms >= 0)
+    {
+        _perfect_landing_elapsed_ms += delta_ms;
+        if(_perfect_landing_elapsed_ms > perfect_landing_star_duration_ms)
+        {
+            _perfect_landing_elapsed_ms = -1;
+            _perfect_landing_floor_index = -1;
+        }
+    }
     if(floor_added && snapshot.last_accuracy == QuickAccuracyBand::Perfect)
     {
-        _combo_seam_ms = 100;
-    }
-    else if(_combo_seam_ms > 0)
-    {
-        _combo_seam_ms -= delta_ms;
-        if(_combo_seam_ms < 0)
-        {
-            _combo_seam_ms = 0;
-        }
+        _perfect_landing_elapsed_ms = 0;
+        _perfect_landing_floor_index = snapshot.floor_count - 1;
     }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -443,7 +449,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -482,7 +488,9 @@ void QuickGameScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_seam_sprite.reset();
+    _perfect_seam_sprite.reset();
+    _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
 }
@@ -513,7 +521,7 @@ void QuickGameScene::resume_presentation()
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -965,32 +973,64 @@ void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
     }
 }
 
-void QuickGameScene::_update_combo_seam(const QuickGameSnapshot& snapshot)
+void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& snapshot)
 {
-    if(_combo_seam_ms <= 0 || snapshot.status != QuickGameStatus::Playing || snapshot.floor_count <= 0)
+    _perfect_star_sprites.clear();
+    if(_perfect_landing_elapsed_ms < 0 || snapshot.status != QuickGameStatus::Playing ||
+       _perfect_landing_floor_index < 0 || _perfect_landing_floor_index >= snapshot.floor_count)
     {
-        _combo_seam_sprite.reset();
+        _perfect_seam_sprite.reset();
+        _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
         return;
     }
 
-    const int floor_index = snapshot.floor_count - 1;
-    const QuickFloor& floor = _game.floor(floor_index);
-    const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
+    const QuickFloor& floor = _game.floor(_perfect_landing_floor_index);
+    const QuickFloorRenderPose& pose = _game.floor_render_pose(_perfect_landing_floor_index);
     const int x = _screen_x(floor.x + pose.x_delta);
-    // Each floor is 22 screen pixels tall; the contact seam is halfway below
-    // the newly-landed floor center, exactly between it and the floor beneath.
-    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y) + pixels_per_floor / 2;
-    const generated::UiSpritePartAsset& part = generated::combo_seam_flash.parts[0];
+    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    if(! _combo_seam_sprite)
+    // The JAR burst starts at the exact center of the landed block and then
+    // fans farther out than the older combo sparkle. Keep this independent
+    // from the persistent combo-chain sparkle so both effects can coexist.
+    if(_perfect_landing_elapsed_ms < 80)
     {
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -24);
+    }
+    for(int index = 0; index < perfect_landing_star_count; ++index)
+    {
+        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms);
+        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms);
+        const generated::UiCompositeAsset& star =
+                ((index + _perfect_landing_elapsed_ms / 70) & 1) ?
+                generated::accuracy_star_f1 : generated::accuracy_star_f2;
+        show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
+    }
+
+    // Contact seam is a separate white -> yellow -> gone flash.  It follows
+    // the settling floor pose so it never detaches during impact easing.
+    const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
+    if(phase == PerfectLandingSeamPhase::Hidden)
+    {
+        _perfect_seam_sprite.reset();
+        _perfect_seam_phase = phase;
+        return;
+    }
+
+    const generated::UiCompositeAsset& seam_asset = phase == PerfectLandingSeamPhase::White ?
+            generated::combo_seam_flash_white : generated::combo_seam_flash;
+    const generated::UiSpritePartAsset& part = seam_asset.parts[0];
+    const int seam_y = y + pixels_per_floor / 2;
+    if(! _perfect_seam_sprite || phase != _perfect_seam_phase)
+    {
+        _perfect_seam_sprite.reset();
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, seam_y + part.y);
         sprite.set_z_order(-22);
-        _combo_seam_sprite = sprite;
+        _perfect_seam_sprite = sprite;
+        _perfect_seam_phase = phase;
     }
     else
     {
-        (*_combo_seam_sprite).set_position(x + part.x, y + part.y);
+        (*_perfect_seam_sprite).set_position(x + part.x, seam_y + part.y);
     }
 }
 

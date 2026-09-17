@@ -54,7 +54,7 @@ private:
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
     void _update_combo_meter(const TowerConstructionSnapshot& snapshot);
     void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);
-    void _update_combo_seam(const TowerConstructionSnapshot& snapshot);
+    void _update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot);
     void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
     [[nodiscard]] int _normal_floor_mesh_id() const;
@@ -79,12 +79,15 @@ private:
     bn::vector<bn::sprite_ptr, 3> _special_boom_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
+    bn::vector<bn::sprite_ptr, 9> _perfect_star_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
-    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
-    int _combo_seam_ms = 0;
+    bn::optional<bn::sprite_ptr> _perfect_seam_sprite;
+    PerfectLandingSeamPhase _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    int _perfect_landing_elapsed_ms = -1;
+    int _perfect_landing_floor_index = -1;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;
@@ -103,6 +106,7 @@ private:
     int _last_hud_combo_bucket = -1;
     int _last_hud_combo_bonus_bucket = -1;
     int _combo_star_frame = -1;
+    int _last_hud_roof_blink_bucket = -1;
     bool _last_hud_roof_phase = false;
     uint8_t _last_hud_roof_result = 0;
     TowerConstructionStatus _last_hud_status = TowerConstructionStatus::Results;

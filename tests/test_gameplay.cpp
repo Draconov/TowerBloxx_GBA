@@ -138,6 +138,76 @@ void test_special_crane_screen_anchor()
     assert(tb::special_crane_boom_center_y(0) == -15);
 }
 
+void test_perfect_landing_feedback_geometry()
+{
+    assert(tb::perfect_landing_star_count == 8);
+    assert(tb::perfect_landing_star_duration_ms == 420);
+
+    for(int index = 0; index < tb::perfect_landing_star_count; ++index)
+    {
+        assert(tb::perfect_landing_star_offset_x(index, 0) == 0);
+        assert(tb::perfect_landing_star_offset_y(index, 0) == 0);
+    }
+
+    // The burst originates at the landed block centre and spreads wider than
+    // the previous compact pass: the outer stars reach at least +/- 32 px.
+    assert(tb::perfect_landing_star_offset_x(0, tb::perfect_landing_star_duration_ms) <= -32);
+    assert(tb::perfect_landing_star_offset_x(6, tb::perfect_landing_star_duration_ms) >= 32);
+    assert(tb::perfect_landing_star_offset_y(3, tb::perfect_landing_star_duration_ms) <= -28);
+    assert(tb::perfect_landing_star_offset_y(7, tb::perfect_landing_star_duration_ms) >= 26);
+
+    assert(tb::perfect_landing_seam_phase(0) == tb::PerfectLandingSeamPhase::White);
+    assert(tb::perfect_landing_seam_phase(49) == tb::PerfectLandingSeamPhase::White);
+    assert(tb::perfect_landing_seam_phase(50) == tb::PerfectLandingSeamPhase::Yellow);
+    assert(tb::perfect_landing_seam_phase(129) == tb::PerfectLandingSeamPhase::Yellow);
+    assert(tb::perfect_landing_seam_phase(130) == tb::PerfectLandingSeamPhase::Hidden);
+}
+
+void test_roof_phase_uses_stationary_camera_lowering()
+{
+    tb::TowerConstruction construction;
+    construction.start(1, 10, true);
+    for(int floor = 0; floor < 9; ++floor)
+    {
+        construction.debug_resolve_landing_for_test(0);
+    }
+
+    auto snapshot = construction.snapshot();
+    assert(snapshot.roof_phase);
+    const int target_camera_y = snapshot.camera_target_y;
+
+    // Roof presentation must wait for the last camera move to finish before
+    // the special crane starts lowering the roof from a zero-length rope.
+    for(int elapsed = 0; elapsed < 1200 &&
+            construction.snapshot().block_state == tb::TowerConstructionBlockState::Settled; elapsed += 25)
+    {
+        construction.update(25, no_input());
+    }
+    snapshot = construction.snapshot();
+    assert(snapshot.camera_y == target_camera_y);
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
+    assert(snapshot.rope_length < 128);
+
+    const int fixed_camera_y = snapshot.camera_y;
+    const int initial_rope = snapshot.rope_length;
+    construction.update(500, no_input());
+    snapshot = construction.snapshot();
+    assert(snapshot.camera_y == fixed_camera_y);
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
+    assert(snapshot.rope_length > initial_rope);
+    assert(snapshot.rope_length < 1664);
+
+    for(int elapsed = 0; elapsed < 3500 &&
+            construction.snapshot().block_state == tb::TowerConstructionBlockState::Raising; elapsed += 25)
+    {
+        construction.update(25, no_input());
+    }
+    snapshot = construction.snapshot();
+    assert(snapshot.camera_y == fixed_camera_y);
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
+    assert(snapshot.rope_length == 1664);
+}
+
 
 void test_tower_combo_roof_and_failure_rules()
 {
@@ -281,6 +351,8 @@ int main()
     test_save_and_records();
     test_first_block_intro_and_release_gate();
     test_special_crane_screen_anchor();
+    test_perfect_landing_feedback_geometry();
+    test_roof_phase_uses_stationary_camera_lowering();
     test_tower_combo_roof_and_failure_rules();
     test_build_city_progress_and_replacement();
     test_build_city_events_and_hall_of_fame();

@@ -800,8 +800,25 @@ void TowerConstruction::_spawn_next_block()
         return;
     }
 
-    _rope_length = max_rope_length;
-    _block_state = TowerConstructionBlockState::Attached;
+    // The JAR does not begin the roof presentation while the last normal
+    // floor's camera step is still moving.  Once the camera is parked, the
+    // special crane lowers the roof from the boom instead of spawning it at
+    // full rope length immediately.
+    if(_roof_phase && _camera_y != _camera_target_y)
+    {
+        return;
+    }
+
+    if(_roof_phase)
+    {
+        _rope_length = 0;
+        _block_state = TowerConstructionBlockState::Raising;
+    }
+    else
+    {
+        _rope_length = max_rope_length;
+        _block_state = TowerConstructionBlockState::Attached;
+    }
     _current_x = _crane_x;
     _current_y = _crane_y;
     _drop_velocity_x = 0;

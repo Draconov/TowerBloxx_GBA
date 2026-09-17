@@ -926,6 +926,7 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     {
         _show_composite(*city_level_icons[event.id - 24], 0, 18, -100);
     }
+    _show_composite(generated::support_nav_f2, 0, centered_y(144), -100);
     _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);
 }
 

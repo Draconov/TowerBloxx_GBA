@@ -320,6 +320,7 @@ void TowerConstructionScene::start(
     _last_hud_combo_bucket = -1;
     _last_hud_combo_bonus_bucket = -1;
     _combo_star_frame = -1;
+    _last_hud_roof_blink_bucket = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -339,8 +340,11 @@ void TowerConstructionScene::start(
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_seam_sprite.reset();
-    _combo_seam_ms = 0;
+    _perfect_seam_sprite.reset();
+    _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    _perfect_landing_elapsed_ms = -1;
+    _perfect_landing_floor_index = -1;
+    _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
@@ -351,7 +355,7 @@ void TowerConstructionScene::start(
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
 }
@@ -406,18 +410,20 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
+    if(_perfect_landing_elapsed_ms >= 0)
+    {
+        _perfect_landing_elapsed_ms += delta_ms;
+        if(_perfect_landing_elapsed_ms > perfect_landing_star_duration_ms)
+        {
+            _perfect_landing_elapsed_ms = -1;
+            _perfect_landing_floor_index = -1;
+        }
+    }
     if(floor_added && snapshot.last_accuracy == TowerConstructionAccuracyBand::Perfect &&
        ! _construction.floor(snapshot.floor_count - 1).roof)
     {
-        _combo_seam_ms = 100;
-    }
-    else if(_combo_seam_ms > 0)
-    {
-        _combo_seam_ms -= delta_ms;
-        if(_combo_seam_ms < 0)
-        {
-            _combo_seam_ms = 0;
-        }
+        _perfect_landing_elapsed_ms = 0;
+        _perfect_landing_floor_index = snapshot.floor_count - 1;
     }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
@@ -490,7 +496,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -498,9 +504,11 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
 
     const int current_combo_bucket = combo_bucket(snapshot);
     const int current_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
+    const int current_roof_blink_bucket = snapshot.roof_phase ? (_background_clock_ms / 100) & 1 : 0;
     if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.combo_count != _last_hud_combo_count ||
        current_combo_bucket != _last_hud_combo_bucket || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
+       current_roof_blink_bucket != _last_hud_roof_blink_bucket ||
        snapshot.roof_phase != _last_hud_roof_phase || snapshot.roof_result != _last_hud_roof_result ||
        snapshot.status != _last_hud_status)
     {
@@ -529,7 +537,9 @@ void TowerConstructionScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
-    _combo_seam_sprite.reset();
+    _perfect_seam_sprite.reset();
+    _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
+    _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
@@ -558,6 +568,7 @@ void TowerConstructionScene::resume_presentation()
     _last_hud_combo_bucket = -1;
     _last_hud_combo_bonus_bucket = -1;
     _combo_star_frame = -1;
+    _last_hud_roof_blink_bucket = -1;
     _last_hud_roof_phase = false;
     _last_hud_roof_result = 0;
     _last_hud_status = TowerConstructionStatus::Results;
@@ -568,7 +579,7 @@ void TowerConstructionScene::resume_presentation()
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_combo_seam(snapshot);
+    _update_perfect_landing_effect(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -1009,36 +1020,66 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
     }
 }
 
-void TowerConstructionScene::_update_combo_seam(const TowerConstructionSnapshot& snapshot)
+void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot)
 {
-    if(_combo_seam_ms <= 0 || snapshot.status != TowerConstructionStatus::Playing || snapshot.floor_count <= 0)
+    _perfect_star_sprites.clear();
+    if(_perfect_landing_elapsed_ms < 0 || snapshot.status != TowerConstructionStatus::Playing ||
+       _perfect_landing_floor_index < 0 || _perfect_landing_floor_index >= snapshot.floor_count)
     {
-        _combo_seam_sprite.reset();
+        _perfect_seam_sprite.reset();
+        _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
         return;
     }
 
-    const int floor_index = snapshot.floor_count - 1;
-    const TowerConstructionFloor& floor = _construction.floor(floor_index);
+    const TowerConstructionFloor& floor = _construction.floor(_perfect_landing_floor_index);
     if(floor.roof)
     {
-        _combo_seam_sprite.reset();
+        _perfect_seam_sprite.reset();
+        _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
         return;
     }
 
-    const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
+    const TowerConstructionRenderPose& pose = _construction.floor_render_pose(_perfect_landing_floor_index);
     const int x = _screen_x(floor.x + pose.x_delta);
-    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y) + pixels_per_floor / 2;
-    const generated::UiSpritePartAsset& part = generated::combo_seam_flash.parts[0];
+    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    if(! _combo_seam_sprite)
+    if(_perfect_landing_elapsed_ms < 80)
     {
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -24);
+    }
+    for(int index = 0; index < perfect_landing_star_count; ++index)
+    {
+        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms);
+        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms);
+        const generated::UiCompositeAsset& star =
+                ((index + _perfect_landing_elapsed_ms / 70) & 1) ?
+                generated::accuracy_star_f1 : generated::accuracy_star_f2;
+        show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
+    }
+
+    const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
+    if(phase == PerfectLandingSeamPhase::Hidden)
+    {
+        _perfect_seam_sprite.reset();
+        _perfect_seam_phase = phase;
+        return;
+    }
+
+    const generated::UiCompositeAsset& seam_asset = phase == PerfectLandingSeamPhase::White ?
+            generated::combo_seam_flash_white : generated::combo_seam_flash;
+    const generated::UiSpritePartAsset& part = seam_asset.parts[0];
+    const int seam_y = y + pixels_per_floor / 2;
+    if(! _perfect_seam_sprite || phase != _perfect_seam_phase)
+    {
+        _perfect_seam_sprite.reset();
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, seam_y + part.y);
         sprite.set_z_order(-22);
-        _combo_seam_sprite = sprite;
+        _perfect_seam_sprite = sprite;
+        _perfect_seam_phase = phase;
     }
     else
     {
-        (*_combo_seam_sprite).set_position(x + part.x, y + part.y);
+        (*_perfect_seam_sprite).set_position(x + part.x, seam_y + part.y);
     }
 }
 
@@ -1051,6 +1092,7 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     _last_hud_combo_count = snapshot.combo_count;
     _last_hud_combo_bucket = combo_bucket(snapshot);
     _last_hud_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
+    _last_hud_roof_blink_bucket = snapshot.roof_phase ? (_background_clock_ms / 100) & 1 : 0;
     _last_hud_roof_phase = snapshot.roof_phase;
     _last_hud_roof_result = snapshot.roof_result;
     _last_hud_status = snapshot.status;
@@ -1098,8 +1140,11 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     // B==3 construction branch: resource 13 selects frame L-1 and is placed
     // at x=au-2, y=c-av-12-2*J. J is the target floor count (10/20/30/40).
     const int badge_top_y = 160 - 10 - 12 - 2 * snapshot.target_height;
-    show_ui_composite(*construction_target_badge_frames[building_index], -105,
-                      badge_top_y + 6 - 80, _hud_sprites);
+    if(! snapshot.roof_phase || _last_hud_roof_blink_bucket == 0)
+    {
+        show_ui_composite(*construction_target_badge_frames[building_index], -105,
+                          badge_top_y + 6 - 80, _hud_sprites);
+    }
 
     // The population marker/digits are part of the common House HUD and only
     // appear after at least one floor has landed.
@@ -1162,6 +1207,7 @@ void TowerConstructionScene::_show_modal(int localization_index)
         _text_generator.generate(0, y, formatted, _hud_sprites);
         y += modal_line_spacing;
     }
+    show_ui_composite(generated::support_nav_f2, 0, 64, _hud_sprites, -100);
     show_ui_composite(generated::city_continue_arrow, 112, 72, _hud_sprites);
 }
 

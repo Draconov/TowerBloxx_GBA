@@ -171,6 +171,7 @@
 #include "bn_sprite_items_city_milestone_badge_p0.h"
 #include "bn_sprite_items_city_milestone_badge_p1.h"
 #include "bn_sprite_items_combo_seam_flash_p0.h"
+#include "bn_sprite_items_combo_seam_flash_white_p0.h"
 #include "bn_sprite_items_city_level_icon_f0_p0.h"
 #include "bn_sprite_items_city_level_icon_f1_p0.h"
 #include "bn_sprite_items_city_level_icon_f2_p0.h"
@@ -974,6 +975,11 @@ inline const UiSpritePartAsset combo_seam_flash_parts[] = {
     { &bn::sprite_items::combo_seam_flash_p0, 0, 0 },
 };
 inline const UiCompositeAsset combo_seam_flash = { combo_seam_flash_parts, 1 };
+
+inline const UiSpritePartAsset combo_seam_flash_white_parts[] = {
+    { &bn::sprite_items::combo_seam_flash_white_p0, 0, 0 },
+};
+inline const UiCompositeAsset combo_seam_flash_white = { combo_seam_flash_white_parts, 1 };
 
 inline const UiSpritePartAsset city_level_icon_f0_parts[] = {
     { &bn::sprite_items::city_level_icon_f0_p0, 11, 11 },
