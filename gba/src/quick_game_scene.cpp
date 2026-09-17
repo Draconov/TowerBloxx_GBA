@@ -328,6 +328,8 @@ void QuickGameScene::start(int language)
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_seam_sprite.reset();
+    _combo_seam_ms = 0;
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
@@ -338,6 +340,7 @@ void QuickGameScene::start(int language)
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
+    _update_combo_seam(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
 }
@@ -384,6 +387,18 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     const QuickGameSnapshot snapshot = _game.snapshot();
     const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
+    if(floor_added && snapshot.last_accuracy == QuickAccuracyBand::Perfect)
+    {
+        _combo_seam_ms = 100;
+    }
+    else if(_combo_seam_ms > 0)
+    {
+        _combo_seam_ms -= delta_ms;
+        if(_combo_seam_ms < 0)
+        {
+            _combo_seam_ms = 0;
+        }
+    }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
     {
@@ -428,6 +443,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
+    _update_combo_seam(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -466,6 +482,7 @@ void QuickGameScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_seam_sprite.reset();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
 }
@@ -496,6 +513,7 @@ void QuickGameScene::resume_presentation()
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
     _update_block_sparkle(snapshot);
+    _update_combo_seam(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -947,6 +965,35 @@ void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
     }
 }
 
+void QuickGameScene::_update_combo_seam(const QuickGameSnapshot& snapshot)
+{
+    if(_combo_seam_ms <= 0 || snapshot.status != QuickGameStatus::Playing || snapshot.floor_count <= 0)
+    {
+        _combo_seam_sprite.reset();
+        return;
+    }
+
+    const int floor_index = snapshot.floor_count - 1;
+    const QuickFloor& floor = _game.floor(floor_index);
+    const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
+    const int x = _screen_x(floor.x + pose.x_delta);
+    // Each floor is 22 screen pixels tall; the contact seam is halfway below
+    // the newly-landed floor center, exactly between it and the floor beneath.
+    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y) + pixels_per_floor / 2;
+    const generated::UiSpritePartAsset& part = generated::combo_seam_flash.parts[0];
+
+    if(! _combo_seam_sprite)
+    {
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(-22);
+        _combo_seam_sprite = sprite;
+    }
+    else
+    {
+        (*_combo_seam_sprite).set_position(x + part.x, y + part.y);
+    }
+}
+
 void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
 {
     _hud_sprites.clear();
@@ -973,7 +1020,7 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         _text_generator.generate(0, 0, height, _hud_sprites);
         _text_generator.generate(0, 24, combo, _hud_sprites);
 
-        show_ui_composite(generated::support_nav_f2, 0, 52, _hud_sprites);
+        show_ui_composite(generated::support_nav_f2, 0, 46, _hud_sprites);
         return;
     }
 

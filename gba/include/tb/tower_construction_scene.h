@@ -54,6 +54,7 @@ private:
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
     void _update_combo_meter(const TowerConstructionSnapshot& snapshot);
     void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);
+    void _update_combo_seam(const TowerConstructionSnapshot& snapshot);
     void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
     [[nodiscard]] int _normal_floor_mesh_id() const;
@@ -82,6 +83,8 @@ private:
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
+    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
+    int _combo_seam_ms = 0;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;

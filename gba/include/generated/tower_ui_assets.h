@@ -168,6 +168,18 @@
 #include "bn_sprite_items_city_status_icon_f2_p0.h"
 #include "bn_sprite_items_city_status_icon_f3_p0.h"
 #include "bn_sprite_items_city_status_icon_f4_p0.h"
+#include "bn_sprite_items_city_milestone_badge_p0.h"
+#include "bn_sprite_items_city_milestone_badge_p1.h"
+#include "bn_sprite_items_combo_seam_flash_p0.h"
+#include "bn_sprite_items_city_level_icon_f0_p0.h"
+#include "bn_sprite_items_city_level_icon_f1_p0.h"
+#include "bn_sprite_items_city_level_icon_f2_p0.h"
+#include "bn_sprite_items_city_level_icon_f3_p0.h"
+#include "bn_sprite_items_city_level_icon_f4_p0.h"
+#include "bn_sprite_items_city_level_icon_f5_p0.h"
+#include "bn_sprite_items_city_level_icon_f6_p0.h"
+#include "bn_sprite_items_city_level_icon_f7_p0.h"
+#include "bn_sprite_items_city_level_icon_f8_p0.h"
 #include "bn_sprite_items_city_panel_f0_p0.h"
 #include "bn_sprite_items_city_panel_f1_p0.h"
 #include "bn_sprite_items_city_action_icon_p0.h"
@@ -951,6 +963,54 @@ inline const UiSpritePartAsset city_status_icon_f4_parts[] = {
     { &bn::sprite_items::city_status_icon_f4_p0, 1, 0 },
 };
 inline const UiCompositeAsset city_status_icon_f4 = { city_status_icon_f4_parts, 1 };
+
+inline const UiSpritePartAsset city_milestone_badge_parts[] = {
+    { &bn::sprite_items::city_milestone_badge_p0, -8, 0 },
+    { &bn::sprite_items::city_milestone_badge_p1, 16, 0 },
+};
+inline const UiCompositeAsset city_milestone_badge = { city_milestone_badge_parts, 2 };
+
+inline const UiSpritePartAsset combo_seam_flash_parts[] = {
+    { &bn::sprite_items::combo_seam_flash_p0, 0, 0 },
+};
+inline const UiCompositeAsset combo_seam_flash = { combo_seam_flash_parts, 1 };
+
+inline const UiSpritePartAsset city_level_icon_f0_parts[] = {
+    { &bn::sprite_items::city_level_icon_f0_p0, 11, 11 },
+};
+inline const UiCompositeAsset city_level_icon_f0 = { city_level_icon_f0_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f1_parts[] = {
+    { &bn::sprite_items::city_level_icon_f1_p0, 6, 6 },
+};
+inline const UiCompositeAsset city_level_icon_f1 = { city_level_icon_f1_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f2_parts[] = {
+    { &bn::sprite_items::city_level_icon_f2_p0, 6, 6 },
+};
+inline const UiCompositeAsset city_level_icon_f2 = { city_level_icon_f2_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f3_parts[] = {
+    { &bn::sprite_items::city_level_icon_f3_p0, 6, 6 },
+};
+inline const UiCompositeAsset city_level_icon_f3 = { city_level_icon_f3_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f4_parts[] = {
+    { &bn::sprite_items::city_level_icon_f4_p0, 2, 2 },
+};
+inline const UiCompositeAsset city_level_icon_f4 = { city_level_icon_f4_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f5_parts[] = {
+    { &bn::sprite_items::city_level_icon_f5_p0, 2, 2 },
+};
+inline const UiCompositeAsset city_level_icon_f5 = { city_level_icon_f5_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f6_parts[] = {
+    { &bn::sprite_items::city_level_icon_f6_p0, 2, 2 },
+};
+inline const UiCompositeAsset city_level_icon_f6 = { city_level_icon_f6_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f7_parts[] = {
+    { &bn::sprite_items::city_level_icon_f7_p0, 2, 2 },
+};
+inline const UiCompositeAsset city_level_icon_f7 = { city_level_icon_f7_parts, 1 };
+inline const UiSpritePartAsset city_level_icon_f8_parts[] = {
+    { &bn::sprite_items::city_level_icon_f8_p0, 2, 2 },
+};
+inline const UiCompositeAsset city_level_icon_f8 = { city_level_icon_f8_parts, 1 };
 
 inline const UiSpritePartAsset city_panel_f0_parts[] = {
     { &bn::sprite_items::city_panel_f0_p0, 2, 3 },

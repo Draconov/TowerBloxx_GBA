@@ -51,6 +51,7 @@ private:
     void _rebuild_hud(const QuickGameSnapshot& snapshot);
     void _update_combo_meter(const QuickGameSnapshot& snapshot);
     void _update_block_sparkle(const QuickGameSnapshot& snapshot);
+    void _update_combo_seam(const QuickGameSnapshot& snapshot);
     [[nodiscard]] int _screen_x(int world_x) const;
     [[nodiscard]] int _screen_y(int world_y, int camera_y) const;
 
@@ -74,6 +75,8 @@ private:
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
+    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
+    int _combo_seam_ms = 0;
     int _language = 0;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
