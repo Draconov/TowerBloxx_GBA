@@ -301,3 +301,25 @@ def test_no_exact_duplicate_live_bmps_unless_intentionally_retained() -> None:
             continue
         unexpected.append(sorted(path.relative_to(ROOT).as_posix() for path in paths))
     assert not unexpected, f"unexpected exact duplicate BMP groups: {unexpected}"
+
+
+def test_quick_game_yellow_family_leaves_one_extra_obj_palette_bank() -> None:
+    gameplay = GBA / "graphics" / "gameplay"
+    family_jsons = []
+    for pattern in (
+        "tb_mesh_013_p*.json", "tb_mesh_023_p*.json", "tb_mesh_033_p*.json", "tb_mesh_043_p*.json",
+        "tumble_m013_*.json", "tumble_m023_*.json",
+    ):
+        family_jsons.extend(gameplay.glob(pattern))
+
+    assert family_jsons
+    for json_path in family_jsons:
+        text = json_path.read_text(encoding="utf-8")
+        assert '"bpp_mode": "bpp_8"' in text
+        match = re.search(r'"colors_count"\s*:\s*(\d+)', text)
+        assert match is not None
+        assert int(match.group(1)) <= 112, json_path.name
+
+        bmp_path = json_path.with_suffix(".bmp")
+        with Image.open(bmp_path) as image:
+            assert max(image.tobytes()) < 112, bmp_path.name
