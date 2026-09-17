@@ -339,11 +339,11 @@ void TowerConstructionScene::start(
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_seam_sprite.reset();
+    _combo_seam_ms = 0;
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
-    _perfect_effect_sprites.clear();
-    _perfect_effect_ms = 0;
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
@@ -351,7 +351,7 @@ void TowerConstructionScene::start(
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot, 0);
+    _update_combo_seam(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
 }
@@ -406,17 +406,24 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
+    if(floor_added && snapshot.last_accuracy == TowerConstructionAccuracyBand::Perfect &&
+       ! _construction.floor(snapshot.floor_count - 1).roof)
+    {
+        _combo_seam_ms = 100;
+    }
+    else if(_combo_seam_ms > 0)
+    {
+        _combo_seam_ms -= delta_ms;
+        if(_combo_seam_ms < 0)
+        {
+            _combo_seam_ms = 0;
+        }
+    }
     const GameplayWorkerWorld worker_world = _worker_world(snapshot);
     if(floor_added)
     {
         const TowerConstructionFloor& landed = _construction.floor(snapshot.floor_count - 1);
         const int absolute_offset = landed.offset < 0 ? -landed.offset : landed.offset;
-        if(snapshot.last_accuracy == TowerConstructionAccuracyBand::Perfect && ! landed.roof)
-        {
-            _perfect_effect_ms = 150;
-            _perfect_effect_world_x = landed.x;
-            _perfect_effect_world_y = landed.y;
-        }
         if(before.floor_count > 0)
         {
             _gameplay_workers.scatter_floor(before.floor_count, absolute_offset, worker_world);
@@ -483,7 +490,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot, delta_ms);
+    _update_combo_seam(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -522,10 +529,10 @@ void TowerConstructionScene::suspend_presentation()
     _hud_sprites.clear();
     _combo_meter_fill_sprite.reset();
     _combo_meter_flash_sprite.reset();
+    _combo_seam_sprite.reset();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
-    _perfect_effect_sprites.clear();
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
@@ -561,7 +568,7 @@ void TowerConstructionScene::resume_presentation()
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot, 0);
+    _update_combo_seam(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
@@ -1002,43 +1009,36 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
     }
 }
 
-void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot, int delta_ms)
+void TowerConstructionScene::_update_combo_seam(const TowerConstructionSnapshot& snapshot)
 {
-    if(delta_ms > 0 && _perfect_effect_ms > 0)
+    if(_combo_seam_ms <= 0 || snapshot.status != TowerConstructionStatus::Playing || snapshot.floor_count <= 0)
     {
-        _perfect_effect_ms -= delta_ms;
-        if(_perfect_effect_ms < 0)
-        {
-            _perfect_effect_ms = 0;
-        }
-    }
-
-    _perfect_effect_sprites.clear();
-    if(_perfect_effect_ms <= 0 || snapshot.status != TowerConstructionStatus::Playing)
-    {
+        _combo_seam_sprite.reset();
         return;
     }
 
-    const int elapsed_ms = 150 - _perfect_effect_ms;
-    const int anchor_x = _screen_x(_perfect_effect_world_x);
-    const int anchor_y = _screen_y(_perfect_effect_world_y, snapshot.presentation_camera_y) + 9;
-
-    if(elapsed_ms < 100)
+    const int floor_index = snapshot.floor_count - 1;
+    const TowerConstructionFloor& floor = _construction.floor(floor_index);
+    if(floor.roof)
     {
-        const generated::UiCompositeAsset& seam_asset = elapsed_ms < 50 ?
-                generated::quick_combo_meter_flash : generated::quick_combo_meter_fill;
-        show_ui_composite(seam_asset, anchor_x, anchor_y, _perfect_effect_sprites, -18);
+        _combo_seam_sprite.reset();
+        return;
     }
 
-    if(elapsed_ms < 120)
+    const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
+    const int x = _screen_x(floor.x + pose.x_delta);
+    const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y) + pixels_per_floor / 2;
+    const generated::UiSpritePartAsset& part = generated::combo_seam_flash.parts[0];
+
+    if(! _combo_seam_sprite)
     {
-        const generated::UiCompositeAsset& star_asset = elapsed_ms < 40 ? generated::accuracy_star_f0 :
-                (elapsed_ms < 80 ? generated::accuracy_star_f1 : generated::accuracy_star_f2);
-        const int spread = 4 + elapsed_ms / 8;
-        show_ui_composite(star_asset, anchor_x - spread, anchor_y - (8 + spread / 2), _perfect_effect_sprites, -17);
-        show_ui_composite(star_asset, anchor_x + spread, anchor_y - (8 + spread / 2), _perfect_effect_sprites, -17);
-        show_ui_composite(star_asset, anchor_x - (10 + spread), anchor_y + 2, _perfect_effect_sprites, -17);
-        show_ui_composite(star_asset, anchor_x + (10 + spread), anchor_y + 2, _perfect_effect_sprites, -17);
+        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
+        sprite.set_z_order(-22);
+        _combo_seam_sprite = sprite;
+    }
+    else
+    {
+        (*_combo_seam_sprite).set_position(x + part.x, y + part.y);
     }
 }
 
@@ -1098,12 +1098,8 @@ void TowerConstructionScene::_rebuild_hud(const TowerConstructionSnapshot& snaps
     // B==3 construction branch: resource 13 selects frame L-1 and is placed
     // at x=au-2, y=c-av-12-2*J. J is the target floor count (10/20/30/40).
     const int badge_top_y = 160 - 10 - 12 - 2 * snapshot.target_height;
-    const bool roof_badge_visible = ! snapshot.roof_phase || ((_background_clock_ms / 120) % 2 == 0);
-    if(roof_badge_visible)
-    {
-        show_ui_composite(*construction_target_badge_frames[building_index], -105,
-                          badge_top_y + 6 - 80, _hud_sprites);
-    }
+    show_ui_composite(*construction_target_badge_frames[building_index], -105,
+                      badge_top_y + 6 - 80, _hud_sprites);
 
     // The population marker/digits are part of the common House HUD and only
     // appear after at least one floor has landed.
@@ -1166,7 +1162,6 @@ void TowerConstructionScene::_show_modal(int localization_index)
         _text_generator.generate(0, y, formatted, _hud_sprites);
         y += modal_line_spacing;
     }
-    show_ui_composite(generated::menu_continue_icon, 98, 72, _hud_sprites);
     show_ui_composite(generated::city_continue_arrow, 112, 72, _hud_sprites);
 }
 

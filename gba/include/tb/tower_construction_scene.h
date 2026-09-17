@@ -54,7 +54,7 @@ private:
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
     void _update_combo_meter(const TowerConstructionSnapshot& snapshot);
     void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);
-    void _update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot, int delta_ms);
+    void _update_combo_seam(const TowerConstructionSnapshot& snapshot);
     void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
     [[nodiscard]] int _normal_floor_mesh_id() const;
@@ -81,9 +81,10 @@ private:
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
-    bn::vector<bn::sprite_ptr, 10> _perfect_effect_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
+    bn::optional<bn::sprite_ptr> _combo_seam_sprite;
+    int _combo_seam_ms = 0;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     int _frame_phase = 0;
@@ -108,9 +109,6 @@ private:
     bool _active = false;
     int _background_clock_ms = 0;
     int _modal_localization_index = -1;
-    int _perfect_effect_ms = 0;
-    int _perfect_effect_world_x = 0;
-    int _perfect_effect_world_y = 0;
     TowerConstructionResult _pending_result{};
     bool _pending_result_valid = false;
 };

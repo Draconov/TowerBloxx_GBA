@@ -127,6 +127,18 @@ const generated::UiCompositeAsset* const city_type_badges[4] = {
     &generated::city_type_badge_4,
 };
 
+const generated::UiCompositeAsset* const city_level_icons[9] = {
+    &generated::city_level_icon_f0,
+    &generated::city_level_icon_f1,
+    &generated::city_level_icon_f2,
+    &generated::city_level_icon_f3,
+    &generated::city_level_icon_f4,
+    &generated::city_level_icon_f5,
+    &generated::city_level_icon_f6,
+    &generated::city_level_icon_f7,
+    &generated::city_level_icon_f8,
+};
+
 const generated::UiCompositeAsset* const city_progress_tails[7] = {
     &generated::city_progress_tail_f1,
     &generated::city_progress_tail_f2,
@@ -167,7 +179,7 @@ int building_center_y(int type, int screen_baseline)
     return centered_y(screen_baseline - height + height / 2);
 }
 
-bn::string<96> format_city_value(bn::string_view template_text, int value)
+bn::string<96> flatten_city_instruction(bn::string_view template_text, int value)
 {
     bn::string<96> result;
     for(int index = 0; index < template_text.size(); ++index)
@@ -177,6 +189,14 @@ bn::string<96> format_city_value(bn::string_view template_text, int value)
             result.append(bn::to_string<12>(value));
             ++index;
         }
+        else if(template_text[index] == '\\' && index + 1 < template_text.size() && template_text[index + 1] == 'n')
+        {
+            if(! result.empty() && result[result.size() - 1] != ' ')
+            {
+                result.append(' ');
+            }
+            ++index;
+        }
         else
         {
             result.append(template_text[index]);
@@ -184,7 +204,6 @@ bn::string<96> format_city_value(bn::string_view template_text, int value)
     }
     return result;
 }
-
 
 bn::string<128> format_event_line(
         bn::string_view template_text, const BuildCityEvent& event, int language)
@@ -779,19 +798,39 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     _show_composite(generated::city_edge_bottom_left, centered_x(1), centered_y(148));
     _show_composite(generated::city_edge_bottom_right, centered_x(238), centered_y(148));
 
-    // Keep the compact yellow single-person marker from the earlier pass; the
-    // two-person city icon makes the whole header feel oversized compared to
-    // the JAR. The panel row remains almost unchanged and only gains a tiny
-    // amount of headroom from the slightly lower placement.
-    _show_composite(generated::hud_population_icon, centered_x(7), centered_y(6));
+    // House city-map HUD: milestone counter first, then the small people
+    // marker and the six-cell population counter.  The older port started the
+    // population counter at x=7 with the large construction-HUD people icon,
+    // which both hid the milestone counter and made the icon visibly oversized.
+    _show_composite(generated::city_milestone_badge, centered_x(24), centered_y(5));
 
-    // Resource 22 is the six-cell population backdrop at x=19..44, not the
-    // comparison HUD on the right.  The JAR uses state 0 for the five digit
-    // cells and state 3 for the terminal cap when no digit-roll is active.
+    int milestone = snapshot.milestone;
+    if(milestone < 0) { milestone = 0; }
+    if(milestone > 20) { milestone = 20; }
+    int milestone_x = milestone >= 10 ? 20 : 23;
+    if(milestone >= 10)
+    {
+        _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(5));
+        milestone_x += 5;
+    }
+    _show_composite(*white_digits[milestone % 10], centered_x(milestone_x), centered_y(5));
+    milestone_x += 5;
+    _show_composite(generated::hud_white_digit_f12, centered_x(milestone_x), centered_y(5));
+    milestone_x += 5;
+    _show_composite(*white_digits[2], centered_x(milestone_x), centered_y(5));
+    milestone_x += 5;
+    _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(5));
+
+    _show_composite(generated::city_status_icon_f1, centered_x(55), centered_y(5));
+
+    // Resource 22 is the six-cell population backdrop. The JAR uses state 0
+    // for the five digit cells and state 3 for the terminal cap when no
+    // digit-roll is active.
+    constexpr int population_counter_x = 66;
     for(int cell = 0; cell < 6; ++cell)
     {
         const int state = _population_roll.panel_state_for_cell(cell);
-        _show_composite(*city_panel_states[state], centered_x(23 + cell * 8), centered_y(6));
+        _show_composite(*city_panel_states[state], centered_x(population_counter_x + cell * 8), centered_y(5));
     }
 
     int population = snapshot.total_population;
@@ -806,7 +845,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         const int digit = (population / divisor) % 10;
         if(index < visible_population_digits)
         {
-            _show_composite(*population_digits[digit], centered_x(23 + index * 8), centered_y(6));
+            _show_composite(*population_digits[digit], centered_x(population_counter_x + index * 8), centered_y(5));
         }
         divisor /= 10;
     }
@@ -815,14 +854,14 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     const bool active_placement = placement && snapshot.placement_transition_ms == 0;
     _show_composite(
             active_placement ? generated::city_status_placement : generated::city_status_browse,
-            centered_x(183), centered_y(6));
+            centered_x(183), centered_y(5));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
     {
-        _show_composite(generated::city_comparison_panel_active, centered_x(201), centered_y(6));
+        _show_composite(generated::city_comparison_panel_active, centered_x(201), centered_y(5));
         _show_composite(
-                *city_type_badges[snapshot.pending_building_type - 1], centered_x(192), centered_y(6));
-        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, 6);
+                *city_type_badges[snapshot.pending_building_type - 1], centered_x(192), centered_y(5));
+        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, 5);
 
         int existing_type = 0;
         if(snapshot.cursor_column >= 0 && snapshot.cursor_column < 5 &&
@@ -832,9 +871,9 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
         if(existing_type >= 1 && existing_type <= 4)
         {
-            _show_composite(generated::city_comparison_panel_active, centered_x(225), centered_y(6));
-            _show_composite(*city_type_badges[existing_type - 1], centered_x(216), centered_y(6));
-            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, 6);
+            _show_composite(generated::city_comparison_panel_active, centered_x(225), centered_y(5));
+            _show_composite(*city_type_badges[existing_type - 1], centered_x(216), centered_y(5));
+            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, 5);
         }
     }
 
@@ -842,7 +881,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     {
         if(snapshot.selected_building_type > snapshot.max_unlocked_building_type)
         {
-            const bn::string<96> locked = format_city_value(
+            const bn::string<96> locked = flatten_city_instruction(
                     generated::localized_strings[_language][63], snapshot.selected_unlock_population);
             _text_generator.generate(0, 68, locked, _sprites);
         }
@@ -872,9 +911,10 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     }
 
     const int line_count = generated::city_modal_line_counts[_language][modal_index];
-    const int backdrop_rows = line_count <= 2 ? 4 : (line_count >= 6 ? 6 : 5);
+    const bool city_level_event = event.id >= 24 && event.id <= 32;
+    const int backdrop_rows = city_level_event ? 6 : (line_count <= 2 ? 4 : (line_count >= 6 ? 6 : 5));
     _show_modal_backdrop(8, 32, 7, backdrop_rows);
-    int y = -((line_count - 1) * modal_line_spacing) / 2;
+    int y = city_level_event ? -31 : -((line_count - 1) * modal_line_spacing) / 2;
     for(int line = 0; line < line_count; ++line)
     {
         const bn::string<128> formatted = format_event_line(
@@ -882,7 +922,10 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
         _text_generator.generate(0, y, formatted, _sprites);
         y += modal_line_spacing;
     }
-    _show_composite(generated::menu_continue_icon, centered_x(218), centered_y(152), -100);
+    if(city_level_event)
+    {
+        _show_composite(*city_level_icons[event.id - 24], 0, 18, -100);
+    }
     _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);
 }
 
