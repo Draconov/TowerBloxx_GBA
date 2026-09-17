@@ -18,6 +18,7 @@ CPP_SOURCES = [
     "gba/src/build_city.cpp",
     "gba/src/build_city_events.cpp",
     "gba/src/hall_of_fame.cpp",
+    "gba/src/menu_clouds.cpp",
     "gba/src/quick_game.cpp",
     "gba/src/save_data.cpp",
     "gba/src/tower_construction.cpp",
@@ -220,6 +221,27 @@ def test_special_crane_palette_is_released_before_falling_sprite_rebuild() -> No
         current = body.index("_rebuild_current_sprites(snapshot)")
         assert release < current
 
+
+
+def test_menu_ambience_assets_and_wiring() -> None:
+    ui = GBA / "graphics" / "ui"
+    bg = GBA / "graphics" / "backgrounds" / "menu_bg.bmp"
+    for name in (
+        "menu_cloud_large_p0", "menu_cloud_large_p1", "menu_cloud_small_p0",
+    ):
+        assert (ui / f"{name}.bmp").is_file()
+        assert (ui / f"{name}.json").is_file()
+
+    with Image.open(bg) as image:
+        assert image.size == (256, 256)
+        assert len(image.getcolors(maxcolors=256) or []) <= 32
+
+    shell = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    assert "MenuCloudField" in shell
+    assert "_show_menu_clouds" in shell
+    assert "_menu_sky_offset" in shell
+    assert "menu_cloud_large" in shell
+    assert "menu_cloud_small" in shell
 
 def test_makefile_builds_only_live_asset_roots() -> None:
     makefile = (GBA / "Makefile").read_text(encoding="utf-8")

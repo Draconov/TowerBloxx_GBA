@@ -10,6 +10,7 @@
 #include "generated/tower_font.h"
 #include "generated/tower_ui_assets.h"
 #include "tb/app_state.h"
+#include "tb/menu_clouds.h"
 #include "tb/menu_workers.h"
 #include "tb/save_data.h"
 #include "tb/ui_controller.h"
@@ -45,6 +46,7 @@ private:
     void _show_dialog_lines(const char* const* lines, int line_count, int center_y);
     void _show_menu(const char* const* labels, int count, int selection);
     void _show_menu_workers();
+    void _show_menu_clouds();
     void _show_lines(const char* const* lines, int line_count, int page);
     void _show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order = 0);
     [[nodiscard]] int _content_page_count(const UiController& controller) const;
@@ -62,7 +64,10 @@ private:
     uint64_t _last_name_signature = 0;
     int _content_page = 0;
     MenuWorkerField _menu_workers;
+    MenuCloudField _menu_clouds;
     int _menu_worker_frame_phase = 0;
+    int _menu_sky_offset = 0;
+    int _menu_sky_scroll_remainder = 0;
     int _title_blink_frame = 0;
     bool _title_prompt_visible = true;
     bool _first_update = true;

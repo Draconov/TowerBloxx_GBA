@@ -76,6 +76,9 @@
 #include "bn_sprite_items_menu_worker_red_f8_p1.h"
 #include "bn_sprite_items_menu_worker_red_f9_p0.h"
 #include "bn_sprite_items_menu_worker_red_f9_p1.h"
+#include "bn_sprite_items_menu_cloud_large_p0.h"
+#include "bn_sprite_items_menu_cloud_large_p1.h"
+#include "bn_sprite_items_menu_cloud_small_p0.h"
 #include "bn_sprite_items_construction_target_badge_f0_p0.h"
 #include "bn_sprite_items_construction_target_badge_f1_p0.h"
 #include "bn_sprite_items_construction_target_badge_f2_p0.h"
@@ -380,6 +383,17 @@ inline const UiSpritePartAsset menu_instructions_icon_parts[] = {
     { &bn::sprite_items::menu_instructions_icon_p0, 2, 4 },
 };
 inline const UiCompositeAsset menu_instructions_icon = { menu_instructions_icon_parts, 1 };
+
+inline const UiSpritePartAsset menu_cloud_large_parts[] = {
+    { &bn::sprite_items::menu_cloud_large_p0, -20, 3 },
+    { &bn::sprite_items::menu_cloud_large_p1, 44, 3 },
+};
+inline const UiCompositeAsset menu_cloud_large = { menu_cloud_large_parts, 2 };
+
+inline const UiSpritePartAsset menu_cloud_small_parts[] = {
+    { &bn::sprite_items::menu_cloud_small_p0, 5, 9 },
+};
+inline const UiCompositeAsset menu_cloud_small = { menu_cloud_small_parts, 1 };
 
 inline const UiSpritePartAsset menu_worker_blue_f0_parts[] = {
     { &bn::sprite_items::menu_worker_blue_f0_p0, 1, 3 },

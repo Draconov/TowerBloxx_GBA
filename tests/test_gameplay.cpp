@@ -9,6 +9,7 @@
 #include "tb/build_city_events.h"
 #include "tb/crane_presentation.h"
 #include "tb/hall_of_fame.h"
+#include "tb/menu_clouds.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
 #include "tb/tower_construction.h"
@@ -233,6 +234,31 @@ void test_build_city_events_and_hall_of_fame()
     assert(hall.tables[0][0].score == 7000);
 }
 
+
+void test_menu_cloud_field_matches_reference_motion()
+{
+    tb::MenuCloudField clouds;
+    clouds.reset();
+    assert(tb::MenuCloudField::cloud_count == 8);
+
+    bool saw_small = false;
+    bool saw_large = false;
+    for(int index = 0; index < tb::MenuCloudField::cloud_count; ++index)
+    {
+        const auto& cloud = clouds.cloud(index);
+        assert(cloud.type == 0 || cloud.type == 1);
+        assert(cloud.vx == 0);
+        assert(cloud.vy == (cloud.type == 0 ? 6 : 9));
+        saw_small |= cloud.type == 0;
+        saw_large |= cloud.type == 1;
+    }
+    assert(saw_small && saw_large);
+
+    const int before_y = clouds.cloud(0).y_fixed;
+    assert(clouds.update(25));
+    assert(clouds.cloud(0).y_fixed > before_y);
+}
+
 void test_session_suspend_resume()
 {
     tb::TowerSessionCoordinator session;
@@ -258,6 +284,7 @@ int main()
     test_tower_combo_roof_and_failure_rules();
     test_build_city_progress_and_replacement();
     test_build_city_events_and_hall_of_fame();
+    test_menu_cloud_field_matches_reference_motion();
     test_session_suspend_resume();
     std::cout << "towerbloxx permanent gameplay regressions ok\n";
     return 0;

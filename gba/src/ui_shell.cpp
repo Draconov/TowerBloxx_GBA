@@ -4,6 +4,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
+#include "bn_fixed.h"
 #include "bn_regular_bg_items_menu_bg.h"
 #include "bn_string.h"
 
@@ -41,6 +42,12 @@ constexpr const generated::UiCompositeAsset* menu_worker_red_frames[] = {
 };
 constexpr int menu_worker_width = 19;
 constexpr int menu_worker_height = 23;
+constexpr int menu_cloud_large_width = 105;
+constexpr int menu_cloud_large_height = 27;
+constexpr int menu_cloud_small_width = 54;
+constexpr int menu_cloud_small_height = 14;
+constexpr int menu_cloud_z_order = 150;
+constexpr int menu_sky_pixels_per_second = 5;
 constexpr int dialog_backdrop_z_order = 200;
 
 int page_count(int lines)
@@ -76,7 +83,10 @@ void UiShell::hide()
     _sprites.clear();
     _background.reset();
     _menu_workers.reset();
+    _menu_clouds.reset();
     _menu_worker_frame_phase = 0;
+    _menu_sky_offset = 0;
+    _menu_sky_scroll_remainder = 0;
     _title_blink_frame = 0;
     _title_prompt_visible = true;
     _first_update = true;
@@ -131,16 +141,40 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
     }
 
     bool worker_advanced = false;
+    bool cloud_advanced = false;
     if(scene == UiScene::MainMenu)
     {
+        if(_last_scene != UiScene::MainMenu)
+        {
+            _menu_workers.reset();
+            _menu_clouds.reset();
+            _menu_worker_frame_phase = 0;
+            _menu_sky_offset = 0;
+            _menu_sky_scroll_remainder = 0;
+        }
+
         static constexpr int frame_deltas[] = {16, 17, 17};
-        worker_advanced = _menu_workers.update(frame_deltas[_menu_worker_frame_phase]);
+        const int delta_ms = frame_deltas[_menu_worker_frame_phase];
+        worker_advanced = _menu_workers.update(delta_ms);
+        cloud_advanced = _menu_clouds.update(delta_ms);
         _menu_worker_frame_phase = (_menu_worker_frame_phase + 1) % 3;
+
+        _menu_sky_scroll_remainder += delta_ms * menu_sky_pixels_per_second * 256;
+        _menu_sky_offset += _menu_sky_scroll_remainder / 1000;
+        _menu_sky_scroll_remainder %= 1000;
+        _menu_sky_offset %= 256 * 256;
+        if(_background)
+        {
+            _background->set_y(bn::fixed(_menu_sky_offset) / 256);
+        }
     }
     else
     {
         _menu_workers.reset();
+        _menu_clouds.reset();
         _menu_worker_frame_phase = 0;
+        _menu_sky_offset = 0;
+        _menu_sky_scroll_remainder = 0;
     }
 
     const int language = int(controller.language());
@@ -154,7 +188,7 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
         name_signature *= 1099511628211ULL;
     }
     const bool name_screen = scene == UiScene::NameEntry;
-    if(_first_update || page_changed || title_blink_changed || worker_advanced || scene != _last_scene ||
+    if(_first_update || page_changed || title_blink_changed || worker_advanced || cloud_advanced || scene != _last_scene ||
        controller.selection() != _last_selection || language != _last_language || sound != _last_sound ||
        (name_screen && (name_cursor != _last_name_cursor || pending_score != _last_pending_score ||
                         name_signature != _last_name_signature)))
@@ -266,12 +300,35 @@ void UiShell::_show_menu_workers()
     }
 }
 
+void UiShell::_show_menu_clouds()
+{
+    for(int index = 0; index < MenuCloudField::cloud_count; ++index)
+    {
+        const MenuCloud& cloud = _menu_clouds.cloud(index);
+        const int screen_x = (22 * cloud.x_fixed) >> 8;
+        const int screen_y = (22 * cloud.y_fixed) >> 8;
+        const bool large = cloud.type == 1;
+        const int width = large ? menu_cloud_large_width : menu_cloud_small_width;
+        const int height = large ? menu_cloud_large_height : menu_cloud_small_height;
+        if(screen_x <= -width || screen_x >= 240 + width ||
+           screen_y <= -height || screen_y >= 160 + height)
+        {
+            continue;
+        }
+
+        const generated::UiCompositeAsset& asset = large ? generated::menu_cloud_large :
+                                                           generated::menu_cloud_small;
+        _show_composite(asset, screen_x - 120, screen_y - 80, menu_cloud_z_order);
+    }
+}
+
 void UiShell::_show_root_menu(const UiController& controller)
 {
     if(! _background)
     {
         _background = bn::regular_bg_items::menu_bg.create_bg(0, 0);
         _background->set_priority(3);
+        _background->set_y(bn::fixed(_menu_sky_offset) / 256);
     }
 
     const int language = controller.language();
@@ -306,6 +363,7 @@ void UiShell::_show_root_menu(const UiController& controller)
         }
     }
 
+    _show_menu_clouds();
     _show_menu_workers();
     _show_softkeys(language, false, false);
 }
