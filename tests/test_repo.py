@@ -160,10 +160,18 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     assert "constexpr int status_row_y = 8;" in source
     assert source.count("centered_y(status_row_y)") >= 8
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, status_row_y)" in source
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, status_row_y)" in source
-    assert "constexpr int population_icon_x = 55;" in source
-    assert "constexpr int population_counter_x = 66;" in source
+    assert "_show_composite(generated::city_milestone_badge, centered_x(28), centered_y(status_row_y));" in source
+    assert "int milestone_x = milestone >= 10 ? 24 : 27;" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 206, status_row_y)" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 230, status_row_y)" in source
+    assert "constexpr int population_icon_x = 58;" in source
+    assert "constexpr int population_counter_x = 75;" in source
+    assert "generated::city_population_icon" in source
+    assert "generated::hud_population_icon" not in source
+    assert "generated::city_status_icon_f3" in source
+    assert "generated::city_status_icon_f4" in source
+    assert "generated::city_status_browse" not in source
+    assert "generated::city_status_placement" not in source
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
@@ -194,8 +202,10 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "current_roof_blink_bucket" in construction
     assert "_last_hud_roof_blink_bucket" in construction
     assert "construction_target_badge_f4" in construction
-    assert "generated::hud_population_icon" in build_city
-    assert "generated::city_status_icon_f1" not in build_city
+    assert "generated::city_population_icon" in build_city
+    assert "generated::hud_population_icon" not in build_city
+    assert "generated::city_status_icon_f3" in build_city
+    assert "generated::city_status_icon_f4" in build_city
 
 
 def test_build_city_top_bar_is_only_three_pixels_taller() -> None:

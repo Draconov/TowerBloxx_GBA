@@ -802,12 +802,12 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // sprites; shift the entire HUD row down so their full height is centered
     // inside the expanded bar instead of clipping against its old Y anchor.
     constexpr int status_row_y = 8;
-    _show_composite(generated::city_milestone_badge, centered_x(24), centered_y(status_row_y));
+    _show_composite(generated::city_milestone_badge, centered_x(28), centered_y(status_row_y));
 
     int milestone = snapshot.milestone;
     if(milestone < 0) { milestone = 0; }
     if(milestone > 20) { milestone = 20; }
-    int milestone_x = milestone >= 10 ? 20 : 23;
+    int milestone_x = milestone >= 10 ? 24 : 27;
     if(milestone >= 10)
     {
         _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(status_row_y));
@@ -821,16 +821,16 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     milestone_x += 5;
     _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(status_row_y));
 
-    // Use the common House HUD population marker here too. It is narrower than
-    // the temporary city-only substitute, which gives the taller top bar enough
-    // breathing room and keeps the milestone counter/comparison panels readable.
-    constexpr int population_icon_x = 55;
-    _show_composite(generated::hud_population_icon, centered_x(population_icon_x), centered_y(status_row_y));
+    // With the lowered row anchor the original 16x16 Build City population
+    // icon fits again. Shift the six-cell counter slightly right so the wider
+    // sprite does not collide with the first digit panel.
+    constexpr int population_icon_x = 58;
+    _show_composite(generated::city_population_icon, centered_x(population_icon_x), centered_y(status_row_y));
 
     // Resource 22 is the six-cell population backdrop. The JAR uses state 0
     // for the five digit cells and state 3 for the terminal cap when no
     // digit-roll is active.
-    constexpr int population_counter_x = 66;
+    constexpr int population_counter_x = 75;
     for(int cell = 0; cell < 6; ++cell)
     {
         const int state = _population_roll.panel_state_for_cell(cell);
@@ -856,16 +856,19 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
 
     const bool placement = snapshot.mode == BuildCityMode::Placement;
     const bool active_placement = placement && snapshot.placement_transition_ms == 0;
+    constexpr int status_icon_x = 178;
+    constexpr int comparison_panel_left_x = 196;
+    constexpr int comparison_panel_right_x = 220;
     _show_composite(
-            active_placement ? generated::city_status_placement : generated::city_status_browse,
-            centered_x(183), centered_y(status_row_y));
+            active_placement ? generated::city_status_icon_f4 : generated::city_status_icon_f3,
+            centered_x(status_icon_x), centered_y(status_row_y));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
     {
-        _show_composite(generated::city_comparison_panel_active, centered_x(201), centered_y(status_row_y));
+        _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_left_x), centered_y(status_row_y));
         _show_composite(
-                *city_type_badges[snapshot.pending_building_type - 1], centered_x(192), centered_y(status_row_y));
-        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 211, status_row_y);
+                *city_type_badges[snapshot.pending_building_type - 1], centered_x(187), centered_y(status_row_y));
+        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 206, status_row_y);
 
         int existing_type = 0;
         if(snapshot.cursor_column >= 0 && snapshot.cursor_column < 5 &&
@@ -875,9 +878,9 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
         if(existing_type >= 1 && existing_type <= 4)
         {
-            _show_composite(generated::city_comparison_panel_active, centered_x(225), centered_y(status_row_y));
-            _show_composite(*city_type_badges[existing_type - 1], centered_x(216), centered_y(status_row_y));
-            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 235, status_row_y);
+            _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_right_x), centered_y(status_row_y));
+            _show_composite(*city_type_badges[existing_type - 1], centered_x(211), centered_y(status_row_y));
+            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 230, status_row_y);
         }
     }
 
