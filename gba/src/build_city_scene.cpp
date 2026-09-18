@@ -775,16 +775,16 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
     if(width < 1) { width = 1; }
     if(width > 234) { width = 234; }
 
-    int x = 3;
+    int x = 2;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(13));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(14));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(13));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(14));
     }
 }
 

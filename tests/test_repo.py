@@ -169,8 +169,8 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     assert "int width = (snapshot.total_population - current) * 234 / (next - current);" in source
     assert "if(width < 1) { width = 1; }" in source
     assert "if(width > 234) { width = 234; }" in source
-    assert "int x = 3;" in source
-    assert "centered_y(13)" in source
+    assert "int x = 2;" in source
+    assert "centered_y(14)" in source
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
@@ -181,7 +181,7 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
 
     # JAR 240x160 shell: one-pixel side borders, two dark bottom rows,
     # a pale separator, then the final dark line. The right comparison shell
-    # is x=184..231, y=2..11 in screen coordinates.
+    # is x=182..230, y=3..12 in screen coordinates.
     for theme in range(4):
         with Image.open(GBA / "graphics" / "backgrounds" / f"city_bg_theme_{theme}.bmp") as image:
             rgb = image.convert("RGB")
@@ -192,8 +192,8 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
             assert rgb.getpixel((sx + 100, sy + 15)) == (33, 24, 16)
             assert rgb.getpixel((sx + 100, sy + 17)) == (239, 231, 231)
             assert rgb.getpixel((sx + 100, sy + 18)) == (16, 8, 8)
-            assert rgb.getpixel((sx + 184, sy + 2)) == (198, 189, 181)
-            assert rgb.getpixel((sx + 231, sy + 11)) == (198, 189, 181)
+            assert rgb.getpixel((sx + 182, sy + 3)) == (198, 189, 181)
+            assert rgb.getpixel((sx + 230, sy + 12)) == (198, 189, 181)
 
     for name in ("city_edge_top_left_p0", "city_edge_top_right_p0"):
         with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
