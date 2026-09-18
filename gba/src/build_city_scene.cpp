@@ -771,20 +771,24 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
         return;
     }
 
-    int width = (snapshot.total_population - current) * 234 / (next - current);
+    // Draw the Build City red progress underline one pixel lower and let the
+    // fully-complete state span the full usable top-bar width.
+    constexpr int full_bar_x = 1;
+    constexpr int full_bar_width = 238;
+    int width = (snapshot.total_population - current) * full_bar_width / (next - current);
     if(width < 1) { width = 1; }
-    if(width > 234) { width = 234; }
+    if(width > full_bar_width) { width = full_bar_width; }
 
-    int x = 2;
+    int x = full_bar_x;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(17));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(15));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(17));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(15));
     }
 }
 
