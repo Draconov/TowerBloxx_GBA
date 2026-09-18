@@ -796,20 +796,6 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
 {
     _show_progress_line(snapshot);
 
-    // Add a 1px black frame around the Build City top bar like the jar HUD.
-    // Keep it behind the HUD sprites so only the frame is visible.
-    constexpr int top_bar_border_z = -90;
-    for(int x = 4; x < 240; x += 8)
-    {
-        _show_composite(generated::city_top_bar_frame_h, centered_x(x), centered_y(0), top_bar_border_z);
-        _show_composite(generated::city_top_bar_frame_h, centered_x(x), centered_y(17), top_bar_border_z);
-    }
-    for(int y = 4; y <= 20; y += 8)
-    {
-        _show_composite(generated::city_top_bar_frame_v_left, centered_x(0), centered_y(y), top_bar_border_z);
-        _show_composite(generated::city_top_bar_frame_v_right, centered_x(239), centered_y(y), top_bar_border_z);
-    }
-
     // Resource 20 is clipped into four 3x23 screen-edge strips. The top pair
     // needs to start at the very top of the screen so the black frame line is
     // visible around the Build City top bar, like in the jar HUD.
