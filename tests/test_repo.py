@@ -280,24 +280,17 @@ def test_all_building_color_palette_budget_contracts() -> None:
         return values
 
     gameplay = GBA / "graphics" / "gameplay"
-    # Some low-color tower meshes were compacted to BPP4. They must still preserve
-    # the exact shared family palettes, just in a smaller bank when <= 16 colors.
+    # Every building color uses one BPP8 palette across its base/floor/roof
+    # family, so changing phases never allocates a second 8-bit palette.
     for color in range(4):
         family = (10 + color, 20 + color, 30 + color, 40 + color)
-        signatures_8: set[tuple[int, ...]] = set()
+        signatures: set[tuple[int, ...]] = set()
         for mesh_id in family:
             json_path = gameplay / f"tb_mesh_{mesh_id:03d}_p0.json"
-            text = json_path.read_text(encoding="utf-8")
-            bmp = gameplay / f"tb_mesh_{mesh_id:03d}_p0.bmp"
-            with Image.open(bmp) as image:
-                colors = image.getcolors(maxcolors=256) or []
-                color_count = len(colors)
-                if color_count <= 16:
-                    assert '"bpp_mode": "bpp_4"' in text
-                else:
-                    assert '"bpp_mode": "bpp_8"' in text
-                    signatures_8.add(tuple((image.getpalette() or [])[: 32 * 3]))
-        assert len(signatures_8) <= 1, f"building color {color + 1} uses multiple BPP8 palettes"
+            assert '"bpp_mode": "bpp_8"' in json_path.read_text(encoding="utf-8")
+            for bmp in gameplay.glob(f"tb_mesh_{mesh_id:03d}_p*.bmp"):
+                signatures.add(palette(bmp))
+        assert len(signatures) == 1, f"building color {color + 1} uses multiple BPP8 palettes"
 
     # The special rig/cable/platform retain their established shared BPP4 bank.
     shared = palette(gameplay / "tb_mesh_007_p0.bmp")[: 16 * 3]
@@ -439,59 +432,22 @@ def test_all_building_families_fit_two_obj_palette_banks() -> None:
             family_jsons.extend(gameplay.glob(f"tumble_m{mesh_id:03d}_*.json"))
 
         assert family_jsons, building_type
-        palette_signatures_8: set[tuple[int, ...]] = set()
+        palette_signatures: set[tuple[int, ...]] = set()
         for json_path in family_jsons:
             text = json_path.read_text(encoding="utf-8")
+            assert '"bpp_mode": "bpp_8"' in text
             match = re.search(r'"colors_count"\s*:\s*(\d+)', text)
             assert match is not None
-            colors_count = int(match.group(1))
+            assert int(match.group(1)) <= 32, json_path.name
 
             bmp_path = json_path.with_suffix(".bmp")
             with Image.open(bmp_path) as image:
-                if colors_count <= 16:
-                    assert '"bpp_mode": "bpp_4"' in text
-                    assert max(image.tobytes()) < 16, bmp_path.name
-                else:
-                    assert '"bpp_mode": "bpp_8"' in text
-                    assert colors_count <= 32, json_path.name
-                    assert max(image.tobytes()) < 32, bmp_path.name
-                    palette_signatures_8.add(tuple((image.getpalette() or [])[: 32 * 3]))
+                assert max(image.tobytes()) < 32, bmp_path.name
+                palette_signatures.add(tuple((image.getpalette() or [])[: 32 * 3]))
 
-        assert len(palette_signatures_8) <= 1, f"building type {building_type} has multiple full palettes"
+        assert len(palette_signatures) == 1, f"building type {building_type} has multiple tower palettes"
 
 
-
-
-
-def test_low_color_bpp8_candidates_are_compacted_to_bpp4() -> None:
-    candidates = [
-        "tb_mesh_040_p0", "tb_mesh_041_p0", "tb_mesh_032_p0", "tb_mesh_020_p0",
-        "tb_mesh_043_p0", "tb_mesh_042_p0", "tb_mesh_011_p0", "tb_mesh_030_p0",
-    ]
-    gameplay = GBA / "graphics" / "gameplay"
-    for name in candidates:
-        json_path = gameplay / f"{name}.json"
-        bmp_path = gameplay / f"{name}.bmp"
-        assert '"bpp_mode": "bpp_4"' in json_path.read_text(encoding="utf-8")
-        with Image.open(bmp_path) as image:
-            colors = image.getcolors(maxcolors=256) or []
-            assert len(colors) <= 16
-
-    ui_candidates = [
-        "city_building_4_f1_p0", "city_building_1_f2_p0", "city_building_4_f0_p0",
-        "city_building_2_f3_p0", "city_building_4_f3_p0", "city_building_2_f1_p0",
-        "city_building_3_f0_p0", "city_building_1_f3_p0", "city_building_3_f3_p0",
-        "city_building_1_f0_p0", "city_building_3_f2_p0", "city_building_2_f0_p0",
-        "city_building_1_f1_p0",
-    ]
-    ui = GBA / "graphics" / "ui"
-    for name in ui_candidates:
-        json_path = ui / f"{name}.json"
-        bmp_path = ui / f"{name}.bmp"
-        assert '"bpp_mode": "bpp_4"' in json_path.read_text(encoding="utf-8")
-        with Image.open(bmp_path) as image:
-            colors = image.getcolors(maxcolors=256) or []
-            assert len(colors) <= 16
 
 def test_ci_workflow_uses_node24_ready_actions_and_pinned_ubuntu() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
