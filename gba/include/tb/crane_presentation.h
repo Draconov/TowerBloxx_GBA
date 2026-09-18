@@ -21,10 +21,10 @@ enum class PerfectLandingSeamPhase : uint8_t
 
 inline constexpr int perfect_landing_star_count = 5;
 inline constexpr int perfect_landing_star_duration_ms = 560;
-inline constexpr int perfect_landing_star_trail_delay_ms = 28;
+inline constexpr int perfect_landing_star_trail_delay_ms = 18;
 inline constexpr int perfect_landing_seam_white_ms = 50;
 inline constexpr int perfect_landing_seam_total_ms = 130;
-inline constexpr int perfect_landing_trail_sample_count = 3;
+inline constexpr int perfect_landing_trail_sample_count = 4;
 inline constexpr int perfect_landing_pattern_count = 12;
 
 [[nodiscard]] constexpr int perfect_landing_pattern_bucket(int seed)
