@@ -221,6 +221,7 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
         assert "accuracy_star_f1" in source
         assert "accuracy_star_f2" in source
         assert "perfect_landing_star_trail_elapsed" in source
+        assert "perfect_landing_sprite_capacity" in source or "_perfect_star_sprites" in source
         assert "_perfect_landing_seed" in source
         assert "snapshot.current_x" in source
         assert "legacy_block_sparkle_frames" in source
@@ -239,6 +240,10 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "generated::city_status_placement" in build_city
     assert "generated::city_status_icon_f3" not in build_city
     assert "generated::city_status_icon_f4" not in build_city
+
+    for header_name in ("tower_construction_scene.h", "quick_game_scene.h"):
+        header = (GBA / "include" / "tb" / header_name).read_text(encoding="utf-8")
+        assert "bn::vector<bn::sprite_ptr, perfect_landing_sprite_capacity> _perfect_star_sprites;" in header
 
 
 def test_build_city_backgrounds_remain_butano_safe() -> None:

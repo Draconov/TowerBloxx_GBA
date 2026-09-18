@@ -1015,10 +1015,8 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
 
-        // Trail samples: interpolate several short dash sprites behind the star so
-        // the burst reads like an actual streak instead of detached dots.
-        int previous_x = star_x;
-        int previous_y = star_y;
+        // Four short sampled dashes form the trail behind the moving star. Keep
+        // exactly one sprite per sample so the fixed-capacity vector cannot overflow.
         for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
         {
             const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
@@ -1032,15 +1030,7 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
             const generated::UiCompositeAsset& trail_asset = trail_index == 0 ? generated::accuracy_trail_white :
                                                              trail_index == 1 ? generated::accuracy_trail_yellow :
                                                                                 generated::accuracy_trail_red;
-
-            // Place the dash halfway between successive positions and at the sampled
-            // position itself so the separate samples visually connect into a line.
-            const int mid_x = (previous_x + trail_x) / 2;
-            const int mid_y = (previous_y + trail_y) / 2;
-            show_ui_composite(trail_asset, mid_x, mid_y, _perfect_star_sprites, -26 + trail_index * 2);
-            show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -25 + trail_index * 2);
-            previous_x = trail_x;
-            previous_y = trail_y;
+            show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -24 + trail_index);
         }
 
         show_ui_composite(head_asset, star_x, star_y, _perfect_star_sprites, -18);

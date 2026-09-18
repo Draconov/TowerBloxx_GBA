@@ -26,6 +26,8 @@ inline constexpr int perfect_landing_seam_white_ms = 50;
 inline constexpr int perfect_landing_seam_total_ms = 130;
 inline constexpr int perfect_landing_trail_sample_count = 4;
 inline constexpr int perfect_landing_pattern_count = 12;
+inline constexpr int perfect_landing_sprites_per_star = perfect_landing_trail_sample_count + 1;
+inline constexpr int perfect_landing_sprite_capacity = perfect_landing_star_count * perfect_landing_sprites_per_star;
 
 [[nodiscard]] constexpr int perfect_landing_pattern_bucket(int seed)
 {

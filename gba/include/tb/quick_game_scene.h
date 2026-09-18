@@ -73,7 +73,7 @@ private:
     bn::vector<bn::sprite_ptr, 96> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
-    bn::vector<bn::sprite_ptr, 25> _perfect_star_sprites;
+    bn::vector<bn::sprite_ptr, perfect_landing_sprite_capacity> _perfect_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
     bn::optional<bn::sprite_ptr> _perfect_seam_sprite;

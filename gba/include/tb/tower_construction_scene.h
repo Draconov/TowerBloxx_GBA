@@ -79,7 +79,7 @@ private:
     bn::vector<bn::sprite_ptr, 3> _special_boom_sprites;
     bn::vector<bn::sprite_ptr, 16> _worker_sprites;
     bn::vector<bn::sprite_ptr, 8> _block_sparkle_sprites;
-    bn::vector<bn::sprite_ptr, 25> _perfect_star_sprites;
+    bn::vector<bn::sprite_ptr, perfect_landing_sprite_capacity> _perfect_star_sprites;
     bn::vector<bn::sprite_ptr, 144> _hud_sprites;
     bn::vector<bn::sprite_ptr, 2> _combo_star_sprites;
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;

@@ -143,6 +143,9 @@ void test_perfect_landing_feedback_geometry()
     assert(tb::perfect_landing_star_count == 5);
     assert(tb::perfect_landing_star_duration_ms == 560);
     assert(tb::perfect_landing_star_trail_delay_ms == 18);
+    assert(tb::perfect_landing_trail_sample_count == 4);
+    assert(tb::perfect_landing_sprites_per_star == 5);
+    assert(tb::perfect_landing_sprite_capacity == 25);
 
     for(int index = 0; index < tb::perfect_landing_star_count; ++index)
     {
