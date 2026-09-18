@@ -155,6 +155,9 @@
 #include "bn_sprite_items_city_edge_top_right_p0.h"
 #include "bn_sprite_items_city_edge_bottom_left_p0.h"
 #include "bn_sprite_items_city_edge_bottom_right_p0.h"
+#include "bn_sprite_items_city_top_bar_frame_h_p0.h"
+#include "bn_sprite_items_city_top_bar_frame_v_left_p0.h"
+#include "bn_sprite_items_city_top_bar_frame_v_right_p0.h"
 #include "bn_sprite_items_city_population_icon_p0.h"
 #include "bn_sprite_items_city_status_placement_p0.h"
 #include "bn_sprite_items_city_status_browse_p0.h"
@@ -904,6 +907,21 @@ inline const UiSpritePartAsset city_edge_bottom_right_parts[] = {
     { &bn::sprite_items::city_edge_bottom_right_p0, 3, 5 },
 };
 inline const UiCompositeAsset city_edge_bottom_right = { city_edge_bottom_right_parts, 1 };
+
+inline const UiSpritePartAsset city_top_bar_frame_h_parts[] = {
+    { &bn::sprite_items::city_top_bar_frame_h_p0, 4, 4 },
+};
+inline const UiCompositeAsset city_top_bar_frame_h = { city_top_bar_frame_h_parts, 1 };
+
+inline const UiSpritePartAsset city_top_bar_frame_v_left_parts[] = {
+    { &bn::sprite_items::city_top_bar_frame_v_left_p0, 4, 4 },
+};
+inline const UiCompositeAsset city_top_bar_frame_v_left = { city_top_bar_frame_v_left_parts, 1 };
+
+inline const UiSpritePartAsset city_top_bar_frame_v_right_parts[] = {
+    { &bn::sprite_items::city_top_bar_frame_v_right_p0, 4, 4 },
+};
+inline const UiCompositeAsset city_top_bar_frame_v_right = { city_top_bar_frame_v_right_parts, 1 };
 
 inline const UiSpritePartAsset city_population_icon_parts[] = {
     { &bn::sprite_items::city_population_icon_p0, 4, 4 },
