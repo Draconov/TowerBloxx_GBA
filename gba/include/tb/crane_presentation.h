@@ -20,8 +20,8 @@ enum class PerfectLandingSeamPhase : uint8_t
 };
 
 inline constexpr int perfect_landing_star_count = 8;
-inline constexpr int perfect_landing_star_duration_ms = 420;
-inline constexpr int perfect_landing_star_trail_delay_ms = 55;
+inline constexpr int perfect_landing_star_duration_ms = 520;
+inline constexpr int perfect_landing_star_trail_delay_ms = 80;
 inline constexpr int perfect_landing_seam_white_ms = 50;
 inline constexpr int perfect_landing_seam_total_ms = 130;
 inline constexpr int perfect_landing_pattern_count = 10;
@@ -36,15 +36,15 @@ inline constexpr int perfect_landing_pattern_count = 10;
 {
     constexpr int table[perfect_landing_pattern_count][perfect_landing_star_count] = {
         { 0,  0,  0,  0,  0,  0,  0,  0},
-        {-4, -2, -1,  0,  1,  2,  4, -2},
-        { 4,  2,  1,  0, -1, -2, -4,  2},
-        {-6, -4, -2,  0,  2,  4,  6,  0},
-        { 6,  4,  2,  0, -2, -4, -6,  0},
-        {-2, -1,  3, -3,  3, -1, -2,  2},
-        { 2,  1, -3,  3, -3,  1,  2, -2},
-        {-3,  1,  4, -1, -4, -1,  3,  1},
-        { 3, -1, -4,  1,  4,  1, -3, -1},
-        { 0, -3,  2, -4,  2,  3,  0,  4},
+        {-8, -5, -2,  0,  2,  5,  8, -4},
+        { 8,  5,  2,  0, -2, -5, -8,  4},
+        {-10, -7, -4,  0,  4,  7,  10,  0},
+        { 10,  7,  4,  0, -4, -7, -10,  0},
+        {-5, -2,  6, -5,  6, -2, -5,  4},
+        { 5,  2, -6,  5, -6,  2,  5, -4},
+        {-6,  2,  8, -2, -8, -2,  6,  2},
+        { 6, -2, -8,  2,  8,  2, -6, -2},
+        { 0, -6,  4, -8,  4,  6,  0,  8},
     };
     return table[pattern][index];
 }
@@ -53,15 +53,15 @@ inline constexpr int perfect_landing_pattern_count = 10;
 {
     constexpr int table[perfect_landing_pattern_count][perfect_landing_star_count] = {
         { 0,  0,  0,  0,  0,  0,  0,  0},
-        {-2,  1,  4, -3,  4,  1, -2,  3},
-        {-3,  2,  5, -1,  5,  2, -3,  1},
-        { 1,  3,  6, -2,  6,  3,  1,  5},
-        {-1,  5,  3, -4,  3,  5, -1,  6},
-        {-4,  0,  5, -6,  5,  0, -4,  4},
-        {-2,  4,  2, -5,  2,  4, -2,  6},
-        { 0,  2,  6, -4,  6,  2,  0,  2},
-        {-5,  2,  4, -2,  4,  2, -5,  5},
-        {-1,  3,  7, -5,  7,  3, -1,  4},
+        {-4,  2,  8, -6,  8,  2, -4,  6},
+        {-6,  4,  10, -2,  10,  4, -6,  2},
+        { 2,  6,  12, -4,  12,  6,  2,  10},
+        {-2,  10,  6, -8,  6,  10, -2,  12},
+        {-8,  0,  10, -12,  10,  0, -8,  8},
+        {-4,  8,  4, -10,  4,  8, -4,  12},
+        { 0,  4,  12, -8,  12,  4,  0,  4},
+        {-10,  4,  8, -4,  8,  4, -10,  10},
+        {-2,  6,  14, -10,  14,  6, -2,  8},
     };
     return table[pattern][index];
 }
@@ -71,13 +71,13 @@ inline constexpr int perfect_landing_pattern_count = 10;
 {
     switch(index)
     {
-    case 0: return -34;
-    case 1: return -26;
-    case 2: return -14;
+    case 0: return -46;
+    case 1: return -34;
+    case 2: return -20;
     case 3: return 0;
-    case 4: return 14;
-    case 5: return 26;
-    case 6: return 34;
+    case 4: return 20;
+    case 5: return 34;
+    case 6: return 46;
     case 7: return 0;
     default: return 0;
     }
@@ -87,14 +87,14 @@ inline constexpr int perfect_landing_pattern_count = 10;
 {
     switch(index)
     {
-    case 0: return -16;
-    case 1: return 4;
-    case 2: return 22;
-    case 3: return -30;
-    case 4: return 22;
-    case 5: return 4;
-    case 6: return -16;
-    case 7: return 28;
+    case 0: return -22;
+    case 1: return 8;
+    case 2: return 30;
+    case 3: return -40;
+    case 4: return 30;
+    case 5: return 8;
+    case 6: return -22;
+    case 7: return 38;
     default: return 0;
     }
 }

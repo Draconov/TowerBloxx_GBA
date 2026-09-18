@@ -170,7 +170,8 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     assert "if(width < 1) { width = 1; }" in source
     assert "if(width > 234) { width = 234; }" in source
     assert "int x = 2;" in source
-    assert "centered_y(15)" in source
+    assert "centered_y(17)" in source
+    assert "constexpr int comparison_panel_right_x = 221;" in source
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
