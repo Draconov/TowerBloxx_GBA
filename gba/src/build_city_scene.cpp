@@ -782,13 +782,13 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
     int x = full_bar_x;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(16));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(17));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(16));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(17));
     }
 }
 
@@ -807,7 +807,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // The taller Build City top bar keeps the source-sized milestone and people
     // sprites; shift the entire HUD row down so their full height is centered
     // inside the expanded bar instead of clipping against its old Y anchor.
-    constexpr int status_row_y = 8;
+    constexpr int status_row_y = 9;
     constexpr int population_icon_y = status_row_y - 3;
     constexpr int population_counter_y = status_row_y - 1;
     constexpr int comparison_row_y = status_row_y;
