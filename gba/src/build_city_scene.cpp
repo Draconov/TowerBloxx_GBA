@@ -782,13 +782,13 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
     int x = full_bar_x;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(15));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(16));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(15));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(16));
     }
 }
 
@@ -796,9 +796,11 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
 {
     _show_progress_line(snapshot);
 
-    // Resource 20 is clipped into four 3x23 screen-edge strips.
-    _show_composite(generated::city_edge_top_left, centered_x(1), centered_y(11));
-    _show_composite(generated::city_edge_top_right, centered_x(238), centered_y(11));
+    // Resource 20 is clipped into four 3x23 screen-edge strips. The top pair
+    // needs to start at the very top of the screen so the black frame line is
+    // visible around the Build City top bar, like in the jar HUD.
+    _show_composite(generated::city_edge_top_left, centered_x(1), centered_y(-1));
+    _show_composite(generated::city_edge_top_right, centered_x(238), centered_y(-1));
     _show_composite(generated::city_edge_bottom_left, centered_x(1), centered_y(148));
     _show_composite(generated::city_edge_bottom_right, centered_x(238), centered_y(148));
 
