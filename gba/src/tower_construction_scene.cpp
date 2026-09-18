@@ -1069,8 +1069,8 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
 
-        // Four short sampled dashes form the trail behind the moving star. Keep
-        // exactly one sprite per sample so the fixed-capacity vector cannot overflow.
+        // Seven tightly spaced points form a directional line behind the moving star.
+        // One sprite per sample keeps the fixed-capacity vector within its budget.
         for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
         {
             const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
@@ -1081,9 +1081,9 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
 
             const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
             const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
-            const generated::UiCompositeAsset& trail_asset = trail_index == 0 ? generated::accuracy_trail_white :
-                                                             trail_index == 1 ? generated::accuracy_trail_yellow :
-                                                                                generated::accuracy_trail_red;
+            const generated::UiCompositeAsset& trail_asset = trail_index < 2 ? generated::accuracy_trail_white :
+                                                             trail_index < 4 ? generated::accuracy_trail_yellow :
+                                                                               generated::accuracy_trail_red;
             show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -24 + trail_index);
         }
 
