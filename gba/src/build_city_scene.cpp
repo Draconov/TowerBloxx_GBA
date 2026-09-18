@@ -766,16 +766,16 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
 {
     const int current = snapshot.current_milestone_population;
     const int next = snapshot.next_milestone_population;
-    if(next <= current || snapshot.total_population <= current)
+    if(next <= current)
     {
         return;
     }
 
-    int width = (snapshot.total_population - current) * 229 / (next - current);
-    if(width < 0) { width = 0; }
-    if(width > 229) { width = 229; }
+    int width = (snapshot.total_population - current) * 234 / (next - current);
+    if(width < 1) { width = 1; }
+    if(width > 234) { width = 234; }
 
-    int x = 5;
+    int x = 3;
     while(width >= 8)
     {
         _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(13));
@@ -805,24 +805,30 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     constexpr int population_icon_y = status_row_y - 3;
     constexpr int population_counter_y = status_row_y - 1;
     constexpr int comparison_row_y = status_row_y;
-    _show_composite(generated::city_milestone_badge, centered_x(26), centered_y(status_row_y));
+    const bool empty_milestone_badge = snapshot.total_population == 0;
+    _show_composite(
+            empty_milestone_badge ? generated::city_milestone_badge_empty : generated::city_milestone_badge,
+            centered_x(25), centered_y(status_row_y));
 
-    int milestone = snapshot.milestone;
-    if(milestone < 0) { milestone = 0; }
-    if(milestone > 20) { milestone = 20; }
-    int milestone_x = milestone >= 10 ? 24 : 27;
-    if(milestone >= 10)
+    if(! empty_milestone_badge)
     {
-        _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(status_row_y));
+        int milestone = snapshot.milestone;
+        if(milestone < 0) { milestone = 0; }
+        if(milestone > 20) { milestone = 20; }
+        int milestone_x = milestone >= 10 ? 23 : 26;
+        if(milestone >= 10)
+        {
+            _show_composite(*white_digits[milestone / 10], centered_x(milestone_x), centered_y(status_row_y));
+            milestone_x += 5;
+        }
+        _show_composite(*white_digits[milestone % 10], centered_x(milestone_x), centered_y(status_row_y));
         milestone_x += 5;
+        _show_composite(generated::hud_white_digit_f12, centered_x(milestone_x), centered_y(status_row_y));
+        milestone_x += 5;
+        _show_composite(*white_digits[2], centered_x(milestone_x), centered_y(status_row_y));
+        milestone_x += 5;
+        _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(status_row_y));
     }
-    _show_composite(*white_digits[milestone % 10], centered_x(milestone_x), centered_y(status_row_y));
-    milestone_x += 5;
-    _show_composite(generated::hud_white_digit_f12, centered_x(milestone_x), centered_y(status_row_y));
-    milestone_x += 5;
-    _show_composite(*white_digits[2], centered_x(milestone_x), centered_y(status_row_y));
-    milestone_x += 5;
-    _show_composite(*white_digits[0], centered_x(milestone_x), centered_y(status_row_y));
 
     // With the lowered row anchor the original 16x16 Build City population
     // icon fits again. Shift the six-cell counter slightly right so the wider

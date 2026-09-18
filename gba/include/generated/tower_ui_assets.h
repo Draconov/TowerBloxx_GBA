@@ -170,6 +170,8 @@
 #include "bn_sprite_items_city_status_icon_f4_p0.h"
 #include "bn_sprite_items_city_milestone_badge_p0.h"
 #include "bn_sprite_items_city_milestone_badge_p1.h"
+#include "bn_sprite_items_city_milestone_badge_empty_p0.h"
+#include "bn_sprite_items_city_milestone_badge_empty_p1.h"
 #include "bn_sprite_items_combo_seam_flash_p0.h"
 #include "bn_sprite_items_combo_seam_flash_white_p0.h"
 #include "bn_sprite_items_city_level_icon_f0_p0.h"
@@ -970,6 +972,12 @@ inline const UiSpritePartAsset city_milestone_badge_parts[] = {
     { &bn::sprite_items::city_milestone_badge_p1, 16, 0 },
 };
 inline const UiCompositeAsset city_milestone_badge = { city_milestone_badge_parts, 2 };
+
+inline const UiSpritePartAsset city_milestone_badge_empty_parts[] = {
+    { &bn::sprite_items::city_milestone_badge_empty_p0, -8, 0 },
+    { &bn::sprite_items::city_milestone_badge_empty_p1, 16, 0 },
+};
+inline const UiCompositeAsset city_milestone_badge_empty = { city_milestone_badge_empty_parts, 2 };
 
 inline const UiSpritePartAsset combo_seam_flash_parts[] = {
     { &bn::sprite_items::combo_seam_flash_p0, 0, 0 },
