@@ -1058,24 +1058,19 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
     const int x = _screen_x(floor.x + pose.x_delta);
     const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    // Match the spinning combo star and sparkle palette, reduce the star count,
-    // and make the burst read more clearly with three delayed trail ghosts.
-    if(_perfect_landing_elapsed_ms < 60)
-    {
-        show_ui_composite(generated::accuracy_star_f1, x, y, _perfect_star_sprites, -26);
-    }
-    else if(_perfect_landing_elapsed_ms < 130)
-    {
-        show_ui_composite(generated::accuracy_star_f2, x, y, _perfect_star_sprites, -26);
-    }
-    else if(_perfect_landing_elapsed_ms < 250)
-    {
-        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -26);
-    }
+    // JAR-grounded pass: the moving star grows small -> medium -> large while
+    // leaving an actual sampled trail behind it (white -> yellow -> red).
+    const generated::UiCompositeAsset& head_asset = _perfect_landing_elapsed_ms < 120 ?
+            generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
+            generated::accuracy_star_f2 : generated::accuracy_star_f0;
 
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
-        for(int trail_index = 2; trail_index >= 0; --trail_index)
+        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+
+        // Trail samples: nearest to the head is white, then yellow, then red.
+        for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
         {
             const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
             if(trail_elapsed <= 0)
@@ -1085,18 +1080,13 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
 
             const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
             const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
-            const generated::UiCompositeAsset& trail = trail_index == 2 ? generated::accuracy_star_f1 :
-                                                       trail_index == 1 ? generated::accuracy_star_f2 :
-                                                                          generated::accuracy_star_f0;
-            show_ui_composite(trail, trail_x, trail_y, _perfect_star_sprites, -25 + trail_index);
+            const generated::UiCompositeAsset& trail_asset = trail_index == 0 ? generated::accuracy_trail_white :
+                                                             trail_index == 1 ? generated::accuracy_trail_yellow :
+                                                                                generated::accuracy_trail_red;
+            show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -25 + trail_index);
         }
 
-        const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
-        const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
-        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 130 ?
-                generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 260 ?
-                generated::accuracy_star_f2 : generated::accuracy_star_f0;
-        show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -22);
+        show_ui_composite(head_asset, star_x, star_y, _perfect_star_sprites, -22);
     }
 
     const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
