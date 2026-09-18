@@ -194,6 +194,17 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     ui = GBA / "graphics" / "ui"
     assert (ui / "combo_seam_flash_white_p0.bmp").is_file()
     assert (ui / "combo_seam_flash_white_p0.json").is_file()
+    for trail in ("accuracy_trail_white_p0", "accuracy_trail_yellow_p0", "accuracy_trail_red_p0"):
+        assert (ui / f"{trail}.bmp").is_file()
+        assert (ui / f"{trail}.json").is_file()
+        with Image.open(ui / f"{trail}.bmp") as image:
+            assert image.mode == "P"
+            assert image.size == (8, 8)
+
+    generated = (GBA / "include" / "generated" / "tower_ui_assets.h").read_text(encoding="utf-8")
+    assert "accuracy_trail_white" in generated
+    assert "accuracy_trail_yellow" in generated
+    assert "accuracy_trail_red" in generated
     with Image.open(ui / "combo_seam_flash_p0.bmp") as yellow_seam, \
          Image.open(ui / "combo_seam_flash_white_p0.bmp") as white_seam:
         # White reuses the existing HUD palette bank: the seam pixels switch

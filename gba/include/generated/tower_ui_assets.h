@@ -200,6 +200,9 @@
 #include "bn_sprite_items_accuracy_star_f0_p0.h"
 #include "bn_sprite_items_accuracy_star_f1_p0.h"
 #include "bn_sprite_items_accuracy_star_f2_p0.h"
+#include "bn_sprite_items_accuracy_trail_white_p0.h"
+#include "bn_sprite_items_accuracy_trail_yellow_p0.h"
+#include "bn_sprite_items_accuracy_trail_red_p0.h"
 #include "bn_sprite_items_city_building_1_f0_p0.h"
 #include "bn_sprite_items_city_building_1_f1_p0.h"
 #include "bn_sprite_items_city_building_1_f2_p0.h"
@@ -1110,6 +1113,21 @@ inline const UiSpritePartAsset accuracy_star_f2_parts[] = {
     { &bn::sprite_items::accuracy_star_f2_p0, 3, 2 },
 };
 inline const UiCompositeAsset accuracy_star_f2 = { accuracy_star_f2_parts, 1 };
+
+inline const UiSpritePartAsset accuracy_trail_white_parts[] = {
+    { &bn::sprite_items::accuracy_trail_white_p0, 0, 0 },
+};
+inline const UiCompositeAsset accuracy_trail_white = { accuracy_trail_white_parts, 1 };
+
+inline const UiSpritePartAsset accuracy_trail_yellow_parts[] = {
+    { &bn::sprite_items::accuracy_trail_yellow_p0, 0, 0 },
+};
+inline const UiCompositeAsset accuracy_trail_yellow = { accuracy_trail_yellow_parts, 1 };
+
+inline const UiSpritePartAsset accuracy_trail_red_parts[] = {
+    { &bn::sprite_items::accuracy_trail_red_p0, 0, 0 },
+};
+inline const UiCompositeAsset accuracy_trail_red = { accuracy_trail_red_parts, 1 };
 
 inline const UiSpritePartAsset city_building_1_f0_parts[] = {
     { &bn::sprite_items::city_building_1_f0_p0, 1, 2 },
