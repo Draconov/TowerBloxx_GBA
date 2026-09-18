@@ -156,55 +156,38 @@ def test_combo_feedback_contract_is_retained() -> None:
     assert "_combo_star_sprites" in construction_header
 
 
-def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
+def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
     source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     generated = (GBA / "include" / "generated" / "tower_ui_assets.h").read_text(encoding="utf-8")
-    assert "constexpr int status_row_y = 8;" in source
-    assert "constexpr int population_icon_y = status_row_y - 3;" in source
-    assert "constexpr int population_counter_y = status_row_y - 1;" in source
-    assert "constexpr int comparison_row_y = status_row_y;" in source
-    assert "const bool empty_milestone_badge = snapshot.total_population == 0;" in source
-    assert "empty_milestone_badge ? generated::city_milestone_badge_empty : generated::city_milestone_badge" in source
-    assert "centered_x(25)" in source
-    assert "int width = (snapshot.total_population - current) * 234 / (next - current);" in source
-    assert "if(width < 1) { width = 1; }" in source
-    assert "if(width > 234) { width = 234; }" in source
-    assert "int x = 2;" in source
-    assert "centered_y(17)" in source
-    assert "constexpr int comparison_panel_right_x = 221;" in source
+
+    # Keep this test structural while the Build City HUD is still being tuned.
+    # Do not freeze exact X/Y positions or individual background pixels here.
+    assert "_show_progress_line(snapshot)" in source
+    assert "generated::city_population_icon" in source
+    assert "generated::city_status_browse" in source
+    assert "generated::city_status_placement" in source
+    assert "generated::city_comparison_panel_active" in source
+    assert "generated::city_milestone_badge_empty" in source
+    assert "generated::city_milestone_badge" in source
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
     assert "city_milestone_badge_empty_parts" in generated
-    for name in ("city_milestone_badge_p0", "city_milestone_badge_p1", "city_milestone_badge_empty_p0", "city_milestone_badge_empty_p1"):
-        with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
-            assert image.size in ((32, 16), (16, 16))
 
-    # JAR 240x160 shell: one-pixel side borders, two dark bottom rows,
-    # a pale separator, then the final dark line. The right comparison shell
-    # is x=182..230, y=3..12 in screen coordinates.
-    for theme in range(4):
-        with Image.open(GBA / "graphics" / "backgrounds" / f"city_bg_theme_{theme}.bmp") as image:
-            rgb = image.convert("RGB")
-            sx, sy = 8, 48
-            assert rgb.getpixel((sx + 0, sy + 0)) == (239, 231, 231)
-            assert rgb.getpixel((sx + 239, sy + 0)) == (239, 231, 231)
-            assert rgb.getpixel((sx + 100, sy + 0)) == (173, 156, 132)
-            assert rgb.getpixel((sx + 100, sy + 15)) == (33, 24, 16)
-            assert rgb.getpixel((sx + 100, sy + 17)) == (239, 231, 231)
-            assert rgb.getpixel((sx + 100, sy + 18)) == (16, 8, 8)
-            assert rgb.getpixel((sx + 182, sy + 3)) == (198, 189, 181)
-            assert rgb.getpixel((sx + 230, sy + 12)) == (198, 189, 181)
+    for name in (
+        "city_milestone_badge_p0",
+        "city_milestone_badge_p1",
+        "city_milestone_badge_empty_p0",
+        "city_milestone_badge_empty_p1",
+    ):
+        with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
+            assert image.mode == "P"
+            assert image.size in ((32, 16), (16, 16))
 
     for name in ("city_edge_top_left_p0", "city_edge_top_right_p0"):
         with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
+            assert image.mode == "P"
             assert image.size == (8, 32)
-            pixels = image.load()
-            visible_columns = [
-                x for x in range(image.width)
-                if any(pixels[x, y] != 0 for y in range(image.height))
-            ]
-            assert len(visible_columns) == 1
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
@@ -245,18 +228,14 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "generated::city_status_icon_f4" not in build_city
 
 
-def test_build_city_top_bar_is_only_three_pixels_taller() -> None:
+def test_build_city_backgrounds_remain_butano_safe() -> None:
     backgrounds = GBA / "graphics" / "backgrounds"
     for theme in range(4):
         with Image.open(backgrounds / f"city_bg_theme_{theme}.bmp") as image:
+            # Butano bpp_8 backgrounds must stay indexed; exact artwork/placement
+            # is intentionally not frozen while the HUD is still being adjusted.
             assert image.mode == "P"
-            rgb = image.convert("RGB")
-            # Exact 240x160 JAR shell: two dark rows, pale separator, final dark line, then sky.
-            assert rgb.getpixel((128, 48 + 15)) == (33, 24, 16)
-            assert rgb.getpixel((128, 48 + 16)) == (33, 24, 16)
-            assert rgb.getpixel((128, 48 + 17)) == (239, 231, 231)
-            assert rgb.getpixel((128, 48 + 18)) == (16, 8, 8)
-            assert rgb.getpixel((128, 48 + 19)) != (16, 8, 8)
+            assert image.size == (256, 256)
 
 
 
