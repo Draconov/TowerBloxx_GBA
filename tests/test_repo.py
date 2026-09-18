@@ -160,14 +160,18 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     generated = (GBA / "include" / "generated" / "tower_ui_assets.h").read_text(encoding="utf-8")
     assert "constexpr int status_row_y = 8;" in source
-    assert "constexpr int population_icon_y = status_row_y - 2;" in source
+    assert "constexpr int population_icon_y = status_row_y - 3;" in source
     assert "constexpr int population_counter_y = status_row_y - 1;" in source
-    assert "constexpr int comparison_row_y = status_row_y - 1;" in source
+    assert "constexpr int comparison_row_y = status_row_y;" in source
+    assert "_show_composite(generated::city_milestone_badge, centered_x(26), centered_y(status_row_y));" in source
+    assert "constexpr int status_icon_x = 176;" in source
+    assert "constexpr int comparison_panel_left_x = 194;" in source
+    assert "constexpr int comparison_panel_right_x = 218;" in source
     assert "centered_y(population_icon_y)" in source
     assert source.count("centered_y(population_counter_y)") >= 2
     assert source.count("centered_y(comparison_row_y)") >= 3
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 206, comparison_row_y)" in source
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 230, comparison_row_y)" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 204, comparison_row_y)" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 228, comparison_row_y)" in source
     assert "generated::city_population_icon" in source
     assert "generated::city_status_browse" in source
     assert "generated::city_status_placement" in source
@@ -184,6 +188,10 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
             ]
             assert visible_rows[0] == 0
             assert visible_rows[-1] == 17
+
+    with Image.open(GBA / "graphics" / "ui" / "city_milestone_badge_p0.bmp") as badge0,          Image.open(GBA / "graphics" / "ui" / "city_milestone_badge_p1.bmp") as badge1:
+        assert badge0.size == (32, 16)
+        assert badge1.size == (16, 16)
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
@@ -211,6 +219,7 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "support_nav_f2" in quick
     assert "support_nav_f2" in construction
     assert "support_nav_f2" in build_city
+    assert "_show_composite(generated::support_nav_f2, 0, centered_y(134), -100);" in build_city
     assert "current_roof_blink_bucket" in construction
     assert "_last_hud_roof_blink_bucket" in construction
     assert "construction_target_badge_f4" in construction
