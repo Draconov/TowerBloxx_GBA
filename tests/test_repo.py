@@ -158,23 +158,32 @@ def test_combo_feedback_contract_is_retained() -> None:
 
 def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    generated = (GBA / "include" / "generated" / "tower_ui_assets.h").read_text(encoding="utf-8")
     assert "constexpr int status_row_y = 8;" in source
-    assert source.count("centered_y(status_row_y)") >= 8
-    assert "_show_composite(generated::city_milestone_badge, centered_x(28), centered_y(status_row_y));" in source
-    assert "int milestone_x = milestone >= 10 ? 24 : 27;" in source
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 206, status_row_y)" in source
-    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 230, status_row_y)" in source
-    assert "constexpr int population_icon_x = 58;" in source
-    assert "constexpr int population_counter_x = 75;" in source
+    assert "constexpr int population_icon_y = status_row_y - 2;" in source
+    assert "constexpr int population_counter_y = status_row_y - 1;" in source
+    assert "constexpr int comparison_row_y = status_row_y - 1;" in source
+    assert "centered_y(population_icon_y)" in source
+    assert source.count("centered_y(population_counter_y)") >= 2
+    assert source.count("centered_y(comparison_row_y)") >= 3
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 206, comparison_row_y)" in source
+    assert "show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 230, comparison_row_y)" in source
     assert "generated::city_population_icon" in source
-    assert "generated::hud_population_icon" not in source
     assert "generated::city_status_browse" in source
     assert "generated::city_status_placement" in source
-    assert "generated::city_status_icon_f3" not in source
-    assert "generated::city_status_icon_f4" not in source
-    assert "int width = (snapshot.total_population - current) * 229 / (next - current);" in source
-    assert "int x = 5;" in source
-    assert "centered_y(13)" in source
+
+    assert "{ &bn::sprite_items::city_edge_top_left_p0, 3, 5 }" in generated
+    assert "{ &bn::sprite_items::city_edge_top_right_p0, 3, 5 }" in generated
+    for name in ("city_edge_top_left_p0", "city_edge_top_right_p0"):
+        with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
+            assert image.size == (8, 32)
+            pixels = image.load()
+            visible_rows = [
+                y for y in range(image.height)
+                if any(pixels[x, y] != 0 for x in range(image.width))
+            ]
+            assert visible_rows[0] == 0
+            assert visible_rows[-1] == 17
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:

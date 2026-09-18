@@ -881,12 +881,12 @@ inline const UiSpritePartAsset city_continue_arrow_parts[] = {
 inline const UiCompositeAsset city_continue_arrow = { city_continue_arrow_parts, 1 };
 
 inline const UiSpritePartAsset city_edge_top_left_parts[] = {
-    { &bn::sprite_items::city_edge_top_left_p0, 3, -3 },
+    { &bn::sprite_items::city_edge_top_left_p0, 3, 5 },
 };
 inline const UiCompositeAsset city_edge_top_left = { city_edge_top_left_parts, 1 };
 
 inline const UiSpritePartAsset city_edge_top_right_parts[] = {
-    { &bn::sprite_items::city_edge_top_right_p0, 3, -3 },
+    { &bn::sprite_items::city_edge_top_right_p0, 3, 5 },
 };
 inline const UiCompositeAsset city_edge_top_right = { city_edge_top_right_parts, 1 };
 
