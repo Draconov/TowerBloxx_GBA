@@ -168,10 +168,13 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     assert "constexpr int population_counter_x = 75;" in source
     assert "generated::city_population_icon" in source
     assert "generated::hud_population_icon" not in source
-    assert "generated::city_status_icon_f3" in source
-    assert "generated::city_status_icon_f4" in source
-    assert "generated::city_status_browse" not in source
-    assert "generated::city_status_placement" not in source
+    assert "generated::city_status_browse" in source
+    assert "generated::city_status_placement" in source
+    assert "generated::city_status_icon_f3" not in source
+    assert "generated::city_status_icon_f4" not in source
+    assert "int width = (snapshot.total_population - current) * 229 / (next - current);" in source
+    assert "int x = 5;" in source
+    assert "centered_y(13)" in source
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
@@ -204,8 +207,10 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
     assert "construction_target_badge_f4" in construction
     assert "generated::city_population_icon" in build_city
     assert "generated::hud_population_icon" not in build_city
-    assert "generated::city_status_icon_f3" in build_city
-    assert "generated::city_status_icon_f4" in build_city
+    assert "generated::city_status_browse" in build_city
+    assert "generated::city_status_placement" in build_city
+    assert "generated::city_status_icon_f3" not in build_city
+    assert "generated::city_status_icon_f4" not in build_city
 
 
 def test_build_city_top_bar_is_only_three_pixels_taller() -> None:

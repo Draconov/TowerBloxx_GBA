@@ -771,20 +771,20 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
         return;
     }
 
-    int width = (snapshot.total_population - current) * 234 / (next - current);
+    int width = (snapshot.total_population - current) * 229 / (next - current);
     if(width < 0) { width = 0; }
-    if(width > 234) { width = 234; }
+    if(width > 229) { width = 229; }
 
-    int x = 3;
+    int x = 5;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(12));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(13));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(12));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(13));
     }
 }
 
@@ -860,7 +860,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     constexpr int comparison_panel_left_x = 196;
     constexpr int comparison_panel_right_x = 220;
     _show_composite(
-            active_placement ? generated::city_status_icon_f4 : generated::city_status_icon_f3,
+            active_placement ? generated::city_status_placement : generated::city_status_browse,
             centered_x(status_icon_x), centered_y(status_row_y));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
