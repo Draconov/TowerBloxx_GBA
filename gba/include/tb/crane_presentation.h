@@ -24,6 +24,48 @@ inline constexpr int perfect_landing_star_duration_ms = 420;
 inline constexpr int perfect_landing_star_trail_delay_ms = 55;
 inline constexpr int perfect_landing_seam_white_ms = 50;
 inline constexpr int perfect_landing_seam_total_ms = 130;
+inline constexpr int perfect_landing_pattern_count = 10;
+
+[[nodiscard]] constexpr int perfect_landing_pattern_bucket(int seed)
+{
+    const int normalized = seed < 0 ? -seed : seed;
+    return normalized % perfect_landing_pattern_count;
+}
+
+[[nodiscard]] constexpr int perfect_landing_pattern_adjust_x(int index, int pattern)
+{
+    constexpr int table[perfect_landing_pattern_count][perfect_landing_star_count] = {
+        { 0,  0,  0,  0,  0,  0,  0,  0},
+        {-4, -2, -1,  0,  1,  2,  4, -2},
+        { 4,  2,  1,  0, -1, -2, -4,  2},
+        {-6, -4, -2,  0,  2,  4,  6,  0},
+        { 6,  4,  2,  0, -2, -4, -6,  0},
+        {-2, -1,  3, -3,  3, -1, -2,  2},
+        { 2,  1, -3,  3, -3,  1,  2, -2},
+        {-3,  1,  4, -1, -4, -1,  3,  1},
+        { 3, -1, -4,  1,  4,  1, -3, -1},
+        { 0, -3,  2, -4,  2,  3,  0,  4},
+    };
+    return table[pattern][index];
+}
+
+[[nodiscard]] constexpr int perfect_landing_pattern_adjust_y(int index, int pattern)
+{
+    constexpr int table[perfect_landing_pattern_count][perfect_landing_star_count] = {
+        { 0,  0,  0,  0,  0,  0,  0,  0},
+        {-2,  1,  4, -3,  4,  1, -2,  3},
+        {-3,  2,  5, -1,  5,  2, -3,  1},
+        { 1,  3,  6, -2,  6,  3,  1,  5},
+        {-1,  5,  3, -4,  3,  5, -1,  6},
+        {-4,  0,  5, -6,  5,  0, -4,  4},
+        {-2,  4,  2, -5,  2,  4, -2,  6},
+        { 0,  2,  6, -4,  6,  2,  0,  2},
+        {-5,  2,  4, -2,  4,  2, -5,  5},
+        {-1,  3,  7, -5,  7,  3, -1,  4},
+    };
+    return table[pattern][index];
+}
+
 
 [[nodiscard]] constexpr int perfect_landing_star_target_x(int index)
 {
@@ -93,15 +135,21 @@ inline constexpr int perfect_landing_seam_total_ms = 130;
 [[nodiscard]] constexpr int perfect_landing_star_offset_x(int index, int elapsed_ms, int seed)
 {
     const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
-    return (perfect_landing_star_target_x(index) + perfect_landing_star_jitter_x(index, seed)) * elapsed /
-            perfect_landing_star_duration_ms;
+    const int pattern = perfect_landing_pattern_bucket(seed);
+    const int target = perfect_landing_star_target_x(index) +
+            perfect_landing_pattern_adjust_x(index, pattern) +
+            perfect_landing_star_jitter_x(index, seed);
+    return target * elapsed / perfect_landing_star_duration_ms;
 }
 
 [[nodiscard]] constexpr int perfect_landing_star_offset_y(int index, int elapsed_ms, int seed)
 {
     const int elapsed = perfect_landing_effect_elapsed(elapsed_ms);
-    return (perfect_landing_star_target_y(index) + perfect_landing_star_jitter_y(index, seed)) * elapsed /
-            perfect_landing_star_duration_ms;
+    const int pattern = perfect_landing_pattern_bucket(seed);
+    const int target = perfect_landing_star_target_y(index) +
+            perfect_landing_pattern_adjust_y(index, pattern) +
+            perfect_landing_star_jitter_y(index, seed);
+    return target * elapsed / perfect_landing_star_duration_ms;
 }
 
 [[nodiscard]] constexpr int perfect_landing_star_trail_elapsed(int elapsed_ms, int trail_index)

@@ -170,7 +170,7 @@ def test_build_city_top_hud_uses_taller_bar_vertical_centering() -> None:
     assert "if(width < 1) { width = 1; }" in source
     assert "if(width > 234) { width = 234; }" in source
     assert "int x = 2;" in source
-    assert "centered_y(14)" in source
+    assert "centered_y(15)" in source
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
@@ -224,6 +224,7 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
         assert "_update_perfect_landing_effect" in source
         assert "accuracy_star_f0" in source
         assert "accuracy_star_f1" in source
+        assert "accuracy_star_f2" in source
         assert "perfect_landing_star_trail_elapsed" in source
         assert "_perfect_landing_seed" in source
         assert "combo_seam_flash_white" in source
@@ -453,3 +454,12 @@ def test_all_building_families_fit_two_obj_palette_banks() -> None:
 
         assert len(palette_signatures) == 1, f"building type {building_type} has multiple tower palettes"
 
+
+
+def test_ci_workflow_uses_node24_ready_actions_and_pinned_ubuntu() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert workflow.count("runs-on: ubuntu-24.04") >= 3
+    assert "actions/checkout@v5" in workflow
+    assert "actions/setup-python@v6" in workflow
+    assert "actions/upload-artifact@v6" in workflow
+    assert "actions/download-artifact@v5" in workflow

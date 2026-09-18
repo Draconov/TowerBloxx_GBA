@@ -993,27 +993,45 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
     const int x = _screen_x(floor.x + pose.x_delta);
     const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    // The burst starts dead-center on the landed block, adds a small random
-    // spread per perfect hit, and leaves a short trail behind each travelling
-    // star. Keep it independent from the combo sparkle so both can coexist.
-    if(_perfect_landing_elapsed_ms < 70)
+    // The burst starts with a small core sparkle, grows through a medium phase,
+    // and ends on the large star frame. Two delayed ghosts create visible
+    // trails, while the seed picks one of several fixed spread patterns.
+    if(_perfect_landing_elapsed_ms < 45)
     {
-        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -25);
+        show_ui_composite(generated::accuracy_star_f1, x, y, _perfect_star_sprites, -26);
     }
+    else if(_perfect_landing_elapsed_ms < 95)
+    {
+        show_ui_composite(generated::accuracy_star_f2, x, y, _perfect_star_sprites, -26);
+    }
+    else if(_perfect_landing_elapsed_ms < 145)
+    {
+        show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -26);
+    }
+
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
-        const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 0);
-        if(trail_elapsed > 0)
+        const int far_trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 1);
+        if(far_trail_elapsed > 0)
         {
-            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
-            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
-            show_ui_composite(generated::accuracy_star_f0, trail_x, trail_y, _perfect_star_sprites, -24);
+            const int trail_x = x + perfect_landing_star_offset_x(index, far_trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, far_trail_elapsed, _perfect_landing_seed);
+            show_ui_composite(generated::accuracy_star_f1, trail_x, trail_y, _perfect_star_sprites, -25);
+        }
+
+        const int near_trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 0);
+        if(near_trail_elapsed > 0)
+        {
+            const int trail_x = x + perfect_landing_star_offset_x(index, near_trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, near_trail_elapsed, _perfect_landing_seed);
+            show_ui_composite(generated::accuracy_star_f2, trail_x, trail_y, _perfect_star_sprites, -24);
         }
 
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
-        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 120 ?
-                generated::accuracy_star_f0 : generated::accuracy_star_f1;
+        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 95 ?
+                generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 180 ?
+                generated::accuracy_star_f2 : generated::accuracy_star_f0;
         show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
     }
 

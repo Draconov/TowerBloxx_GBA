@@ -778,13 +778,13 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
     int x = 2;
     while(width >= 8)
     {
-        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(14));
+        _show_composite(generated::city_progress_segment, centered_x(x + 4), centered_y(15));
         x += 8;
         width -= 8;
     }
     if(width > 0)
     {
-        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(14));
+        _show_composite(*city_progress_tails[width - 1], centered_x(x + width / 2), centered_y(15));
     }
 }
 
@@ -867,7 +867,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     const bool active_placement = placement && snapshot.placement_transition_ms == 0;
     constexpr int status_icon_x = 176;
     constexpr int comparison_panel_left_x = 194;
-    constexpr int comparison_panel_right_x = 218;
+    constexpr int comparison_panel_right_x = 219;
     _show_composite(
             active_placement ? generated::city_status_placement : generated::city_status_browse,
             centered_x(status_icon_x), centered_y(comparison_row_y));
@@ -888,8 +888,8 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         if(existing_type >= 1 && existing_type <= 4)
         {
             _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_right_x), centered_y(comparison_row_y));
-            _show_composite(*city_type_badges[existing_type - 1], centered_x(209), centered_y(comparison_row_y));
-            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 228, comparison_row_y);
+            _show_composite(*city_type_badges[existing_type - 1], centered_x(210), centered_y(comparison_row_y));
+            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 229, comparison_row_y);
         }
     }
 
