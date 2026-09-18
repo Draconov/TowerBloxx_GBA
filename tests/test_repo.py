@@ -247,6 +247,7 @@ def test_build_city_top_bar_is_only_three_pixels_taller() -> None:
     backgrounds = GBA / "graphics" / "backgrounds"
     for theme in range(4):
         with Image.open(backgrounds / f"city_bg_theme_{theme}.bmp") as image:
+            assert image.mode == "P"
             rgb = image.convert("RGB")
             # Exact 240x160 JAR shell: two dark rows, pale separator, final dark line, then sky.
             assert rgb.getpixel((128, 48 + 15)) == (33, 24, 16)
