@@ -211,6 +211,8 @@ def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
         assert "accuracy_star_f2" in source
         assert "perfect_landing_star_trail_elapsed" in source
         assert "_perfect_landing_seed" in source
+        assert "snapshot.current_x" in source
+        assert "legacy_block_sparkle_frames" in source
         assert "combo_seam_flash_white" in source
 
     assert "support_nav_f2" in quick

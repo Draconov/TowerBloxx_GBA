@@ -1022,6 +1022,17 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
                 _screen_y(floor.y, snapshot.presentation_camera_y),
                 _block_sparkle_sprites, -21);
     }
+
+    const bool current_visible = snapshot.status == TowerConstructionStatus::Playing &&
+            (snapshot.block_state == TowerConstructionBlockState::Raising || snapshot.block_state == TowerConstructionBlockState::Attached ||
+             snapshot.block_state == TowerConstructionBlockState::Falling || snapshot.block_state == TowerConstructionBlockState::Slipping);
+    if(current_visible)
+    {
+        const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[animation_bucket % 3];
+        show_ui_composite(asset, _screen_x(snapshot.current_x),
+                          _screen_y(snapshot.current_y, snapshot.presentation_camera_y),
+                          _block_sparkle_sprites, -19);
+    }
 }
 
 void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot)
@@ -1047,43 +1058,45 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
     const int x = _screen_x(floor.x + pose.x_delta);
     const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
 
-    if(_perfect_landing_elapsed_ms < 55)
+    // Match the spinning combo star and sparkle palette, reduce the star count,
+    // and make the burst read more clearly with three delayed trail ghosts.
+    if(_perfect_landing_elapsed_ms < 60)
     {
         show_ui_composite(generated::accuracy_star_f1, x, y, _perfect_star_sprites, -26);
     }
-    else if(_perfect_landing_elapsed_ms < 120)
+    else if(_perfect_landing_elapsed_ms < 130)
     {
         show_ui_composite(generated::accuracy_star_f2, x, y, _perfect_star_sprites, -26);
     }
-    else if(_perfect_landing_elapsed_ms < 220)
+    else if(_perfect_landing_elapsed_ms < 250)
     {
         show_ui_composite(generated::accuracy_star_f0, x, y, _perfect_star_sprites, -26);
     }
 
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
-        const int far_trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 1);
-        if(far_trail_elapsed > 0)
+        for(int trail_index = 2; trail_index >= 0; --trail_index)
         {
-            const int trail_x = x + perfect_landing_star_offset_x(index, far_trail_elapsed, _perfect_landing_seed);
-            const int trail_y = y + perfect_landing_star_offset_y(index, far_trail_elapsed, _perfect_landing_seed);
-            show_ui_composite(generated::accuracy_star_f1, trail_x, trail_y, _perfect_star_sprites, -25);
-        }
+            const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
+            if(trail_elapsed <= 0)
+            {
+                continue;
+            }
 
-        const int near_trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, 0);
-        if(near_trail_elapsed > 0)
-        {
-            const int trail_x = x + perfect_landing_star_offset_x(index, near_trail_elapsed, _perfect_landing_seed);
-            const int trail_y = y + perfect_landing_star_offset_y(index, near_trail_elapsed, _perfect_landing_seed);
-            show_ui_composite(generated::accuracy_star_f2, trail_x, trail_y, _perfect_star_sprites, -24);
+            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
+            const generated::UiCompositeAsset& trail = trail_index == 2 ? generated::accuracy_star_f1 :
+                                                       trail_index == 1 ? generated::accuracy_star_f2 :
+                                                                          generated::accuracy_star_f0;
+            show_ui_composite(trail, trail_x, trail_y, _perfect_star_sprites, -25 + trail_index);
         }
 
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
-        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 120 ?
-                generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
+        const generated::UiCompositeAsset& star = _perfect_landing_elapsed_ms < 130 ?
+                generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 260 ?
                 generated::accuracy_star_f2 : generated::accuracy_star_f0;
-        show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -23);
+        show_ui_composite(star, star_x, star_y, _perfect_star_sprites, -22);
     }
 
     const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
