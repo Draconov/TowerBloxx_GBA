@@ -38,6 +38,9 @@ constexpr int building_widths[4] = {15, 16, 17, 19};
 constexpr int building_heights[4] = {14, 16, 17, 19};
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
+// A valid-lot pulse is a floor marker, not an overlay on placed buildings.
+// In Butano lower sprite z-order values draw in front of higher values.
+constexpr int valid_lot_ring_z_order = 1;
 constexpr int selected_preview_outline_z_order = -2;
 constexpr int selected_preview_tower_z_order = -3;
 constexpr int placement_pending_z_order = -4;
@@ -554,6 +557,9 @@ void BuildCityScene::_show_valid_lot_ring(
         {
             valid_lot_palette = sprite->palette();
         }
+        // Keep the pulsing floor marker beneath any existing tower, including
+        // when the occupied cell is the selected replacement destination.
+        sprite->set_z_order(valid_lot_ring_z_order);
         _sprites.push_back(*sprite);
     }
 }
@@ -821,9 +827,8 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
 {
     _show_progress_line(snapshot);
 
-    // Resource 20 is clipped into four 3x23 screen-edge strips. The top pair
-    // needs to start at the very top of the screen so the black frame line is
-    // visible around the Build City top bar, like in the jar HUD.
+    // Existing side-edge strips close the 1px black top-bar frame at x=0/239.
+    // The four indexed city backgrounds supply the top and bottom edges.
     _show_composite(generated::city_edge_top_left, centered_x(1), centered_y(-1));
     _show_composite(generated::city_edge_top_right, centered_x(238), centered_y(-1));
     _show_composite(generated::city_edge_bottom_left, centered_x(1), centered_y(148));
@@ -837,9 +842,13 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     constexpr int population_counter_y = status_row_y - 1;
     constexpr int comparison_row_y = status_row_y;
     const bool empty_milestone_badge = snapshot.total_population == 0;
+    // The original badge graphic already contains a black top border. Align
+    // that row with the background's y=0 border instead of drawing a 2px
+    // stripe above the badge. Keep its digits and the other HUD items at y=9.
+    constexpr int badge_row_y = status_row_y - 1;
     _show_composite(
             empty_milestone_badge ? generated::city_milestone_badge_empty : generated::city_milestone_badge,
-            centered_x(25), centered_y(status_row_y));
+            centered_x(25), centered_y(badge_row_y));
 
     if(! empty_milestone_badge)
     {
@@ -924,6 +933,42 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
     }
 
+    // Original neighbor requirements contain an escaped newline. Split it for
+    // both the selector browser (where they normally appear) and placement,
+    // instead of displaying literal backslash+n or overflowing the bottom bar.
+    const auto show_instruction = [this](bn::string_view instruction)
+    {
+        bn::string<96> first_line;
+        bn::string<96> second_line;
+        bool on_second_line = false;
+        for(int index = 0; index < instruction.size(); ++index)
+        {
+            if(instruction[index] == '\\' && index + 1 < instruction.size() &&
+               instruction[index + 1] == 'n')
+            {
+                on_second_line = true;
+                ++index;
+            }
+            else if(on_second_line)
+            {
+                second_line.append(instruction[index]);
+            }
+            else
+            {
+                first_line.append(instruction[index]);
+            }
+        }
+        if(on_second_line)
+        {
+            (void) _text_generator.generate_optional(0, 63, first_line, _sprites);
+            (void) _text_generator.generate_optional(0, 73, second_line, _sprites);
+        }
+        else
+        {
+            (void) _text_generator.generate_optional(0, 68, first_line, _sprites);
+        }
+    };
+
     if(snapshot.mode == BuildCityMode::Browse)
     {
         if(snapshot.selected_building_type > snapshot.max_unlocked_building_type)
@@ -934,9 +979,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
         else
         {
-            (void) _text_generator.generate_optional(
-                    0, 68,
-                    generated::localized_strings[_language][99 + snapshot.selected_building_type - 1], _sprites);
+            show_instruction(generated::localized_strings[_language][99 + snapshot.selected_building_type - 1]);
         }
     }
     else if(snapshot.placement_transition_ms == 0)
@@ -945,8 +988,9 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
                 generated::localized_strings[_language][64] :
                 generated::localized_strings[_language][
                         (snapshot.placement_committing || snapshot.placement_valid) ? 65 : 66];
-        (void) _text_generator.generate_optional(0, 68, instruction, _sprites);
+        show_instruction(instruction);
     }
+
 }
 
 void BuildCityScene::_show_event_modal(const BuildCityEvent& event)

@@ -170,6 +170,18 @@ def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
     assert "generated::city_comparison_panel_active" in source
     assert "generated::city_milestone_badge_empty" in source
     assert "generated::city_milestone_badge" in source
+    # On an occupied lot the pulsing floor marker must remain behind its
+    # already placed tower, including when that cell can be replaced.
+    assert "constexpr int valid_lot_ring_z_order = 1" in source
+    assert "sprite->set_z_order(valid_lot_ring_z_order)" in source
+    assert "constexpr int badge_row_y = status_row_y - 1" in source
+    # Required-neighbor instructions are rendered as two separate lines,
+    # instead of showing a literal \n in the bottom dialogue.
+    assert "instruction[index + 1] == 'n'" in source
+    assert "show_instruction(generated::localized_strings" in source
+    assert "show_instruction(instruction)" in source
+    assert "_text_generator.generate_optional(0, 63, first_line" in source
+    assert "_text_generator.generate_optional(0, 73, second_line" in source
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
@@ -185,10 +197,13 @@ def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
             assert image.mode == "P"
             assert image.size in ((32, 16), (16, 16))
 
-    for name in ("city_edge_top_left_p0", "city_edge_top_right_p0"):
+    for name, x in (("city_edge_top_left_p0", 0), ("city_edge_top_right_p0", 2)):
         with Image.open(GBA / "graphics" / "ui" / f"{name}.bmp") as image:
             assert image.mode == "P"
             assert image.size == (8, 32)
+            palette = image.getpalette() or []
+            assert tuple(palette[3:6]) == (0, 0, 0)
+            assert all(image.getpixel((x, y)) == 1 for y in range(12, 32))
 
 
 def test_perfect_landing_feedback_and_continue_prompts_are_wired() -> None:
@@ -255,6 +270,12 @@ def test_build_city_backgrounds_remain_butano_safe() -> None:
             # is intentionally not frozen while the HUD is still being adjusted.
             assert image.mode == "P"
             assert image.size == (256, 256)
+            # A single uninterrupted black outer frame, including the lower
+            # edge after the two-tone progress line at screen rows 17 and 18.
+            assert tuple((image.getpalette() or [])[255 * 3:256 * 3]) == (0, 0, 0)
+            assert all(image.getpixel((x, 48)) == 255 for x in range(8, 248))
+            assert all(image.getpixel((x, 67)) == 255 for x in range(8, 248))
+            assert image.getpixel((32, 65)) != 255
 
 
 
