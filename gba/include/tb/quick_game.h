@@ -75,6 +75,7 @@ struct QuickGameSnapshot
     int swing_period_ms = 1550;
     int swing_amplitude_x = 128;
     int swing_amplitude_y = 64;
+    bool stationary_crane = false;
     int drop_velocity_x = 0;
     int drop_velocity_y = 0;
     int current_z_angle_degrees = 0;
@@ -136,6 +137,8 @@ private:
     int _swing_period_ms = 1550;
     int _swing_amplitude_x = 128;
     int _swing_amplitude_y = 64;
+    bool _stationary_crane = false;
+    int _secret_step = 0;
     int _vertical_swing_bias = 0;
     int _world_anchor_y = 2432;
     int _rope_length = 0;

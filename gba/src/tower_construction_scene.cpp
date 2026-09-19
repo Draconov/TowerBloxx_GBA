@@ -304,7 +304,7 @@ void TowerConstructionScene::start(
     set_gameplay_backdrop();
     _request = request;
     _language = language >= 0 && language < generated::locale_count ? language : 0;
-    _construction.start(request.building_type, request.target_height, request.trophy_eligible);
+    _construction.start(request.building_type, request.target_height, request.trophy_eligible, request.stationary_crane);
     _gameplay_workers.reset();
     _life_indicator_animation.reset(3);
     _frame_phase = 0;

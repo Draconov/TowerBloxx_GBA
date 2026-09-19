@@ -21,6 +21,7 @@ struct BuildCityConstructionRequest
     uint8_t building_type = 0;
     int target_height = 0;
     bool trophy_eligible = false;
+    bool stationary_crane = false;
 };
 
 struct BuildCityUpdateResult
@@ -28,12 +29,14 @@ struct BuildCityUpdateResult
     bool exit = false;
     bool save_dirty = false;
     bool placement_committed = false;
+    bool sandbox_activated = false;
     int committed_total_population = 0;
 };
 
 struct BuildCitySnapshot
 {
     BuildCityMode mode = BuildCityMode::Browse;
+    bool sandbox_active = false;
     int total_population = 0;
     int milestone = 0;
     int city_level = 0;
@@ -71,12 +74,15 @@ public:
     [[nodiscard]] BuildCityConstructionRequest construction_request() const;
     void clear_construction_request();
     void accept_constructed_tower(uint8_t building_type, int population, uint8_t roof);
+    [[nodiscard]] bool sandbox_active() const;
 
     [[nodiscard]] const CityTileSave& tile(const SaveData& save, int index) const;
     [[nodiscard]] int placement_capability(const SaveData& save, int index) const;
 
 private:
     BuildCityMode _mode = BuildCityMode::Browse;
+    bool _sandbox_active = false;
+    int _secret_step = 0;
     int _total_population = 0;
     int _milestone = 0;
     int _city_level = 0;

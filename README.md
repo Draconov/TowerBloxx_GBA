@@ -30,6 +30,16 @@ The ROM is written as `gba/TowerBloxxGBA.gba`.
 
 The repository contains only the final GBA source, runtime assets, permanent regression tests, and release tooling needed to build and maintain the port.
 
+## Optional cheats
+
+Hold **SELECT** and press **Up, Up, Down, Down**, releasing each direction between presses.
+
+- **Build City:** activate sandbox mode, including unlocked building types and
+  trophy eligibility, relaxed placement, a stationary crane, and no normal city
+  progress saved from the sandbox session.
+- **Quick Game:** toggle the stationary crane on or off. Normal swinging returns
+  after entering the code again; a new game resets the toggle.
+
 ## Tests
 
 From the repository root:

@@ -21,6 +21,7 @@ struct BuildCitySceneUpdateResult
     bool exit = false;
     bool save_dirty = false;
     bool construction_requested = false;
+    bool sandbox_activated = false;
     bool placement_committed = false;
     int committed_total_population = 0;
 };
@@ -33,6 +34,7 @@ public:
     void start(const SaveData& save, int language);
     [[nodiscard]] BuildCitySceneUpdateResult update(const InputFrame& input, SaveData& save);
     [[nodiscard]] bool active() const;
+    [[nodiscard]] bool sandbox_active() const;
     [[nodiscard]] BuildCityConstructionRequest construction_request() const;
     void clear_construction_request();
     void accept_constructed_tower(uint8_t building_type, int population, uint8_t roof, const SaveData& save);

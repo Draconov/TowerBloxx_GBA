@@ -34,6 +34,7 @@ int main()
 
     tb::AppState app;
     tb::SaveData save = tb::load_save();
+    tb::SaveData sandbox_save = save; // Volatile city copy; never written to SRAM.
     tb::UiController controller(save);
     tb::UiShell ui;
     tb::QuickGameScene quick_game;
@@ -83,8 +84,13 @@ int main()
 
         case tb::RuntimeScene::BuildCity:
         {
-            const tb::BuildCitySceneUpdateResult result = build_city.update(input, save);
-            if(result.save_dirty)
+            tb::SaveData& city_save = build_city.sandbox_active() ? sandbox_save : save;
+            const tb::BuildCitySceneUpdateResult result = build_city.update(input, city_save);
+            if(result.sandbox_activated)
+            {
+                sandbox_save = save;
+            }
+            if(result.save_dirty && ! build_city.sandbox_active())
             {
                 tb::store_save(save);
             }
@@ -95,7 +101,8 @@ int main()
                 if(request.pending)
                 {
                     build_city.clear_construction_request();
-                    construction.start(request, controller.language(), save);
+                    construction.start(request, controller.language(),
+                                       build_city.sandbox_active() ? sandbox_save : save);
                     session.start_construction();
                 }
             }
@@ -125,8 +132,9 @@ int main()
 
         case tb::RuntimeScene::Construction:
         {
-            const tb::TowerConstructionSceneUpdateResult result = construction.update(input, save);
-            if(result.save_dirty)
+            tb::SaveData& construction_save = build_city.sandbox_active() ? sandbox_save : save;
+            const tb::TowerConstructionSceneUpdateResult result = construction.update(input, construction_save);
+            if(result.save_dirty && ! build_city.sandbox_active())
             {
                 tb::store_save(save);
             }
@@ -137,14 +145,15 @@ int main()
             }
             else if(result.completed)
             {
-                build_city.accept_constructed_tower(result.building_type, result.population, result.roof, save);
-                build_city.resume_presentation(save);
+                build_city.accept_constructed_tower(result.building_type, result.population, result.roof,
+                                                   construction_save);
+                build_city.resume_presentation(construction_save);
                 audio.play_construction_result(result.roof);
                 session.return_to_build_city();
             }
             else if(result.exit)
             {
-                build_city.resume_presentation(save);
+                build_city.resume_presentation(construction_save);
                 session.return_to_build_city();
             }
             break;

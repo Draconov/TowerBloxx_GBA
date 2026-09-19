@@ -123,6 +123,78 @@ void test_first_block_intro_and_release_gate()
     assert(quick.snapshot().block_state == tb::QuickBlockState::Attached);
 }
 
+void test_quick_game_select_cheat_only_stops_swing()
+{
+    tb::QuickGame game;
+    assert(! game.snapshot().stationary_crane);
+
+    // Directional presses without SELECT are not a cheat.
+    for(tb::Key direction : {tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down})
+    {
+        game.update(25, fresh(direction));
+    }
+    assert(! game.snapshot().stationary_crane);
+
+    // Each Up/Down has to be released between presses while SELECT remains held.
+    const uint16_t select = tb::key_mask(tb::Key::Select);
+    for(tb::Key direction : {tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down})
+    {
+        game.update(25, tb::InputFrame{uint16_t(select | tb::key_mask(direction)), tb::key_mask(direction)});
+        game.update(25, tb::InputFrame{select, 0});
+    }
+
+    auto snapshot = game.snapshot();
+    assert(snapshot.stationary_crane);
+    assert(snapshot.swing_amplitude_x == 0 && snapshot.swing_amplitude_y == 0);
+    assert(snapshot.crane_x == 0 && snapshot.current_x == 0);
+
+    // Enter the same code again: return to the original swinging gameplay.
+    for(tb::Key direction : {tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down})
+    {
+        game.update(25, tb::InputFrame{uint16_t(select | tb::key_mask(direction)), tb::key_mask(direction)});
+        game.update(25, tb::InputFrame{select, 0});
+    }
+    snapshot = game.snapshot();
+    assert(! snapshot.stationary_crane);
+    assert(snapshot.swing_amplitude_x > 0 && snapshot.swing_amplitude_y > 0);
+    bool swing_resumed = false;
+    for(int frame = 0; frame < 40; ++frame)
+    {
+        game.update(25, no_input());
+        if(game.snapshot().crane_x != 0)
+        {
+            swing_resumed = true;
+        }
+    }
+    assert(swing_resumed);
+
+    // Enter the code a third time: stationary blocks can be re-enabled.
+    for(tb::Key direction : {tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down})
+    {
+        game.update(25, tb::InputFrame{uint16_t(select | tb::key_mask(direction)), tb::key_mask(direction)});
+        game.update(25, tb::InputFrame{select, 0});
+    }
+    snapshot = game.snapshot();
+    assert(snapshot.stationary_crane);
+    assert(snapshot.swing_amplitude_x == 0 && snapshot.swing_amplitude_y == 0);
+
+    // Cheat does not disable gravity, construction, lives, population or combos.
+    for(int step = 0; step < 200 && game.snapshot().camera_y != game.snapshot().camera_target_y; ++step)
+    {
+        game.update(25, no_input());
+    }
+    assert(game.snapshot().camera_y == game.snapshot().camera_target_y);
+    game.update(25, fresh(tb::Key::A));
+    snapshot = game.snapshot();
+    assert(snapshot.block_state == tb::QuickBlockState::Falling);
+    assert(snapshot.drop_velocity_x == 0);
+
+    game.reset();
+    assert(! game.snapshot().stationary_crane);
+    game.update(25, no_input());
+    assert(game.snapshot().swing_amplitude_x > 0);
+}
+
 
 void test_special_crane_screen_anchor()
 {
@@ -294,6 +366,85 @@ void test_build_city_progress_and_replacement()
     assert(city.snapshot().total_population == before - 1000 + 444);
 }
 
+void test_build_city_secret_sandbox_with_stationary_blocks()
+{
+    const tb::SaveData original = tb::make_default_save();
+    tb::SaveData sandbox = original;
+    tb::BuildCity city(original);
+    assert(! city.sandbox_active());
+    assert(city.snapshot().max_unlocked_building_type == 1);
+
+    constexpr std::array<tb::Key, 4> secret = {
+        tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down,
+    };
+    // SELECT stays held; each direction gets its own rising-edge press.
+    for(int index = 0; index < int(secret.size()); ++index)
+    {
+        const auto input = tb::InputFrame{
+            uint16_t(tb::key_mask(tb::Key::Select) | tb::key_mask(secret[index])),
+            tb::key_mask(secret[index]),
+        };
+        const auto result = city.update(17, input, sandbox);
+        assert(result.sandbox_activated == (index == int(secret.size()) - 1));
+    }
+    assert(city.sandbox_active());
+    assert(city.snapshot().max_unlocked_building_type == 4);
+    assert(city.snapshot().max_trophy_building_type == 4);
+    for(const auto capability : city.snapshot().placement_capabilities)
+    {
+        assert(capability == 3);
+    }
+    for(int index = 0; index < 3; ++index)
+    {
+        city.update(17, fresh(tb::Key::Down), sandbox);
+    }
+    assert(city.snapshot().selected_building_type == 4);
+    city.update(17, fresh(tb::Key::A), sandbox);
+    city.update(500, no_input(), sandbox);
+    const auto request = city.construction_request();
+    assert(request.pending && request.building_type == 4);
+    assert(request.stationary_crane && request.trophy_eligible);
+    city.clear_construction_request();
+
+    tb::TowerConstruction fixed;
+    fixed.start(request.building_type, request.target_height,
+                request.trophy_eligible, request.stationary_crane);
+    tb::TowerConstruction normal;
+    normal.start(request.building_type, request.target_height, request.trophy_eligible);
+    bool ordinary_crane_moved = false;
+    for(int frame = 0; frame < 100; ++frame)
+    {
+        fixed.update(25, no_input());
+        normal.update(25, no_input());
+        const auto stationary = fixed.snapshot();
+        assert(stationary.crane_x == 0);
+        assert(stationary.current_x == 0);
+        assert(stationary.current_z_angle_degrees == 0);
+        assert(stationary.swing_amplitude_x == 0);
+        assert(stationary.swing_amplitude_y == 0);
+        if(normal.snapshot().crane_x != 0)
+        {
+            ordinary_crane_moved = true;
+        }
+    }
+    assert(ordinary_crane_moved);
+
+    // In the actual app, main.cpp supplies a cloned SaveData to sandbox mode.
+    // Placement must update that clone without changing persistent city tiles.
+    city.accept_constructed_tower(4, 1000, 2);
+    city.update(750, no_input(), sandbox);
+    assert(city.snapshot().placement_valid);
+    city.update(17, fresh(tb::Key::A), sandbox);
+    const auto placed = city.update(3001, no_input(), sandbox);
+    assert(placed.placement_committed);
+    assert(sandbox.city_tiles[12].type == 4);
+    assert(original.city_tiles[12].type == 0);
+    assert(city.snapshot().max_unlocked_building_type == 4);
+    city.reset_from_save(original);
+    assert(! city.sandbox_active());
+    assert(city.snapshot().max_unlocked_building_type == 1);
+}
+
 void test_build_city_events_and_hall_of_fame()
 {
     tb::SaveData save = tb::make_default_save();
@@ -367,11 +518,13 @@ int main()
     test_input_and_ui_shell_flow();
     test_save_and_records();
     test_first_block_intro_and_release_gate();
+    test_quick_game_select_cheat_only_stops_swing();
     test_special_crane_screen_anchor();
     test_perfect_landing_feedback_geometry();
     test_roof_phase_uses_stationary_camera_lowering();
     test_tower_combo_roof_and_failure_rules();
     test_build_city_progress_and_replacement();
+    test_build_city_secret_sandbox_with_stationary_blocks();
     test_build_city_events_and_hall_of_fame();
     test_menu_cloud_field_matches_reference_motion();
     test_session_suspend_resume();

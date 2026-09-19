@@ -101,7 +101,7 @@ public:
 
     TowerConstruction();
 
-    void start(uint8_t building_type, int target_height, bool trophy_eligible);
+    void start(uint8_t building_type, int target_height, bool trophy_eligible, bool stationary_crane = false);
     void update(int delta_ms, const InputFrame& input);
 
     [[nodiscard]] TowerConstructionSnapshot snapshot() const;
@@ -129,6 +129,7 @@ private:
     bool _roof_phase = false;
     bool _trophy_requested = false;
     bool _trophy_eligible = false;
+    bool _stationary_crane = false;
     uint8_t _roof_result = 0;
 
     int _combo_count = 0;

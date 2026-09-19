@@ -292,7 +292,8 @@ BuildCityProgressState progress_state(const BuildCitySnapshot& snapshot)
 
 bool snapshot_changed(const BuildCitySnapshot& left, const BuildCitySnapshot& right)
 {
-    return left.mode != right.mode || left.total_population != right.total_population ||
+    return left.mode != right.mode || left.sandbox_active != right.sandbox_active ||
+           left.total_population != right.total_population ||
            left.milestone != right.milestone || left.city_level != right.city_level ||
            left.max_unlocked_building_type != right.max_unlocked_building_type ||
            left.max_trophy_building_type != right.max_trophy_building_type ||
@@ -362,7 +363,7 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
             result.save_dirty = _events.acknowledge(save);
             if(! _events.has_event() && _placement_score_pending)
             {
-                result.placement_committed = true;
+                result.placement_committed = ! _city.sandbox_active();
                 result.committed_total_population = _deferred_placement_score;
                 _placement_score_pending = false;
                 _deferred_placement_score = 0;
@@ -391,6 +392,7 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
     const BuildCityUpdateResult city_result = _city.update(delta_ms, input, save);
     result.exit = city_result.exit;
     result.save_dirty = city_result.save_dirty;
+    result.sandbox_activated = city_result.sandbox_activated;
     result.construction_requested = _city.construction_request().pending;
 
     _population_roll.update(delta_ms);
@@ -412,7 +414,7 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
         }
         else
         {
-            result.placement_committed = true;
+            result.placement_committed = ! _city.sandbox_active();
             result.committed_total_population = city_result.committed_total_population;
         }
     }
@@ -441,6 +443,11 @@ BuildCitySceneUpdateResult BuildCityScene::update(const InputFrame& input, SaveD
         _rebuild(save);
     }
     return result;
+}
+
+bool BuildCityScene::sandbox_active() const
+{
+    return _city.sandbox_active();
 }
 
 bool BuildCityScene::active() const

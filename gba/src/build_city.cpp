@@ -42,6 +42,8 @@ BuildCity::BuildCity(const SaveData& save)
 void BuildCity::reset_from_save(const SaveData& save)
 {
     _mode = BuildCityMode::Browse;
+    _sandbox_active = false;
+    _secret_step = 0;
     _cursor_column = 2;
     _cursor_row = 2;
     _placement_committing = false;
@@ -73,6 +75,40 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
         delta_ms = 0;
     }
 
+    if(_mode == BuildCityMode::Browse && input.held(Key::Select) && _construction_select_ms == 0)
+    {
+        // Hold SELECT and press Up, Up, Down, Down to enter sandbox mode.
+        // SELECT prevents ordinary browse navigation while entering the code.
+        constexpr std::array<Key, 4> secret = {
+            Key::Up, Key::Up, Key::Down, Key::Down,
+        };
+        for(Key key : {Key::Up, Key::Down, Key::Left, Key::Right})
+        {
+            if(input.pressed(key))
+            {
+                _secret_step = key == secret[_secret_step] ? _secret_step + 1 :
+                        int(key == secret[0]);
+                if(_secret_step == int(secret.size()))
+                {
+                    _secret_step = 0;
+                    if(! _sandbox_active)
+                    {
+                        _sandbox_active = true;
+                        _max_unlocked_type = 4;
+                        _max_trophy_type = 4;
+                        _refresh_capabilities(save);
+                        result.sandbox_activated = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    if(! input.held(Key::Select))
+    {
+        _secret_step = 0;
+    }
+
     if(_mode == BuildCityMode::Browse)
     {
         if(_construction_select_ms > 0)
@@ -85,6 +121,7 @@ BuildCityUpdateResult BuildCity::update(int delta_ms, const InputFrame& input, S
                 _request.building_type = uint8_t(_selected_type);
                 _request.target_height = target_heights[_selected_type - 1];
                 _request.trophy_eligible = _selected_type <= _max_trophy_type;
+                _request.stationary_crane = _sandbox_active;
             }
             return result;
         }
@@ -189,6 +226,7 @@ BuildCitySnapshot BuildCity::snapshot() const
 {
     BuildCitySnapshot result;
     result.mode = _mode;
+    result.sandbox_active = _sandbox_active;
     result.total_population = _total_population;
     result.milestone = _milestone;
     result.city_level = _city_level;
@@ -213,6 +251,11 @@ BuildCitySnapshot BuildCity::snapshot() const
     result.placement_capabilities = _placement_capabilities;
     result.placement_valid = _placement_valid();
     return result;
+}
+
+bool BuildCity::sandbox_active() const
+{
+    return _sandbox_active;
 }
 
 BuildCityConstructionRequest BuildCity::construction_request() const
@@ -304,7 +347,7 @@ void BuildCity::_recalculate_progress(const SaveData& save, bool select_new_unlo
         }
     }
     const int previous_max = _max_unlocked_type;
-    _max_unlocked_type = max_unlocked_index + 1;
+    _max_unlocked_type = _sandbox_active ? 4 : max_unlocked_index + 1;
     if(select_new_unlock && _max_unlocked_type != previous_max)
     {
         _selected_type = _max_unlocked_type;
@@ -317,6 +360,11 @@ void BuildCity::_recalculate_progress(const SaveData& save, bool select_new_unlo
         {
             _max_trophy_type = index + 1;
         }
+    }
+
+    if(_sandbox_active)
+    {
+        _max_trophy_type = 4;
     }
 
     _city_level = 0;
@@ -333,7 +381,7 @@ void BuildCity::_refresh_capabilities(const SaveData& save)
 {
     for(int index = 0; index < 25; ++index)
     {
-        _placement_capabilities[index] = uint8_t(placement_capability(save, index));
+        _placement_capabilities[index] = _sandbox_active ? 3 : uint8_t(placement_capability(save, index));
         _saved_populations[index] = save.city_tiles[index].population;
     }
     if(_mode == BuildCityMode::Placement && _cursor_column >= 0)
@@ -357,7 +405,7 @@ bool BuildCity::_placement_valid() const
         return true;
     }
     const int index = _cursor_row * 5 + _cursor_column;
-    return int(_placement_capabilities[index]) >= int(_pending_type) - 1;
+    return _sandbox_active || int(_placement_capabilities[index]) >= int(_pending_type) - 1;
 }
 
 void BuildCity::_start_placement_commit(const SaveData& save)

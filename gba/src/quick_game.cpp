@@ -129,6 +129,8 @@ void QuickGame::reset()
     _swing_period_ms = period_table[4];
     _swing_amplitude_x = 128;
     _swing_amplitude_y = 64;
+    _stationary_crane = false;
+    _secret_step = 0;
     _vertical_swing_bias = 0;
     _world_anchor_y = 2432;
     _rope_length = 1664;
@@ -177,6 +179,42 @@ void QuickGame::update(int delta_ms, const InputFrame& input)
         return;
     }
 
+    // Same secret sequence as Build City, but Quick Game toggles swing only.
+    // Directional presses must be separate rising edges while SELECT is held.
+    if(_status == QuickGameStatus::Playing && input.held(Key::Select))
+    {
+        constexpr std::array<Key, 4> secret = {
+            Key::Up, Key::Up, Key::Down, Key::Down,
+        };
+        for(Key key : {Key::Up, Key::Down, Key::Left, Key::Right})
+        {
+            if(input.pressed(key))
+            {
+                _secret_step = key == secret[_secret_step] ? _secret_step + 1 :
+                        int(key == secret[0]);
+                if(_secret_step == int(secret.size()))
+                {
+                    _secret_step = 0;
+                    _stationary_crane = ! _stationary_crane;
+                    // Resume near the centre of the swing arc instead of
+                    // teleporting the crane to an arbitrary phase.
+                    if(! _stationary_crane)
+                    {
+                        _swing_phase_ms = (_swing_period_ms * 90) / 200;
+                    }
+                    // An already falling block is not repositioned, and
+                    // toggling must not carry stale attached-block momentum.
+                    _velocity_x = 0;
+                    _velocity_y = 0;
+                }
+            }
+        }
+    }
+    else if(! input.held(Key::Select))
+    {
+        _secret_step = 0;
+    }
+
     if(_status == QuickGameStatus::Playing &&
        input.pressed(Key::A) && _block_state == QuickBlockState::Attached && _camera_y == _camera_target_y)
     {
@@ -223,8 +261,9 @@ QuickGameSnapshot QuickGame::snapshot() const
     result.rope_length = _rope_length;
     result.swing_phase_ms = _swing_phase_ms;
     result.swing_period_ms = _swing_period_ms;
-    result.swing_amplitude_x = _swing_amplitude_x;
-    result.swing_amplitude_y = _swing_amplitude_y;
+    result.swing_amplitude_x = _stationary_crane ? 0 : _swing_amplitude_x;
+    result.swing_amplitude_y = _stationary_crane ? 0 : _swing_amplitude_y;
+    result.stationary_crane = _stationary_crane;
     result.drop_velocity_x = _drop_velocity_x;
     result.drop_velocity_y = _drop_velocity_y;
     result.current_z_angle_degrees = _current_z_angle_degrees;
@@ -479,18 +518,26 @@ void QuickGame::_update_crane(int delta_ms)
         }
     }
 
-    const int angle = ((200 * _swing_phase_ms) / _swing_period_ms) % 360;
-    _crane_x = (_swing_amplitude_x * java_cos(angle)) >> 15;
-    const int vertical_component = -((_swing_amplitude_y * java_sin(angle)) >> 15);
-    _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length + vertical_component;
+    if(_stationary_crane)
+    {
+        _crane_x = 0;
+        _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length;
+    }
+    else
+    {
+        const int angle = ((200 * _swing_phase_ms) / _swing_period_ms) % 360;
+        _crane_x = (_swing_amplitude_x * java_cos(angle)) >> 15;
+        const int vertical_component = -((_swing_amplitude_y * java_sin(angle)) >> 15);
+        _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length + vertical_component;
+    }
 
     if(_block_state == QuickBlockState::Attached)
     {
         // House keeps the hanging block's Z rotation coupled to the crane
         // swing, which gives the suspended floor its slight 3D rocking pose.
-        _current_z_angle_degrees = _crane_x >> 4;
-        _velocity_x = ((_crane_x - _previous_crane_x) * 256) / delta_ms;
-        _velocity_y = ((_crane_y - _previous_crane_y) * 256) / delta_ms;
+        _current_z_angle_degrees = _stationary_crane ? 0 : _crane_x >> 4;
+        _velocity_x = _stationary_crane ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
+        _velocity_y = _stationary_crane ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }
 
     _previous_crane_x = _crane_x;

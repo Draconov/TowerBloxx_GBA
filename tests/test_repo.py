@@ -461,3 +461,18 @@ def test_ci_workflow_uses_node24_ready_actions_and_pinned_ubuntu() -> None:
     assert "actions/setup-python@v6" in workflow
     assert "actions/upload-artifact@v6" in workflow
     assert "actions/download-artifact@v5" in workflow
+
+
+def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
+    main = (GBA / "src" / "main.cpp").read_text(encoding="utf-8")
+    city = (GBA / "src" / "build_city.cpp").read_text(encoding="utf-8")
+    scene = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    construction = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    assert "sandbox_save = save;" in main
+    assert "result.save_dirty && ! build_city.sandbox_active()" in main
+    assert "build_city.sandbox_active() ? sandbox_save : save" in main
+    assert "build_city.resume_presentation(construction_save)" in main
+    assert "_secret_step" in city
+    assert "_request.stationary_crane = _sandbox_active" in city
+    assert "result.placement_committed = ! _city.sandbox_active()" in scene
+    assert "request.stationary_crane" in construction

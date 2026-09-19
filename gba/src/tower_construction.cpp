@@ -110,7 +110,7 @@ TowerConstruction::TowerConstruction()
     start(1, 10, false);
 }
 
-void TowerConstruction::start(uint8_t building_type, int target_height, bool trophy_eligible)
+void TowerConstruction::start(uint8_t building_type, int target_height, bool trophy_eligible, bool stationary_crane)
 {
     assert(building_type >= 1 && building_type <= 4);
     assert(target_height == target_table[building_type - 1]);
@@ -128,6 +128,7 @@ void TowerConstruction::start(uint8_t building_type, int target_height, bool tro
     _roof_phase = false;
     _trophy_requested = trophy_eligible;
     _trophy_eligible = trophy_eligible;
+    _stationary_crane = stationary_crane;
     _roof_result = 0;
 
     _combo_count = 0;
@@ -139,8 +140,8 @@ void TowerConstruction::start(uint8_t building_type, int target_height, bool tro
     _clock_ms = 0;
     _swing_phase_ms = 2000;
     _swing_period_ms = period_table[building_type];
-    _swing_amplitude_x = 128;
-    _swing_amplitude_y = 64;
+    _swing_amplitude_x = _stationary_crane ? 0 : 128;
+    _swing_amplitude_y = _stationary_crane ? 0 : 64;
     _vertical_swing_bias = 0;
     _world_anchor_y = 2432;
     _rope_length = 1664;
@@ -488,16 +489,26 @@ void TowerConstruction::_update_crane(int delta_ms)
         }
     }
 
-    const int angle = ((200 * _swing_phase_ms) / _swing_period_ms) % 360;
-    _crane_x = (_swing_amplitude_x * java_cos(angle)) >> 15;
-    const int vertical_component = -((_swing_amplitude_y * java_sin(angle)) >> 15);
-    _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length + vertical_component;
+    if(_stationary_crane)
+    {
+        // Only the boom's raising/lowering remains animated. The suspended
+        // block cannot acquire horizontal/vertical swing or swing velocity.
+        _crane_x = 0;
+        _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length;
+    }
+    else
+    {
+        const int angle = ((200 * _swing_phase_ms) / _swing_period_ms) % 360;
+        _crane_x = (_swing_amplitude_x * java_cos(angle)) >> 15;
+        const int vertical_component = -((_swing_amplitude_y * java_sin(angle)) >> 15);
+        _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length + vertical_component;
+    }
 
     if(_block_state == TowerConstructionBlockState::Attached)
     {
-        _current_z_angle_degrees = _crane_x >> 4;
-        _velocity_x = ((_crane_x - _previous_crane_x) * 256) / delta_ms;
-        _velocity_y = ((_crane_y - _previous_crane_y) * 256) / delta_ms;
+        _current_z_angle_degrees = _stationary_crane ? 0 : _crane_x >> 4;
+        _velocity_x = _stationary_crane ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
+        _velocity_y = _stationary_crane ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }
 
     _previous_crane_x = _crane_x;
@@ -791,6 +802,11 @@ void TowerConstruction::_update_difficulty()
             swing_y_table[family],
             swing_y_table[1] + (_floor_count * (swing_y_table[family] - swing_y_table[1])) / half_target);
     _vertical_swing_bias = -min_value(128, (_floor_count * 256) / 100);
+    if(_stationary_crane)
+    {
+        _swing_amplitude_x = 0;
+        _swing_amplitude_y = 0;
+    }
 }
 
 void TowerConstruction::_spawn_next_block()
