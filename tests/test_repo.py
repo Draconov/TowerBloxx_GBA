@@ -476,3 +476,27 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "_request.stationary_crane = _sandbox_active" in city
     assert "result.placement_committed = ! _city.sandbox_active()" in scene
     assert "request.stationary_crane" in construction
+
+
+def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> None:
+    # GBA OAM has only 128 sprite slots. A third perfect landing used to
+    # allocate the next block/floor/HUD while retaining the previous burst of
+    # 32 star/trail sprites, triggering bn_sprites_manager::create.
+    source = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    assert '#include "bn_sprites.h"' in source
+    assert "bn::sprites::available_items_count()" in source
+    assert "_perfect_star_sprites.clear();\n    _block_sparkle_sprites.clear();\n\n    if(snapshot.floor_count" in source
+
+    # In normal startup, live updates, and resume, construct mandatory HUD
+    # before recreating star effects; stars then use only remaining slots.
+    start = source.index("void TowerConstructionScene::start(")
+    update = source.index("TowerConstructionSceneUpdateResult TowerConstructionScene::update(")
+    resume = source.index("void TowerConstructionScene::resume_presentation()")
+    discard = source.index("void TowerConstructionScene::discard()")
+    for section in (source[start:update], source[update:resume], source[resume:discard]):
+        assert section.index("_rebuild_hud(snapshot);") < section.index("_update_perfect_landing_effect(snapshot);")
+        assert section.index("_update_combo_meter(snapshot);") < section.index("_update_perfect_landing_effect(snapshot);")
+
+    effect = source[source.index("void TowerConstructionScene::_update_perfect_landing_effect("):]
+    assert "head_asset.part_count + seam_reserve" in effect
+    assert "trail_asset.part_count + seam_reserve" in effect

@@ -7,6 +7,7 @@
 #include "bn_color.h"
 #include "bn_math.h"
 #include "bn_sprite_double_size_mode.h"
+#include "bn_sprites.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
 #include "bn_sprite_items_crane_special_cable_segment.h"
@@ -355,10 +356,10 @@ void TowerConstructionScene::start(
     _rebuild_current_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
 }
 
 TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input, SaveData& save)
@@ -490,6 +491,14 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
         _special_boom_sprites.clear();
     }
 
+    // Perfect-landed blocks can leave 32 temporary star/trail sprites alive.
+    // Release these cosmetic sprites BEFORE creating the next block, crane,
+    // tower floors and HUD; otherwise a new landing can briefly exhaust the
+    // GBA's 128 hardware sprite items even though those effects will be
+    // regenerated later in this same frame.
+    _perfect_star_sprites.clear();
+    _block_sparkle_sprites.clear();
+
     if(snapshot.floor_count != _rendered_floor_count)
     {
         _rebuild_floor_sprites();
@@ -499,8 +508,6 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _background_clock_ms += delta_ms;
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -518,7 +525,11 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     {
         _rebuild_hud(snapshot);
     }
+    // Gameplay HUD and combo meter take priority over purely decorative effects.
+    // Reconstruct visual effects only after all required sprite items are owned.
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
     return result;
 }
 
@@ -582,11 +593,11 @@ void TowerConstructionScene::resume_presentation()
     _rebuild_current_sprites(snapshot);
     _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
 }
 
 void TowerConstructionScene::discard()
@@ -1017,10 +1028,13 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
         const int visible_slot = floor_index - _visible_floor_start;
         const int frame = (animation_bucket + visible_slot) % 3;
         const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
-        show_ui_composite(
-                asset, _screen_x(floor.x),
-                _screen_y(floor.y, snapshot.presentation_camera_y),
-                _block_sparkle_sprites, -21);
+        if(bn::sprites::available_items_count() >= asset.part_count)
+        {
+            show_ui_composite(
+                    asset, _screen_x(floor.x),
+                    _screen_y(floor.y, snapshot.presentation_camera_y),
+                    _block_sparkle_sprites, -21);
+        }
     }
 
     const bool current_visible = snapshot.status == TowerConstructionStatus::Playing &&
@@ -1029,9 +1043,12 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
     if(current_visible)
     {
         const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[animation_bucket % 3];
-        show_ui_composite(asset, _screen_x(snapshot.current_x),
-                          _screen_y(snapshot.current_y, snapshot.presentation_camera_y),
-                          _block_sparkle_sprites, -19);
+        if(bn::sprites::available_items_count() >= asset.part_count)
+        {
+            show_ui_composite(asset, _screen_x(snapshot.current_x),
+                              _screen_y(snapshot.current_y, snapshot.presentation_camera_y),
+                              _block_sparkle_sprites, -19);
+        }
     }
 }
 
@@ -1064,33 +1081,47 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
             generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
             generated::accuracy_star_f2 : generated::accuracy_star_f0;
 
+    // Reserve one sprite item for the landing seam before allocating optional
+    // trails. Four star heads have higher priority than trail samples, so a
+    // crowded scene preserves the original four-star burst and degrades only
+    // the number of dots in each trailing line.
+    const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
+    const int seam_reserve = phase != PerfectLandingSeamPhase::Hidden ? 1 : 0;
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
+        if(bn::sprites::available_items_count() < head_asset.part_count + seam_reserve)
+        {
+            break;
+        }
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
-
-        // Seven tightly spaced points form a directional line behind the moving star.
-        // One sprite per sample keeps the fixed-capacity vector within its budget.
-        for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
-        {
-            const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
-            if(trail_elapsed <= 0)
-            {
-                continue;
-            }
-
-            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
-            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
-            const generated::UiCompositeAsset& trail_asset = trail_index < 2 ? generated::accuracy_trail_white :
-                                                             trail_index < 4 ? generated::accuracy_trail_yellow :
-                                                                               generated::accuracy_trail_red;
-            show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -24 + trail_index);
-        }
-
         show_ui_composite(head_asset, star_x, star_y, _perfect_star_sprites, -18);
     }
 
-    const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
+    // Add trail samples by age across all four stars. Each sample is optional;
+    // a full 128-sprite OAM must never turn perfect placement into a crash.
+    for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
+    {
+        const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
+        if(trail_elapsed <= 0)
+        {
+            continue;
+        }
+        const generated::UiCompositeAsset& trail_asset = trail_index < 2 ? generated::accuracy_trail_white :
+                                                         trail_index < 4 ? generated::accuracy_trail_yellow :
+                                                                           generated::accuracy_trail_red;
+        for(int index = 0; index < perfect_landing_star_count; ++index)
+        {
+            if(bn::sprites::available_items_count() < trail_asset.part_count + seam_reserve)
+            {
+                break;
+            }
+            const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
+            const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
+            show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -24 + trail_index);
+        }
+    }
+
     if(phase == PerfectLandingSeamPhase::Hidden)
     {
         _perfect_seam_sprite.reset();
