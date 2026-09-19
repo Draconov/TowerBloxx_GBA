@@ -471,11 +471,27 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "sandbox_save = save;" in main
     assert "result.save_dirty && ! build_city.sandbox_active()" in main
     assert "build_city.sandbox_active() ? sandbox_save : save" in main
-    assert "build_city.resume_presentation(construction_save)" in main
+    assert "build_city.resume_presentation(city_save)" in main
+    assert "city_resume_pending = true;" in main
     assert "_secret_step" in city
     assert "_request.stationary_crane = _sandbox_active" in city
     assert "result.placement_committed = ! _city.sandbox_active()" in scene
     assert "request.stationary_crane" in construction
+
+
+def test_construction_to_city_waits_for_sprite_vram_reclamation() -> None:
+    # OBJ tile allocations are marked TO_REMOVE when construction sprites are
+    # cleared and only become available after the next bn::core::update().
+    # Returning to the city and rebuilding it in the same frame would exhaust
+    # VRAM when the city text generator allocates its 8-tile glyph buffer.
+    main = (GBA / "src" / "main.cpp").read_text(encoding="utf-8")
+    assert "bool city_resume_pending = false;" in main
+    city = main[main.index("case tb::RuntimeScene::BuildCity:"):main.index("case tb::RuntimeScene::Construction:")]
+    assert city.index("if(city_resume_pending)") < city.index("build_city.update(input, city_save)")
+    construction = main[main.index("case tb::RuntimeScene::Construction:"):main.index("case tb::RuntimeScene::Ui:")]
+    assert construction.count("city_resume_pending = true;") == 2
+    assert "build_city.resume_presentation(construction_save)" not in construction
+    assert main.index("bn::core::update();") > construction.index("city_resume_pending = true;")
 
 
 def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> None:

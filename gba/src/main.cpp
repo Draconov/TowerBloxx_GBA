@@ -43,6 +43,12 @@ int main()
     tb::TowerSessionCoordinator session;
     tb::GameAudio audio;
 
+    // Butano releases sprite tile VRAM on bn::core::update(), not immediately
+    // when sprite_ptr instances are destroyed.  Returning from construction
+    // directly into the Build City rebuild in the same frame retains the old
+    // tower graphics in VRAM while the city HUD allocates text tiles.
+    bool city_resume_pending = false;
+
     while(true)
     {
         const tb::InputFrame input = app.update_input(held_keys());
@@ -85,6 +91,14 @@ int main()
         case tb::RuntimeScene::BuildCity:
         {
             tb::SaveData& city_save = build_city.sandbox_active() ? sandbox_save : save;
+            if(city_resume_pending)
+            {
+                // The construction scene was discarded during the previous
+                // frame, so bn::core::update() has now reclaimed its OBJ tiles.
+                // Only recreate city graphics after that reclamation.
+                build_city.resume_presentation(city_save);
+                city_resume_pending = false;
+            }
             const tb::BuildCitySceneUpdateResult result = build_city.update(input, city_save);
             if(result.sandbox_activated)
             {
@@ -147,13 +161,16 @@ int main()
             {
                 build_city.accept_constructed_tower(result.building_type, result.population, result.roof,
                                                    construction_save);
-                build_city.resume_presentation(construction_save);
+                // Defer the city rebuild until the following frame.  A trophy
+                // result can leave the old construction graphics occupying OBJ
+                // VRAM until bn::core::update() processes their destruction.
+                city_resume_pending = true;
                 audio.play_construction_result(result.roof);
                 session.return_to_build_city();
             }
             else if(result.exit)
             {
-                build_city.resume_presentation(construction_save);
+                city_resume_pending = true;
                 session.return_to_build_city();
             }
             break;
