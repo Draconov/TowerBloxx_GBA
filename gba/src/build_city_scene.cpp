@@ -908,16 +908,20 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     constexpr int status_icon_x = 176;
     constexpr int comparison_panel_left_x = 194;
     constexpr int comparison_panel_right_x = 221;
+    // The comparison boxes are inset one pixel above the regular HUD row.
+    // Move the active outlines, tower badges and numbers as a group so they
+    // sit within the same 8px-high frames as the inactive background boxes.
+    constexpr int comparison_panel_row_y = comparison_row_y - 1;
     _show_composite(
             active_placement ? generated::city_status_placement : generated::city_status_browse,
             centered_x(status_icon_x), centered_y(comparison_row_y));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
     {
-        _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_left_x), centered_y(comparison_row_y));
+        _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_left_x), centered_y(comparison_panel_row_y));
         _show_composite(
-                *city_type_badges[snapshot.pending_building_type - 1], centered_x(185), centered_y(comparison_row_y));
-        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 204, comparison_row_y);
+                *city_type_badges[snapshot.pending_building_type - 1], centered_x(185), centered_y(comparison_panel_row_y));
+        show_comparison_digits(_sprites, white_digits, snapshot.pending_population, 204, comparison_panel_row_y);
 
         int existing_type = 0;
         if(snapshot.cursor_column >= 0 && snapshot.cursor_column < 5 &&
@@ -927,9 +931,9 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         }
         if(existing_type >= 1 && existing_type <= 4)
         {
-            _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_right_x), centered_y(comparison_row_y));
-            _show_composite(*city_type_badges[existing_type - 1], centered_x(212), centered_y(comparison_row_y));
-            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 231, comparison_row_y);
+            _show_composite(generated::city_comparison_panel_active, centered_x(comparison_panel_right_x), centered_y(comparison_panel_row_y));
+            _show_composite(*city_type_badges[existing_type - 1], centered_x(212), centered_y(comparison_panel_row_y));
+            show_comparison_digits(_sprites, white_digits, snapshot.replacement_population, 231, comparison_panel_row_y);
         }
     }
 
@@ -958,7 +962,16 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
                 first_line.append(instruction[index]);
             }
         }
-        if(on_second_line)
+        // English neighbor requirements fit across the GBA screen (the
+        // longest line is 217px with this font, inside the 240px viewport).
+        // Keep the original two-line layout for longer localized messages.
+        if(on_second_line && _language == 0)
+        {
+            first_line.append(' ');
+            first_line.append(second_line);
+            (void) _text_generator.generate_optional(0, 68, first_line, _sprites);
+        }
+        else if(on_second_line)
         {
             (void) _text_generator.generate_optional(0, 63, first_line, _sprites);
             (void) _text_generator.generate_optional(0, 73, second_line, _sprites);

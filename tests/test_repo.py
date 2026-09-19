@@ -175,13 +175,32 @@ def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
     assert "constexpr int valid_lot_ring_z_order = 1" in source
     assert "sprite->set_z_order(valid_lot_ring_z_order)" in source
     assert "constexpr int badge_row_y = status_row_y - 1" in source
-    # Required-neighbor instructions are rendered as two separate lines,
-    # instead of showing a literal \n in the bottom dialogue.
+    # The English neighbor requirements fit on one centered line; longer
+    # localized strings retain the original two-line fallback.
     assert "instruction[index + 1] == 'n'" in source
     assert "show_instruction(generated::localized_strings" in source
     assert "show_instruction(instruction)" in source
+    assert "on_second_line && _language == 0" in source
+    assert "first_line.append(second_line);" in source
+    assert "_text_generator.generate_optional(0, 68, first_line" in source
     assert "_text_generator.generate_optional(0, 63, first_line" in source
     assert "_text_generator.generate_optional(0, 73, second_line" in source
+    assert "constexpr int comparison_panel_row_y = comparison_row_y - 1" in source
+    assert "snapshot.pending_population, 204, comparison_panel_row_y" in source
+    assert "snapshot.replacement_population, 231, comparison_panel_row_y" in source
+    # The two comparison placeholders and their active sprite share exactly
+    # the same 24x8 pixel bounds, one pixel above the previous screen row.
+    with Image.open(GBA / "graphics" / "ui" / "city_comparison_panel_active_p0.bmp") as active:
+        assert active.mode == "P" and active.size == (32, 16)
+        assert all(active.getpixel((x, 7)) != 0 and active.getpixel((x, 8)) == 0
+                   for x in range(24))
+    for theme in range(4):
+        with Image.open(GBA / "graphics" / "backgrounds" / f"city_bg_theme_{theme}.bmp") as bg:
+            assert bg.mode == "P" and bg.size == (256, 256)
+            for x in (182, 209):
+                # The indexed city background is centered at (8, 48).
+                assert bg.getpixel((x + 8, 4 + 48)) == bg.getpixel((x + 8, 11 + 48))
+                assert bg.getpixel((x + 8, 12 + 48)) == bg.getpixel((x + 7, 12 + 48))
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
