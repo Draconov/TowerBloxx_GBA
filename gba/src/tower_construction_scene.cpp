@@ -142,12 +142,25 @@ constexpr const generated::UiCompositeAsset* hud_brown_digit_frames[] = {
 void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
                        bn::ivector<bn::sprite_ptr>& output, int z_order = -100)
 {
+    // Whole-composite, fallible allocation: never draw a partial frame or
+    // consume reserved OAM intended for the moving tower / the main HUD.
+    if(output.max_size() - output.size() < asset.part_count ||
+       bn::sprites::available_items_count() < asset.part_count)
+    {
+        return;
+    }
+    const int first = output.size();
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
-        sprite.set_z_order(z_order);
-        output.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, y + part.y);
+        if(! sprite)
+        {
+            while(output.size() > first) { output.pop_back(); }
+            return;
+        }
+        sprite->set_z_order(z_order);
+        output.push_back(*sprite);
     }
 }
 
@@ -234,14 +247,26 @@ const generated::MeshAsset& mesh_by_id(int mesh_id)
 void create_mesh_sprites(const generated::MeshAsset& mesh, bn::ivector<bn::sprite_ptr>& output)
 {
     output.clear();
+    if(mesh.part_count > output.max_size() ||
+       bn::sprites::available_items_count() < mesh.part_count)
+    {
+        return;
+    }
     for(int index = 0; index < mesh.part_count; ++index)
     {
-        output.push_back(mesh.parts[index].item->create_sprite(0, 0));
+        bn::optional<bn::sprite_ptr> sprite = mesh.parts[index].item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            output.clear();
+            return; // Retry next frame instead of crashing due to OBJ VRAM/palettes.
+        }
+        output.push_back(*sprite);
     }
 }
 
 void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::ivector<bn::sprite_ptr>& sprites)
 {
+    if(sprites.size() != mesh.part_count) { return; }
     for(int index = 0; index < mesh.part_count; ++index)
     {
         sprites[index].set_position(x + mesh.parts[index].x, y + mesh.parts[index].y);
@@ -252,9 +277,20 @@ void create_crane_hook_frame_sprites(
         const generated::CraneHookFrameAsset& frame, bn::ivector<bn::sprite_ptr>& output)
 {
     output.clear();
+    if(frame.part_count > output.max_size() ||
+       bn::sprites::available_items_count() < frame.part_count)
+    {
+        return;
+    }
     for(int index = 0; index < frame.part_count; ++index)
     {
-        output.push_back(frame.parts[index].item->create_sprite(0, 0));
+        bn::optional<bn::sprite_ptr> sprite = frame.parts[index].item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            output.clear();
+            return;
+        }
+        output.push_back(*sprite);
     }
 }
 
@@ -262,6 +298,7 @@ void position_crane_hook_frame_sprites(
         const generated::CraneHookFrameAsset& frame, int x, int y,
         bn::ivector<bn::sprite_ptr>& sprites)
 {
+    if(sprites.size() != frame.part_count) { return; }
     for(int index = 0; index < frame.part_count; ++index)
     {
         sprites[index].set_position(x + frame.parts[index].x, y + frame.parts[index].y);
@@ -354,12 +391,12 @@ void TowerConstructionScene::start(
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
 }
 
 TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input, SaveData& save)
@@ -498,7 +535,6 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     // regenerated later in this same frame.
     _perfect_star_sprites.clear();
     _block_sparkle_sprites.clear();
-
     if(snapshot.floor_count != _rendered_floor_count)
     {
         _rebuild_floor_sprites();
@@ -506,7 +542,6 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
     _background_clock_ms += delta_ms;
-    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     if(workers_advanced || floor_added)
     {
@@ -530,6 +565,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
+    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     return result;
 }
 
@@ -591,13 +627,13 @@ void TowerConstructionScene::resume_presentation()
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
     _rebuild_current_sprites(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
 }
 
 void TowerConstructionScene::discard()
@@ -625,13 +661,37 @@ void TowerConstructionScene::_rebuild_floor_sprites()
         const int mesh_id = floor.roof ? (snapshot.roof_result == 2 ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
                                          (floor_index == 0 ? initial_base_mesh_id(_request.building_type) : _normal_floor_mesh_id());
         const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
-        bn::sprite_affine_mat_ptr affine_mat = bn::sprite_affine_mat_ptr::create();
-        _floor_affine_mats.push_back(affine_mat);
+        // Affine matrices are another finite OBJ resource. A temporary
+        // allocation failure should skip the affected floor draw and retry.
+        if(_floor_affine_mats.size() >= _floor_affine_mats.max_size())
+        {
+            _floor_sprites.clear();
+            _floor_affine_mats.clear();
+            _rendered_floor_count = -1;
+            return;
+        }
+        bn::optional<bn::sprite_affine_mat_ptr> affine_mat =
+                bn::sprite_affine_mat_ptr::create_optional();
+        if(! affine_mat)
+        {
+            _floor_sprites.clear();
+            _floor_affine_mats.clear();
+            _rendered_floor_count = -1;
+            return;
+        }
+        _floor_affine_mats.push_back(*affine_mat);
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            bn::sprite_ptr sprite = mesh.parts[part_index].item->create_sprite(0, 0);
-            sprite.set_affine_mat(affine_mat);
-            _floor_sprites.push_back(sprite);
+            bn::optional<bn::sprite_ptr> sprite = mesh.parts[part_index].item->create_sprite_optional(0, 0);
+            if(! sprite || _floor_sprites.size() >= _floor_sprites.max_size())
+            {
+                _floor_sprites.clear();
+                _floor_affine_mats.clear();
+                _rendered_floor_count = -1; // Retry after the next core::update().
+                return;
+            }
+            sprite->set_affine_mat(*affine_mat);
+            _floor_sprites.push_back(*sprite);
         }
     }
 }
@@ -672,9 +732,15 @@ void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSna
                     mesh_id, tumble_stage, z_negative, y_negative);
             for(int part_index = 0; part_index < pose.part_count; ++part_index)
             {
-                bn::sprite_ptr sprite = pose.parts[part_index].item->create_sprite(0, 0);
-                sprite.set_z_order(current_block_z_order);
-                _current_sprites.push_back(sprite);
+                bn::optional<bn::sprite_ptr> sprite = pose.parts[part_index].item->create_sprite_optional(0, 0);
+                if(! sprite || _current_sprites.size() >= _current_sprites.max_size())
+                {
+                    _current_sprites.clear();
+                    _rendered_current_mesh_id = -1; // Retry the pose next frame.
+                    return;
+                }
+                sprite->set_z_order(current_block_z_order);
+                _current_sprites.push_back(*sprite);
             }
         }
         else
@@ -685,6 +751,14 @@ void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSna
                 sprite.set_affine_mat(_current_affine_mat);
                 sprite.set_z_order(current_block_z_order);
             }
+        }
+        const int required_parts = tumble_stage > 0 ?
+                generated::tumble_pose_for(mesh_id, tumble_stage, z_negative, y_negative).part_count :
+                mesh_by_id(mesh_id).part_count;
+        if(_current_sprites.size() != required_parts)
+        {
+            _rendered_current_mesh_id = -1;
+            return;
         }
         _rendered_current_mesh_id = mesh_id;
         _rendered_tumble_stage = tumble_stage;
@@ -772,23 +846,28 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
 
     if(_special_cable_sprites.empty())
     {
-        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(0, 0);
-        sprite.set_z_order(special_cable_z_order);
-        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-        _special_cable_sprites.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite =
+                bn::sprite_items::crane_special_cable_segment.create_sprite_optional(0, 0);
+        if(! sprite) { return; }
+        sprite->set_z_order(special_cable_z_order);
+        sprite->set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        _special_cable_sprites.push_back(*sprite);
     }
 
     if(_special_boom_sprites.empty())
     {
-        bn::sprite_ptr p0 = bn::sprite_items::crane_special_boom_p0.create_sprite(0, 0);
-        bn::sprite_ptr p1 = bn::sprite_items::crane_special_boom_p1.create_sprite(0, 0);
-        bn::sprite_ptr p2 = bn::sprite_items::crane_special_boom_p2.create_sprite(0, 0);
-        p0.set_z_order(special_boom_z_order);
-        p1.set_z_order(special_boom_z_order);
-        p2.set_z_order(special_boom_z_order);
-        _special_boom_sprites.push_back(p0);
-        _special_boom_sprites.push_back(p1);
-        _special_boom_sprites.push_back(p2);
+        bn::optional<bn::sprite_ptr> p0 = bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p1 = bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p2 = bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
+        if(p0 && p1 && p2)
+        {
+            p0->set_z_order(special_boom_z_order);
+            p1->set_z_order(special_boom_z_order);
+            p2->set_z_order(special_boom_z_order);
+            _special_boom_sprites.push_back(*p0);
+            _special_boom_sprites.push_back(*p1);
+            _special_boom_sprites.push_back(*p2);
+        }
     }
     const int boom_y = special_crane_boom_center_y(start_y);
     for(int part_index = 0; part_index < _special_boom_sprites.size(); ++part_index)
@@ -839,7 +918,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     {
         sprite.set_visible(current_visible);
     }
-    if(current_visible)
+    if(current_visible && ! _current_sprites.empty() && _rendered_current_mesh_id >= 0)
     {
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
@@ -973,10 +1052,11 @@ void TowerConstructionScene::_update_combo_meter(const TowerConstructionSnapshot
         const generated::UiCompositeAsset& asset = flash ? generated::quick_combo_meter_flash :
                                                             generated::quick_combo_meter_fill;
         const generated::UiSpritePartAsset& part = asset.parts[0];
-        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
-        sprite.set_z_order(-100);
-        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-        active = sprite;
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(0, 0);
+        if(! sprite) { return; }
+        sprite->set_z_order(-100);
+        sprite->set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        active = *sprite;
     }
 
     bn::sprite_ptr& sprite = *active;
@@ -1136,9 +1216,10 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
     if(! _perfect_seam_sprite || phase != _perfect_seam_phase)
     {
         _perfect_seam_sprite.reset();
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, seam_y + part.y);
-        sprite.set_z_order(-22);
-        _perfect_seam_sprite = sprite;
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, seam_y + part.y);
+        if(! sprite) { return; }
+        sprite->set_z_order(-22);
+        _perfect_seam_sprite = *sprite;
         _perfect_seam_phase = phase;
     }
     else
@@ -1267,7 +1348,7 @@ void TowerConstructionScene::_show_modal(int localization_index)
     {
         const bn::string<128> formatted = format_construction_modal_line(
                 generated::city_modal_lines[_language][modal_index][line]);
-        _text_generator.generate(0, y, formatted, _hud_sprites);
+        (void) _text_generator.generate_optional(0, y, formatted, _hud_sprites);
         y += modal_line_spacing;
     }
     show_ui_composite(generated::support_nav_f2, 0, 64, _hud_sprites, -100);

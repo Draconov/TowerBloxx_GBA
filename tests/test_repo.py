@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 import hashlib
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -471,27 +472,33 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "sandbox_save = save;" in main
     assert "result.save_dirty && ! build_city.sandbox_active()" in main
     assert "build_city.sandbox_active() ? sandbox_save : save" in main
-    assert "build_city.resume_presentation(city_save)" in main
-    assert "city_resume_pending = true;" in main
+    assert "build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save)" in main
+    assert "pending_presentation = PendingPresentation::CityResume;" in main
     assert "_secret_step" in city
     assert "_request.stationary_crane = _sandbox_active" in city
     assert "result.placement_committed = ! _city.sandbox_active()" in scene
     assert "request.stationary_crane" in construction
 
 
-def test_construction_to_city_waits_for_sprite_vram_reclamation() -> None:
-    # OBJ tile allocations are marked TO_REMOVE when construction sprites are
-    # cleared and only become available after the next bn::core::update().
-    # Returning to the city and rebuilding it in the same frame would exhaust
-    # VRAM when the city text generator allocates its 8-tile glyph buffer.
+def test_every_scene_transition_waits_for_sprite_vram_reclamation() -> None:
     main = (GBA / "src" / "main.cpp").read_text(encoding="utf-8")
-    assert "bool city_resume_pending = false;" in main
-    city = main[main.index("case tb::RuntimeScene::BuildCity:"):main.index("case tb::RuntimeScene::Construction:")]
-    assert city.index("if(city_resume_pending)") < city.index("build_city.update(input, city_save)")
-    construction = main[main.index("case tb::RuntimeScene::Construction:"):main.index("case tb::RuntimeScene::Ui:")]
-    assert construction.count("city_resume_pending = true;") == 2
-    assert "build_city.resume_presentation(construction_save)" not in construction
-    assert main.index("bn::core::update();") > construction.index("city_resume_pending = true;")
+    # The outgoing scene releases its sprite/background references, then a full
+    # bn::core::update() occurs before the pending scene allocates new graphics.
+    pending = main[main.index("if(pending_presentation != PendingPresentation::None)"):]
+    assert "pending_presentation = PendingPresentation::None;" in pending
+    assert pending.index("bn::core::update();") < pending.index("const tb::InputFrame input")
+    for transition in (
+        "QuickStart", "CityStart", "ConstructionStart",
+        "QuickResume", "ConstructionResume", "CityResume",
+    ):
+        assert f"case PendingPresentation::{transition}:" in pending
+    assert "pending_construction_request = request;" in main
+    assert "build_city.clear_construction_request();" in main
+    assert "pending_presentation = PendingPresentation::ConstructionStart;" in main
+    assert "pending_presentation = PendingPresentation::QuickResume;" in main
+    assert "pending_presentation = PendingPresentation::ConstructionResume;" in main
+    assert "pending_presentation = PendingPresentation::CityResume;" in main
+    assert "build_city.resume_presentation(construction_save)" not in main
 
 
 def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> None:
@@ -501,7 +508,7 @@ def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> N
     source = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
     assert '#include "bn_sprites.h"' in source
     assert "bn::sprites::available_items_count()" in source
-    assert "_perfect_star_sprites.clear();\n    _block_sparkle_sprites.clear();\n\n    if(snapshot.floor_count" in source
+    assert "_perfect_star_sprites.clear();\n    _block_sparkle_sprites.clear();\n    if(snapshot.floor_count" in source
 
     # In normal startup, live updates, and resume, construct mandatory HUD
     # before recreating star effects; stars then use only remaining slots.
@@ -516,3 +523,51 @@ def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> N
     effect = source[source.index("void TowerConstructionScene::_update_perfect_landing_effect("):]
     assert "head_asset.part_count + seam_reserve" in effect
     assert "trail_asset.part_count + seam_reserve" in effect
+
+
+def test_resource_pressure_never_allocates_unchecked_cosmetics() -> None:
+    for name in ("quick_game_scene", "tower_construction_scene"):
+        source = (GBA / "src" / f"{name}.cpp").read_text(encoding="utf-8")
+        assert "part.item->create_sprite_optional" in source
+        assert "output.max_size() - output.size() < asset.part_count" in source
+        assert "while(output.size() > first) { output.pop_back(); }" in source
+        assert "_floor_sprites.clear();\n                _floor_affine_mats.clear();" in source
+        assert "_rendered_floor_count = -1;" in source
+        assert "_rendered_current_mesh_id = -1; // Retry the pose next frame." in source
+        assert "_text_generator.generate_optional(" in source
+        # Every sprite allocation in a construction scene must now be fallible.
+        assert "->create_sprite(" not in source
+        assert ".create_sprite(" not in source
+
+    quick = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    assert "const int seam_reserve" in quick
+    assert "_perfect_star_sprites.max_size() - _perfect_star_sprites.size()" in quick
+    assert "bn::sprites::available_items_count()" in quick
+
+    city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "part.item->create_sprite_optional" in city
+    assert "_text_generator.generate_optional(" in city
+    assert "->create_sprite(" not in city
+    assert city.index("_show_status(save, snapshot);", city.index("void BuildCityScene::_rebuild(")) < city.index(
+        "_show_city_tiles(save, snapshot);", city.index("void BuildCityScene::_rebuild("))
+    assert city.index("// Saved towers:") < city.index("if(pulse_building_type != 0)")
+    menu = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    assert ".generate_optional(" in menu
+    assert "->create_sprite(" not in menu
+    sky = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    assert "bn::sprites::available_items_count() < asset.part_count + 12" in sky
+    assert "slot.sprites.size() != event_asset.frames[frame]->part_count" in sky
+    assert "->create_sprite(" not in sky
+
+
+def test_all_sprite_palette_indices_fit_declared_bpp() -> None:
+    # Catch the exact milestone-badge crash class across every tracked BMP,
+    # not merely the four images that triggered it previously.
+    for manifest in (GBA / "graphics").rglob("*.json"):
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        bmp = manifest.with_suffix(".bmp")
+        if not bmp.exists() or data.get("bpp_mode") != "bpp_4":
+            continue
+        with Image.open(bmp) as image:
+            assert image.mode == "P", manifest
+            assert max(image.get_flattened_data()) < 16, f"{bmp}: BPP4 sprite references palette index >= 16"

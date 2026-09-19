@@ -43,14 +43,58 @@ int main()
     tb::TowerSessionCoordinator session;
     tb::GameAudio audio;
 
-    // Butano releases sprite tile VRAM on bn::core::update(), not immediately
-    // when sprite_ptr instances are destroyed.  Returning from construction
-    // directly into the Build City rebuild in the same frame retains the old
-    // tower graphics in VRAM while the city HUD allocates text tiles.
-    bool city_resume_pending = false;
+    // OBJ tile/palette releases are deferred until bn::core::update().  Every
+    // foreground transition destroys the departing scene first, waits for a
+    // VBlank update, then allocates the destination's graphics. The transition
+    // frame deliberately ignores keypad input so a held A cannot dismiss the
+    // next scene's tutorial/result immediately.
+    enum class PendingPresentation
+    {
+        None, QuickStart, CityStart, ConstructionStart,
+        QuickResume, ConstructionResume, CityResume
+    };
+    PendingPresentation pending_presentation = PendingPresentation::None;
+    tb::BuildCityConstructionRequest pending_construction_request{};
 
     while(true)
     {
+        // This iteration starts only after the previous iteration's
+        // bn::core::update() has actually reclaimed the old OBJ allocations.
+        if(pending_presentation != PendingPresentation::None)
+        {
+            switch(pending_presentation)
+            {
+            case PendingPresentation::QuickStart:
+                quick_game.start(controller.language());
+                session.start_quick_game();
+                break;
+            case PendingPresentation::CityStart:
+                build_city.start(save, controller.language());
+                session.start_build_city();
+                break;
+            case PendingPresentation::ConstructionStart:
+                construction.start(pending_construction_request, controller.language(),
+                                   build_city.sandbox_active() ? sandbox_save : save);
+                session.start_construction();
+                break;
+            case PendingPresentation::QuickResume:
+                quick_game.resume_presentation();
+                break;
+            case PendingPresentation::ConstructionResume:
+                construction.resume_presentation();
+                break;
+            case PendingPresentation::CityResume:
+                build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save);
+                break;
+            case PendingPresentation::None:
+                break;
+            }
+            pending_presentation = PendingPresentation::None;
+            // Keep one presentation frame without advancing game logic.
+            bn::core::update();
+            continue;
+        }
+
         const tb::InputFrame input = app.update_input(held_keys());
         controller.set_suspended_session_available(session.has_suspended());
 
@@ -91,14 +135,6 @@ int main()
         case tb::RuntimeScene::BuildCity:
         {
             tb::SaveData& city_save = build_city.sandbox_active() ? sandbox_save : save;
-            if(city_resume_pending)
-            {
-                // The construction scene was discarded during the previous
-                // frame, so bn::core::update() has now reclaimed its OBJ tiles.
-                // Only recreate city graphics after that reclamation.
-                build_city.resume_presentation(city_save);
-                city_resume_pending = false;
-            }
             const tb::BuildCitySceneUpdateResult result = build_city.update(input, city_save);
             if(result.sandbox_activated)
             {
@@ -115,9 +151,8 @@ int main()
                 if(request.pending)
                 {
                     build_city.clear_construction_request();
-                    construction.start(request, controller.language(),
-                                       build_city.sandbox_active() ? sandbox_save : save);
-                    session.start_construction();
+                    pending_construction_request = request;
+                    pending_presentation = PendingPresentation::ConstructionStart;
                 }
             }
             else if(result.placement_committed)
@@ -164,13 +199,13 @@ int main()
                 // Defer the city rebuild until the following frame.  A trophy
                 // result can leave the old construction graphics occupying OBJ
                 // VRAM until bn::core::update() processes their destruction.
-                city_resume_pending = true;
+                pending_presentation = PendingPresentation::CityResume;
                 audio.play_construction_result(result.roof);
                 session.return_to_build_city();
             }
             else if(result.exit)
             {
-                city_resume_pending = true;
+                pending_presentation = PendingPresentation::CityResume;
                 session.return_to_build_city();
             }
             break;
@@ -203,16 +238,8 @@ int main()
                 }
 
                 ui.hide();
-                if(result.action == tb::UiAction::StartQuickGame)
-                {
-                    quick_game.start(controller.language());
-                    session.start_quick_game();
-                }
-                else
-                {
-                    build_city.start(save, controller.language());
-                    session.start_build_city();
-                }
+                pending_presentation = result.action == tb::UiAction::StartQuickGame ?
+                        PendingPresentation::QuickStart : PendingPresentation::CityStart;
                 break;
             }
 
@@ -222,18 +249,18 @@ int main()
                 ui.hide();
                 if(kind == tb::SuspendedSessionKind::QuickGame)
                 {
-                    quick_game.resume_presentation();
+                    pending_presentation = PendingPresentation::QuickResume;
                 }
                 else if(kind == tb::SuspendedSessionKind::BuildCityConstruction)
                 {
-                    construction.resume_presentation();
+                    pending_presentation = PendingPresentation::ConstructionResume;
                 }
                 break;
             }
 
             case tb::UiAction::ReturnToBuildCity:
                 ui.hide();
-                build_city.resume_presentation(save);
+                pending_presentation = PendingPresentation::CityResume;
                 session.return_to_build_city();
                 break;
 

@@ -1,5 +1,7 @@
 #include "tb/construction_backdrop.h"
 
+#include "bn_sprites.h"
+
 #include "bn_regular_bg_items_construction_scenery_0.h"
 #include "bn_regular_bg_items_construction_scenery_1.h"
 #include "bn_regular_bg_items_construction_scenery_2.h"
@@ -45,37 +47,37 @@ int sky_color_index(int band)
     return band <= 16 ? band : 9 + ((band - 9) % 8);
 }
 
-bn::regular_bg_ptr create_sky_background(int index)
+bn::optional<bn::regular_bg_ptr> create_sky_background(int index)
 {
     switch(index)
     {
-    case 0: return bn::regular_bg_items::construction_sky_00.create_bg(0, 0);
-    case 1: return bn::regular_bg_items::construction_sky_01.create_bg(0, 0);
-    case 2: return bn::regular_bg_items::construction_sky_02.create_bg(0, 0);
-    case 3: return bn::regular_bg_items::construction_sky_03.create_bg(0, 0);
-    case 4: return bn::regular_bg_items::construction_sky_04.create_bg(0, 0);
-    case 5: return bn::regular_bg_items::construction_sky_05.create_bg(0, 0);
-    case 6: return bn::regular_bg_items::construction_sky_06.create_bg(0, 0);
-    case 7: return bn::regular_bg_items::construction_sky_07.create_bg(0, 0);
-    case 8: return bn::regular_bg_items::construction_sky_08.create_bg(0, 0);
-    case 9: return bn::regular_bg_items::construction_sky_09.create_bg(0, 0);
-    case 10: return bn::regular_bg_items::construction_sky_10.create_bg(0, 0);
-    case 11: return bn::regular_bg_items::construction_sky_11.create_bg(0, 0);
-    case 12: return bn::regular_bg_items::construction_sky_12.create_bg(0, 0);
-    case 13: return bn::regular_bg_items::construction_sky_13.create_bg(0, 0);
-    case 14: return bn::regular_bg_items::construction_sky_14.create_bg(0, 0);
-    case 15: return bn::regular_bg_items::construction_sky_15.create_bg(0, 0);
-    default: return bn::regular_bg_items::construction_sky_16.create_bg(0, 0);
+    case 0: return bn::regular_bg_items::construction_sky_00.create_bg_optional(0, 0);
+    case 1: return bn::regular_bg_items::construction_sky_01.create_bg_optional(0, 0);
+    case 2: return bn::regular_bg_items::construction_sky_02.create_bg_optional(0, 0);
+    case 3: return bn::regular_bg_items::construction_sky_03.create_bg_optional(0, 0);
+    case 4: return bn::regular_bg_items::construction_sky_04.create_bg_optional(0, 0);
+    case 5: return bn::regular_bg_items::construction_sky_05.create_bg_optional(0, 0);
+    case 6: return bn::regular_bg_items::construction_sky_06.create_bg_optional(0, 0);
+    case 7: return bn::regular_bg_items::construction_sky_07.create_bg_optional(0, 0);
+    case 8: return bn::regular_bg_items::construction_sky_08.create_bg_optional(0, 0);
+    case 9: return bn::regular_bg_items::construction_sky_09.create_bg_optional(0, 0);
+    case 10: return bn::regular_bg_items::construction_sky_10.create_bg_optional(0, 0);
+    case 11: return bn::regular_bg_items::construction_sky_11.create_bg_optional(0, 0);
+    case 12: return bn::regular_bg_items::construction_sky_12.create_bg_optional(0, 0);
+    case 13: return bn::regular_bg_items::construction_sky_13.create_bg_optional(0, 0);
+    case 14: return bn::regular_bg_items::construction_sky_14.create_bg_optional(0, 0);
+    case 15: return bn::regular_bg_items::construction_sky_15.create_bg_optional(0, 0);
+    default: return bn::regular_bg_items::construction_sky_16.create_bg_optional(0, 0);
     }
 }
 
-bn::regular_bg_ptr create_scenery_background(int index)
+bn::optional<bn::regular_bg_ptr> create_scenery_background(int index)
 {
     switch(index)
     {
-    case 0: return bn::regular_bg_items::construction_scenery_0.create_bg(0, 0);
-    case 1: return bn::regular_bg_items::construction_scenery_1.create_bg(0, 0);
-    default: return bn::regular_bg_items::construction_scenery_2.create_bg(0, 0);
+    case 0: return bn::regular_bg_items::construction_scenery_0.create_bg_optional(0, 0);
+    case 1: return bn::regular_bg_items::construction_scenery_1.create_bg_optional(0, 0);
+    default: return bn::regular_bg_items::construction_scenery_2.create_bg_optional(0, 0);
     }
 }
 
@@ -84,13 +86,24 @@ void create_legacy_event_sprites(
         bn::ivector<bn::sprite_ptr>& output)
 {
     output.clear();
+    // These events are decorative. Keep headroom for the crane, HUD and floors.
+    if(output.max_size() < asset.part_count ||
+       bn::sprites::available_items_count() < asset.part_count + 12)
+    {
+        return;
+    }
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
-        sprite.set_bg_priority(3);
-        sprite.set_z_order(100);
-        output.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            output.clear();
+            return;
+        }
+        sprite->set_bg_priority(3);
+        sprite->set_z_order(100);
+        output.push_back(*sprite);
     }
 }
 
@@ -98,6 +111,7 @@ void position_legacy_event_sprites(
         const generated::UiCompositeAsset& asset, int x, int y,
         bn::ivector<bn::sprite_ptr>& sprites)
 {
+    if(sprites.size() != asset.part_count) { return; }
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
@@ -116,11 +130,14 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms)
     {
         if(decoration.kind == 1)
         {
-            bn::sprite_ptr blink = bn::sprite_items::construction_high_blink_p0.create_sprite(0, 0);
-            blink.set_bg_priority(3);
-            blink.set_z_order(100);
-            blink.set_visible(false);
-            _blink_sprites.push_back(blink);
+            if(_blink_sprites.size() >= _blink_sprites.max_size()) { continue; }
+            bn::optional<bn::sprite_ptr> blink =
+                    bn::sprite_items::construction_high_blink_p0.create_sprite_optional(0, 0);
+            if(! blink) { continue; }
+            blink->set_bg_priority(3);
+            blink->set_z_order(100);
+            blink->set_visible(false);
+            _blink_sprites.push_back(*blink);
         }
     }
 
@@ -171,7 +188,10 @@ void ConstructionBackdrop::_update_sky(int camera_y)
     const int index = sky_color_index(band);
     if(! _sky_background || index != _sky_index)
     {
+        _sky_background.reset();
+        _sky_index = -1;
         _sky_background = create_sky_background(index);
+        if(! _sky_background) { return; } // Wait for BG VRAM reclamation.
         _sky_background->set_priority(3);
         _sky_background->set_z_order(construction_sky_bg_z_order);
         _sky_index = index;
@@ -217,7 +237,10 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
 
     if(! _scenery_background || chunk != _scenery_chunk)
     {
+        _scenery_background.reset();
+        _scenery_chunk = -1;
         _scenery_background = create_scenery_background(chunk);
+        if(! _scenery_background) { return; } // Retry after core::update().
         _scenery_background->set_priority(3);
         _scenery_background->set_z_order(construction_scenery_bg_z_order);
         _scenery_chunk = chunk;
@@ -240,6 +263,7 @@ void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
             continue;
         }
 
+        if(blink_index >= _blink_sprites.size()) { break; }
         bn::sprite_ptr& blink = _blink_sprites[blink_index++];
         const int screen_top = screen_half_height - decoration.world_y + camera_pixels - decoration.roof_height;
         const bool phase_visible = ((clock_ms + decoration.world_y) / 200) % 2 == 0;
@@ -388,6 +412,12 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
         if(frame != slot.rendered_frame)
         {
             create_legacy_event_sprites(*event_asset.frames[frame], slot.sprites);
+            // Retry next frame if the event was omitted due to resource pressure.
+            if(slot.sprites.size() != event_asset.frames[frame]->part_count)
+            {
+                slot.rendered_frame = -1;
+                continue;
+            }
             slot.rendered_frame = frame;
         }
 

@@ -6,6 +6,7 @@
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
 #include "bn_math.h"
+#include "bn_sprites.h"
 #include "bn_sprite_double_size_mode.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
@@ -128,12 +129,25 @@ constexpr const generated::UiCompositeAsset* hud_state_indicator_frames[] = {
 void show_ui_composite(const generated::UiCompositeAsset& asset, int x, int y,
                        bn::ivector<bn::sprite_ptr>& output, int z_order = -100)
 {
+    // Whole-composite, fallible allocation: never draw a partial frame or
+    // consume reserved OAM intended for the moving tower / the main HUD.
+    if(output.max_size() - output.size() < asset.part_count ||
+       bn::sprites::available_items_count() < asset.part_count)
+    {
+        return;
+    }
+    const int first = output.size();
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
-        sprite.set_z_order(z_order);
-        output.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, y + part.y);
+        if(! sprite)
+        {
+            while(output.size() > first) { output.pop_back(); }
+            return;
+        }
+        sprite->set_z_order(z_order);
+        output.push_back(*sprite);
     }
 }
 
@@ -178,14 +192,26 @@ const generated::MeshAsset& mesh_by_id(int mesh_id)
 void create_mesh_sprites(const generated::MeshAsset& mesh, bn::ivector<bn::sprite_ptr>& output)
 {
     output.clear();
+    if(mesh.part_count > output.max_size() ||
+       bn::sprites::available_items_count() < mesh.part_count)
+    {
+        return;
+    }
     for(int index = 0; index < mesh.part_count; ++index)
     {
-        output.push_back(mesh.parts[index].item->create_sprite(0, 0));
+        bn::optional<bn::sprite_ptr> sprite = mesh.parts[index].item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            output.clear();
+            return; // Retry next frame instead of crashing due to OBJ VRAM/palettes.
+        }
+        output.push_back(*sprite);
     }
 }
 
 void position_mesh_sprites(const generated::MeshAsset& mesh, int x, int y, bn::ivector<bn::sprite_ptr>& sprites)
 {
+    if(sprites.size() != mesh.part_count) { return; }
     for(int index = 0; index < mesh.part_count; ++index)
     {
         sprites[index].set_position(x + mesh.parts[index].x, y + mesh.parts[index].y);
@@ -196,9 +222,20 @@ void create_crane_hook_frame_sprites(
         const generated::CraneHookFrameAsset& frame, bn::ivector<bn::sprite_ptr>& output)
 {
     output.clear();
+    if(frame.part_count > output.max_size() ||
+       bn::sprites::available_items_count() < frame.part_count)
+    {
+        return;
+    }
     for(int index = 0; index < frame.part_count; ++index)
     {
-        output.push_back(frame.parts[index].item->create_sprite(0, 0));
+        bn::optional<bn::sprite_ptr> sprite = frame.parts[index].item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            output.clear();
+            return;
+        }
+        output.push_back(*sprite);
     }
 }
 
@@ -206,6 +243,7 @@ void position_crane_hook_frame_sprites(
         const generated::CraneHookFrameAsset& frame, int x, int y,
         bn::ivector<bn::sprite_ptr>& sprites)
 {
+    if(sprites.size() != frame.part_count) { return; }
     for(int index = 0; index < frame.part_count; ++index)
     {
         sprites[index].set_position(x + frame.parts[index].x, y + frame.parts[index].y);
@@ -341,12 +379,12 @@ void QuickGameScene::start(int language)
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
 }
 
 QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveData& save)
@@ -443,6 +481,8 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         _special_boom_sprites.clear();
     }
 
+    _perfect_star_sprites.clear();
+    _block_sparkle_sprites.clear();
     if(snapshot.floor_count != _rendered_floor_count)
     {
         _rebuild_floor_sprites();
@@ -450,10 +490,7 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
     _background_clock_ms += delta_ms;
-    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     if(workers_advanced || floor_added)
     {
         _rebuild_worker_sprites(snapshot);
@@ -469,6 +506,9 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
         _rebuild_hud(snapshot);
     }
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
+    _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
 
     return result;
 }
@@ -522,13 +562,13 @@ void QuickGameScene::resume_presentation()
     const QuickGameSnapshot snapshot = _game.snapshot();
     _rebuild_current_sprites(snapshot);
     _ensure_crane_sprites(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
     _update_world_positions();
-    _update_block_sparkle(snapshot);
-    _update_perfect_landing_effect(snapshot);
     _rebuild_worker_sprites(snapshot);
     _rebuild_hud(snapshot);
     _update_combo_meter(snapshot);
+    _update_perfect_landing_effect(snapshot);
+    _update_block_sparkle(snapshot);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
 }
 
 void QuickGameScene::discard()
@@ -554,13 +594,37 @@ void QuickGameScene::_rebuild_floor_sprites()
         const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
                                                floor_mesh_id;
         const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
-        bn::sprite_affine_mat_ptr affine_mat = bn::sprite_affine_mat_ptr::create();
-        _floor_affine_mats.push_back(affine_mat);
+        // Affine matrices are another finite OBJ resource. A temporary
+        // allocation failure should skip the affected floor draw and retry.
+        if(_floor_affine_mats.size() >= _floor_affine_mats.max_size())
+        {
+            _floor_sprites.clear();
+            _floor_affine_mats.clear();
+            _rendered_floor_count = -1;
+            return;
+        }
+        bn::optional<bn::sprite_affine_mat_ptr> affine_mat =
+                bn::sprite_affine_mat_ptr::create_optional();
+        if(! affine_mat)
+        {
+            _floor_sprites.clear();
+            _floor_affine_mats.clear();
+            _rendered_floor_count = -1;
+            return;
+        }
+        _floor_affine_mats.push_back(*affine_mat);
         for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            bn::sprite_ptr sprite = mesh.parts[part_index].item->create_sprite(0, 0);
-            sprite.set_affine_mat(affine_mat);
-            _floor_sprites.push_back(sprite);
+            bn::optional<bn::sprite_ptr> sprite = mesh.parts[part_index].item->create_sprite_optional(0, 0);
+            if(! sprite || _floor_sprites.size() >= _floor_sprites.max_size())
+            {
+                _floor_sprites.clear();
+                _floor_affine_mats.clear();
+                _rendered_floor_count = -1; // Retry after the next core::update().
+                return;
+            }
+            sprite->set_affine_mat(*affine_mat);
+            _floor_sprites.push_back(*sprite);
         }
     }
 }
@@ -600,9 +664,15 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
                     mesh_id, tumble_stage, z_negative, y_negative);
             for(int part_index = 0; part_index < pose.part_count; ++part_index)
             {
-                bn::sprite_ptr sprite = pose.parts[part_index].item->create_sprite(0, 0);
-                sprite.set_z_order(current_block_z_order);
-                _current_sprites.push_back(sprite);
+                bn::optional<bn::sprite_ptr> sprite = pose.parts[part_index].item->create_sprite_optional(0, 0);
+                if(! sprite || _current_sprites.size() >= _current_sprites.max_size())
+                {
+                    _current_sprites.clear();
+                    _rendered_current_mesh_id = -1; // Retry the pose next frame.
+                    return;
+                }
+                sprite->set_z_order(current_block_z_order);
+                _current_sprites.push_back(*sprite);
             }
         }
         else
@@ -613,6 +683,14 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
                 sprite.set_affine_mat(_current_affine_mat);
                 sprite.set_z_order(current_block_z_order);
             }
+        }
+        const int required_parts = tumble_stage > 0 ?
+                generated::tumble_pose_for(mesh_id, tumble_stage, z_negative, y_negative).part_count :
+                mesh_by_id(mesh_id).part_count;
+        if(_current_sprites.size() != required_parts)
+        {
+            _rendered_current_mesh_id = -1;
+            return;
         }
         _rendered_current_mesh_id = mesh_id;
         _rendered_tumble_stage = tumble_stage;
@@ -700,23 +778,28 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
 
     if(_special_cable_sprites.empty())
     {
-        bn::sprite_ptr sprite = bn::sprite_items::crane_special_cable_segment.create_sprite(0, 0);
-        sprite.set_z_order(special_cable_z_order);
-        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-        _special_cable_sprites.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite =
+                bn::sprite_items::crane_special_cable_segment.create_sprite_optional(0, 0);
+        if(! sprite) { return; }
+        sprite->set_z_order(special_cable_z_order);
+        sprite->set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        _special_cable_sprites.push_back(*sprite);
     }
 
     if(_special_boom_sprites.empty())
     {
-        bn::sprite_ptr p0 = bn::sprite_items::crane_special_boom_p0.create_sprite(0, 0);
-        bn::sprite_ptr p1 = bn::sprite_items::crane_special_boom_p1.create_sprite(0, 0);
-        bn::sprite_ptr p2 = bn::sprite_items::crane_special_boom_p2.create_sprite(0, 0);
-        p0.set_z_order(special_boom_z_order);
-        p1.set_z_order(special_boom_z_order);
-        p2.set_z_order(special_boom_z_order);
-        _special_boom_sprites.push_back(p0);
-        _special_boom_sprites.push_back(p1);
-        _special_boom_sprites.push_back(p2);
+        bn::optional<bn::sprite_ptr> p0 = bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p1 = bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p2 = bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
+        if(p0 && p1 && p2)
+        {
+            p0->set_z_order(special_boom_z_order);
+            p1->set_z_order(special_boom_z_order);
+            p2->set_z_order(special_boom_z_order);
+            _special_boom_sprites.push_back(*p0);
+            _special_boom_sprites.push_back(*p1);
+            _special_boom_sprites.push_back(*p2);
+        }
     }
     const int boom_y = special_crane_boom_center_y(start_y);
     for(int part_index = 0; part_index < _special_boom_sprites.size(); ++part_index)
@@ -768,7 +851,7 @@ void QuickGameScene::_update_world_positions()
     {
         sprite.set_visible(current_visible);
     }
-    if(current_visible)
+    if(current_visible && ! _current_sprites.empty() && _rendered_current_mesh_id >= 0)
     {
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
@@ -910,10 +993,11 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
         const generated::UiCompositeAsset& asset = flash ? generated::quick_combo_meter_flash :
                                                             generated::quick_combo_meter_fill;
         const generated::UiSpritePartAsset& part = asset.parts[0];
-        bn::sprite_ptr sprite = part.item->create_sprite(0, 0);
-        sprite.set_z_order(-100);
-        sprite.set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
-        active = sprite;
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(0, 0);
+        if(! sprite) { return; }
+        sprite->set_z_order(-100);
+        sprite->set_double_size_mode(bn::sprite_double_size_mode::ENABLED);
+        active = *sprite;
     }
 
     bn::sprite_ptr& sprite = *active;
@@ -1010,30 +1094,40 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
             generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
             generated::accuracy_star_f2 : generated::accuracy_star_f0;
 
+    const PerfectLandingSeamPhase pending_seam = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
+    const int seam_reserve = pending_seam != PerfectLandingSeamPhase::Hidden ? 1 : 0;
+    // Allocate the four star heads first. Trail dots are strictly optional.
     for(int index = 0; index < perfect_landing_star_count; ++index)
     {
+        if(bn::sprites::available_items_count() < head_asset.part_count + seam_reserve)
+        {
+            break;
+        }
         const int star_x = x + perfect_landing_star_offset_x(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
         const int star_y = y + perfect_landing_star_offset_y(index, _perfect_landing_elapsed_ms, _perfect_landing_seed);
+        show_ui_composite(head_asset, star_x, star_y, _perfect_star_sprites, -18);
+    }
 
-        // Seven tightly spaced points form a directional line behind the moving star.
-        // One sprite per sample keeps the fixed-capacity vector within its budget.
-        for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
+    // Sample the line behind every head without overflowing OAM or the fixed
+    // perfect-star vector. No game state is altered if a dot is omitted.
+    for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
+    {
+        const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
+        if(trail_elapsed <= 0) { continue; }
+        const generated::UiCompositeAsset& trail_asset = trail_index < 2 ? generated::accuracy_trail_white :
+                                                         trail_index < 4 ? generated::accuracy_trail_yellow :
+                                                                           generated::accuracy_trail_red;
+        for(int index = 0; index < perfect_landing_star_count; ++index)
         {
-            const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
-            if(trail_elapsed <= 0)
+            if(bn::sprites::available_items_count() < trail_asset.part_count + seam_reserve ||
+               _perfect_star_sprites.max_size() - _perfect_star_sprites.size() < trail_asset.part_count)
             {
-                continue;
+                break;
             }
-
             const int trail_x = x + perfect_landing_star_offset_x(index, trail_elapsed, _perfect_landing_seed);
             const int trail_y = y + perfect_landing_star_offset_y(index, trail_elapsed, _perfect_landing_seed);
-            const generated::UiCompositeAsset& trail_asset = trail_index < 2 ? generated::accuracy_trail_white :
-                                                             trail_index < 4 ? generated::accuracy_trail_yellow :
-                                                                               generated::accuracy_trail_red;
             show_ui_composite(trail_asset, trail_x, trail_y, _perfect_star_sprites, -24 + trail_index);
         }
-
-        show_ui_composite(head_asset, star_x, star_y, _perfect_star_sprites, -18);
     }
 
     const PerfectLandingSeamPhase phase = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
@@ -1051,9 +1145,10 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
     if(! _perfect_seam_sprite || phase != _perfect_seam_phase)
     {
         _perfect_seam_sprite.reset();
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, seam_y + part.y);
-        sprite.set_z_order(-22);
-        _perfect_seam_sprite = sprite;
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, seam_y + part.y);
+        if(! sprite) { return; }
+        sprite->set_z_order(-22);
+        _perfect_seam_sprite = *sprite;
         _perfect_seam_phase = phase;
     }
     else
@@ -1084,9 +1179,9 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         append_record_marker(population, _record_flags.population, record_marker);
         append_record_marker(height, _record_flags.height, record_marker);
         append_record_marker(combo, _record_flags.combo, record_marker);
-        _text_generator.generate(0, -24, population, _hud_sprites);
-        _text_generator.generate(0, 0, height, _hud_sprites);
-        _text_generator.generate(0, 24, combo, _hud_sprites);
+        (void) _text_generator.generate_optional(0, -24, population, _hud_sprites);
+        (void) _text_generator.generate_optional(0, 0, height, _hud_sprites);
+        (void) _text_generator.generate_optional(0, 24, combo, _hud_sprites);
 
         show_ui_composite(generated::support_nav_f2, 0, 46, _hud_sprites);
         return;

@@ -5,6 +5,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
+#include "bn_sprites.h"
 #include "bn_sprite_palette_ptr.h"
 #include "bn_string.h"
 #include "bn_string_view.h"
@@ -272,8 +273,12 @@ void show_comparison_digits(
         for(int part_index = 0; part_index < asset.part_count; ++part_index)
         {
             const generated::UiSpritePartAsset& part = asset.parts[part_index];
-            sprites.push_back(part.item->create_sprite(
-                    centered_x(digit_center_x + part.x), centered_y(screen_y + part.y)));
+            if(sprites.size() < sprites.max_size())
+            {
+                bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(
+                        centered_x(digit_center_x + part.x), centered_y(screen_y + part.y));
+                if(sprite) { sprites.push_back(*sprite); }
+            }
         }
     }
 }
@@ -505,12 +510,23 @@ void BuildCityScene::_stop()
 
 void BuildCityScene::_show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order)
 {
+    if(_sprites.max_size() - _sprites.size() < asset.part_count ||
+       bn::sprites::available_items_count() < asset.part_count)
+    {
+        return;
+    }
+    const int first = _sprites.size();
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
-        sprite.set_z_order(z_order);
-        _sprites.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, y + part.y);
+        if(! sprite)
+        {
+            while(_sprites.size() > first) { _sprites.pop_back(); }
+            return;
+        }
+        sprite->set_z_order(z_order);
+        _sprites.push_back(*sprite);
     }
 }
 
@@ -530,13 +546,15 @@ void BuildCityScene::_show_valid_lot_ring(
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(
+        if(_sprites.size() >= _sprites.max_size()) { return; }
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(
                 centered_x(screen_x + part.x), centered_y(screen_y + part.y));
+        if(! sprite) { return; }
         if(! valid_lot_palette)
         {
-            valid_lot_palette = sprite.palette();
+            valid_lot_palette = sprite->palette();
         }
-        _sprites.push_back(sprite);
+        _sprites.push_back(*sprite);
     }
 }
 
@@ -556,6 +574,27 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         {
             pulse_building_type = snapshot.pending_building_type;
         }
+    }
+
+    // Saved towers: m.a places each strip frame at boardX+5 and uses a common
+    // baseline boardY+15. Keeping the baseline (instead of centering in a cell)
+    // is important because the four tower families have different heights.
+    for(int index = 0; index < 25; ++index)
+    {
+        const CityTileSave& tile = save.city_tiles[index];
+        if(tile.type < 1 || tile.type > 4)
+        {
+            continue;
+        }
+
+        const int column = index % 5;
+        const int row = index / 5;
+        const int screen_left = grid_screen_left + 5 + column * grid_spacing;
+        const int screen_baseline = grid_screen_top + 15 + row * grid_spacing;
+        _show_composite(
+                building_asset(tile.type, tile.roof),
+                building_center_x(tile.type, screen_left),
+                building_center_y(tile.type, screen_baseline));
     }
 
     if(pulse_building_type != 0)
@@ -587,27 +626,6 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                     int(rgb & 0xFFu) >> 3);
             valid_lot_palette->set_color(1, color);
         }
-    }
-
-    // Saved towers: m.a places each strip frame at boardX+5 and uses a common
-    // baseline boardY+15. Keeping the baseline (instead of centering in a cell)
-    // is important because the four tower families have different heights.
-    for(int index = 0; index < 25; ++index)
-    {
-        const CityTileSave& tile = save.city_tiles[index];
-        if(tile.type < 1 || tile.type > 4)
-        {
-            continue;
-        }
-
-        const int column = index % 5;
-        const int row = index / 5;
-        const int screen_left = grid_screen_left + 5 + column * grid_spacing;
-        const int screen_baseline = grid_screen_top + 15 + row * grid_spacing;
-        _show_composite(
-                building_asset(tile.type, tile.roof),
-                building_center_x(tile.type, screen_left),
-                building_center_y(tile.type, screen_baseline));
     }
 
     if(snapshot.mode == BuildCityMode::Browse)
@@ -912,11 +930,11 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
         {
             const bn::string<96> locked = flatten_city_instruction(
                     generated::localized_strings[_language][63], snapshot.selected_unlock_population);
-            _text_generator.generate(0, 68, locked, _sprites);
+            (void) _text_generator.generate_optional(0, 68, locked, _sprites);
         }
         else
         {
-            _text_generator.generate(
+            (void) _text_generator.generate_optional(
                     0, 68,
                     generated::localized_strings[_language][99 + snapshot.selected_building_type - 1], _sprites);
         }
@@ -927,7 +945,7 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
                 generated::localized_strings[_language][64] :
                 generated::localized_strings[_language][
                         (snapshot.placement_committing || snapshot.placement_valid) ? 65 : 66];
-        _text_generator.generate(0, 68, instruction, _sprites);
+        (void) _text_generator.generate_optional(0, 68, instruction, _sprites);
     }
 }
 
@@ -948,7 +966,7 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     {
         const bn::string<128> formatted = format_event_line(
                 generated::city_modal_lines[_language][modal_index][line], event, _language);
-        _text_generator.generate(0, y, formatted, _sprites);
+        (void) _text_generator.generate_optional(0, y, formatted, _sprites);
         y += modal_line_spacing;
     }
     if(city_level_event)
@@ -967,31 +985,43 @@ void BuildCityScene::_rebuild(const SaveData& save)
     if(city_theme > 3) { city_theme = 3; }
     if(! _background || city_theme != _rendered_city_theme)
     {
+        // Drop the former theme before attempting the new BG tile/palette
+        // allocation. If Butano has not reclaimed its VRAM yet, retry later.
+        _background.reset();
+        _rendered_city_theme = -1;
         switch(city_theme)
         {
         case 1:
-            _background = bn::regular_bg_items::city_bg_theme_1.create_bg(0, 0);
+            _background = bn::regular_bg_items::city_bg_theme_1.create_bg_optional(0, 0);
             break;
         case 2:
-            _background = bn::regular_bg_items::city_bg_theme_2.create_bg(0, 0);
+            _background = bn::regular_bg_items::city_bg_theme_2.create_bg_optional(0, 0);
             break;
         case 3:
-            _background = bn::regular_bg_items::city_bg_theme_3.create_bg(0, 0);
+            _background = bn::regular_bg_items::city_bg_theme_3.create_bg_optional(0, 0);
             break;
         default:
-            _background = bn::regular_bg_items::city_bg_theme_0.create_bg(0, 0);
+            _background = bn::regular_bg_items::city_bg_theme_0.create_bg_optional(0, 0);
             break;
+        }
+        if(! _background)
+        {
+            _sprites.clear();
+            _has_snapshot = false;
+            return;
         }
         _background->set_priority(3);
         _rendered_city_theme = city_theme;
     }
     _sprites.clear();
-    _show_city_tiles(save, snapshot);
-    _show_status(save, snapshot);
+    // Prioritize UI and dialogue over the optional, dense placement rings and
+    // 25 building composites. Z-order still determines visual layering.
     if(_events.has_event())
     {
         _show_event_modal(_events.current_event());
     }
+    _show_status(save, snapshot);
+    _show_city_tiles(save, snapshot);
     _last_snapshot = snapshot;
     _has_snapshot = true;
 }

@@ -4,6 +4,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
+#include "bn_sprites.h"
 #include "bn_fixed.h"
 #include "bn_regular_bg_items_menu_bg.h"
 #include "bn_string.h"
@@ -235,12 +236,23 @@ void UiShell::_rebuild(const UiController& controller, const SaveData& save)
 
 void UiShell::_show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order)
 {
+    if(_sprites.max_size() - _sprites.size() < asset.part_count ||
+       bn::sprites::available_items_count() < asset.part_count)
+    {
+        return;
+    }
+    const int first = _sprites.size();
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::sprite_ptr sprite = part.item->create_sprite(x + part.x, y + part.y);
-        sprite.set_z_order(z_order);
-        _sprites.push_back(sprite);
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(x + part.x, y + part.y);
+        if(! sprite)
+        {
+            while(_sprites.size() > first) { _sprites.pop_back(); }
+            return;
+        }
+        sprite->set_z_order(z_order);
+        _sprites.push_back(*sprite);
     }
 }
 
@@ -255,7 +267,7 @@ void UiShell::_show_title(int language)
     if(_title_prompt_visible)
     {
         _show_composite(generated::menu_highlight, 0, 49, 100);
-        _selected_text_generator.generate(0, 49, title_prompt_lines[language], _sprites);
+        (void) _selected_text_generator.generate_optional(0, 49, title_prompt_lines[language], _sprites);
     }
 }
 
@@ -268,11 +280,11 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
         if(index == selection)
         {
             _show_composite(generated::menu_highlight, 0, y, 100);
-            _selected_text_generator.generate(0, y, labels[index], _sprites);
+            (void) _selected_text_generator.generate_optional(0, y, labels[index], _sprites);
         }
         else
         {
-            _text_generator.generate(0, y, labels[index], _sprites);
+            (void) _text_generator.generate_optional(0, y, labels[index], _sprites);
         }
     }
 }
@@ -326,9 +338,12 @@ void UiShell::_show_root_menu(const UiController& controller)
 {
     if(! _background)
     {
-        _background = bn::regular_bg_items::menu_bg.create_bg(0, 0);
-        _background->set_priority(3);
-        _background->set_y(bn::fixed(_menu_sky_offset) / 256);
+        _background = bn::regular_bg_items::menu_bg.create_bg_optional(0, 0);
+        if(_background)
+        {
+            _background->set_priority(3);
+            _background->set_y(bn::fixed(_menu_sky_offset) / 256);
+        }
     }
 
     const int language = controller.language();
@@ -345,11 +360,11 @@ void UiShell::_show_root_menu(const UiController& controller)
         if(row == controller.selection())
         {
             _show_composite(generated::menu_highlight, 0, y, 100);
-            _selected_text_generator.generate(0, y, generated::localized_strings[language][string_index], _sprites);
+            (void) _selected_text_generator.generate_optional(0, y, generated::localized_strings[language][string_index], _sprites);
         }
         else
         {
-            _text_generator.generate(0, y, generated::localized_strings[language][string_index], _sprites);
+            (void) _text_generator.generate_optional(0, y, generated::localized_strings[language][string_index], _sprites);
         }
 
         switch(item)
@@ -387,9 +402,9 @@ void UiShell::_show_settings(const UiController& controller)
         generated::localized_strings[language][81],
     };
     _show_menu(labels, 3, controller.selection());
-    _text_generator.generate(70, -12,
+    (void) _text_generator.generate_optional(70, -12,
             generated::localized_strings[language][controller.sound_enabled() ? 13 : 14], _sprites);
-    _text_generator.generate(70, 12, generated::locale_names[language], _sprites);
+    (void) _text_generator.generate_optional(70, 12, generated::locale_names[language], _sprites);
     _show_softkeys(language, false, true);
 }
 
@@ -409,7 +424,7 @@ void UiShell::_show_dialog_lines(const char* const* lines, int line_count, int c
     int y = center_y - total_height / 2;
     for(int index = 0; index < line_count; ++index)
     {
-        _text_generator.generate(0, y, lines[index], _sprites);
+        (void) _text_generator.generate_optional(0, y, lines[index], _sprites);
         y += 16;
     }
 }
@@ -427,11 +442,11 @@ void UiShell::_show_confirmation_options(const UiController& controller)
         if(index == controller.selection())
         {
             _show_composite(generated::menu_highlight, 0, y, 100);
-            _selected_text_generator.generate(0, y, labels[index], _sprites);
+            (void) _selected_text_generator.generate_optional(0, y, labels[index], _sprites);
         }
         else
         {
-            _text_generator.generate(0, y, labels[index], _sprites);
+            (void) _text_generator.generate_optional(0, y, labels[index], _sprites);
         }
     }
 }
@@ -449,7 +464,7 @@ void UiShell::_show_reset_city_confirm(const UiController& controller)
 void UiShell::_show_high_score_select(const UiController& controller)
 {
     const int language = controller.language();
-    _text_generator.generate(0, -48, generated::localized_strings[language][126], _sprites);
+    (void) _text_generator.generate_optional(0, -48, generated::localized_strings[language][126], _sprites);
     const char* labels[3] = {
         generated::localized_strings[language][92],
         generated::localized_strings[language][91],
@@ -462,7 +477,7 @@ void UiShell::_show_high_score_select(const UiController& controller)
 void UiShell::_show_high_score_table(const UiController& controller, const SaveData& save)
 {
     const int language = controller.language();
-    _text_generator.generate(0, -58, generated::localized_strings[language][133], _sprites);
+    (void) _text_generator.generate_optional(0, -58, generated::localized_strings[language][133], _sprites);
     const auto& table = save.hall_of_fame.tables[static_cast<int>(controller.selected_hall_table())];
     for(int index = 0; index < hall_entries_per_table; ++index)
     {
@@ -472,7 +487,7 @@ void UiShell::_show_high_score_table(const UiController& controller, const SaveD
         line.append(table[index].name.data());
         line.append("  ");
         line.append(bn::to_string<12>(table[index].score));
-        _text_generator.generate(0, -20 + index * 24, line, _sprites);
+        (void) _text_generator.generate_optional(0, -20 + index * 24, line, _sprites);
     }
     _show_softkeys(language, false, true);
 }
@@ -507,8 +522,8 @@ void UiShell::_show_score_message(const UiController& controller, bool qualified
             message.append(fragment);
         }
     }
-    _text_generator.generate(0, -18, message, _sprites);
-    _text_generator.generate(0, 12, bn::to_string<12>(controller.pending_score()), _sprites);
+    (void) _text_generator.generate_optional(0, -18, message, _sprites);
+    (void) _text_generator.generate_optional(0, 12, bn::to_string<12>(controller.pending_score()), _sprites);
     _show_softkeys(language, false, true);
 }
 
@@ -517,9 +532,9 @@ void UiShell::_show_name_entry(const UiController& controller)
     const int language = controller.language();
     constexpr int name_line_y = -48;
     constexpr int name_column_offset = 24;
-    _text_generator.generate(0, -68, generated::localized_strings[language][128], _sprites);
-    _text_generator.generate(-name_column_offset, name_line_y, generated::localized_strings[language][129], _sprites);
-    _text_generator.generate(name_column_offset, name_line_y, controller.name_entry().data(), _sprites);
+    (void) _text_generator.generate_optional(0, -68, generated::localized_strings[language][128], _sprites);
+    (void) _text_generator.generate_optional(-name_column_offset, name_line_y, generated::localized_strings[language][129], _sprites);
+    (void) _text_generator.generate_optional(name_column_offset, name_line_y, controller.name_entry().data(), _sprites);
 
     constexpr int columns = 8;
     const int selected_row = controller.name_cursor() / columns;
@@ -535,14 +550,14 @@ void UiShell::_show_name_entry(const UiController& controller)
         char label[2] = {name_grid[index], '\0'};
         if(index == controller.name_cursor())
         {
-            _selected_text_generator.generate(x, y, label, _sprites);
+            (void) _selected_text_generator.generate_optional(x, y, label, _sprites);
         }
         else
         {
-            _text_generator.generate(x, y, label, _sprites);
+            (void) _text_generator.generate_optional(x, y, label, _sprites);
         }
     }
-    _text_generator.generate(42, 68, "START: OK", _sprites);
+    (void) _text_generator.generate_optional(42, 68, "START: OK", _sprites);
     _show_softkeys(language, false, true);
 }
 
@@ -551,7 +566,7 @@ void UiShell::_show_softkeys(int language, bool select, bool back)
     (void) select;
     if(back)
     {
-        _text_generator.generate(92, 70, generated::localized_strings[language][7], _sprites);
+        (void) _text_generator.generate_optional(92, 70, generated::localized_strings[language][7], _sprites);
     }
 }
 
@@ -575,7 +590,7 @@ void UiShell::_show_lines(const char* const* lines, int line_count, int page)
     int y = -((visible_count - 1) * 16) / 2;
     for(int index = start; index < end; ++index)
     {
-        _text_generator.generate(0, y, lines[index], _sprites);
+        (void) _text_generator.generate_optional(0, y, lines[index], _sprites);
         y += 16;
     }
     const int pages = page_count(line_count);
