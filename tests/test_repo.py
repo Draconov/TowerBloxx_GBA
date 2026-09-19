@@ -188,19 +188,22 @@ def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
     assert "constexpr int comparison_panel_row_y = comparison_row_y - 1" in source
     assert "snapshot.pending_population, 204, comparison_panel_row_y" in source
     assert "snapshot.replacement_population, 231, comparison_panel_row_y" in source
-    # The two comparison placeholders and their active sprite share exactly
-    # the same 24x8 pixel bounds, one pixel above the previous screen row.
+    # The comparison frames were intentionally extended DOWN one pixel.
+    # Their existing top edges stay put, while the lower border now fills
+    # sprite row 8 (formerly transparent) and the backdrop reaches row 12.
     with Image.open(GBA / "graphics" / "ui" / "city_comparison_panel_active_p0.bmp") as active:
         assert active.mode == "P" and active.size == (32, 16)
-        assert all(active.getpixel((x, 7)) != 0 and active.getpixel((x, 8)) == 0
-                   for x in range(24))
+        assert all(active.getpixel((x, 7)) != 0 and active.getpixel((x, 8)) != 0
+                   and active.getpixel((x, 9)) == 0 for x in range(24))
     for theme in range(4):
         with Image.open(GBA / "graphics" / "backgrounds" / f"city_bg_theme_{theme}.bmp") as bg:
             assert bg.mode == "P" and bg.size == (256, 256)
             for x in (182, 209):
                 # The indexed city background is centered at (8, 48).
-                assert bg.getpixel((x + 8, 4 + 48)) == bg.getpixel((x + 8, 11 + 48))
-                assert bg.getpixel((x + 8, 12 + 48)) == bg.getpixel((x + 7, 12 + 48))
+                # The placeholder interior extends through row 12, with its
+                # existing border/outer fill still beginning at row 13.
+                assert bg.getpixel((x + 8, 4 + 48)) == bg.getpixel((x + 8, 12 + 48))
+                assert bg.getpixel((x + 8, 12 + 48)) != bg.getpixel((x + 8, 13 + 48))
 
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p0.h"' in generated
     assert '#include "bn_sprite_items_city_milestone_badge_empty_p1.h"' in generated
