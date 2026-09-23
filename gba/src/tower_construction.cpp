@@ -328,7 +328,11 @@ void TowerConstruction::_step(int delta_ms)
     }
     else if(_block_state == TowerConstructionBlockState::Settled || _block_state == TowerConstructionBlockState::Missed)
     {
-        if(_clock_ms - _transition_start_ms >= next_block_delay_ms)
+        // The final normal block leads straight to the special roof lowering
+        // once its camera movement ends: no extra standard swinging roof.
+        if((_roof_phase && _block_state == TowerConstructionBlockState::Settled &&
+            _camera_y == _camera_target_y) ||
+           _clock_ms - _transition_start_ms >= next_block_delay_ms)
         {
             _spawn_next_block();
         }
@@ -489,10 +493,10 @@ void TowerConstruction::_update_crane(int delta_ms)
         }
     }
 
-    if(_stationary_crane)
+    if(_stationary_crane || _roof_phase)
     {
-        // Only the boom's raising/lowering remains animated. The suspended
-        // block cannot acquire horizontal/vertical swing or swing velocity.
+        // Both sandbox and the special roof lowering hold the crane centered.
+        // The roof must never show a normal swinging-block preview.
         _crane_x = 0;
         _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length;
     }
@@ -506,9 +510,9 @@ void TowerConstruction::_update_crane(int delta_ms)
 
     if(_block_state == TowerConstructionBlockState::Attached)
     {
-        _current_z_angle_degrees = _stationary_crane ? 0 : _crane_x >> 4;
-        _velocity_x = _stationary_crane ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
-        _velocity_y = _stationary_crane ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
+        _current_z_angle_degrees = (_stationary_crane || _roof_phase) ? 0 : _crane_x >> 4;
+        _velocity_x = (_stationary_crane || _roof_phase) ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
+        _velocity_y = (_stationary_crane || _roof_phase) ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }
 
     _previous_crane_x = _crane_x;
@@ -834,6 +838,13 @@ void TowerConstruction::_spawn_next_block()
     {
         _rope_length = max_rope_length;
         _block_state = TowerConstructionBlockState::Attached;
+    }
+    // When starting the special roof presentation, start above the center
+    // of the tower, not at the previous swinging crane's last coordinates.
+    if(_roof_phase)
+    {
+        _crane_x = 0;
+        _crane_y = _world_anchor_y - _vertical_swing_bias;
     }
     _current_x = _crane_x;
     _current_y = _crane_y;

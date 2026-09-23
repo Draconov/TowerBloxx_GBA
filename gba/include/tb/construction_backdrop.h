@@ -22,7 +22,8 @@ struct LegacySkyEventSlot
 class ConstructionBackdrop
 {
 public:
-    void start(int camera_y, int clock_ms);
+    // Preserve unique sky encounters when restoring a suspended scene.
+    void start(int camera_y, int clock_ms, bool new_run = true);
     void update(int camera_y, int clock_ms);
     void reset();
 
@@ -40,6 +41,7 @@ private:
     bn::vector<bn::sprite_ptr, 12> _blink_sprites;
     bn::vector<LegacySkyEventSlot, 9> _legacy_events;
     int _legacy_remaining[29] = {};
+    uint32_t _spawned_celestial_events = 0;
     uint32_t _legacy_rng = 0x1337B10Cu;
     int _legacy_event_clock_ms = 0;
     int _legacy_event_step_accumulator_ms = 0;

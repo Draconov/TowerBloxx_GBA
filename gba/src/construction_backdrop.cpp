@@ -1,4 +1,5 @@
 #include "tb/construction_backdrop.h"
+#include "tb/sky_event_policy.h"
 
 #include "bn_sprites.h"
 
@@ -122,9 +123,13 @@ void position_legacy_event_sprites(
 
 }
 
-void ConstructionBackdrop::start(int camera_y, int clock_ms)
+void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run)
 {
     reset();
+    if(new_run)
+    {
+        _spawned_celestial_events = 0;
+    }
     for(const generated::ConstructionBackgroundDecoration& decoration :
         generated::construction_background_decorations)
     {
@@ -313,7 +318,9 @@ void ConstructionBackdrop::_spawn_legacy_event(
                 band < generated::legacy_event_max_band[candidate];
         const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
                 _legacy_remaining[candidate] > 0;
-        if(in_band && available && _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
+        const bool first_encounter = ! (_spawned_celestial_events & celestial_event_flag(candidate));
+        if(in_band && available && first_encounter &&
+           _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
         {
             type = candidate;
             break;
@@ -348,6 +355,9 @@ void ConstructionBackdrop::_spawn_legacy_event(
                 _legacy_random(1024);
     }
     slot.type = type;
+    // A finite *simultaneous* spawn limit alone allows an identical planet to
+    // appear again after leaving the screen. Record it for the whole run.
+    _spawned_celestial_events |= celestial_event_flag(type);
     slot.rendered_frame = -1;
     slot.next_spawn_ms = 0;
 }

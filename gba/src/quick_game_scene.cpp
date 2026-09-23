@@ -568,7 +568,7 @@ void QuickGameScene::resume_presentation()
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false);
 }
 
 void QuickGameScene::discard()

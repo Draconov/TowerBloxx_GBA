@@ -614,3 +614,17 @@ def test_all_sprite_palette_indices_fit_declared_bpp() -> None:
         with Image.open(bmp) as image:
             assert image.mode == "P", manifest
             assert max(image.get_flattened_data()) < 16, f"{bmp}: BPP4 sprite references palette index >= 16"
+
+
+def test_one_time_planets_and_direct_special_roof_transition() -> None:
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    quick_scene = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    city_scene = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    tower = (GBA / "src" / "tower_construction.cpp").read_text(encoding="utf-8")
+    assert "_spawned_celestial_events |= celestial_event_flag(type)" in backdrop
+    assert "! (_spawned_celestial_events & celestial_event_flag(candidate))" in backdrop
+    assert "if(new_run)" in backdrop
+    assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false)" in quick_scene
+    assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false)" in city_scene
+    assert "if(_stationary_crane || _roof_phase)" in tower
+    assert "_camera_y == _camera_target_y) ||" in tower

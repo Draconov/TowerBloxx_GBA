@@ -12,6 +12,7 @@
 #include "tb/menu_clouds.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
+#include "tb/sky_event_policy.h"
 #include "tb/tower_construction.h"
 #include "tb/tower_session.h"
 #include "tb/ui_controller.h"
@@ -252,6 +253,25 @@ void test_perfect_landing_feedback_geometry()
     assert(tb::perfect_landing_seam_phase(130) == tb::PerfectLandingSeamPhase::Hidden);
 }
 
+void test_celestial_encounters_are_unique()
+{
+    constexpr int unique_types[] = {14, 18, 21, 24, 25, 26, 27};
+    uint32_t seen = 0;
+    for(int type : unique_types)
+    {
+        assert(tb::unique_celestial_event(type));
+        const uint32_t flag = tb::celestial_event_flag(type);
+        assert(flag && ! (seen & flag));
+        seen |= flag;
+        assert(seen & tb::celestial_event_flag(type));
+    }
+    for(int type : {1, 3, 12, 13, 15, 17, 20, 22, 23, 28})
+    {
+        assert(! tb::unique_celestial_event(type));
+        assert(tb::celestial_event_flag(type) == 0);
+    }
+}
+
 void test_roof_phase_uses_stationary_camera_lowering()
 {
     tb::TowerConstruction construction;
@@ -264,6 +284,9 @@ void test_roof_phase_uses_stationary_camera_lowering()
     auto snapshot = construction.snapshot();
     assert(snapshot.roof_phase);
     const int target_camera_y = snapshot.camera_target_y;
+    // No swinging roof is introduced between the last normal floor and
+    // the special lowering scene, regardless of the normal crane's phase.
+    assert(snapshot.block_state == tb::TowerConstructionBlockState::Settled);
 
     // Roof presentation must wait for the last camera move to finish before
     // the special crane starts lowering the roof from a zero-length rope.
@@ -276,6 +299,9 @@ void test_roof_phase_uses_stationary_camera_lowering()
     assert(snapshot.camera_y == target_camera_y);
     assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
     assert(snapshot.rope_length < 128);
+    assert(snapshot.crane_x == 0);
+    assert(snapshot.current_x == 0);
+    assert(snapshot.swing_amplitude_x > 0); // Only the roof phase overrides normal swing.
 
     const int fixed_camera_y = snapshot.camera_y;
     const int initial_rope = snapshot.rope_length;
@@ -285,6 +311,8 @@ void test_roof_phase_uses_stationary_camera_lowering()
     assert(snapshot.block_state == tb::TowerConstructionBlockState::Raising);
     assert(snapshot.rope_length > initial_rope);
     assert(snapshot.rope_length < 1664);
+    assert(snapshot.crane_x == 0);
+    assert(snapshot.current_x == 0);
 
     for(int elapsed = 0; elapsed < 3500 &&
             construction.snapshot().block_state == tb::TowerConstructionBlockState::Raising; elapsed += 25)
@@ -521,6 +549,7 @@ int main()
     test_quick_game_select_cheat_only_stops_swing();
     test_special_crane_screen_anchor();
     test_perfect_landing_feedback_geometry();
+    test_celestial_encounters_are_unique();
     test_roof_phase_uses_stationary_camera_lowering();
     test_tower_combo_roof_and_failure_rules();
     test_build_city_progress_and_replacement();
