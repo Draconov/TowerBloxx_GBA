@@ -18,6 +18,7 @@
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
 #include "generated/christmas_tower_mesh_assets.h"
+#include "generated/christmas_assets.h"
 #include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_ui_assets.h"
 
@@ -71,9 +72,12 @@ constexpr const generated::UiCompositeAsset* gameplay_worker_red_crawling_frames
     &generated::menu_worker_red_f8, &generated::menu_worker_red_f9,
 };
 
-const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& worker)
+const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& worker, VisualTheme visual_theme)
 {
     const bool blue = worker.variant == 1;
+    const bool christmas = visual_theme == VisualTheme::Christmas;
+    const generated::UiCompositeAsset* const* christmas_frames = blue ?
+            generated::christmas_worker_blue_frames : generated::christmas_worker_red_frames;
     switch(worker.state)
     {
     case 1:
@@ -88,6 +92,10 @@ const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& w
         {
             index = 4;
         }
+        if(christmas)
+        {
+            return *christmas_frames[index + 1];
+        }
         return blue ? *gameplay_worker_blue_flying_frames[index] :
                       *gameplay_worker_red_flying_frames[index];
     }
@@ -97,12 +105,20 @@ const generated::UiCompositeAsset& gameplay_worker_asset(const GameplayWorker& w
     {
         int base = worker.walk_direction < 0 ? 2 : 0;
         int step = worker.frame <= 6 ? 0 : 1;
+        if(christmas)
+        {
+            return *christmas_frames[6 + base + step];
+        }
         return blue ? *gameplay_worker_blue_crawling_frames[base + step] :
                       *gameplay_worker_red_crawling_frames[base + step];
     }
 
     case 4:
     default:
+        if(christmas)
+        {
+            return *christmas_frames[0];
+        }
         return blue ? generated::menu_worker_blue_f0 : generated::menu_worker_red_f0;
     }
 }
@@ -993,7 +1009,7 @@ void QuickGameScene::_rebuild_worker_sprites(const QuickGameSnapshot& snapshot)
         {
             continue;
         }
-        const generated::UiCompositeAsset& asset = gameplay_worker_asset(worker);
+        const generated::UiCompositeAsset& asset = gameplay_worker_asset(worker, _visual_theme);
         show_ui_composite(
                 asset, _screen_x(worker.x_fixed),
                 _screen_y(worker.y_fixed, snapshot.presentation_camera_y), _worker_sprites,
@@ -1053,7 +1069,10 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
         if(frame != _combo_star_frame)
         {
             _combo_star_sprites.clear();
-            show_ui_composite(*generated::legacy_combo_star_frames[frame],
+            const generated::UiCompositeAsset* const* combo_star_frames =
+                    _visual_theme == VisualTheme::Christmas ? generated::christmas_combo_star_frames :
+                                                             generated::legacy_combo_star_frames;
+            show_ui_composite(*combo_star_frames[frame],
                               combo_star_x, combo_star_y, _combo_star_sprites, -102);
             _combo_star_frame = frame;
         }
@@ -1092,7 +1111,10 @@ void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
         const QuickFloor& floor = _game.floor(floor_index);
         const int visible_slot = floor_index - _visible_floor_start;
         const int frame = (animation_bucket + visible_slot) % 3;
-        const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[frame];
+        const generated::UiCompositeAsset* const* block_sparkle_frames =
+                _visual_theme == VisualTheme::Christmas ? generated::christmas_block_sparkle_frames :
+                                                         generated::legacy_block_sparkle_frames;
+        const generated::UiCompositeAsset& asset = *block_sparkle_frames[frame];
         show_ui_composite(
                 asset, _screen_x(floor.x),
                 _screen_y(floor.y, snapshot.presentation_camera_y),
@@ -1104,7 +1126,10 @@ void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
              snapshot.block_state == QuickBlockState::Falling || snapshot.block_state == QuickBlockState::Slipping);
     if(current_visible)
     {
-        const generated::UiCompositeAsset& asset = *generated::legacy_block_sparkle_frames[animation_bucket % 3];
+        const generated::UiCompositeAsset* const* block_sparkle_frames =
+                _visual_theme == VisualTheme::Christmas ? generated::christmas_block_sparkle_frames :
+                                                         generated::legacy_block_sparkle_frames;
+        const generated::UiCompositeAsset& asset = *block_sparkle_frames[animation_bucket % 3];
         show_ui_composite(asset, _screen_x(snapshot.current_x),
                           _screen_y(snapshot.current_y, snapshot.presentation_camera_y),
                           _block_sparkle_sprites, -19);
@@ -1129,9 +1154,13 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
 
     // JAR-grounded pass: the moving star grows small -> medium -> large while
     // leaving an actual sampled trail behind it (white -> yellow -> red).
+    const generated::UiCompositeAsset* const* accuracy_star_frames =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_accuracy_star_frames : nullptr;
     const generated::UiCompositeAsset& head_asset = _perfect_landing_elapsed_ms < 120 ?
-            generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
-            generated::accuracy_star_f2 : generated::accuracy_star_f0;
+            (accuracy_star_frames ? *accuracy_star_frames[1] : generated::accuracy_star_f1) :
+            _perfect_landing_elapsed_ms < 240 ?
+            (accuracy_star_frames ? *accuracy_star_frames[2] : generated::accuracy_star_f2) :
+            (accuracy_star_frames ? *accuracy_star_frames[0] : generated::accuracy_star_f0);
 
     const PerfectLandingSeamPhase pending_seam = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
     const int seam_reserve = pending_seam != PerfectLandingSeamPhase::Hidden ? 1 : 0;
@@ -1226,10 +1255,23 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
         return;
     }
 
+    const generated::UiCompositeAsset* const* white_digit_frames =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_hud_white_digit_frames :
+                                                     hud_white_digit_frames;
+    const generated::UiCompositeAsset* const* brown_digit_frames =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_hud_brown_digit_frames :
+                                                     hud_brown_digit_frames;
+    const generated::UiCompositeAsset* const* state_indicator_frames =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_hud_state_indicator_frames :
+                                                     hud_state_indicator_frames;
+    const generated::UiCompositeAsset& population_icon =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_hud_population_icon :
+                                                     generated::hud_population_icon;
+
     // Exact lower-left Quick Game frame from House.i(Graphics): resource 19
     // at (au-4, c-av-28), with au=12,av=10 for the 240x160 GBA view.
     show_ui_composite(generated::quick_counter_frame, -106, 56, _hud_sprites);
-    draw_source_number(snapshot.floor_count, 3, 20, 139, hud_white_digit_frames, _hud_sprites);
+    draw_source_number(snapshot.floor_count, 3, 20, 139, white_digit_frames, _hud_sprites);
 
     // Resource 18 is a color-pair strip. Quick Game uses the orange pair
     // (L=4 => base frame 6); frame 8 is the exhausted gray state. The JAR
@@ -1238,15 +1280,15 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     {
         const int frame = _life_indicator_animation.frame_for_slot(slot, snapshot.chances_left, 6);
         const int top_y = 132 + slot * 6;
-        show_ui_composite(*hud_state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
+        show_ui_composite(*state_indicator_frames[frame], -92, top_y + 3 - 80, _hud_sprites);
     }
 
     // House.i clips the top 6x9 of resource 17 for the population marker and
     // draws a five-digit resource-14 number to its right once the tower exists.
     if(snapshot.floor_count > 0)
     {
-        show_ui_composite(generated::hud_population_icon, 82, 63, _hud_sprites);
-        draw_source_number(snapshot.population, 5, 228, 141, hud_white_digit_frames, _hud_sprites);
+        show_ui_composite(population_icon, 82, 63, _hud_sprites);
+        draw_source_number(snapshot.population, 5, 228, 141, white_digit_frames, _hud_sprites);
     }
 
     if(snapshot.combo_meter_ms > 0)
@@ -1260,10 +1302,10 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     // followed by one or two brown digits.
     if(snapshot.combo_meter_ms > 0 && snapshot.combo_count > 1)
     {
-        show_ui_composite(*hud_brown_digit_frames[11], combo_readout_x, combo_readout_y, _hud_sprites);
+        show_ui_composite(*brown_digit_frames[11], combo_readout_x, combo_readout_y, _hud_sprites);
         const int digits = snapshot.combo_count > 9 ? 2 : 1;
         draw_source_number(snapshot.combo_count, digits, 191 + digits * 5, 12,
-                           hud_brown_digit_frames, _hud_sprites);
+                           brown_digit_frames, _hud_sprites);
     }
 
     // House.i(Graphics): once r() banks the combo, Z is flashed as a
@@ -1272,8 +1314,8 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
        snapshot.combo_meter_ms > -2000 && (-snapshot.combo_meter_ms / 100) % 2 == 0)
     {
         const int plus_left = draw_source_number(snapshot.combo_bonus_pending, 3, 130, 10,
-                                                 hud_brown_digit_frames, _hud_sprites);
-        show_ui_composite(*hud_brown_digit_frames[10], plus_left + 2 - 120, 13 - 80, _hud_sprites);
+                                                 brown_digit_frames, _hud_sprites);
+        show_ui_composite(*brown_digit_frames[10], plus_left + 2 - 120, 13 - 80, _hud_sprites);
     }
 
     if(snapshot.status == QuickGameStatus::GameOver)

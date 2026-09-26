@@ -145,7 +145,8 @@ def test_combo_feedback_contract_is_retained() -> None:
         assert "combo_bonus_pending" in source
         assert "combo_meter_ms > -2000" in source
         assert "(-snapshot.combo_meter_ms / 100) % 2 == 0" in source
-        assert "hud_brown_digit_frames[10]" in source
+        assert "brown_digit_frames[10]" in source
+        assert "generated::christmas_hud_brown_digit_frames" in source
         # House.i(Graphics) draws the combo meter after the mode-specific HUD
         # branch, so the meter is common to Quick Game and Build City.
         assert "quick_combo_meter_frame" in source
@@ -729,3 +730,107 @@ def test_christmas_construction_palette_budgets_are_stable() -> None:
             assert max(image.tobytes()) < 16
             crane_palettes.add(tuple((image.getpalette() or [])[: 16 * 3]))
     assert len(crane_palettes) == 1
+
+
+def test_christmas_phase7_hud_effects_and_menu_icons_are_wired() -> None:
+    christmas = GBA / "graphics" / "christmas" / "ui"
+    for name in (
+        "christmas_menu_continue_icon_p0.bmp",
+        "christmas_menu_build_city_icon_p0.bmp",
+        "christmas_menu_quick_game_icon_p0.bmp",
+        "christmas_menu_settings_icon_p0.bmp",
+        "christmas_construction_target_badge_f0_p0.bmp",
+        "christmas_construction_target_badge_f4_p0.bmp",
+        "christmas_hud_white_digit_f0_p0.bmp",
+        "christmas_hud_white_digit_f13_p0.bmp",
+        "christmas_hud_brown_digit_f11_p0.bmp",
+        "christmas_hud_population_icon_p0.bmp",
+        "christmas_hud_state_indicator_f9_p0.bmp",
+        "christmas_accuracy_star_f2_p0.bmp",
+        "christmas_combo_star_f3_p0.bmp",
+        "christmas_block_sparkle_f2_p0.bmp",
+    ):
+        assert (christmas / name).is_file(), name
+
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    for symbol in (
+        "christmas_construction_target_badge_frames",
+        "christmas_hud_white_digit_frames",
+        "christmas_hud_brown_digit_frames",
+        "christmas_hud_state_indicator_frames",
+        "christmas_accuracy_star_frames",
+        "christmas_combo_star_frames",
+        "christmas_block_sparkle_frames",
+    ):
+        assert symbol in generated
+
+    shell = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_menu_continue_icon" in shell
+    assert "generated::christmas_menu_build_city_icon" in shell
+    assert "generated::christmas_menu_quick_game_icon" in shell
+    assert "generated::christmas_menu_settings_icon" in shell
+    # Santa's resource set has no honest equivalents for these root entries.
+    # They intentionally retain the classic source artwork as a fallback.
+    assert "generated::menu_high_scores_icon" in shell
+    assert "generated::menu_instructions_icon" in shell
+
+    for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        source = (GBA / "src" / source_name).read_text(encoding="utf-8")
+        assert '#include "generated/christmas_assets.h"' in source
+        assert "gameplay_worker_asset(worker, _visual_theme)" in source
+        assert "generated::christmas_worker_blue_frames" in source
+        assert "generated::christmas_worker_red_frames" in source
+        assert "generated::christmas_hud_white_digit_frames" in source
+        assert "generated::christmas_hud_brown_digit_frames" in source
+        assert "generated::christmas_hud_state_indicator_frames" in source
+        assert "generated::christmas_hud_population_icon" in source
+        assert "generated::christmas_combo_star_frames" in source
+        assert "generated::christmas_block_sparkle_frames" in source
+        assert "generated::christmas_accuracy_star_frames" in source
+
+    construction = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_construction_target_badge_frames" in construction
+
+    build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_hud_white_digit_frames" in build_city
+    assert "generated::christmas_hud_brown_digit_frames" in build_city
+    assert "generated::christmas_hud_red_digit_frames" in build_city
+    assert "generated::christmas_hud_white_digit_f12" in build_city
+
+
+def test_christmas_phase7_ui_palette_budgets_are_stable() -> None:
+    christmas = GBA / "graphics" / "christmas" / "ui"
+
+    def palette16(path: Path) -> tuple[int, ...]:
+        with Image.open(path) as image:
+            assert image.mode == "P", path
+            assert max(image.tobytes()) < 16, path
+            return tuple((image.getpalette() or [])[: 16 * 3])
+
+    hud_patterns = (
+        "christmas_construction_target_badge_f*_p*.bmp",
+        "christmas_hud_white_digit_f*_p*.bmp",
+        "christmas_hud_brown_digit_f*_p*.bmp",
+        "christmas_hud_red_digit_f*_p*.bmp",
+        "christmas_hud_population_icon_p*.bmp",
+        "christmas_hud_state_indicator_f*_p*.bmp",
+    )
+    hud_files = [path for pattern in hud_patterns for path in christmas.glob(pattern)]
+    assert len(hud_files) == 53
+    assert len({palette16(path) for path in hud_files}) == 1
+
+    effect_patterns = (
+        "christmas_accuracy_star_f*_p*.bmp",
+        "christmas_combo_star_f*_p*.bmp",
+        "christmas_block_sparkle_f*_p*.bmp",
+    )
+    effect_files = [path for pattern in effect_patterns for path in christmas.glob(pattern)]
+    assert len(effect_files) == 10
+    assert len({palette16(path) for path in effect_files}) == 1
+
+    # Root-menu Santa icons reuse the already-established Christmas worker
+    # palette bank instead of introducing another OBJ palette at menu time.
+    worker_palette = palette16(christmas / "christmas_worker_blue_f0_p0.bmp")
+    menu_files = list(christmas.glob("christmas_menu_*_icon_p*.bmp"))
+    assert len(menu_files) == 5
+    assert all(palette16(path) == worker_palette for path in menu_files)

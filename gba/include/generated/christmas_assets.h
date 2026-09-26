@@ -127,6 +127,77 @@
 #include "bn_sprite_items_christmas_worker_red_f8_p0.h"
 #include "bn_sprite_items_christmas_worker_red_f9_p0.h"
 
+// BEGIN CHRISTMAS PHASE 7 UI INCLUDES
+#include "bn_sprite_items_christmas_menu_continue_icon_p0.h"
+#include "bn_sprite_items_christmas_menu_build_city_icon_p0.h"
+#include "bn_sprite_items_christmas_menu_quick_game_icon_p0.h"
+#include "bn_sprite_items_christmas_menu_settings_icon_p0.h"
+#include "bn_sprite_items_christmas_menu_exit_icon_p0.h"
+#include "bn_sprite_items_christmas_construction_target_badge_f0_p0.h"
+#include "bn_sprite_items_christmas_construction_target_badge_f1_p0.h"
+#include "bn_sprite_items_christmas_construction_target_badge_f2_p0.h"
+#include "bn_sprite_items_christmas_construction_target_badge_f3_p0.h"
+#include "bn_sprite_items_christmas_construction_target_badge_f4_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f0_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f1_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f2_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f3_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f4_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f5_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f6_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f7_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f8_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f9_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f10_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f11_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f12_p0.h"
+#include "bn_sprite_items_christmas_hud_white_digit_f13_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f0_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f1_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f2_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f3_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f4_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f5_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f6_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f7_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f8_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f9_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f10_p0.h"
+#include "bn_sprite_items_christmas_hud_brown_digit_f11_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f0_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f1_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f2_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f3_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f4_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f5_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f6_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f7_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f8_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f9_p0.h"
+#include "bn_sprite_items_christmas_hud_red_digit_f10_p0.h"
+#include "bn_sprite_items_christmas_hud_population_icon_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f0_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f1_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f2_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f3_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f4_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f5_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f6_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f7_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f8_p0.h"
+#include "bn_sprite_items_christmas_hud_state_indicator_f9_p0.h"
+#include "bn_sprite_items_christmas_accuracy_star_f0_p0.h"
+#include "bn_sprite_items_christmas_accuracy_star_f1_p0.h"
+#include "bn_sprite_items_christmas_accuracy_star_f2_p0.h"
+#include "bn_sprite_items_christmas_combo_star_f0_p0.h"
+#include "bn_sprite_items_christmas_combo_star_f1_p0.h"
+#include "bn_sprite_items_christmas_combo_star_f2_p0.h"
+#include "bn_sprite_items_christmas_combo_star_f3_p0.h"
+#include "bn_sprite_items_christmas_block_sparkle_f0_p0.h"
+#include "bn_sprite_items_christmas_block_sparkle_f1_p0.h"
+#include "bn_sprite_items_christmas_block_sparkle_f2_p0.h"
+// END CHRISTMAS PHASE 7 UI INCLUDES
+
 namespace tb::generated
 {
 inline const UiSpritePartAsset christmas_tower_logo_parts[] = {
@@ -669,6 +740,358 @@ inline const LegacySkyEventAsset christmas_sky_event_assets[] = {
     { christmas_sky_type_27_frames, 1, 29, 29 },
     { christmas_sky_type_28_frames, 2, 123, 27 },
 };
+
+// BEGIN CHRISTMAS PHASE 7 UI
+inline const UiSpritePartAsset christmas_menu_continue_icon_parts[] = {
+    { &bn::sprite_items::christmas_menu_continue_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset christmas_menu_continue_icon = { christmas_menu_continue_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_build_city_icon_parts[] = {
+    { &bn::sprite_items::christmas_menu_build_city_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset christmas_menu_build_city_icon = { christmas_menu_build_city_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_quick_game_icon_parts[] = {
+    { &bn::sprite_items::christmas_menu_quick_game_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset christmas_menu_quick_game_icon = { christmas_menu_quick_game_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_settings_icon_parts[] = {
+    { &bn::sprite_items::christmas_menu_settings_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset christmas_menu_settings_icon = { christmas_menu_settings_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_exit_icon_parts[] = {
+    { &bn::sprite_items::christmas_menu_exit_icon_p0, 5, 3 },
+};
+inline const UiCompositeAsset christmas_menu_exit_icon = { christmas_menu_exit_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_construction_target_badge_f0_parts[] = {
+    { &bn::sprite_items::christmas_construction_target_badge_f0_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_construction_target_badge_f0 = { christmas_construction_target_badge_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_construction_target_badge_f1_parts[] = {
+    { &bn::sprite_items::christmas_construction_target_badge_f1_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_construction_target_badge_f1 = { christmas_construction_target_badge_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_construction_target_badge_f2_parts[] = {
+    { &bn::sprite_items::christmas_construction_target_badge_f2_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_construction_target_badge_f2 = { christmas_construction_target_badge_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_construction_target_badge_f3_parts[] = {
+    { &bn::sprite_items::christmas_construction_target_badge_f3_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_construction_target_badge_f3 = { christmas_construction_target_badge_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_construction_target_badge_f4_parts[] = {
+    { &bn::sprite_items::christmas_construction_target_badge_f4_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_construction_target_badge_f4 = { christmas_construction_target_badge_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f0_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f0_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f0 = { christmas_hud_white_digit_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f1_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f1_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f1 = { christmas_hud_white_digit_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f2_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f2_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f2 = { christmas_hud_white_digit_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f3_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f3_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f3 = { christmas_hud_white_digit_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f4_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f4_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f4 = { christmas_hud_white_digit_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f5_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f5_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f5 = { christmas_hud_white_digit_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f6_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f6_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f6 = { christmas_hud_white_digit_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f7_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f7_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f7 = { christmas_hud_white_digit_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f8_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f8_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f8 = { christmas_hud_white_digit_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f9_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f9_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f9 = { christmas_hud_white_digit_f9_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f10_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f10_p0, 2, 2 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f10 = { christmas_hud_white_digit_f10_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f11_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f11_p0, 2, 3 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f11 = { christmas_hud_white_digit_f11_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f12_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f12_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f12 = { christmas_hud_white_digit_f12_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_white_digit_f13_parts[] = {
+    { &bn::sprite_items::christmas_hud_white_digit_f13_p0, 2, 2 },
+};
+inline const UiCompositeAsset christmas_hud_white_digit_f13 = { christmas_hud_white_digit_f13_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f0_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f0_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f0 = { christmas_hud_brown_digit_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f1_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f1_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f1 = { christmas_hud_brown_digit_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f2_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f2_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f2 = { christmas_hud_brown_digit_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f3_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f3_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f3 = { christmas_hud_brown_digit_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f4_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f4_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f4 = { christmas_hud_brown_digit_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f5_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f5_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f5 = { christmas_hud_brown_digit_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f6_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f6_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f6 = { christmas_hud_brown_digit_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f7_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f7_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f7 = { christmas_hud_brown_digit_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f8_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f8_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f8 = { christmas_hud_brown_digit_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f9_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f9_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f9 = { christmas_hud_brown_digit_f9_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f10_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f10_p0, 2, 2 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f10 = { christmas_hud_brown_digit_f10_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_brown_digit_f11_parts[] = {
+    { &bn::sprite_items::christmas_hud_brown_digit_f11_p0, 2, 2 },
+};
+inline const UiCompositeAsset christmas_hud_brown_digit_f11 = { christmas_hud_brown_digit_f11_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f0_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f0_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f0 = { christmas_hud_red_digit_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f1_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f1_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f1 = { christmas_hud_red_digit_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f2_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f2_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f2 = { christmas_hud_red_digit_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f3_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f3_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f3 = { christmas_hud_red_digit_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f4_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f4_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f4 = { christmas_hud_red_digit_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f5_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f5_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f5 = { christmas_hud_red_digit_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f6_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f6_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f6 = { christmas_hud_red_digit_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f7_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f7_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f7 = { christmas_hud_red_digit_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f8_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f8_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f8 = { christmas_hud_red_digit_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f9_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f9_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f9 = { christmas_hud_red_digit_f9_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_red_digit_f10_parts[] = {
+    { &bn::sprite_items::christmas_hud_red_digit_f10_p0, 2, 3 },
+};
+inline const UiCompositeAsset christmas_hud_red_digit_f10 = { christmas_hud_red_digit_f10_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_population_icon_parts[] = {
+    { &bn::sprite_items::christmas_hud_population_icon_p0, 1, 4 },
+};
+inline const UiCompositeAsset christmas_hud_population_icon = { christmas_hud_population_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f0_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f0_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f0 = { christmas_hud_state_indicator_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f1_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f1_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f1 = { christmas_hud_state_indicator_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f2_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f2_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f2 = { christmas_hud_state_indicator_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f3_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f3_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f3 = { christmas_hud_state_indicator_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f4_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f4_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f4 = { christmas_hud_state_indicator_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f5_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f5_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f5 = { christmas_hud_state_indicator_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f6_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f6_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f6 = { christmas_hud_state_indicator_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f7_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f7_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f7 = { christmas_hud_state_indicator_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f8_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f8_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f8 = { christmas_hud_state_indicator_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_hud_state_indicator_f9_parts[] = {
+    { &bn::sprite_items::christmas_hud_state_indicator_f9_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_hud_state_indicator_f9 = { christmas_hud_state_indicator_f9_parts, 1 };
+
+inline const UiSpritePartAsset christmas_accuracy_star_f0_parts[] = {
+    { &bn::sprite_items::christmas_accuracy_star_f0_p0, 4, 3 },
+};
+inline const UiCompositeAsset christmas_accuracy_star_f0 = { christmas_accuracy_star_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_accuracy_star_f1_parts[] = {
+    { &bn::sprite_items::christmas_accuracy_star_f1_p0, 1, 0 },
+};
+inline const UiCompositeAsset christmas_accuracy_star_f1 = { christmas_accuracy_star_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_accuracy_star_f2_parts[] = {
+    { &bn::sprite_items::christmas_accuracy_star_f2_p0, 3, 2 },
+};
+inline const UiCompositeAsset christmas_accuracy_star_f2 = { christmas_accuracy_star_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_combo_star_f0_parts[] = {
+    { &bn::sprite_items::christmas_combo_star_f0_p0, 8, 6 },
+};
+inline const UiCompositeAsset christmas_combo_star_f0 = { christmas_combo_star_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_combo_star_f1_parts[] = {
+    { &bn::sprite_items::christmas_combo_star_f1_p0, 6, 5 },
+};
+inline const UiCompositeAsset christmas_combo_star_f1 = { christmas_combo_star_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_combo_star_f2_parts[] = {
+    { &bn::sprite_items::christmas_combo_star_f2_p0, 5, 6 },
+};
+inline const UiCompositeAsset christmas_combo_star_f2 = { christmas_combo_star_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_combo_star_f3_parts[] = {
+    { &bn::sprite_items::christmas_combo_star_f3_p0, 5, 5 },
+};
+inline const UiCompositeAsset christmas_combo_star_f3 = { christmas_combo_star_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_block_sparkle_f0_parts[] = {
+    { &bn::sprite_items::christmas_block_sparkle_f0_p0, 10, 12 },
+};
+inline const UiCompositeAsset christmas_block_sparkle_f0 = { christmas_block_sparkle_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_block_sparkle_f1_parts[] = {
+    { &bn::sprite_items::christmas_block_sparkle_f1_p0, 10, 12 },
+};
+inline const UiCompositeAsset christmas_block_sparkle_f1 = { christmas_block_sparkle_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_block_sparkle_f2_parts[] = {
+    { &bn::sprite_items::christmas_block_sparkle_f2_p0, 6, 10 },
+};
+inline const UiCompositeAsset christmas_block_sparkle_f2 = { christmas_block_sparkle_f2_parts, 1 };
+
+inline const UiCompositeAsset* const christmas_construction_target_badge_frames[] = { &christmas_construction_target_badge_f0, &christmas_construction_target_badge_f1, &christmas_construction_target_badge_f2, &christmas_construction_target_badge_f3, &christmas_construction_target_badge_f4 };
+inline const UiCompositeAsset* const christmas_hud_white_digit_frames[] = { &christmas_hud_white_digit_f0, &christmas_hud_white_digit_f1, &christmas_hud_white_digit_f2, &christmas_hud_white_digit_f3, &christmas_hud_white_digit_f4, &christmas_hud_white_digit_f5, &christmas_hud_white_digit_f6, &christmas_hud_white_digit_f7, &christmas_hud_white_digit_f8, &christmas_hud_white_digit_f9, &christmas_hud_white_digit_f10, &christmas_hud_white_digit_f11, &christmas_hud_white_digit_f12, &christmas_hud_white_digit_f13 };
+inline const UiCompositeAsset* const christmas_hud_brown_digit_frames[] = { &christmas_hud_brown_digit_f0, &christmas_hud_brown_digit_f1, &christmas_hud_brown_digit_f2, &christmas_hud_brown_digit_f3, &christmas_hud_brown_digit_f4, &christmas_hud_brown_digit_f5, &christmas_hud_brown_digit_f6, &christmas_hud_brown_digit_f7, &christmas_hud_brown_digit_f8, &christmas_hud_brown_digit_f9, &christmas_hud_brown_digit_f10, &christmas_hud_brown_digit_f11 };
+inline const UiCompositeAsset* const christmas_hud_red_digit_frames[] = { &christmas_hud_red_digit_f0, &christmas_hud_red_digit_f1, &christmas_hud_red_digit_f2, &christmas_hud_red_digit_f3, &christmas_hud_red_digit_f4, &christmas_hud_red_digit_f5, &christmas_hud_red_digit_f6, &christmas_hud_red_digit_f7, &christmas_hud_red_digit_f8, &christmas_hud_red_digit_f9, &christmas_hud_red_digit_f10 };
+inline const UiCompositeAsset* const christmas_hud_state_indicator_frames[] = { &christmas_hud_state_indicator_f0, &christmas_hud_state_indicator_f1, &christmas_hud_state_indicator_f2, &christmas_hud_state_indicator_f3, &christmas_hud_state_indicator_f4, &christmas_hud_state_indicator_f5, &christmas_hud_state_indicator_f6, &christmas_hud_state_indicator_f7, &christmas_hud_state_indicator_f8, &christmas_hud_state_indicator_f9 };
+inline const UiCompositeAsset* const christmas_accuracy_star_frames[] = { &christmas_accuracy_star_f0, &christmas_accuracy_star_f1, &christmas_accuracy_star_f2 };
+inline const UiCompositeAsset* const christmas_combo_star_frames[] = { &christmas_combo_star_f0, &christmas_combo_star_f1, &christmas_combo_star_f2, &christmas_combo_star_f3 };
+inline const UiCompositeAsset* const christmas_block_sparkle_frames[] = { &christmas_block_sparkle_f0, &christmas_block_sparkle_f1, &christmas_block_sparkle_f2 };
+// END CHRISTMAS PHASE 7 UI
+
 }
 
 #endif
