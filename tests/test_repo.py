@@ -651,7 +651,7 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
     assert "game_theme(const SaveData& save)" in save_header
     assert "christmas_title_logo_parts" in generated
 
-    allowed_frame_sizes = {(8, 8), (16, 16), (16, 32), (32, 32), (32, 64), (64, 64), (64, 32)}
+    allowed_frame_sizes = {(8, 8), (8, 16), (16, 8), (16, 16), (16, 32), (32, 8), (32, 16), (32, 32), (32, 64), (64, 32), (64, 64)}
     for bmp in graphics.glob("*.bmp"):
         manifest = bmp.with_suffix(".json")
         data = json.loads(manifest.read_text(encoding="utf-8"))
@@ -663,9 +663,13 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
                 assert data.get("bpp_mode") == "bpp_8"
                 assert max(image.get_flattened_data()) <= 255
             frame_size = (data.get("width", image.width), data.get("height", image.height))
-            assert frame_size in allowed_frame_sizes
-            assert image.width % frame_size[0] == 0
-            assert image.height % frame_size[1] == 0
+            if data.get("type") == "sprite":
+                assert frame_size in allowed_frame_sizes
+                assert image.width % frame_size[0] == 0
+                assert image.height % frame_size[1] == 0
+            else:
+                assert data.get("type") == "regular_bg"
+                assert image.size == (256, 256)
 
     christmas_header = theme_root / "include" / "tb" / "christmas_theme_assets.h"
     assert christmas_header.is_file()
@@ -696,6 +700,15 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
     assert "christmas::combo_star_frames" in construction_scene
     assert "christmas::accuracy_star_frames" in construction_scene
     assert "christmas_combo_star_f3" in effect_header
+
+    christmas_hud = (theme_root / "include" / "tb" / "christmas_hud_assets.h").read_text(encoding="utf-8")
+    assert "christmas_hud_white_digits" in christmas_hud
+    assert "christmas_city_status_panels" in christmas_hud
+    assert "christmas_city_progress" in christmas_hud
+    assert "christmas_city_action_icon" in christmas_hud
+    assert "christmas::status_panels" in city_scene
+    assert "christmas::comparison_panel_active" in city_scene
+    assert "christmas_city_bg_theme_0" in city_scene
 
     for building_type in range(1, 5):
         tower = graphics / f"christmas_tower_type_{building_type}.bmp"
