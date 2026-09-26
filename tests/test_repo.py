@@ -880,3 +880,40 @@ def test_christmas_phase8_construction_scenery_crane_and_city_chrome_are_wired()
             assert image.size in legal_sizes, (bmp, image.size)
             assert image.mode == "P"
             assert max(image.tobytes()) < 16
+
+
+def test_christmas_phase9_build_city_panels_status_and_quick_counter_are_wired() -> None:
+    ui = GBA / "graphics" / "christmas" / "ui"
+    expected = [
+        *(f"christmas_city_status_panel_f{index}_p0.bmp" for index in range(4)),
+        "christmas_city_status_placement_p0.bmp",
+        "christmas_city_status_browse_p0.bmp",
+        "christmas_city_status_aux_p0.bmp",
+        "christmas_quick_counter_frame_p0.bmp",
+    ]
+    for name in expected:
+        assert (ui / name).is_file(), name
+
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    assert "christmas_city_status_panel_frames" in generated
+    assert "christmas_city_status_placement" in generated
+    assert "christmas_city_status_browse" in generated
+    assert "christmas_quick_counter_frame" in generated
+
+    build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_city_status_panel_frames" in build_city
+    assert "generated::christmas_city_status_placement" in build_city
+    assert "generated::christmas_city_status_browse" in build_city
+
+    quick_game = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_quick_counter_frame" in quick_game
+
+    # Phase 9 intentionally shares one BPP4 OBJ palette bank across all of
+    # these small Christmas HUD additions.
+    palettes = []
+    for name in expected:
+        with Image.open(ui / name) as image:
+            assert image.mode == "P", name
+            assert max(image.tobytes()) < 16, name
+            palettes.append(tuple((image.getpalette() or [])[: 16 * 3]))
+    assert len(set(palettes)) == 1

@@ -207,6 +207,17 @@
 #include "bn_sprite_items_christmas_mountain_small_p1.h"
 // END CHRISTMAS PHASE 8 INCLUDES
 
+// BEGIN CHRISTMAS PHASE 9 INCLUDES
+#include "bn_sprite_items_christmas_city_status_panel_f0_p0.h"
+#include "bn_sprite_items_christmas_city_status_panel_f1_p0.h"
+#include "bn_sprite_items_christmas_city_status_panel_f2_p0.h"
+#include "bn_sprite_items_christmas_city_status_panel_f3_p0.h"
+#include "bn_sprite_items_christmas_city_status_placement_p0.h"
+#include "bn_sprite_items_christmas_city_status_browse_p0.h"
+#include "bn_sprite_items_christmas_city_status_aux_p0.h"
+#include "bn_sprite_items_christmas_quick_counter_frame_p0.h"
+// END CHRISTMAS PHASE 9 INCLUDES
+
 namespace tb::generated
 {
 inline const UiSpritePartAsset christmas_tower_logo_parts[] = {
@@ -1125,6 +1136,54 @@ inline const UiSpritePartAsset christmas_mountain_small_parts[] = {
 };
 inline const UiCompositeAsset christmas_mountain_small = { christmas_mountain_small_parts, 2 };
 // END CHRISTMAS PHASE 8
+
+
+// BEGIN CHRISTMAS PHASE 9
+inline const UiSpritePartAsset christmas_city_status_panel_f0_parts[] = {
+    { &bn::sprite_items::christmas_city_status_panel_f0_p0, 0, 3 },
+};
+inline const UiCompositeAsset christmas_city_status_panel_f0 = { christmas_city_status_panel_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_status_panel_f1_parts[] = {
+    { &bn::sprite_items::christmas_city_status_panel_f1_p0, 0, 3 },
+};
+inline const UiCompositeAsset christmas_city_status_panel_f1 = { christmas_city_status_panel_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_status_panel_f2_parts[] = {
+    { &bn::sprite_items::christmas_city_status_panel_f2_p0, 0, 3 },
+};
+inline const UiCompositeAsset christmas_city_status_panel_f2 = { christmas_city_status_panel_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_status_panel_f3_parts[] = {
+    { &bn::sprite_items::christmas_city_status_panel_f3_p0, 0, 3 },
+};
+inline const UiCompositeAsset christmas_city_status_panel_f3 = { christmas_city_status_panel_f3_parts, 1 };
+
+inline const UiCompositeAsset* const christmas_city_status_panel_frames[] = {
+    &christmas_city_status_panel_f0, &christmas_city_status_panel_f1,
+    &christmas_city_status_panel_f2, &christmas_city_status_panel_f3
+};
+
+inline const UiSpritePartAsset christmas_city_status_placement_parts[] = {
+    { &bn::sprite_items::christmas_city_status_placement_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_city_status_placement = { christmas_city_status_placement_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_status_browse_parts[] = {
+    { &bn::sprite_items::christmas_city_status_browse_p0, 1, 1 },
+};
+inline const UiCompositeAsset christmas_city_status_browse = { christmas_city_status_browse_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_status_aux_parts[] = {
+    { &bn::sprite_items::christmas_city_status_aux_p0, 1, 0 },
+};
+inline const UiCompositeAsset christmas_city_status_aux = { christmas_city_status_aux_parts, 1 };
+
+inline const UiSpritePartAsset christmas_quick_counter_frame_parts[] = {
+    { &bn::sprite_items::christmas_quick_counter_frame_p0, 2, 2 },
+};
+inline const UiCompositeAsset christmas_quick_counter_frame = { christmas_quick_counter_frame_parts, 1 };
+// END CHRISTMAS PHASE 9
 
 }
 

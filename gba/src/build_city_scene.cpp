@@ -925,10 +925,13 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // for the five digit cells and state 3 for the terminal cap when no
     // digit-roll is active.
     constexpr int population_counter_x = 75;
+    const generated::UiCompositeAsset* const* active_panel_states =
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_city_status_panel_frames :
+                                                     city_panel_states;
     for(int cell = 0; cell < 6; ++cell)
     {
         const int state = _population_roll.panel_state_for_cell(cell);
-        _show_composite(*city_panel_states[state], centered_x(population_counter_x + cell * 8), centered_y(population_counter_y));
+        _show_composite(*active_panel_states[state], centered_x(population_counter_x + cell * 8), centered_y(population_counter_y));
     }
 
     int population = snapshot.total_population;
@@ -957,9 +960,13 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // Move the active outlines, tower badges and numbers as a group so they
     // sit within the same 8px-high frames as the inactive background boxes.
     constexpr int comparison_panel_row_y = comparison_row_y - 1;
-    _show_composite(
-            active_placement ? generated::city_status_placement : generated::city_status_browse,
-            centered_x(status_icon_x), centered_y(comparison_row_y));
+    const generated::UiCompositeAsset& status_icon =
+            active_placement ?
+                    (_visual_theme == VisualTheme::Christmas ? generated::christmas_city_status_placement :
+                                                               generated::city_status_placement) :
+                    (_visual_theme == VisualTheme::Christmas ? generated::christmas_city_status_browse :
+                                                               generated::city_status_browse);
+    _show_composite(status_icon, centered_x(status_icon_x), centered_y(comparison_row_y));
 
     if(active_placement && snapshot.pending_building_type >= 1 && snapshot.pending_building_type <= 4)
     {

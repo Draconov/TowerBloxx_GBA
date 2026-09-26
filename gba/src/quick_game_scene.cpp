@@ -1279,7 +1279,10 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
 
     // Exact lower-left Quick Game frame from House.i(Graphics): resource 19
     // at (au-4, c-av-28), with au=12,av=10 for the 240x160 GBA view.
-    show_ui_composite(generated::quick_counter_frame, -106, 56, _hud_sprites);
+    show_ui_composite(
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_quick_counter_frame :
+                                                     generated::quick_counter_frame,
+            -106, 56, _hud_sprites);
     draw_source_number(snapshot.floor_count, 3, 20, 139, white_digit_frames, _hud_sprites);
 
     // Resource 18 is a color-pair strip. Quick Game uses the orange pair
