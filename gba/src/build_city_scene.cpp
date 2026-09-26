@@ -2,6 +2,7 @@
 
 #include "tb/scene_backdrop.h"
 #include "tb/build_city_visuals.h"
+#include "tb/christmas_city_assets.h"
 
 #include "bn_bg_palettes.h"
 #include "bn_color.h"
@@ -154,13 +155,42 @@ const generated::UiCompositeAsset* const city_progress_tails[7] = {
     &generated::city_progress_tail_f7,
 };
 
-const generated::UiCompositeAsset& building_asset(int type, int roof)
+const generated::UiCompositeAsset& building_asset(int type, int roof, GameTheme theme)
 {
+    if(theme == GameTheme::Christmas)
+    {
+        return christmas::city_building_asset(type, roof);
+    }
     if(type < 1) { type = 1; }
     if(type > 4) { type = 4; }
     if(roof < 0) { roof = 0; }
     if(roof > 3) { roof = 3; }
     return *building_assets[type - 1][roof];
+}
+
+const generated::UiCompositeAsset& lot_asset(int frame, GameTheme theme)
+{
+    if(frame < 0) { frame = 0; }
+    if(frame > 4) { frame = 4; }
+    return theme == GameTheme::Christmas ? *christmas::city_lots[frame] : *lot_assets[frame];
+}
+
+const generated::UiCompositeAsset& city_effect_asset(int frame, bool replacing, GameTheme theme)
+{
+    if(frame < 0) { frame = 0; }
+    if(frame > 5) { frame = 5; }
+    if(theme == GameTheme::Christmas)
+    {
+        return replacing ? *christmas::city_effects_replace[frame] : *christmas::city_effects_empty[frame];
+    }
+    return *city_effects[frame];
+}
+
+const generated::UiCompositeAsset& city_level_icon_asset(int index, GameTheme theme)
+{
+    if(index < 0) { index = 0; }
+    if(index > 8) { index = 8; }
+    return theme == GameTheme::Christmas ? *christmas::city_level_icons[index] : *city_level_icons[index];
 }
 
 int centered_x(int screen_x)
@@ -360,7 +390,7 @@ BuildCityScene::BuildCityScene(const SaveData& save) :
     _text_generator.set_z_order(-100);
 }
 
-void BuildCityScene::start(const SaveData& save, int language)
+void BuildCityScene::start(const SaveData& save, int language, GameTheme theme)
 {
     set_city_backdrop();
     _city.reset_from_save(save);
@@ -374,6 +404,7 @@ void BuildCityScene::start(const SaveData& save, int language)
     _placement_score_pending = false;
     _deferred_placement_score = 0;
     _language = language;
+    _theme = theme;
     _frame_phase = 0;
     _placement_flash_ms = 0;
     _selector_flash_ms = 0;
@@ -520,8 +551,9 @@ void BuildCityScene::suspend_presentation()
     _has_snapshot = false;
 }
 
-void BuildCityScene::resume_presentation(const SaveData& save)
+void BuildCityScene::resume_presentation(const SaveData& save, GameTheme theme)
 {
+    _theme = theme;
     if(! _active)
     {
         return;
@@ -626,7 +658,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         const int screen_left = grid_screen_left + 5 + column * grid_spacing;
         const int screen_baseline = grid_screen_top + 15 + row * grid_spacing;
         _show_composite(
-                building_asset(tile.type, tile.roof),
+                building_asset(tile.type, tile.roof, _theme),
                 building_center_x(tile.type, screen_left),
                 building_center_y(tile.type, screen_baseline));
     }
@@ -694,7 +726,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
             int screen_left = selector_screen_left + 4;
             int screen_baseline = selector_screen_top + 15 + (type - 1) * 16;
             _show_composite(
-                    building_asset(type, 3),
+                    building_asset(type, 3, _theme),
                     building_center_x(type, screen_left),
                     building_center_y(type, screen_baseline));
         }
@@ -713,12 +745,12 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
             const int highlight_left = preview_left - 2;
             const int highlight_top = preview_baseline - 21;
             _show_composite(
-                    *lot_assets[selected - 1],
+                    lot_asset(selected - 1, _theme),
                     centered_x(highlight_left + 11),
                     centered_y(highlight_top + 11),
                     selected_preview_outline_z_order);
             _show_composite(
-                    building_asset(selected, 3),
+                    building_asset(selected, 3, _theme),
                     building_center_x(selected, preview_left),
                     building_center_y(selected, preview_baseline),
                     selected_preview_tower_z_order);
@@ -754,7 +786,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         {
             const int type = snapshot.pending_building_type;
             _show_composite(
-                    building_asset(type, snapshot.pending_roof),
+                    building_asset(type, snapshot.pending_roof, _theme),
                     centered_x(discard_building_center_x),
                     centered_y(discard_building_center_y),
                     placement_pending_z_order);
@@ -763,7 +795,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         if(effect_frame >= 0)
         {
             _show_composite(
-                    *city_effects[effect_frame],
+                    city_effect_asset(effect_frame, true, _theme),
                     centered_x(discard_cell_center_x), centered_y(discard_cell_center_y),
                     discard_effect_z_order);
         }
@@ -779,7 +811,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         const int cursor_canvas_left = cell_screen_left + snapshot.cursor_column * grid_spacing;
         const int cursor_canvas_top = cell_screen_top - 9 + snapshot.cursor_row * grid_spacing;
         _show_composite(
-                *lot_assets[4],
+                lot_asset(4, _theme),
                 centered_x(cursor_canvas_left + 11),
                 centered_y(cursor_canvas_top + 11));
     }
@@ -804,7 +836,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
             screen_baseline = start_baseline + (target_baseline - start_baseline) * elapsed / 750;
         }
         _show_composite(
-                building_asset(snapshot.pending_building_type, snapshot.pending_roof),
+                building_asset(snapshot.pending_building_type, snapshot.pending_roof, _theme),
                 building_center_x(snapshot.pending_building_type, screen_left),
                 building_center_y(snapshot.pending_building_type, screen_baseline));
     }
@@ -816,7 +848,7 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         const int effect_frame = build_city_placement_effect_frame(replacing, snapshot.placement_timer_ms);
         if(effect_frame >= 0)
         {
-            _show_composite(*city_effects[effect_frame], centered_x(cell_center_x), centered_y(cell_center_y));
+            _show_composite(city_effect_asset(effect_frame, replacing, _theme), centered_x(cell_center_x), centered_y(cell_center_y));
         }
     }
 }
@@ -1121,7 +1153,7 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
     }
     if(city_level_event)
     {
-        _show_composite(*city_level_icons[event.id - 24], 0, 18, -100);
+        _show_composite(city_level_icon_asset(event.id - 24, _theme), 0, 18, -100);
     }
     _show_composite(generated::support_nav_f2, 0, centered_y(134), -100);
     _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);

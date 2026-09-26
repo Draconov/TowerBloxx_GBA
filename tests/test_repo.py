@@ -524,7 +524,7 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "sandbox_save = save;" in main
     assert "result.save_dirty && ! build_city.sandbox_active()" in main
     assert "build_city.sandbox_active() ? sandbox_save : save" in main
-    assert "build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save)" in main
+    assert "build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save, controller.theme())" in main
     assert "pending_presentation = PendingPresentation::CityResume;" in main
     assert "_secret_step" in city
     assert "_request.stationary_crane = _sandbox_active" in city
@@ -651,13 +651,17 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
     assert "game_theme(const SaveData& save)" in save_header
     assert "christmas_title_logo_parts" in generated
 
-    allowed_frame_sizes = {(16, 32), (32, 32), (32, 64), (64, 64), (64, 32)}
+    allowed_frame_sizes = {(8, 8), (16, 16), (16, 32), (32, 32), (32, 64), (64, 64), (64, 32)}
     for bmp in graphics.glob("*.bmp"):
         manifest = bmp.with_suffix(".json")
         data = json.loads(manifest.read_text(encoding="utf-8"))
         with Image.open(bmp) as image:
             assert image.mode == "P"
-            assert max(image.get_flattened_data()) <= 15
+            if data.get("bpp_mode") == "bpp_4":
+                assert max(image.get_flattened_data()) <= 15
+            else:
+                assert data.get("bpp_mode") == "bpp_8"
+                assert max(image.get_flattened_data()) <= 255
             frame_size = (data.get("width", image.width), data.get("height", image.height))
             assert frame_size in allowed_frame_sizes
             assert image.width % frame_size[0] == 0
@@ -677,6 +681,21 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
     assert "christmas_tower_item(quick_building_type)" in quick_scene
     assert "christmas_roof_item(_request.building_type)" in construction_scene
     assert "christmas_construction_tree" in backdrop
+
+    city_scene = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    city_header = (theme_root / "include" / "tb" / "christmas_city_assets.h").read_text(encoding="utf-8")
+    effect_header = (theme_root / "include" / "tb" / "christmas_effect_assets.h").read_text(encoding="utf-8")
+    assert "christmas::city_building_asset" in city_scene
+    assert "christmas::city_effects_empty" in city_scene
+    assert "christmas::city_effects_replace" in city_scene
+    assert "christmas::city_level_icons" in city_scene
+    assert "christmas_city_building_4_f3" in city_header
+    assert "christmas_city_level_icon_f8" in city_header
+    assert "christmas::combo_star_frames" in quick_scene
+    assert "christmas::accuracy_star_frames" in quick_scene
+    assert "christmas::combo_star_frames" in construction_scene
+    assert "christmas::accuracy_star_frames" in construction_scene
+    assert "christmas_combo_star_f3" in effect_header
 
     for building_type in range(1, 5):
         tower = graphics / f"christmas_tower_type_{building_type}.bmp"

@@ -1,5 +1,6 @@
 #include "tb/quick_game_scene.h"
 #include "tb/christmas_theme_assets.h"
+#include "tb/christmas_effect_assets.h"
 
 #include "tb/scene_backdrop.h"
 #include "tb/crane_presentation.h"
@@ -1110,8 +1111,9 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
         if(frame != _combo_star_frame)
         {
             _combo_star_sprites.clear();
-            show_ui_composite(*generated::legacy_combo_star_frames[frame],
-                              combo_star_x, combo_star_y, _combo_star_sprites, -102);
+            const generated::UiCompositeAsset& star_asset = _theme == GameTheme::Christmas ?
+                    *christmas::combo_star_frames[frame] : *generated::legacy_combo_star_frames[frame];
+            show_ui_composite(star_asset, combo_star_x, combo_star_y, _combo_star_sprites, -102);
             _combo_star_frame = frame;
         }
     }
@@ -1186,9 +1188,12 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
 
     // JAR-grounded pass: the moving star grows small -> medium -> large while
     // leaving an actual sampled trail behind it (white -> yellow -> red).
-    const generated::UiCompositeAsset& head_asset = _perfect_landing_elapsed_ms < 120 ?
-            generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
-            generated::accuracy_star_f2 : generated::accuracy_star_f0;
+    const generated::UiCompositeAsset& head_asset = _theme == GameTheme::Christmas ?
+            (_perfect_landing_elapsed_ms < 120 ? *christmas::accuracy_star_frames[2] :
+             _perfect_landing_elapsed_ms < 240 ? *christmas::accuracy_star_frames[1] :
+                                                  *christmas::accuracy_star_frames[0]) :
+            (_perfect_landing_elapsed_ms < 120 ? generated::accuracy_star_f1 :
+             _perfect_landing_elapsed_ms < 240 ? generated::accuracy_star_f2 : generated::accuracy_star_f0);
 
     const PerfectLandingSeamPhase pending_seam = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
     const int seam_reserve = pending_seam != PerfectLandingSeamPhase::Hidden ? 1 : 0;

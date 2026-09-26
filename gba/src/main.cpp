@@ -69,7 +69,7 @@ int main()
                 session.start_quick_game();
                 break;
             case PendingPresentation::CityStart:
-                build_city.start(save, controller.language());
+                build_city.start(save, controller.language(), controller.theme());
                 session.start_build_city();
                 break;
             case PendingPresentation::ConstructionStart:
@@ -84,7 +84,7 @@ int main()
                 construction.resume_presentation(controller.theme());
                 break;
             case PendingPresentation::CityResume:
-                build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save);
+                build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save, controller.theme());
                 break;
             case PendingPresentation::None:
                 break;

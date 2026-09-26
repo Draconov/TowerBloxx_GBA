@@ -13,6 +13,7 @@
 #include "tb/build_city.h"
 #include "tb/build_city_events.h"
 #include "tb/build_city_visuals.h"
+#include "tb/theme.h"
 
 namespace tb
 {
@@ -31,7 +32,7 @@ class BuildCityScene
 public:
     explicit BuildCityScene(const SaveData& save);
 
-    void start(const SaveData& save, int language);
+    void start(const SaveData& save, int language, GameTheme theme);
     [[nodiscard]] BuildCitySceneUpdateResult update(const InputFrame& input, SaveData& save);
     [[nodiscard]] bool active() const;
     [[nodiscard]] bool sandbox_active() const;
@@ -39,7 +40,7 @@ public:
     void clear_construction_request();
     void accept_constructed_tower(uint8_t building_type, int population, uint8_t roof, const SaveData& save);
     void suspend_presentation();
-    void resume_presentation(const SaveData& save);
+    void resume_presentation(const SaveData& save, GameTheme theme);
 
 private:
     void _stop();
@@ -60,6 +61,7 @@ private:
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_ptr, 384> _sprites;
     int _language = 0;
+    GameTheme _theme = GameTheme::Classic;
     int _frame_phase = 0;
     int _placement_flash_ms = 0;
     int _selector_flash_ms = 0;
