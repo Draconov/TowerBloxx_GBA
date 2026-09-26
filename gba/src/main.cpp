@@ -282,7 +282,7 @@ int main()
         {
             audio_scene = tb::AudioScene::City;
         }
-        audio.update(save.sound_enabled != 0, audio_scene);
+        audio.update(save.sound_enabled != 0, audio_scene, tb::visual_theme(save));
 
         bn::core::update();
     }

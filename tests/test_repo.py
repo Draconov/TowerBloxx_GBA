@@ -917,3 +917,28 @@ def test_christmas_phase9_build_city_panels_status_and_quick_counter_are_wired()
             assert max(image.tobytes()) < 16, name
             palettes.append(tuple((image.getpalette() or [])[: 16 * 3]))
     assert len(set(palettes)) == 1
+
+
+def test_christmas_theme_switches_the_three_distinct_santa_music_tracks() -> None:
+    audio_dir = GBA / "audio"
+    for name in ("christmas_menu_theme.mod", "christmas_tower_theme.mod", "christmas_city_theme.mod"):
+        path = audio_dir / name
+        assert path.is_file()
+        assert path.stat().st_size > 4096
+
+    audio_cpp = (GBA / "src" / "game_audio.cpp").read_text(encoding="utf-8")
+    audio_h = (GBA / "include" / "tb" / "game_audio.h").read_text(encoding="utf-8")
+    main_cpp = (GBA / "src" / "main.cpp").read_text(encoding="utf-8")
+    assert "VisualTheme theme" in audio_h
+    assert "theme_changed" in audio_cpp
+    assert "bn::music_items::christmas_menu_theme" in audio_cpp
+    assert "bn::music_items::christmas_tower_theme" in audio_cpp
+    assert "bn::music_items::christmas_city_theme" in audio_cpp
+    assert "audio.update(save.sound_enabled != 0, audio_scene, tb::visual_theme(save));" in main_cpp
+
+    # Santa JAR result jingles 82/83/84 are byte-identical to Classic 92/93/94,
+    # so Phase 10 deliberately reuses the existing roof/fail modules instead of
+    # wasting ROM on duplicate music assets.
+    assert not (audio_dir / "christmas_normal_roof.mod").exists()
+    assert not (audio_dir / "christmas_trophy_roof.mod").exists()
+    assert not (audio_dir / "christmas_construction_fail.mod").exists()

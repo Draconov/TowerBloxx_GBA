@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "tb/visual_theme.h"
+
 namespace tb
 {
 enum class AudioScene : uint8_t
@@ -15,13 +17,14 @@ enum class AudioScene : uint8_t
 class GameAudio
 {
 public:
-    void update(bool enabled, AudioScene scene);
+    void update(bool enabled, AudioScene scene, VisualTheme theme);
     void play_construction_result(uint8_t roof);
 
 private:
-    void _play_scene(AudioScene scene);
+    void _play_scene(AudioScene scene, VisualTheme theme);
 
     AudioScene _scene = AudioScene::Menu;
+    VisualTheme _theme = VisualTheme::Classic;
     bool _enabled = false;
     bool _started = false;
     bool _result_active = false;

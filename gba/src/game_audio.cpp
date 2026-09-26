@@ -5,7 +5,7 @@
 
 namespace tb
 {
-void GameAudio::update(bool enabled, AudioScene scene)
+void GameAudio::update(bool enabled, AudioScene scene, VisualTheme theme)
 {
     if(! enabled)
     {
@@ -17,13 +17,16 @@ void GameAudio::update(bool enabled, AudioScene scene)
         _started = false;
         _result_active = false;
         _scene = scene;
+        _theme = theme;
         return;
     }
 
     const bool was_enabled = _enabled;
     const bool scene_changed = scene != _scene;
+    const bool theme_changed = theme != _theme;
     _enabled = true;
     _scene = scene;
+    _theme = theme;
 
     // o.playerUpdate(): a finite result track owns the single J2ME player.
     // Scene changes are remembered while it plays, but cannot interrupt it.
@@ -37,9 +40,9 @@ void GameAudio::update(bool enabled, AudioScene scene)
         _started = false;
     }
 
-    if(! was_enabled || ! _started || scene_changed)
+    if(! was_enabled || ! _started || scene_changed || theme_changed)
     {
-        _play_scene(_scene);
+        _play_scene(_scene, _theme);
         _started = true;
     }
 }
@@ -69,19 +72,41 @@ void GameAudio::play_construction_result(uint8_t roof)
     _started = false;
 }
 
-void GameAudio::_play_scene(AudioScene scene)
+void GameAudio::_play_scene(AudioScene scene, VisualTheme theme)
 {
     bn::music::stop();
+    const bool christmas = theme == VisualTheme::Christmas;
     switch(scene)
     {
     case AudioScene::Menu:
-        bn::music_items::menu_theme.play(0.5, true);
+        if(christmas)
+        {
+            bn::music_items::christmas_menu_theme.play(0.5, true);
+        }
+        else
+        {
+            bn::music_items::menu_theme.play(0.5, true);
+        }
         break;
     case AudioScene::Tower:
-        bn::music_items::tower_theme.play(0.5, true);
+        if(christmas)
+        {
+            bn::music_items::christmas_tower_theme.play(0.5, true);
+        }
+        else
+        {
+            bn::music_items::tower_theme.play(0.5, true);
+        }
         break;
     case AudioScene::City:
-        bn::music_items::city_theme.play(0.5, true);
+        if(christmas)
+        {
+            bn::music_items::christmas_city_theme.play(0.5, true);
+        }
+        else
+        {
+            bn::music_items::city_theme.play(0.5, true);
+        }
         break;
     }
 }
