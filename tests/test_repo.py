@@ -651,3 +651,81 @@ def test_christmas_theme_assets_are_isolated_and_wired() -> None:
     assert "generated::christmas_city_building_1_frames" in city
     assert "generated::christmas_city_level_icon_frames" in city
     assert "generated::christmas_sky_event_assets" in backdrop
+
+
+def test_christmas_construction_meshes_are_generated_and_theme_wired() -> None:
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+    assert gameplay.is_dir()
+    for name in (
+        "christmas_tb_mesh_007_p0.bmp",
+        "christmas_tb_mesh_008_p0.bmp",
+        "christmas_tb_mesh_008_p1.bmp",
+        "christmas_tb_mesh_010_p0.bmp",
+        "christmas_tb_mesh_020_p0.bmp",
+        "christmas_tb_mesh_030_p0.bmp",
+        "christmas_tb_mesh_040_p0.bmp",
+        "christmas_crane_hook_pose_24_p0.bmp",
+        "christmas_crane_hook_pose_24_p1.bmp",
+        "christmas_tumble_m010_c0_s01_p0.bmp",
+        "christmas_tumble_m023_c3_s12_p0.bmp",
+    ):
+        assert (gameplay / name).is_file(), name
+
+    generated = (GBA / "include" / "generated" / "christmas_tower_mesh_assets.h").read_text(encoding="utf-8")
+    assert "namespace tb::generated::christmas" in generated
+    assert "inline constexpr int mesh_count = 18;" in generated
+    assert "inline constexpr int crane_hook_frame_count = 49;" in generated
+    assert "inline constexpr int tumble_pose_count = 384;" in generated
+    # Santa pack's platform model is intentionally not emitted: construction
+    # falls back to the established classic flat platform asset for mesh 9.
+    assert "{ 9, mesh_009_parts" not in generated
+
+    makefile = (GBA / "Makefile").read_text(encoding="utf-8")
+    assert "graphics/christmas/gameplay" in makefile
+    for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        source = (GBA / "src" / source_name).read_text(encoding="utf-8")
+        assert '#include "generated/christmas_tower_mesh_assets.h"' in source
+        assert "generated::christmas::mesh_by_id(mesh_id)" in source
+        assert "generated::christmas::tumble_pose_for" in source
+        assert "generated::christmas::crane_hook_frame_for_step" in source
+        assert "VisualTheme::Christmas" in source
+
+
+def test_christmas_construction_palette_budgets_are_stable() -> None:
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+
+    # Each building colour owns exactly one BPP8 palette across the static
+    # base/floor/roof/trophy and every pre-rendered tumble pose.
+    for building_type in range(1, 5):
+        mesh_ids = (9 + building_type, 19 + building_type, 29 + building_type, 39 + building_type)
+        manifests: list[Path] = []
+        for mesh_id in mesh_ids:
+            manifests.extend(gameplay.glob(f"christmas_tb_mesh_{mesh_id:03d}_p*.json"))
+        for mesh_id in (9 + building_type, 19 + building_type):
+            manifests.extend(gameplay.glob(f"christmas_tumble_m{mesh_id:03d}_*.json"))
+        assert manifests, building_type
+
+        palettes: set[tuple[int, ...]] = set()
+        for manifest in manifests:
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+            assert data["bpp_mode"] == "bpp_8"
+            assert data["colors_count"] <= 32
+            with Image.open(manifest.with_suffix(".bmp")) as image:
+                assert image.mode == "P"
+                assert max(image.tobytes()) < 32
+                palettes.add(tuple((image.getpalette() or [])[: 32 * 3]))
+        assert len(palettes) == 1, f"Christmas building type {building_type} uses multiple palettes"
+
+    # The special Santa crane and all 49 swing frames use one BPP4 bank.
+    crane_manifests = list(gameplay.glob("christmas_tb_mesh_00[78]_p*.json"))
+    crane_manifests += list(gameplay.glob("christmas_crane_hook_pose_*_p*.json"))
+    assert crane_manifests
+    crane_palettes: set[tuple[int, ...]] = set()
+    for manifest in crane_manifests:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        assert data["bpp_mode"] == "bpp_4"
+        with Image.open(manifest.with_suffix(".bmp")) as image:
+            assert image.mode == "P"
+            assert max(image.tobytes()) < 16
+            crane_palettes.add(tuple((image.getpalette() or [])[: 16 * 3]))
+    assert len(crane_palettes) == 1

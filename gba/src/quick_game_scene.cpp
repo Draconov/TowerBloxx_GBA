@@ -17,6 +17,7 @@
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
+#include "generated/christmas_tower_mesh_assets.h"
 #include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_ui_assets.h"
 
@@ -177,8 +178,16 @@ int draw_source_number(int value, int min_digits, int right_x, int top_y,
     return left;
 }
 
-const generated::MeshAsset& mesh_by_id(int mesh_id)
+const generated::MeshAsset& mesh_by_id(VisualTheme visual_theme, int mesh_id)
 {
+    if(visual_theme == VisualTheme::Christmas)
+    {
+        if(const generated::MeshAsset* christmas_mesh = generated::christmas::mesh_by_id(mesh_id))
+        {
+            return *christmas_mesh;
+        }
+    }
+
     for(int index = 0; index < generated::mesh_count; ++index)
     {
         if(generated::meshes[index].mesh_id == mesh_id)
@@ -187,6 +196,34 @@ const generated::MeshAsset& mesh_by_id(int mesh_id)
         }
     }
     return generated::meshes[0];
+}
+
+bool tumble_pose_available(VisualTheme visual_theme, int mesh_id)
+{
+    if(visual_theme == VisualTheme::Christmas)
+    {
+        return generated::christmas::tumble_pose_available(mesh_id);
+    }
+    return generated::tumble_pose_available(mesh_id);
+}
+
+const generated::TumblePoseAsset& tumble_pose_for(
+        VisualTheme visual_theme, int mesh_id, int stage, bool z_negative, bool y_negative)
+{
+    if(visual_theme == VisualTheme::Christmas && generated::christmas::tumble_pose_available(mesh_id))
+    {
+        return generated::christmas::tumble_pose_for(mesh_id, stage, z_negative, y_negative);
+    }
+    return generated::tumble_pose_for(mesh_id, stage, z_negative, y_negative);
+}
+
+const generated::CraneHookFrameAsset& crane_hook_frame_for_step(VisualTheme visual_theme, int step)
+{
+    if(visual_theme == VisualTheme::Christmas)
+    {
+        return generated::christmas::crane_hook_frame_for_step(step);
+    }
+    return generated::crane_hook_frame_for_step(step);
 }
 
 void create_mesh_sprites(const generated::MeshAsset& mesh, bn::ivector<bn::sprite_ptr>& output)
@@ -595,7 +632,7 @@ void QuickGameScene::_rebuild_floor_sprites()
     {
         const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
                                                floor_mesh_id;
-        const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
+        const generated::MeshAsset& mesh = mesh_by_id(_visual_theme, mesh_id);
         // Affine matrices are another finite OBJ resource. A temporary
         // allocation failure should skip the affected floor draw and retry.
         if(_floor_affine_mats.size() >= _floor_affine_mats.max_size())
@@ -647,7 +684,7 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
     const int mesh_id = snapshot.floor_count == 0 ? initial_base_mesh_id(quick_building_type) :
                                                     floor_mesh_id;
     int tumble_stage = generated::tumble_stage_for_y_angle(snapshot.current_y_angle_degrees);
-    if(! generated::tumble_pose_available(mesh_id))
+    if(! tumble_pose_available(_visual_theme, mesh_id))
     {
         tumble_stage = 0;
     }
@@ -662,8 +699,8 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
         _current_sprites.clear();
         if(tumble_stage > 0)
         {
-            const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
-                    mesh_id, tumble_stage, z_negative, y_negative);
+            const generated::TumblePoseAsset& pose = tumble_pose_for(
+                    _visual_theme, mesh_id, tumble_stage, z_negative, y_negative);
             for(int part_index = 0; part_index < pose.part_count; ++part_index)
             {
                 bn::optional<bn::sprite_ptr> sprite = pose.parts[part_index].item->create_sprite_optional(0, 0);
@@ -679,7 +716,7 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
         }
         else
         {
-            create_mesh_sprites(mesh_by_id(mesh_id), _current_sprites);
+            create_mesh_sprites(mesh_by_id(_visual_theme, mesh_id), _current_sprites);
             for(bn::sprite_ptr& sprite : _current_sprites)
             {
                 sprite.set_affine_mat(_current_affine_mat);
@@ -687,8 +724,8 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
             }
         }
         const int required_parts = tumble_stage > 0 ?
-                generated::tumble_pose_for(mesh_id, tumble_stage, z_negative, y_negative).part_count :
-                mesh_by_id(mesh_id).part_count;
+                tumble_pose_for(_visual_theme, mesh_id, tumble_stage, z_negative, y_negative).part_count :
+                mesh_by_id(_visual_theme, mesh_id).part_count;
         if(_current_sprites.size() != required_parts)
         {
             _rendered_current_mesh_id = -1;
@@ -705,7 +742,7 @@ void QuickGameScene::_ensure_crane_sprites(const QuickGameSnapshot& snapshot)
 {
     if(_platform_sprites.empty())
     {
-        create_mesh_sprites(mesh_by_id(platform_mesh_id), _platform_sprites);
+        create_mesh_sprites(mesh_by_id(_visual_theme, platform_mesh_id), _platform_sprites);
     }
 
     const CranePresentationMode mode = crane_presentation_mode(
@@ -723,7 +760,7 @@ void QuickGameScene::_ensure_crane_sprites(const QuickGameSnapshot& snapshot)
     {
         if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != special_crane_mesh_id)
         {
-            create_mesh_sprites(mesh_by_id(special_crane_mesh_id), _crane_hook_sprites);
+            create_mesh_sprites(mesh_by_id(_visual_theme, special_crane_mesh_id), _crane_hook_sprites);
             for(bn::sprite_ptr& sprite : _crane_hook_sprites)
             {
                 sprite.set_z_order(crane_mesh_z_order);
@@ -735,7 +772,7 @@ void QuickGameScene::_ensure_crane_sprites(const QuickGameSnapshot& snapshot)
     }
 
     const int rotation_step = snapshot.crane_x >> 4;
-    const generated::CraneHookFrameAsset& frame = generated::crane_hook_frame_for_step(rotation_step);
+    const generated::CraneHookFrameAsset& frame = crane_hook_frame_for_step(_visual_theme, rotation_step);
     if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != crane_hook_mesh_id ||
        _rendered_crane_rotation_step != frame.rotation_step)
     {
@@ -832,7 +869,7 @@ void QuickGameScene::_update_world_positions()
         const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
         const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
                                                floor_mesh_id;
-        const generated::MeshAsset& floor_mesh = mesh_by_id(mesh_id);
+        const generated::MeshAsset& floor_mesh = mesh_by_id(_visual_theme, mesh_id);
         const int x = _screen_x(floor.x + pose.x_delta);
         const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
         bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
@@ -859,8 +896,8 @@ void QuickGameScene::_update_world_positions()
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
         if(_rendered_tumble_stage > 0)
         {
-            const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
-                    _rendered_current_mesh_id, _rendered_tumble_stage,
+            const generated::TumblePoseAsset& pose = tumble_pose_for(
+                    _visual_theme, _rendered_current_mesh_id, _rendered_tumble_stage,
                     _rendered_tumble_z_negative, _rendered_tumble_y_negative);
             for(int part_index = 0; part_index < pose.part_count; ++part_index)
             {
@@ -870,7 +907,7 @@ void QuickGameScene::_update_world_positions()
         }
         else
         {
-            const generated::MeshAsset& floor_mesh = mesh_by_id(_rendered_current_mesh_id);
+            const generated::MeshAsset& floor_mesh = mesh_by_id(_visual_theme, _rendered_current_mesh_id);
             for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
             {
                 position_rotated_mesh_part(
@@ -888,7 +925,7 @@ void QuickGameScene::_update_world_positions()
     if(platform_visible)
     {
         position_mesh_sprites(
-                mesh_by_id(platform_mesh_id), _screen_x(0),
+                mesh_by_id(_visual_theme, platform_mesh_id), _screen_x(0),
                 _screen_y(0, snapshot.presentation_camera_y), _platform_sprites);
     }
 
@@ -910,12 +947,12 @@ void QuickGameScene::_update_world_positions()
         if(mode == CranePresentationMode::Special)
         {
             position_mesh_sprites(
-                    mesh_by_id(special_crane_mesh_id), crane_x, crane_y, _crane_hook_sprites);
+                    mesh_by_id(_visual_theme, special_crane_mesh_id), crane_x, crane_y, _crane_hook_sprites);
         }
         else
         {
             const generated::CraneHookFrameAsset& frame =
-                    generated::crane_hook_frame_for_step(snapshot.crane_x >> 4);
+                    crane_hook_frame_for_step(_visual_theme, snapshot.crane_x >> 4);
             position_crane_hook_frame_sprites(frame, crane_x, crane_y, _crane_hook_sprites);
         }
     }
