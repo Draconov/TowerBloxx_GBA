@@ -198,6 +198,15 @@
 #include "bn_sprite_items_christmas_block_sparkle_f2_p0.h"
 // END CHRISTMAS PHASE 7 UI INCLUDES
 
+// BEGIN CHRISTMAS PHASE 8 INCLUDES
+#include "bn_sprite_items_christmas_city_population_icon_p0.h"
+#include "bn_sprite_items_christmas_city_action_icon_p0.h"
+#include "bn_sprite_items_christmas_mountain_large_p0.h"
+#include "bn_sprite_items_christmas_mountain_large_p1.h"
+#include "bn_sprite_items_christmas_mountain_small_p0.h"
+#include "bn_sprite_items_christmas_mountain_small_p1.h"
+// END CHRISTMAS PHASE 8 INCLUDES
+
 namespace tb::generated
 {
 inline const UiSpritePartAsset christmas_tower_logo_parts[] = {
@@ -1091,6 +1100,31 @@ inline const UiCompositeAsset* const christmas_accuracy_star_frames[] = { &chris
 inline const UiCompositeAsset* const christmas_combo_star_frames[] = { &christmas_combo_star_f0, &christmas_combo_star_f1, &christmas_combo_star_f2, &christmas_combo_star_f3 };
 inline const UiCompositeAsset* const christmas_block_sparkle_frames[] = { &christmas_block_sparkle_f0, &christmas_block_sparkle_f1, &christmas_block_sparkle_f2 };
 // END CHRISTMAS PHASE 7 UI
+
+
+// BEGIN CHRISTMAS PHASE 8
+inline const UiSpritePartAsset christmas_city_population_icon_parts[] = {
+    { &bn::sprite_items::christmas_city_population_icon_p0, 4, 4 },
+};
+inline const UiCompositeAsset christmas_city_population_icon = { christmas_city_population_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_action_icon_parts[] = {
+    { &bn::sprite_items::christmas_city_action_icon_p0, 6, 6 },
+};
+inline const UiCompositeAsset christmas_city_action_icon = { christmas_city_action_icon_parts, 1 };
+
+inline const UiSpritePartAsset christmas_mountain_large_parts[] = {
+    { &bn::sprite_items::christmas_mountain_large_p0, -20, 3 },
+    { &bn::sprite_items::christmas_mountain_large_p1, 44, 3 },
+};
+inline const UiCompositeAsset christmas_mountain_large = { christmas_mountain_large_parts, 2 };
+
+inline const UiSpritePartAsset christmas_mountain_small_parts[] = {
+    { &bn::sprite_items::christmas_mountain_small_p0, -11, 1 },
+    { &bn::sprite_items::christmas_mountain_small_p1, 21, 1 },
+};
+inline const UiCompositeAsset christmas_mountain_small = { christmas_mountain_small_parts, 2 };
+// END CHRISTMAS PHASE 8
 
 }
 

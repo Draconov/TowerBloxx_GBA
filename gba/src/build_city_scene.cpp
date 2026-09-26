@@ -735,7 +735,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         // GBA presentation intentionally moves it 10px lower than the source
         // Java anchor so it lines up with the left selector column.
         _show_composite(
-                generated::city_action_icon,
+                _visual_theme == VisualTheme::Christmas ? generated::christmas_city_action_icon :
+                                                         generated::city_action_icon,
                 centered_x(discard_cell_center_x), centered_y(discard_cell_center_y));
     }
 
@@ -915,7 +916,10 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     // icon fits again. Shift the six-cell counter slightly right so the wider
     // sprite does not collide with the first digit panel.
     constexpr int population_icon_x = 58;
-    _show_composite(generated::city_population_icon, centered_x(population_icon_x), centered_y(population_icon_y));
+    _show_composite(
+            _visual_theme == VisualTheme::Christmas ? generated::christmas_city_population_icon :
+                                                     generated::city_population_icon,
+            centered_x(population_icon_x), centered_y(population_icon_y));
 
     // Resource 22 is the six-cell population backdrop. The JAR uses state 0
     // for the five digit cells and state 3 for the terminal cap when no

@@ -834,3 +834,49 @@ def test_christmas_phase7_ui_palette_budgets_are_stable() -> None:
     menu_files = list(christmas.glob("christmas_menu_*_icon_p*.bmp"))
     assert len(menu_files) == 5
     assert all(palette16(path) == worker_palette for path in menu_files)
+
+
+def test_christmas_phase8_construction_scenery_crane_and_city_chrome_are_wired() -> None:
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+    ui = GBA / "graphics" / "christmas" / "ui"
+    for name in (
+        "christmas_crane_special_boom_p0.bmp",
+        "christmas_crane_special_boom_p1.bmp",
+        "christmas_crane_special_boom_p2.bmp",
+        "christmas_mountain_large_p0.bmp",
+        "christmas_mountain_large_p1.bmp",
+        "christmas_mountain_small_p0.bmp",
+        "christmas_mountain_small_p1.bmp",
+    ):
+        assert (gameplay / name).is_file(), name
+    assert (ui / "christmas_city_population_icon_p0.bmp").is_file()
+    assert (ui / "christmas_city_action_icon_p0.bmp").is_file()
+
+    for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        source = (GBA / "src" / source_name).read_text(encoding="utf-8")
+        assert "christmas_crane_special_boom_p0" in source
+        assert "christmas_crane_special_boom_p1" in source
+        assert "christmas_crane_special_boom_p2" in source
+        assert "_visual_theme == VisualTheme::Christmas" in source
+
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_mountain_large" in backdrop
+    assert "generated::christmas_mountain_small" in backdrop
+    assert "_christmas_scenery_sprites" in backdrop
+    assert "_scenery_background.reset()" in backdrop
+
+    build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "generated::christmas_city_population_icon" in build_city
+    assert "generated::christmas_city_action_icon" in build_city
+
+    legal_sizes = {(8, 8), (16, 8), (8, 16), (16, 16), (32, 8), (8, 32),
+                   (32, 16), (16, 32), (32, 32), (64, 32), (32, 64), (64, 64)}
+    phase8_bmps = list(gameplay.glob("christmas_crane_special_boom_p*.bmp"))
+    phase8_bmps += list(gameplay.glob("christmas_mountain_*_p*.bmp"))
+    phase8_bmps += [ui / "christmas_city_population_icon_p0.bmp", ui / "christmas_city_action_icon_p0.bmp"]
+    assert len(phase8_bmps) == 9
+    for bmp in phase8_bmps:
+        with Image.open(bmp) as image:
+            assert image.size in legal_sizes, (bmp, image.size)
+            assert image.mode == "P"
+            assert max(image.tobytes()) < 16

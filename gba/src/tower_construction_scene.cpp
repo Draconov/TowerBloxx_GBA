@@ -14,6 +14,9 @@
 #include "bn_sprite_items_crane_special_boom_p0.h"
 #include "bn_sprite_items_crane_special_boom_p1.h"
 #include "bn_sprite_items_crane_special_boom_p2.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p0.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p1.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p2.h"
 
 #include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_localization.h"
@@ -911,9 +914,15 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
 
     if(_special_boom_sprites.empty())
     {
-        bn::optional<bn::sprite_ptr> p0 = bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p1 = bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p2 = bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
+        const auto& p0_item = _visual_theme == VisualTheme::Christmas ?
+                bn::sprite_items::christmas_crane_special_boom_p0 : bn::sprite_items::crane_special_boom_p0;
+        const auto& p1_item = _visual_theme == VisualTheme::Christmas ?
+                bn::sprite_items::christmas_crane_special_boom_p1 : bn::sprite_items::crane_special_boom_p1;
+        const auto& p2_item = _visual_theme == VisualTheme::Christmas ?
+                bn::sprite_items::christmas_crane_special_boom_p2 : bn::sprite_items::crane_special_boom_p2;
+        bn::optional<bn::sprite_ptr> p0 = p0_item.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p1 = p1_item.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p2 = p2_item.create_sprite_optional(0, 0);
         if(p0 && p1 && p2)
         {
             p0->set_z_order(special_boom_z_order);

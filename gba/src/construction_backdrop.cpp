@@ -121,6 +121,40 @@ void position_legacy_event_sprites(
     }
 }
 
+bool append_christmas_scenery(
+        const generated::UiCompositeAsset& asset, bn::ivector<bn::sprite_ptr>& output)
+{
+    if(output.size() + asset.part_count > output.max_size() ||
+       bn::sprites::available_items_count() < asset.part_count + 12)
+    {
+        return false;
+    }
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(0, 0);
+        if(! sprite)
+        {
+            return false;
+        }
+        sprite->set_bg_priority(3);
+        sprite->set_z_order(120);
+        output.push_back(*sprite);
+    }
+    return true;
+}
+
+void position_christmas_scenery(
+        const generated::UiCompositeAsset& asset, int first_sprite, int x, int y,
+        bn::ivector<bn::sprite_ptr>& sprites)
+{
+    if(first_sprite + asset.part_count > sprites.size()) { return; }
+    for(int index = 0; index < asset.part_count; ++index)
+    {
+        const generated::UiSpritePartAsset& part = asset.parts[index];
+        sprites[first_sprite + index].set_position(x + part.x, y + part.y);
+    }
+}
 
 }
 
@@ -180,6 +214,7 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
+    _christmas_scenery_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -209,6 +244,39 @@ void ConstructionBackdrop::_update_sky(int camera_y)
 void ConstructionBackdrop::_update_scenery(int camera_y)
 {
     const int scroll = ((camera_y - 512) * 22) / 256;
+    if(_visual_theme == VisualTheme::Christmas)
+    {
+        // Santa's Tower Bloxx uses resources 68/69 as its low-altitude mountain
+        // skyline. Keep it as OBJ scenery so we preserve the source pixels and
+        // don't spend another regular-BG palette/map slot.
+        _scenery_background.reset();
+        _scenery_chunk = -1;
+        if(scroll > 96)
+        {
+            _christmas_scenery_sprites.clear();
+            return;
+        }
+
+        if(_christmas_scenery_sprites.empty())
+        {
+            if(bn::sprites::available_items_count() < 18 ||
+               ! append_christmas_scenery(generated::christmas_mountain_large, _christmas_scenery_sprites) ||
+               ! append_christmas_scenery(generated::christmas_mountain_small, _christmas_scenery_sprites) ||
+               ! append_christmas_scenery(generated::christmas_mountain_large, _christmas_scenery_sprites))
+            {
+                _christmas_scenery_sprites.clear();
+                return;
+            }
+        }
+
+        const int ground_y = 64 + scroll;
+        position_christmas_scenery(generated::christmas_mountain_large, 0, -68, ground_y, _christmas_scenery_sprites);
+        position_christmas_scenery(generated::christmas_mountain_small, 2, 0, ground_y + 7, _christmas_scenery_sprites);
+        position_christmas_scenery(generated::christmas_mountain_large, 4, 68, ground_y, _christmas_scenery_sprites);
+        return;
+    }
+
+    _christmas_scenery_sprites.clear();
     if(scroll > generated::construction_scenery_max_scroll)
     {
         _scenery_background.reset();

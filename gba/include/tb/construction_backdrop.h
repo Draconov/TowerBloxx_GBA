@@ -41,6 +41,7 @@ private:
     bn::optional<bn::regular_bg_ptr> _sky_background;
     bn::optional<bn::regular_bg_ptr> _scenery_background;
     bn::vector<bn::sprite_ptr, 12> _blink_sprites;
+    bn::vector<bn::sprite_ptr, 6> _christmas_scenery_sprites;
     bn::vector<LegacySkyEventSlot, 9> _legacy_events;
     int _legacy_remaining[29] = {};
     uint32_t _spawned_celestial_events = 0;
