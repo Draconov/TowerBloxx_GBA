@@ -6,6 +6,7 @@
 
 #include "tb/hall_of_fame.h"
 #include "tb/quick_game.h"
+#include "tb/theme.h"
 
 namespace tb
 {
@@ -109,6 +110,8 @@ void finalize_save(SaveData& save);
 [[nodiscard]] QuickRecordFlags apply_quick_result(SaveData& save, const QuickGameResult& result);
 [[nodiscard]] bool construction_instructions_seen(const SaveData& save);
 [[nodiscard]] bool mark_construction_instructions_seen(SaveData& save);
+[[nodiscard]] GameTheme game_theme(const SaveData& save);
+[[nodiscard]] bool set_game_theme(SaveData& save, GameTheme theme);
 void reset_city_progress(SaveData& save);
 
 #ifdef TB_HOST_TEST

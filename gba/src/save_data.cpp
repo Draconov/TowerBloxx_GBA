@@ -106,6 +106,22 @@ bool mark_construction_instructions_seen(SaveData& save)
     return true;
 }
 
+GameTheme game_theme(const SaveData& save)
+{
+    return save.reserved[1] == uint8_t(GameTheme::Christmas) ? GameTheme::Christmas : GameTheme::Classic;
+}
+
+bool set_game_theme(SaveData& save, GameTheme theme)
+{
+    const uint8_t value = theme == GameTheme::Christmas ? uint8_t(1) : uint8_t(0);
+    if(save.reserved[1] == value)
+    {
+        return false;
+    }
+    save.reserved[1] = value;
+    return true;
+}
+
 void reset_city_progress(SaveData& save)
 {
     for(CityTileSave& tile : save.city_tiles)

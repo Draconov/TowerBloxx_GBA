@@ -27,6 +27,7 @@ int wrapped(int value, int count)
 UiController::UiController(const SaveData& save) :
     _language(save.language < locale_count ? save.language : uint8_t(0)),
     _sound_enabled(save.sound_enabled != 0),
+    _theme(game_theme(save)),
     _name_entry(save.hall_of_fame.last_player_name)
 {
 }
@@ -36,6 +37,7 @@ int UiController::selection() const { return _selection; }
 int UiController::instructions_page() const { return _instructions_page; }
 uint8_t UiController::language() const { return _language; }
 bool UiController::sound_enabled() const { return _sound_enabled; }
+GameTheme UiController::theme() const { return _theme; }
 HallTable UiController::selected_hall_table() const { return _selected_hall_table; }
 const HallQualification& UiController::pending_qualification() const { return _pending_qualification; }
 uint32_t UiController::pending_score() const { return _pending_score; }
@@ -136,6 +138,18 @@ bool UiController::_change_language(int delta, SaveData& save)
     _language = next;
     save.language = next;
     return true;
+}
+
+bool UiController::_change_theme(int delta, SaveData& save)
+{
+    const int current = _theme == GameTheme::Christmas ? 1 : 0;
+    const GameTheme next = wrapped(current + delta, game_theme_count) == 1 ? GameTheme::Christmas : GameTheme::Classic;
+    if(next == _theme)
+    {
+        return false;
+    }
+    _theme = next;
+    return set_game_theme(save, next);
 }
 
 ScoreSubmissionBeginResult UiController::begin_score_submission(HallTable table, uint32_t score, SaveData& save, ScoreFlowReturn return_target)
@@ -326,8 +340,8 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
         break;
 
     case UiScene::Settings:
-        if(input.pressed(Key::Up)) _move_selection(-1, 3);
-        else if(input.pressed(Key::Down)) _move_selection(1, 3);
+        if(input.pressed(Key::Up)) _move_selection(-1, 4);
+        else if(input.pressed(Key::Down)) _move_selection(1, 4);
         else if(_selection == 0 && (input.pressed(Key::A) || input.pressed(Key::Left) || input.pressed(Key::Right)))
         {
             _sound_enabled = ! _sound_enabled;
@@ -336,7 +350,9 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
         }
         else if(_selection == 1 && (input.pressed(Key::A) || input.pressed(Key::Right))) result.save_dirty = _change_language(1, save);
         else if(_selection == 1 && input.pressed(Key::Left)) result.save_dirty = _change_language(-1, save);
-        else if(_selection == 2 && input.pressed(Key::A)) { _set_scene(UiScene::ResetCityConfirm); _selection = 1; }
+        else if(_selection == 2 && (input.pressed(Key::A) || input.pressed(Key::Right))) result.save_dirty = _change_theme(1, save);
+        else if(_selection == 2 && input.pressed(Key::Left)) result.save_dirty = _change_theme(-1, save);
+        else if(_selection == 3 && input.pressed(Key::A)) { _set_scene(UiScene::ResetCityConfirm); _selection = 1; }
         else if(input.pressed(Key::B)) _return_to_root(0);
         break;
 
@@ -345,9 +361,9 @@ UiUpdateResult UiController::update(const InputFrame& input, SaveData& save)
         else if(input.pressed(Key::A))
         {
             if(_selection == 0) { reset_city_progress(save); result.save_dirty = true; }
-            _set_scene(UiScene::Settings); _selection = 2;
+            _set_scene(UiScene::Settings); _selection = 3;
         }
-        else if(input.pressed(Key::B)) { _set_scene(UiScene::Settings); _selection = 2; }
+        else if(input.pressed(Key::B)) { _set_scene(UiScene::Settings); _selection = 3; }
         break;
 
     case UiScene::InstructionsMenu:

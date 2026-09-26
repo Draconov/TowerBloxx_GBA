@@ -76,6 +76,7 @@ public:
     [[nodiscard]] int instructions_page() const;
     [[nodiscard]] uint8_t language() const;
     [[nodiscard]] bool sound_enabled() const;
+    [[nodiscard]] GameTheme theme() const;
 
     [[nodiscard]] int root_menu_count() const;
     [[nodiscard]] RootMenuItem root_menu_item(int row) const;
@@ -96,6 +97,7 @@ private:
     void _return_to_root(int selection = 0);
     void _move_selection(int delta, int count);
     bool _change_language(int delta, SaveData& save);
+    bool _change_theme(int delta, SaveData& save);
     UiAction _finish_score_flow();
     void _open_name_entry(const SaveData& save);
     void _append_name_character(char value);
@@ -108,6 +110,7 @@ private:
     int _instructions_page = 0;
     uint8_t _language = 0;
     bool _sound_enabled = true;
+    GameTheme _theme = GameTheme::Classic;
     bool _suspended_session_available = false;
     int _publisher_frame_phase = 0;
 

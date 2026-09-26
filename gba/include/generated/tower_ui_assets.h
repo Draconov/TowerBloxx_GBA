@@ -2,6 +2,32 @@
 #define TB_GENERATED_TOWER_UI_ASSETS_H
 
 #include <cstdint>
+#include "bn_sprite_items_christmas_title_logo_p0.h"
+#include "bn_sprite_items_christmas_title_logo_p1.h"
+#include "bn_sprite_items_christmas_title_logo_p2.h"
+#include "bn_sprite_items_christmas_title_logo_p3.h"
+#include "bn_sprite_items_christmas_menu_logo_p0.h"
+#include "bn_sprite_items_christmas_menu_logo_p1.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f0.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f1.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f2.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f3.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f4.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f5.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f6.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f7.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f8.h"
+#include "bn_sprite_items_christmas_menu_worker_a_f9.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f0.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f1.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f2.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f3.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f4.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f5.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f6.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f7.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f8.h"
+#include "bn_sprite_items_christmas_menu_worker_b_f9.h"
 #include "bn_sprite_items_tower_bloxx_logo_p0.h"
 #include "bn_sprite_items_tower_bloxx_logo_p1.h"
 #include "bn_sprite_items_digital_chocolate_logo_p0.h"
@@ -239,6 +265,121 @@ struct UiCompositeAsset
     const UiSpritePartAsset* parts;
     int16_t part_count;
 };
+
+
+inline const UiSpritePartAsset christmas_title_logo_parts[] = {
+    { &bn::sprite_items::christmas_title_logo_p0, -32, -16 },
+    { &bn::sprite_items::christmas_title_logo_p1, 32, -16 },
+    { &bn::sprite_items::christmas_title_logo_p2, -32, 32 },
+    { &bn::sprite_items::christmas_title_logo_p3, 32, 32 },
+};
+inline const UiCompositeAsset christmas_title_logo = { christmas_title_logo_parts, 4 };
+
+inline const UiSpritePartAsset christmas_menu_logo_parts[] = {
+    { &bn::sprite_items::christmas_menu_logo_p0, -16, 0 },
+    { &bn::sprite_items::christmas_menu_logo_p1, 32, 0 },
+};
+inline const UiCompositeAsset christmas_menu_logo = { christmas_menu_logo_parts, 2 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f0_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f0, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f0 = { christmas_menu_worker_a_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f1_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f1, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f1 = { christmas_menu_worker_a_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f2_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f2, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f2 = { christmas_menu_worker_a_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f3_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f3, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f3 = { christmas_menu_worker_a_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f4_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f4, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f4 = { christmas_menu_worker_a_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f5_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f5, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f5 = { christmas_menu_worker_a_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f6_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f6, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f6 = { christmas_menu_worker_a_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f7_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f7, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f7 = { christmas_menu_worker_a_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f8_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f8, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f8 = { christmas_menu_worker_a_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_a_f9_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_a_f9, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_a_f9 = { christmas_menu_worker_a_f9_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f0_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f0, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f0 = { christmas_menu_worker_b_f0_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f1_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f1, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f1 = { christmas_menu_worker_b_f1_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f2_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f2, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f2 = { christmas_menu_worker_b_f2_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f3_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f3, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f3 = { christmas_menu_worker_b_f3_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f4_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f4, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f4 = { christmas_menu_worker_b_f4_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f5_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f5, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f5 = { christmas_menu_worker_b_f5_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f6_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f6, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f6 = { christmas_menu_worker_b_f6_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f7_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f7, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f7 = { christmas_menu_worker_b_f7_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f8_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f8, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f8 = { christmas_menu_worker_b_f8_parts, 1 };
+
+inline const UiSpritePartAsset christmas_menu_worker_b_f9_parts[] = {
+    { &bn::sprite_items::christmas_menu_worker_b_f9, 0, 0 },
+};
+inline const UiCompositeAsset christmas_menu_worker_b_f9 = { christmas_menu_worker_b_f9_parts, 1 };
 
 inline const UiSpritePartAsset tower_bloxx_logo_parts[] = {
     { &bn::sprite_items::tower_bloxx_logo_p0, -17, 10 },

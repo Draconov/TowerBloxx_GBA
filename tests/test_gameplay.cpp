@@ -83,6 +83,40 @@ void test_save_and_records()
     assert(records.quick_best_combo == 4);
 }
 
+
+void test_theme_setting_and_persistence()
+{
+    tb::SaveData save = tb::make_default_save();
+    assert(tb::game_theme(save) == tb::GameTheme::Classic);
+    assert(tb::set_game_theme(save, tb::GameTheme::Christmas));
+    assert(tb::game_theme(save) == tb::GameTheme::Christmas);
+    tb::finalize_save(save);
+    assert(tb::valid_save(save));
+
+    tb::UiController ui(save);
+    assert(ui.theme() == tb::GameTheme::Christmas);
+    ui.update(fresh(tb::Key::A), save); // title -> root menu
+    assert(ui.scene() == tb::UiScene::MainMenu);
+    ui.update(fresh(tb::Key::Down), save);
+    ui.update(fresh(tb::Key::Down), save);
+    ui.update(fresh(tb::Key::Down), save);
+    assert(ui.root_menu_item(ui.selection()) == tb::RootMenuItem::Settings);
+    ui.update(fresh(tb::Key::A), save);
+    assert(ui.scene() == tb::UiScene::Settings);
+    ui.update(fresh(tb::Key::Down), save);
+    ui.update(fresh(tb::Key::Down), save);
+    assert(ui.selection() == 2);
+    const tb::UiUpdateResult changed = ui.update(fresh(tb::Key::A), save);
+    assert(changed.save_dirty);
+    assert(ui.theme() == tb::GameTheme::Classic);
+    assert(tb::game_theme(save) == tb::GameTheme::Classic);
+
+    // Theme is presentation-only and Reset City must not change it.
+    assert(tb::set_game_theme(save, tb::GameTheme::Christmas));
+    tb::reset_city_progress(save);
+    assert(tb::game_theme(save) == tb::GameTheme::Christmas);
+}
+
 void test_first_block_intro_and_release_gate()
 {
     tb::TowerConstruction construction;
@@ -614,6 +648,7 @@ int main()
 {
     test_input_and_ui_shell_flow();
     test_save_and_records();
+    test_theme_setting_and_persistence();
     test_first_block_intro_and_release_gate();
     test_quick_game_select_cheat_only_stops_swing();
     test_special_crane_screen_anchor();
