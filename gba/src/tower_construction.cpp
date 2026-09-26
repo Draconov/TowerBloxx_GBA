@@ -129,6 +129,7 @@ void TowerConstruction::start(uint8_t building_type, int target_height, bool tro
     _trophy_requested = trophy_eligible;
     _trophy_eligible = trophy_eligible;
     _stationary_crane = stationary_crane;
+    _secret_step = 0;
     _roof_result = 0;
 
     _combo_count = 0;
@@ -188,6 +189,51 @@ void TowerConstruction::update(int delta_ms, const InputFrame& input)
     if(_status == TowerConstructionStatus::Results)
     {
         return;
+    }
+
+    // Build City construction uses the same SELECT + Up, Up, Down, Down
+    // swing toggle as Quick Game. Sandbox construction starts stationary,
+    // so entering the code once can restore normal swing and entering it
+    // again stops the crane.
+    if(_status == TowerConstructionStatus::Playing && input.held(Key::Select))
+    {
+        constexpr std::array<Key, 4> secret = {
+            Key::Up, Key::Up, Key::Down, Key::Down,
+        };
+        for(Key key : {Key::Up, Key::Down, Key::Left, Key::Right})
+        {
+            if(input.pressed(key))
+            {
+                _secret_step = key == secret[_secret_step] ? _secret_step + 1 :
+                        int(key == secret[0]);
+                if(_secret_step == int(secret.size()))
+                {
+                    _secret_step = 0;
+                    _stationary_crane = ! _stationary_crane;
+                    if(_stationary_crane)
+                    {
+                        _swing_amplitude_x = 0;
+                        _swing_amplitude_y = 0;
+                        _crane_x = 0;
+                        _previous_crane_x = 0;
+                        _current_z_angle_degrees = 0;
+                    }
+                    else
+                    {
+                        _update_difficulty();
+                        // Resume from the horizontal centre of the swing arc.
+                        _swing_phase_ms = (_swing_period_ms * 90) / 200;
+                        _previous_crane_x = 0;
+                    }
+                    _velocity_x = 0;
+                    _velocity_y = 0;
+                }
+            }
+        }
+    }
+    else if(! input.held(Key::Select))
+    {
+        _secret_step = 0;
     }
 
     if(_status == TowerConstructionStatus::Playing && input.pressed(Key::A) &&
@@ -490,13 +536,23 @@ void TowerConstruction::_update_crane(int delta_ms)
         {
             _rope_length = max_rope_length;
             _block_state = TowerConstructionBlockState::Attached;
+            if(_roof_phase && ! _stationary_crane)
+            {
+                // 90 degrees has zero horizontal displacement, so the roof
+                // starts its normal swing smoothly from the centred lowering pose.
+                _swing_phase_ms = (_swing_period_ms * 90) / 200;
+                _previous_crane_x = 0;
+            }
         }
     }
 
-    if(_stationary_crane || _roof_phase)
+    // The special roof remains centred only while the crane is lowering it.
+    // As soon as the rope reaches full length and the roof becomes Attached,
+    // normal swing starts (unless the stationary cheat is enabled).
+    const bool centered_roof_lowering =
+            _roof_phase && _block_state == TowerConstructionBlockState::Raising;
+    if(_stationary_crane || centered_roof_lowering)
     {
-        // Both sandbox and the special roof lowering hold the crane centered.
-        // The roof must never show a normal swinging-block preview.
         _crane_x = 0;
         _crane_y = _world_anchor_y - _vertical_swing_bias - _rope_length;
     }
@@ -510,9 +566,9 @@ void TowerConstruction::_update_crane(int delta_ms)
 
     if(_block_state == TowerConstructionBlockState::Attached)
     {
-        _current_z_angle_degrees = (_stationary_crane || _roof_phase) ? 0 : _crane_x >> 4;
-        _velocity_x = (_stationary_crane || _roof_phase) ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
-        _velocity_y = (_stationary_crane || _roof_phase) ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
+        _current_z_angle_degrees = _stationary_crane ? 0 : _crane_x >> 4;
+        _velocity_x = _stationary_crane ? 0 : ((_crane_x - _previous_crane_x) * 256) / delta_ms;
+        _velocity_y = _stationary_crane ? 0 : ((_crane_y - _previous_crane_y) * 256) / delta_ms;
     }
 
     _previous_crane_x = _crane_x;

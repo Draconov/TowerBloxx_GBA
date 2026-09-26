@@ -130,6 +130,7 @@ private:
     bool _trophy_requested = false;
     bool _trophy_eligible = false;
     bool _stationary_crane = false;
+    int _secret_step = 0;
     uint8_t _roof_result = 0;
 
     int _combo_count = 0;

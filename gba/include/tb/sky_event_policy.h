@@ -10,7 +10,7 @@ namespace tb
 [[nodiscard]] constexpr bool unique_celestial_event(int type)
 {
     return type == 14 || type == 18 || type == 21 ||
-            type == 24 || type == 25 || type == 26 || type == 27;
+            type == 24 || type == 25 || type == 26 || type == 27 || type == 28;
 }
 
 [[nodiscard]] constexpr uint32_t celestial_event_flag(int type)

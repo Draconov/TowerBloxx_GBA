@@ -312,18 +312,41 @@ void ConstructionBackdrop::_spawn_legacy_event(
         LegacySkyEventSlot& slot, int band, int camera_y, int clock_ms)
 {
     int type = 0;
+
+    // Large celestial landmarks and the whale have narrow source altitude
+    // bands. Give every unseen unique event priority in its own band so a
+    // common cloud/star cannot repeatedly win the random scan and hide it.
     for(int candidate = 1; candidate <= 28; ++candidate)
     {
         const bool in_band = band >= generated::legacy_event_min_band[candidate] &&
                 band < generated::legacy_event_max_band[candidate];
         const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
                 _legacy_remaining[candidate] > 0;
-        const bool first_encounter = ! (_spawned_celestial_events & celestial_event_flag(candidate));
-        if(in_band && available && first_encounter &&
-           _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
+        const bool unseen_unique = unique_celestial_event(candidate) &&
+                ! (_spawned_celestial_events & celestial_event_flag(candidate));
+        if(in_band && available && unseen_unique)
         {
             type = candidate;
             break;
+        }
+    }
+
+    if(type == 0)
+    {
+        for(int candidate = 1; candidate <= 28; ++candidate)
+        {
+            const bool in_band = band >= generated::legacy_event_min_band[candidate] &&
+                    band < generated::legacy_event_max_band[candidate];
+            const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
+                    _legacy_remaining[candidate] > 0;
+            const bool unique_available = ! unique_celestial_event(candidate) ||
+                    ! (_spawned_celestial_events & celestial_event_flag(candidate));
+            if(in_band && available && unique_available &&
+               _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
+            {
+                type = candidate;
+                break;
+            }
         }
     }
 
@@ -345,14 +368,26 @@ void ConstructionBackdrop::_spawn_legacy_event(
     // in the source's 1/8-pixel space until House.e-style projection below.
     if(speed == 0 || _legacy_random(2) == 0)
     {
-        slot.x_eighths = _legacy_random(legacy_screen_width_eighths);
+        // Stationary showcase objects use Java top-left screen coordinates.
+        // Keep large planets/whales fully inside the 240px viewport instead
+        // of allowing their composite to be clipped on the right.
+        const generated::LegacySkyEventAsset& asset = generated::legacy_sky_event_assets[type];
+        const int half_width = asset.width / 2;
+        constexpr int margin = 4;
+        const int min_x = half_width + margin;
+        const int max_x = 240 - half_width - margin;
+        const int source_x = max_x > min_x ? min_x + _legacy_random(max_x - min_x + 1) : 120;
+        slot.x_eighths = source_x * 8;
         slot.y_eighths = camera_three_quarters + extent + _legacy_random(512);
     }
     else
     {
         slot.x_eighths = speed > 0 ? -extent : legacy_screen_width_eighths + extent;
-        slot.y_eighths = camera_three_quarters - legacy_screen_height_eighths / 2 - 512 +
-                _legacy_random(1024);
+        // Moving clouds, balloons, birds, flyers and planes should enter in
+        // the upper part of the viewport. That leaves several block rises for
+        // the player to see them instead of spawning near the bottom and
+        // disappearing with the next camera movement.
+        slot.y_eighths = camera_three_quarters + 96 + _legacy_random(352);
     }
     slot.type = type;
     // A finite *simultaneous* spawn limit alone allows an identical planet to
@@ -413,7 +448,7 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
         //   (v + 32 * x) >> 8, (w - 32 * (y - 3*camera/4)) >> 8.
         // After specializing v/w to the 240x160 GBA viewport, subtract the
         // screen centre once to convert those coordinates to Butano's origin.
-        const int source_screen_x = screen_half_width + (slot.x_eighths >> 3);
+        const int source_screen_x = slot.x_eighths >> 3;
         const int source_screen_y = screen_half_height + ((camera_three_quarters - slot.y_eighths) >> 3);
         const int x = source_screen_x - screen_half_width;
         const int y = source_screen_y - screen_half_height;

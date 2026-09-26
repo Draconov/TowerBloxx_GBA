@@ -521,6 +521,9 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "_request.stationary_crane = _sandbox_active" in city
     assert "result.placement_committed = ! _city.sandbox_active()" in scene
     assert "request.stationary_crane" in construction
+    tower = (GBA / "src" / "tower_construction.cpp").read_text(encoding="utf-8")
+    assert "SELECT + Up, Up, Down, Down" in tower
+    assert "_stationary_crane = ! _stationary_crane" in tower
 
 
 def test_every_scene_transition_waits_for_sprite_vram_reclamation() -> None:
@@ -626,5 +629,10 @@ def test_one_time_planets_and_direct_special_roof_transition() -> None:
     assert "if(new_run)" in backdrop
     assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false)" in quick_scene
     assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false)" in city_scene
-    assert "if(_stationary_crane || _roof_phase)" in tower
+    assert "centered_roof_lowering" in tower
+    assert "_roof_phase && _block_state == TowerConstructionBlockState::Raising" in tower
     assert "_camera_y == _camera_target_y) ||" in tower
+    assert "unique_celestial_event(candidate)" in backdrop
+    assert "const int min_x = half_width + margin" in backdrop
+    assert "const int source_screen_x = slot.x_eighths >> 3" in backdrop
+    assert "camera_three_quarters + 96 + _legacy_random(352)" in backdrop

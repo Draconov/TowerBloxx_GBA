@@ -255,7 +255,7 @@ void test_perfect_landing_feedback_geometry()
 
 void test_celestial_encounters_are_unique()
 {
-    constexpr int unique_types[] = {14, 18, 21, 24, 25, 26, 27};
+    constexpr int unique_types[] = {14, 18, 21, 24, 25, 26, 27, 28};
     uint32_t seen = 0;
     for(int type : unique_types)
     {
@@ -265,7 +265,7 @@ void test_celestial_encounters_are_unique()
         seen |= flag;
         assert(seen & tb::celestial_event_flag(type));
     }
-    for(int type : {1, 3, 12, 13, 15, 17, 20, 22, 23, 28})
+    for(int type : {1, 3, 12, 13, 15, 17, 20, 22, 23})
     {
         assert(! tb::unique_celestial_event(type));
         assert(tb::celestial_event_flag(type) == 0);
@@ -323,6 +323,19 @@ void test_roof_phase_uses_stationary_camera_lowering()
     assert(snapshot.camera_y == fixed_camera_y);
     assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
     assert(snapshot.rope_length == 1664);
+    // The lowering presentation is over now: without the cheat the roof must
+    // leave the centre and resume the normal construction swing.
+    bool roof_swing_resumed = false;
+    for(int frame = 0; frame < 40; ++frame)
+    {
+        construction.update(25, no_input());
+        if(construction.snapshot().crane_x != 0)
+        {
+            roof_swing_resumed = true;
+            break;
+        }
+    }
+    assert(roof_swing_resumed);
 }
 
 
@@ -473,6 +486,62 @@ void test_build_city_secret_sandbox_with_stationary_blocks()
     assert(city.snapshot().max_unlocked_building_type == 1);
 }
 
+
+void test_build_city_construction_cheat_toggles_swing()
+{
+    tb::TowerConstruction construction;
+    construction.start(2, 20, true, true);
+
+    // Sandbox starts stationary.
+    for(int frame = 0; frame < 150 &&
+            construction.snapshot().camera_y != construction.snapshot().camera_target_y; ++frame)
+    {
+        construction.update(25, no_input());
+    }
+    auto snapshot = construction.snapshot();
+    assert(snapshot.crane_x == 0);
+    assert(snapshot.swing_amplitude_x == 0 && snapshot.swing_amplitude_y == 0);
+
+    const uint16_t select = tb::key_mask(tb::Key::Select);
+    constexpr std::array<tb::Key, 4> secret = {
+        tb::Key::Up, tb::Key::Up, tb::Key::Down, tb::Key::Down,
+    };
+
+    // Same code as Quick Game toggles normal swing back on.
+    for(tb::Key direction : secret)
+    {
+        construction.update(25, tb::InputFrame{
+                uint16_t(select | tb::key_mask(direction)), tb::key_mask(direction)});
+        construction.update(25, tb::InputFrame{select, 0});
+    }
+    snapshot = construction.snapshot();
+    assert(snapshot.swing_amplitude_x > 0 && snapshot.swing_amplitude_y > 0);
+
+    bool moved = false;
+    for(int frame = 0; frame < 40; ++frame)
+    {
+        construction.update(25, no_input());
+        if(construction.snapshot().crane_x != 0)
+        {
+            moved = true;
+            break;
+        }
+    }
+    assert(moved);
+
+    // Enter it again and the construction crane is stationary again.
+    for(tb::Key direction : secret)
+    {
+        construction.update(25, tb::InputFrame{
+                uint16_t(select | tb::key_mask(direction)), tb::key_mask(direction)});
+        construction.update(25, tb::InputFrame{select, 0});
+    }
+    snapshot = construction.snapshot();
+    assert(snapshot.swing_amplitude_x == 0 && snapshot.swing_amplitude_y == 0);
+    assert(snapshot.crane_x == 0);
+}
+
+
 void test_build_city_events_and_hall_of_fame()
 {
     tb::SaveData save = tb::make_default_save();
@@ -554,6 +623,7 @@ int main()
     test_tower_combo_roof_and_failure_rules();
     test_build_city_progress_and_replacement();
     test_build_city_secret_sandbox_with_stationary_blocks();
+    test_build_city_construction_cheat_toggles_swing();
     test_build_city_events_and_hall_of_fame();
     test_menu_cloud_field_matches_reference_motion();
     test_session_suspend_resume();
