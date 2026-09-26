@@ -1,6 +1,4 @@
 #include "tb/quick_game_scene.h"
-#include "tb/christmas_theme_assets.h"
-#include "tb/christmas_effect_assets.h"
 
 #include "tb/scene_backdrop.h"
 #include "tb/crane_presentation.h"
@@ -337,11 +335,11 @@ QuickGameScene::QuickGameScene() :
     _text_generator.set_z_order(-100);
 }
 
-void QuickGameScene::start(int language, GameTheme theme)
+void QuickGameScene::start(int language, const SaveData& save)
 {
     set_gameplay_backdrop();
     _language = language >= 0 && language < generated::locale_count ? language : 0;
-    _theme = theme;
+    _visual_theme = visual_theme(save);
     _game.reset();
     _gameplay_workers.reset();
     _life_indicator_animation.reset(3);
@@ -350,8 +348,6 @@ void QuickGameScene::start(int language, GameTheme theme)
     _frame_phase = 0;
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
-    _rendered_christmas_current_frame = -1;
-    for(int& frame : _christmas_floor_frames) { frame = -1; }
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
@@ -389,7 +385,7 @@ void QuickGameScene::start(int language, GameTheme theme)
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, _theme);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, true, _visual_theme);
 }
 
 QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveData& save)
@@ -544,18 +540,16 @@ void QuickGameScene::suspend_presentation()
     _combo_star_frame = -1;
 }
 
-void QuickGameScene::resume_presentation(GameTheme theme)
+void QuickGameScene::resume_presentation(const SaveData& save)
 {
     if(! _active)
     {
         return;
     }
     set_gameplay_backdrop();
-    _theme = theme;
+    _visual_theme = visual_theme(save);
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
-    _rendered_christmas_current_frame = -1;
-    for(int& frame : _christmas_floor_frames) { frame = -1; }
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
@@ -576,7 +570,7 @@ void QuickGameScene::resume_presentation(GameTheme theme)
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, _theme, false);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false, _visual_theme);
 }
 
 void QuickGameScene::discard()
@@ -596,29 +590,6 @@ void QuickGameScene::_rebuild_floor_sprites()
     _floor_sprites.clear();
     _rendered_floor_count = _game.floor_count();
     _visible_floor_start = _rendered_floor_count > max_visible_floors ? _rendered_floor_count - max_visible_floors : 0;
-
-    if(_theme == GameTheme::Christmas)
-    {
-        for(int& frame : _christmas_floor_frames) { frame = -1; }
-        const bn::sprite_item& tower_item = christmas_tower_item(quick_building_type);
-        int visible_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index, ++visible_index)
-        {
-            const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
-            const int frame = floor_index == 0 ? christmas_base_graphics_index :
-                    christmas_floor_graphics_index(pose.z_angle_degrees);
-            bn::optional<bn::sprite_ptr> sprite = tower_item.create_sprite_optional(0, 0, frame);
-            if(! sprite || _floor_sprites.size() >= _floor_sprites.max_size())
-            {
-                _floor_sprites.clear();
-                _rendered_floor_count = -1;
-                return;
-            }
-            _floor_sprites.push_back(*sprite);
-            _christmas_floor_frames[visible_index] = frame;
-        }
-        return;
-    }
 
     for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
@@ -669,36 +640,6 @@ void QuickGameScene::_rebuild_current_sprites(const QuickGameSnapshot& snapshot)
     {
         _current_sprites.clear();
         _rendered_current_mesh_id = -1;
-        _rendered_tumble_stage = 0;
-        return;
-    }
-
-    if(_theme == GameTheme::Christmas)
-    {
-        const int frame = snapshot.floor_count == 0 ? christmas_base_graphics_index :
-                christmas_floor_graphics_index(snapshot.current_z_angle_degrees);
-        constexpr int christmas_item_id = -100;
-        if(_current_sprites.empty() || _rendered_current_mesh_id != christmas_item_id)
-        {
-            _current_sprites.clear();
-            bn::optional<bn::sprite_ptr> sprite =
-                    christmas_tower_item(quick_building_type).create_sprite_optional(0, 0, frame);
-            if(! sprite)
-            {
-                _rendered_current_mesh_id = -1;
-                return;
-            }
-            sprite->set_z_order(current_block_z_order);
-            sprite->set_affine_mat(_current_affine_mat);
-            _current_sprites.push_back(*sprite);
-            _rendered_current_mesh_id = christmas_item_id;
-            _rendered_christmas_current_frame = frame;
-        }
-        else if(frame != _rendered_christmas_current_frame)
-        {
-            _current_sprites[0].set_tiles(christmas_tower_item(quick_building_type).tiles_item(), frame);
-            _rendered_christmas_current_frame = frame;
-        }
         _rendered_tumble_stage = 0;
         return;
     }
@@ -883,52 +824,26 @@ void QuickGameScene::_update_world_positions()
 {
     const QuickGameSnapshot snapshot = _game.snapshot();
 
-    if(_theme == GameTheme::Christmas)
+    int sprite_index = 0;
+    int affine_index = 0;
+    for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
-        int sprite_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index, ++sprite_index)
+        const QuickFloor& floor = _game.floor(floor_index);
+        const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
+        const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
+                                               floor_mesh_id;
+        const generated::MeshAsset& floor_mesh = mesh_by_id(mesh_id);
+        const int x = _screen_x(floor.x + pose.x_delta);
+        const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
+        bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
+        for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
         {
-            const QuickFloor& floor = _game.floor(floor_index);
-            const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
-            const int frame = floor_index == 0 ? christmas_base_graphics_index :
-                    christmas_floor_graphics_index(pose.z_angle_degrees);
-            if(sprite_index < _floor_sprites.size())
-            {
-                if(_christmas_floor_frames[sprite_index] != frame)
-                {
-                    _floor_sprites[sprite_index].set_tiles(
-                            christmas_tower_item(quick_building_type).tiles_item(), frame);
-                    _christmas_floor_frames[sprite_index] = frame;
-                }
-                _floor_sprites[sprite_index].set_position(
-                        _screen_x(floor.x + pose.x_delta),
-                        _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y));
-            }
+            position_rotated_mesh_part(
+                    floor_mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
+                    _floor_sprites[sprite_index]);
+            ++sprite_index;
         }
-    }
-    else
-    {
-        int sprite_index = 0;
-        int affine_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
-        {
-            const QuickFloor& floor = _game.floor(floor_index);
-            const QuickFloorRenderPose& pose = _game.floor_render_pose(floor_index);
-            const int mesh_id = floor_index == 0 ? initial_base_mesh_id(quick_building_type) :
-                                                   floor_mesh_id;
-            const generated::MeshAsset& floor_mesh = mesh_by_id(mesh_id);
-            const int x = _screen_x(floor.x + pose.x_delta);
-            const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
-            bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
-            for(int part_index = 0; part_index < floor_mesh.part_count; ++part_index)
-            {
-                position_rotated_mesh_part(
-                        floor_mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
-                        _floor_sprites[sprite_index]);
-                ++sprite_index;
-            }
-            ++affine_index;
-        }
+        ++affine_index;
     }
 
     const bool current_visible = snapshot.status == QuickGameStatus::Playing &&
@@ -938,21 +853,11 @@ void QuickGameScene::_update_world_positions()
     {
         sprite.set_visible(current_visible);
     }
-    if(current_visible && ! _current_sprites.empty() && _rendered_current_mesh_id >= -100)
+    if(current_visible && ! _current_sprites.empty() && _rendered_current_mesh_id >= 0)
     {
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
-        if(_theme == GameTheme::Christmas)
-        {
-            const bn::fixed safe_y_angle = bn::safe_degrees_angle(snapshot.current_y_angle_degrees);
-            bn::fixed y_scale = bn::degrees_lut_sin_and_cos_safe(safe_y_angle).second;
-            if(y_scale < 0) { y_scale = -y_scale; }
-            _current_affine_mat.set_rotation_angle(0);
-            _current_affine_mat.set_horizontal_scale(y_scale);
-            _current_affine_mat.set_vertical_scale(1);
-            _current_sprites[0].set_position(x, y);
-        }
-        else if(_rendered_tumble_stage > 0)
+        if(_rendered_tumble_stage > 0)
         {
             const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
                     _rendered_current_mesh_id, _rendered_tumble_stage,
@@ -1111,9 +1016,8 @@ void QuickGameScene::_update_combo_meter(const QuickGameSnapshot& snapshot)
         if(frame != _combo_star_frame)
         {
             _combo_star_sprites.clear();
-            const generated::UiCompositeAsset& star_asset = _theme == GameTheme::Christmas ?
-                    *christmas::combo_star_frames[frame] : *generated::legacy_combo_star_frames[frame];
-            show_ui_composite(star_asset, combo_star_x, combo_star_y, _combo_star_sprites, -102);
+            show_ui_composite(*generated::legacy_combo_star_frames[frame],
+                              combo_star_x, combo_star_y, _combo_star_sprites, -102);
             _combo_star_frame = frame;
         }
     }
@@ -1188,12 +1092,9 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
 
     // JAR-grounded pass: the moving star grows small -> medium -> large while
     // leaving an actual sampled trail behind it (white -> yellow -> red).
-    const generated::UiCompositeAsset& head_asset = _theme == GameTheme::Christmas ?
-            (_perfect_landing_elapsed_ms < 120 ? *christmas::accuracy_star_frames[2] :
-             _perfect_landing_elapsed_ms < 240 ? *christmas::accuracy_star_frames[1] :
-                                                  *christmas::accuracy_star_frames[0]) :
-            (_perfect_landing_elapsed_ms < 120 ? generated::accuracy_star_f1 :
-             _perfect_landing_elapsed_ms < 240 ? generated::accuracy_star_f2 : generated::accuracy_star_f0);
+    const generated::UiCompositeAsset& head_asset = _perfect_landing_elapsed_ms < 120 ?
+            generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
+            generated::accuracy_star_f2 : generated::accuracy_star_f0;
 
     const PerfectLandingSeamPhase pending_seam = perfect_landing_seam_phase(_perfect_landing_elapsed_ms);
     const int seam_reserve = pending_seam != PerfectLandingSeamPhase::Hidden ? 1 : 0;

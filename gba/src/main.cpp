@@ -65,26 +65,26 @@ int main()
             switch(pending_presentation)
             {
             case PendingPresentation::QuickStart:
-                quick_game.start(controller.language(), controller.theme());
+                quick_game.start(controller.language(), save);
                 session.start_quick_game();
                 break;
             case PendingPresentation::CityStart:
-                build_city.start(save, controller.language(), controller.theme());
+                build_city.start(save, controller.language());
                 session.start_build_city();
                 break;
             case PendingPresentation::ConstructionStart:
-                construction.start(pending_construction_request, controller.language(), controller.theme(),
+                construction.start(pending_construction_request, controller.language(),
                                    build_city.sandbox_active() ? sandbox_save : save);
                 session.start_construction();
                 break;
             case PendingPresentation::QuickResume:
-                quick_game.resume_presentation(controller.theme());
+                quick_game.resume_presentation(save);
                 break;
             case PendingPresentation::ConstructionResume:
-                construction.resume_presentation(controller.theme());
+                construction.resume_presentation(save);
                 break;
             case PendingPresentation::CityResume:
-                build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save, controller.theme());
+                build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save);
                 break;
             case PendingPresentation::None:
                 break;

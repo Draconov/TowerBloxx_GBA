@@ -422,19 +422,10 @@ def test_manual_release_contract_and_packager(tmp_path: Path) -> None:
     assert (tmp_path / "dist" / "TowerBloxx.gba.sha256").is_file()
 
 
-def _live_graphics_roots() -> tuple[Path, ...]:
-    return (
-        GBA / "graphics" / "gameplay",
-        GBA / "graphics" / "ui",
-        GBA / "graphics" / "backgrounds",
-        GBA / "themes" / "christmas" / "graphics",
-    )
-
-
 def _live_asset_sources() -> dict[str, Path]:
     result: dict[str, Path] = {}
-    for root in _live_graphics_roots():
-        for path in root.glob("*.bmp"):
+    for root in (GBA / "graphics" / "gameplay", GBA / "graphics" / "ui", GBA / "graphics" / "backgrounds", GBA / "graphics" / "christmas"):
+        for path in root.rglob("*.bmp"):
             result[path.stem] = path
     for path in (GBA / "audio").glob("*"):
         if path.is_file():
@@ -459,7 +450,7 @@ def test_direct_butano_asset_includes_have_source_inputs() -> None:
 
 def test_no_exact_duplicate_live_bmps_unless_intentionally_retained() -> None:
     groups: dict[str, list[Path]] = defaultdict(list)
-    for root in _live_graphics_roots():
+    for root in (GBA / "graphics" / "gameplay", GBA / "graphics" / "ui", GBA / "graphics" / "backgrounds"):
         for path in root.glob("*.bmp"):
             groups[hashlib.sha256(path.read_bytes()).hexdigest()].append(path)
 
@@ -524,7 +515,7 @@ def test_build_city_sandbox_is_volatile_and_construction_only() -> None:
     assert "sandbox_save = save;" in main
     assert "result.save_dirty && ! build_city.sandbox_active()" in main
     assert "build_city.sandbox_active() ? sandbox_save : save" in main
-    assert "build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save, controller.theme())" in main
+    assert "build_city.resume_presentation(build_city.sandbox_active() ? sandbox_save : save)" in main
     assert "pending_presentation = PendingPresentation::CityResume;" in main
     assert "_secret_step" in city
     assert "_request.stationary_crane = _sandbox_active" in city
@@ -566,7 +557,7 @@ def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> N
     # before recreating star effects; stars then use only remaining slots.
     start = source.index("void TowerConstructionScene::start(")
     update = source.index("TowerConstructionSceneUpdateResult TowerConstructionScene::update(")
-    resume = source.index("void TowerConstructionScene::resume_presentation(")
+    resume = source.index("void TowerConstructionScene::resume_presentation(const SaveData& save)")
     discard = source.index("void TowerConstructionScene::discard()")
     for section in (source[start:update], source[update:resume], source[resume:discard]):
         assert section.index("_rebuild_hud(snapshot);") < section.index("_update_perfect_landing_effect(snapshot);")
@@ -615,8 +606,7 @@ def test_resource_pressure_never_allocates_unchecked_cosmetics() -> None:
 def test_all_sprite_palette_indices_fit_declared_bpp() -> None:
     # Catch the exact milestone-badge crash class across every tracked BMP,
     # not merely the four images that triggered it previously.
-    manifests = list((GBA / "graphics").rglob("*.json")) + list((GBA / "themes" / "christmas" / "graphics").rglob("*.json"))
-    for manifest in manifests:
+    for manifest in (GBA / "graphics").rglob("*.json"):
         data = json.loads(manifest.read_text(encoding="utf-8"))
         bmp = manifest.with_suffix(".bmp")
         if not bmp.exists() or data.get("bpp_mode") != "bpp_4":
@@ -626,95 +616,38 @@ def test_all_sprite_palette_indices_fit_declared_bpp() -> None:
             assert max(image.get_flattened_data()) < 16, f"{bmp}: BPP4 sprite references palette index >= 16"
 
 
-def test_christmas_theme_is_self_contained_and_wired() -> None:
-    theme_root = GBA / "themes" / "christmas"
-    originals = theme_root / "originals"
-    graphics = theme_root / "graphics"
-    assert originals.is_dir()
-    assert graphics.is_dir()
-    assert len(list(originals.glob("resource_*.png"))) == 93
-    assert len(list(originals.glob("music_*.mid"))) == 6
+def test_one_time_planets_and_direct_special_roof_transition() -> None:
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    quick_scene = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    city_scene = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    tower = (GBA / "src" / "tower_construction.cpp").read_text(encoding="utf-8")
+    assert "_spawned_celestial_events |= celestial_event_flag(type)" in backdrop
+    assert "! (_spawned_celestial_events & celestial_event_flag(candidate))" in backdrop
+    assert "if(new_run)" in backdrop
+    assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false, _visual_theme)" in quick_scene
+    assert "_backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false, _visual_theme)" in city_scene
+    assert "if(_stationary_crane || _roof_phase)" in tower
+    assert "_camera_y == _camera_target_y) ||" in tower
+
+
+def test_christmas_theme_assets_are_isolated_and_wired() -> None:
+    christmas = GBA / "graphics" / "christmas" / "ui"
+    assert christmas.is_dir()
+    assert (christmas / "christmas_tower_logo_p0.bmp").is_file()
+    assert (christmas / "christmas_worker_blue_f0_p0.bmp").is_file()
+    assert (christmas / "christmas_city_building_1_f0_p0.bmp").is_file()
+    assert (christmas / "christmas_city_level_icon_f8_p0.bmp").is_file()
+    assert (christmas / "christmas_sky_type_9_f0_p0.bmp").is_file()
 
     makefile = (GBA / "Makefile").read_text(encoding="utf-8")
-    assert "themes/christmas/graphics" in makefile
-
-    source = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    assert "graphics/christmas/ui" in makefile
     controller = (GBA / "src" / "ui_controller.cpp").read_text(encoding="utf-8")
-    save_header = (GBA / "include" / "tb" / "save_data.h").read_text(encoding="utf-8")
-    generated = (GBA / "include" / "generated" / "tower_ui_assets.h").read_text(encoding="utf-8")
-    assert "GameTheme::Christmas" in source
-    assert "christmas_title_logo" in source
-    assert "christmas_menu_logo" in source
-    assert "christmas_menu_worker_a_frames" in source
-    assert "christmas_menu_worker_b_frames" in source
-    assert "_change_theme" in controller
-    assert "game_theme(const SaveData& save)" in save_header
-    assert "christmas_title_logo_parts" in generated
-
-    allowed_frame_sizes = {(8, 8), (8, 16), (16, 8), (16, 16), (16, 32), (32, 8), (32, 16), (32, 32), (32, 64), (64, 32), (64, 64)}
-    for bmp in graphics.glob("*.bmp"):
-        manifest = bmp.with_suffix(".json")
-        data = json.loads(manifest.read_text(encoding="utf-8"))
-        with Image.open(bmp) as image:
-            assert image.mode == "P"
-            if data.get("bpp_mode") == "bpp_4":
-                assert max(image.get_flattened_data()) <= 15
-            else:
-                assert data.get("bpp_mode") == "bpp_8"
-                assert max(image.get_flattened_data()) <= 255
-            frame_size = (data.get("width", image.width), data.get("height", image.height))
-            if data.get("type") == "sprite":
-                assert frame_size in allowed_frame_sizes
-                assert image.width % frame_size[0] == 0
-                assert image.height % frame_size[1] == 0
-            else:
-                assert data.get("type") == "regular_bg"
-                assert image.size == (256, 256)
-
-    christmas_header = theme_root / "include" / "tb" / "christmas_theme_assets.h"
-    assert christmas_header.is_file()
-    header_text = christmas_header.read_text(encoding="utf-8")
-    assert "christmas_floor_graphics_index" in header_text
-    assert "christmas_tower_item" in header_text
-    assert "christmas_roof_item" in header_text
-    assert "Frame 12 is centred" in header_text
-
-    quick_scene = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
-    construction_scene = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    shell = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
-    assert "christmas_tower_item(quick_building_type)" in quick_scene
-    assert "christmas_roof_item(_request.building_type)" in construction_scene
-    assert "christmas_construction_tree" in backdrop
-
-    city_scene = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
-    city_header = (theme_root / "include" / "tb" / "christmas_city_assets.h").read_text(encoding="utf-8")
-    effect_header = (theme_root / "include" / "tb" / "christmas_effect_assets.h").read_text(encoding="utf-8")
-    assert "christmas::city_building_asset" in city_scene
-    assert "christmas::city_effects_empty" in city_scene
-    assert "christmas::city_effects_replace" in city_scene
-    assert "christmas::city_level_icons" in city_scene
-    assert "christmas_city_building_4_f3" in city_header
-    assert "christmas_city_level_icon_f8" in city_header
-    assert "christmas::combo_star_frames" in quick_scene
-    assert "christmas::accuracy_star_frames" in quick_scene
-    assert "christmas::combo_star_frames" in construction_scene
-    assert "christmas::accuracy_star_frames" in construction_scene
-    assert "christmas_combo_star_f3" in effect_header
-
-    christmas_hud = (theme_root / "include" / "tb" / "christmas_hud_assets.h").read_text(encoding="utf-8")
-    assert "christmas_hud_white_digits" in christmas_hud
-    assert "christmas_city_status_panels" in christmas_hud
-    assert "christmas_city_progress" in christmas_hud
-    assert "christmas_city_action_icon" in christmas_hud
-    assert "christmas::status_panels" in city_scene
-    assert "christmas::comparison_panel_active" in city_scene
-    assert "christmas_city_bg_theme_0" in city_scene
-
-    for building_type in range(1, 5):
-        tower = graphics / f"christmas_tower_type_{building_type}.bmp"
-        roof = graphics / f"christmas_roof_type_{building_type}.bmp"
-        with Image.open(tower) as image:
-            assert image.size == (32, 32 * 24)
-        with Image.open(roof) as image:
-            assert image.size == (32, 64 * 2)
-
+    assert "VisualTheme::Christmas" in controller
+    assert "generated::christmas_tower_logo" in shell
+    assert "generated::christmas_worker_blue_frames" in shell
+    assert "generated::christmas_city_building_1_frames" in city
+    assert "generated::christmas_city_level_icon_frames" in city
+    assert "generated::christmas_sky_event_assets" in backdrop

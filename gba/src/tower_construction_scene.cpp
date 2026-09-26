@@ -1,6 +1,4 @@
 #include "tb/tower_construction_scene.h"
-#include "tb/christmas_theme_assets.h"
-#include "tb/christmas_effect_assets.h"
 
 #include "tb/scene_backdrop.h"
 #include "tb/crane_presentation.h"
@@ -339,20 +337,18 @@ TowerConstructionScene::TowerConstructionScene() :
 }
 
 void TowerConstructionScene::start(
-        const BuildCityConstructionRequest& request, int language, GameTheme theme, const SaveData& save)
+        const BuildCityConstructionRequest& request, int language, const SaveData& save)
 {
     set_gameplay_backdrop();
     _request = request;
     _language = language >= 0 && language < generated::locale_count ? language : 0;
-    _theme = theme;
+    _visual_theme = visual_theme(save);
     _construction.start(request.building_type, request.target_height, request.trophy_eligible, request.stationary_crane);
     _gameplay_workers.reset();
     _life_indicator_animation.reset(3);
     _frame_phase = 0;
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
-    _rendered_christmas_current_frame = -1;
-    for(int& frame : _christmas_floor_frames) { frame = -1; }
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
@@ -401,7 +397,7 @@ void TowerConstructionScene::start(
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, _theme);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, true, _visual_theme);
 }
 
 TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFrame& input, SaveData& save)
@@ -600,21 +596,19 @@ void TowerConstructionScene::suspend_presentation()
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
     _rendered_current_mesh_id = -1;
-    _rendered_christmas_current_frame = -1;
-    for(int& frame : _christmas_floor_frames) { frame = -1; }
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
     _rendered_crane_rotation_step = 999;
 }
 
-void TowerConstructionScene::resume_presentation(GameTheme theme)
+void TowerConstructionScene::resume_presentation(const SaveData& save)
 {
     if(! _active)
     {
         return;
     }
     set_gameplay_backdrop();
-    _theme = theme;
+    _visual_theme = visual_theme(save);
     _rendered_floor_count = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
@@ -641,7 +635,7 @@ void TowerConstructionScene::resume_presentation(GameTheme theme)
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
-    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, _theme, false);
+    _backdrop.start(snapshot.presentation_camera_y, _background_clock_ms, false, _visual_theme);
 }
 
 void TowerConstructionScene::discard()
@@ -663,54 +657,6 @@ void TowerConstructionScene::_rebuild_floor_sprites()
     _visible_floor_start = _rendered_floor_count > max_visible_floors ? _rendered_floor_count - max_visible_floors : 0;
 
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
-    if(_theme == GameTheme::Christmas)
-    {
-        for(int& frame : _christmas_floor_frames) { frame = -1; }
-        int visible_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index, ++visible_index)
-        {
-            const TowerConstructionFloor& floor = _construction.floor(floor_index);
-            const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
-            const bool roof = floor.roof;
-            const int frame = roof ?
-                    (snapshot.roof_result == 2 ? christmas_trophy_roof_graphics_index : christmas_normal_roof_graphics_index) :
-                    (floor_index == 0 ? christmas_base_graphics_index : christmas_floor_graphics_index(pose.z_angle_degrees));
-            const bn::sprite_item& item = roof ? christmas_roof_item(_request.building_type) :
-                                                christmas_tower_item(_request.building_type);
-            bn::optional<bn::sprite_ptr> sprite = item.create_sprite_optional(0, 0, frame);
-            if(! sprite || _floor_sprites.size() >= _floor_sprites.max_size())
-            {
-                _floor_sprites.clear();
-                _floor_affine_mats.clear();
-                _rendered_floor_count = -1;
-                return;
-            }
-            if(_floor_affine_mats.size() >= _floor_affine_mats.max_size())
-            {
-                _floor_sprites.clear();
-                _floor_affine_mats.clear();
-                _rendered_floor_count = -1;
-                return;
-            }
-            bn::optional<bn::sprite_affine_mat_ptr> affine_mat = bn::sprite_affine_mat_ptr::create_optional();
-            if(! affine_mat)
-            {
-                _floor_sprites.clear();
-                _floor_affine_mats.clear();
-                _rendered_floor_count = -1;
-                return;
-            }
-            _floor_affine_mats.push_back(*affine_mat);
-            if(roof)
-            {
-                sprite->set_affine_mat(*affine_mat);
-            }
-            _floor_sprites.push_back(*sprite);
-            _christmas_floor_frames[visible_index] = roof ? 100 + frame : frame;
-        }
-        return;
-    }
-
     for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
         const TowerConstructionFloor& floor = _construction.floor(floor_index);
@@ -761,40 +707,6 @@ void TowerConstructionScene::_rebuild_current_sprites(const TowerConstructionSna
     {
         _current_sprites.clear();
         _rendered_current_mesh_id = -1;
-        _rendered_tumble_stage = 0;
-        return;
-    }
-
-    if(_theme == GameTheme::Christmas)
-    {
-        const bool roof = snapshot.roof_phase;
-        const int frame = roof ?
-                (snapshot.trophy_eligible ? christmas_trophy_roof_graphics_index : christmas_normal_roof_graphics_index) :
-                (snapshot.floor_count == 0 ? christmas_base_graphics_index :
-                                             christmas_floor_graphics_index(snapshot.current_z_angle_degrees));
-        const int christmas_item_id = roof ? -201 : -200;
-        const bn::sprite_item& item = roof ? christmas_roof_item(_request.building_type) :
-                                            christmas_tower_item(_request.building_type);
-        if(_current_sprites.empty() || _rendered_current_mesh_id != christmas_item_id)
-        {
-            _current_sprites.clear();
-            bn::optional<bn::sprite_ptr> sprite = item.create_sprite_optional(0, 0, frame);
-            if(! sprite)
-            {
-                _rendered_current_mesh_id = -1;
-                return;
-            }
-            sprite->set_z_order(current_block_z_order);
-            sprite->set_affine_mat(_current_affine_mat);
-            _current_sprites.push_back(*sprite);
-            _rendered_current_mesh_id = christmas_item_id;
-            _rendered_christmas_current_frame = frame;
-        }
-        else if(frame != _rendered_christmas_current_frame)
-        {
-            _current_sprites[0].set_tiles(item.tiles_item(), frame);
-            _rendered_christmas_current_frame = frame;
-        }
         _rendered_tumble_stage = 0;
         return;
     }
@@ -978,70 +890,25 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
 
 void TowerConstructionScene::_update_world_positions(const TowerConstructionSnapshot& snapshot)
 {
-    if(_theme == GameTheme::Christmas)
+    int sprite_index = 0;
+    int affine_index = 0;
+    for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
     {
-        int sprite_index = 0;
-        int affine_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index, ++sprite_index, ++affine_index)
+        const TowerConstructionFloor& floor = _construction.floor(floor_index);
+        const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
+        const int mesh_id = floor.roof ? (snapshot.roof_result == 2 ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
+                                         (floor_index == 0 ? initial_base_mesh_id(_request.building_type) : _normal_floor_mesh_id());
+        const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
+        const int x = _screen_x(floor.x + pose.x_delta);
+        const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
+        bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
+        for(int part_index = 0; part_index < mesh.part_count; ++part_index)
         {
-            const TowerConstructionFloor& floor = _construction.floor(floor_index);
-            const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
-            if(sprite_index >= _floor_sprites.size()) { break; }
-            const int x = _screen_x(floor.x + pose.x_delta);
-            const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
-            if(floor.roof)
-            {
-                const int frame = snapshot.roof_result == 2 ? christmas_trophy_roof_graphics_index :
-                                                              christmas_normal_roof_graphics_index;
-                const int encoded_frame = 100 + frame;
-                if(_christmas_floor_frames[sprite_index] != encoded_frame)
-                {
-                    _floor_sprites[sprite_index].set_tiles(
-                            christmas_roof_item(_request.building_type).tiles_item(), frame);
-                    _christmas_floor_frames[sprite_index] = encoded_frame;
-                }
-                bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
-                affine_mat.set_rotation_angle(bn::safe_degrees_angle(pose.z_angle_degrees));
-                affine_mat.set_horizontal_scale(1);
-                affine_mat.set_vertical_scale(1);
-                _floor_sprites[sprite_index].set_position(x, y);
-            }
-            else
-            {
-                const int frame = floor_index == 0 ? christmas_base_graphics_index :
-                        christmas_floor_graphics_index(pose.z_angle_degrees);
-                if(_christmas_floor_frames[sprite_index] != frame)
-                {
-                    _floor_sprites[sprite_index].set_tiles(
-                            christmas_tower_item(_request.building_type).tiles_item(), frame);
-                    _christmas_floor_frames[sprite_index] = frame;
-                }
-                _floor_sprites[sprite_index].set_position(x, y);
-            }
+            position_rotated_mesh_part(mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
+                                       _floor_sprites[sprite_index]);
+            ++sprite_index;
         }
-    }
-    else
-    {
-        int sprite_index = 0;
-        int affine_index = 0;
-        for(int floor_index = _visible_floor_start; floor_index < _rendered_floor_count; ++floor_index)
-        {
-            const TowerConstructionFloor& floor = _construction.floor(floor_index);
-            const TowerConstructionRenderPose& pose = _construction.floor_render_pose(floor_index);
-            const int mesh_id = floor.roof ? (snapshot.roof_result == 2 ? _trophy_roof_mesh_id() : _normal_roof_mesh_id()) :
-                                             (floor_index == 0 ? initial_base_mesh_id(_request.building_type) : _normal_floor_mesh_id());
-            const generated::MeshAsset& mesh = mesh_by_id(mesh_id);
-            const int x = _screen_x(floor.x + pose.x_delta);
-            const int y = _screen_y(floor.y + pose.y_delta, snapshot.presentation_camera_y);
-            bn::sprite_affine_mat_ptr& affine_mat = _floor_affine_mats[affine_index];
-            for(int part_index = 0; part_index < mesh.part_count; ++part_index)
-            {
-                position_rotated_mesh_part(mesh.parts[part_index], x, y, pose.z_angle_degrees, 0, affine_mat,
-                                           _floor_sprites[sprite_index]);
-                ++sprite_index;
-            }
-            ++affine_index;
-        }
+        ++affine_index;
     }
 
     const bool current_visible = snapshot.status == TowerConstructionStatus::Playing &&
@@ -1053,22 +920,11 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
     {
         sprite.set_visible(current_visible);
     }
-    if(current_visible && ! _current_sprites.empty())
+    if(current_visible && ! _current_sprites.empty() && _rendered_current_mesh_id >= 0)
     {
         const int x = _screen_x(snapshot.current_x);
         const int y = _screen_y(snapshot.current_y, snapshot.presentation_camera_y);
-        if(_theme == GameTheme::Christmas)
-        {
-            const bn::fixed safe_y_angle = bn::safe_degrees_angle(snapshot.current_y_angle_degrees);
-            bn::fixed y_scale = bn::degrees_lut_sin_and_cos_safe(safe_y_angle).second;
-            if(y_scale < 0) { y_scale = -y_scale; }
-            _current_affine_mat.set_rotation_angle(snapshot.roof_phase ?
-                    bn::safe_degrees_angle(snapshot.current_z_angle_degrees) : bn::fixed(0));
-            _current_affine_mat.set_horizontal_scale(y_scale);
-            _current_affine_mat.set_vertical_scale(1);
-            _current_sprites[0].set_position(x, y);
-        }
-        else if(_rendered_current_mesh_id >= 0 && _rendered_tumble_stage > 0)
+        if(_rendered_tumble_stage > 0)
         {
             const generated::TumblePoseAsset& pose = generated::tumble_pose_for(
                     _rendered_current_mesh_id, _rendered_tumble_stage,
@@ -1079,7 +935,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
                         x + pose.parts[part_index].x, y + pose.parts[part_index].y);
             }
         }
-        else if(_rendered_current_mesh_id >= 0)
+        else
         {
             const generated::MeshAsset& mesh = mesh_by_id(_rendered_current_mesh_id);
             for(int part_index = 0; part_index < mesh.part_count; ++part_index)
@@ -1217,9 +1073,8 @@ void TowerConstructionScene::_update_combo_meter(const TowerConstructionSnapshot
         if(frame != _combo_star_frame)
         {
             _combo_star_sprites.clear();
-            const generated::UiCompositeAsset& star_asset = _theme == GameTheme::Christmas ?
-                    *christmas::combo_star_frames[frame] : *generated::legacy_combo_star_frames[frame];
-            show_ui_composite(star_asset, combo_star_x, combo_star_y, _combo_star_sprites, -102);
+            show_ui_composite(*generated::legacy_combo_star_frames[frame],
+                              combo_star_x, combo_star_y, _combo_star_sprites, -102);
             _combo_star_frame = frame;
         }
     }
@@ -1304,12 +1159,9 @@ void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstruct
 
     // JAR-grounded pass: the moving star grows small -> medium -> large while
     // leaving an actual sampled trail behind it (white -> yellow -> red).
-    const generated::UiCompositeAsset& head_asset = _theme == GameTheme::Christmas ?
-            (_perfect_landing_elapsed_ms < 120 ? *christmas::accuracy_star_frames[2] :
-             _perfect_landing_elapsed_ms < 240 ? *christmas::accuracy_star_frames[1] :
-                                                  *christmas::accuracy_star_frames[0]) :
-            (_perfect_landing_elapsed_ms < 120 ? generated::accuracy_star_f1 :
-             _perfect_landing_elapsed_ms < 240 ? generated::accuracy_star_f2 : generated::accuracy_star_f0);
+    const generated::UiCompositeAsset& head_asset = _perfect_landing_elapsed_ms < 120 ?
+            generated::accuracy_star_f1 : _perfect_landing_elapsed_ms < 240 ?
+            generated::accuracy_star_f2 : generated::accuracy_star_f0;
 
     // Reserve one sprite item for the landing seam before allocating optional
     // trails. Four star heads have higher priority than trail samples, so a

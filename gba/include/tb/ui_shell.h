@@ -27,7 +27,7 @@ public:
 private:
     void _rebuild(const UiController& controller, const SaveData& save);
     void _show_publisher_splash();
-    void _show_title(int language, GameTheme theme);
+    void _show_title(const UiController& controller);
     void _show_root_menu(const UiController& controller);
     void _show_overwrite_confirm(const UiController& controller);
     void _show_settings(const UiController& controller);
@@ -45,7 +45,7 @@ private:
     void _show_dialog_backdrop();
     void _show_dialog_lines(const char* const* lines, int line_count, int center_y);
     void _show_menu(const char* const* labels, int count, int selection);
-    void _show_menu_workers(GameTheme theme);
+    void _show_menu_workers(VisualTheme theme);
     void _show_menu_clouds();
     void _show_lines(const char* const* lines, int line_count, int page);
     void _show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order = 0);
@@ -59,7 +59,7 @@ private:
     int _last_selection = -1;
     int _last_language = -1;
     int _last_sound = -1;
-    int _last_theme = -1;
+    int _last_visual_theme = -1;
     int _last_name_cursor = -1;
     uint32_t _last_pending_score = 0;
     uint64_t _last_name_signature = 0;

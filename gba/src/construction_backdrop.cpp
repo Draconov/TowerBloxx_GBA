@@ -1,6 +1,5 @@
 #include "tb/construction_backdrop.h"
 #include "tb/sky_event_policy.h"
-#include "tb/christmas_theme_assets.h"
 
 #include "bn_sprites.h"
 
@@ -28,6 +27,7 @@
 
 #include "generated/construction_background_data.h"
 #include "generated/legacy_high_altitude_assets.h"
+#include "generated/christmas_assets.h"
 
 namespace tb
 {
@@ -124,10 +124,10 @@ void position_legacy_event_sprites(
 
 }
 
-void ConstructionBackdrop::start(int camera_y, int clock_ms, GameTheme theme, bool new_run)
+void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run, VisualTheme visual_theme)
 {
     reset();
-    _theme = theme;
+    _visual_theme = visual_theme;
     if(new_run)
     {
         _spawned_celestial_events = 0;
@@ -145,22 +145,6 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms, GameTheme theme, bo
             blink->set_z_order(100);
             blink->set_visible(false);
             _blink_sprites.push_back(*blink);
-        }
-    }
-
-    if(_theme == GameTheme::Christmas)
-    {
-        for(int frame = 0; frame < 2; ++frame)
-        {
-            bn::optional<bn::sprite_ptr> tree =
-                    bn::sprite_items::christmas_construction_tree.create_sprite_optional(0, 0, frame);
-            if(! tree)
-            {
-                break;
-            }
-            tree->set_bg_priority(3);
-            tree->set_z_order(90);
-            _christmas_tree_sprites.push_back(*tree);
         }
     }
 
@@ -188,7 +172,6 @@ void ConstructionBackdrop::update(int camera_y, int clock_ms)
     _update_sky(camera_y);
     _update_scenery(camera_y);
     _update_blinks(camera_y, clock_ms);
-    _update_christmas_decor(camera_y);
     _update_legacy_events(camera_y, clock_ms);
 }
 
@@ -197,7 +180,6 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
-    _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -305,31 +287,6 @@ void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
 }
 
 
-void ConstructionBackdrop::_update_christmas_decor(int camera_y)
-{
-    if(_theme != GameTheme::Christmas || _christmas_tree_sprites.empty())
-    {
-        return;
-    }
-
-    // The Santa JAR decorates the low construction skyline with lit trees.
-    // Keep them attached to the ground layer so they leave the viewport as the
-    // tower rises instead of behaving like HUD decorations.
-    const int camera_pixels = (22 * camera_y) >> 8;
-    const int y = 38 + camera_pixels;
-    constexpr int tree_x[2] = { -88, 88 };
-    for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
-    {
-        bn::sprite_ptr& tree = _christmas_tree_sprites[index];
-        const bool visible = y > -64 && y < 112;
-        tree.set_visible(visible);
-        if(visible)
-        {
-            tree.set_position(tree_x[index], y);
-        }
-    }
-}
-
 
 int ConstructionBackdrop::_legacy_random(int bound)
 {
@@ -357,41 +314,18 @@ void ConstructionBackdrop::_spawn_legacy_event(
         LegacySkyEventSlot& slot, int band, int camera_y, int clock_ms)
 {
     int type = 0;
-
-    // Large celestial landmarks and the whale have narrow source altitude
-    // bands. Give every unseen unique event priority in its own band so a
-    // common cloud/star cannot repeatedly win the random scan and hide it.
     for(int candidate = 1; candidate <= 28; ++candidate)
     {
         const bool in_band = band >= generated::legacy_event_min_band[candidate] &&
                 band < generated::legacy_event_max_band[candidate];
         const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
                 _legacy_remaining[candidate] > 0;
-        const bool unseen_unique = unique_celestial_event(candidate) &&
-                ! (_spawned_celestial_events & celestial_event_flag(candidate));
-        if(in_band && available && unseen_unique)
+        const bool first_encounter = ! (_spawned_celestial_events & celestial_event_flag(candidate));
+        if(in_band && available && first_encounter &&
+           _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
         {
             type = candidate;
             break;
-        }
-    }
-
-    if(type == 0)
-    {
-        for(int candidate = 1; candidate <= 28; ++candidate)
-        {
-            const bool in_band = band >= generated::legacy_event_min_band[candidate] &&
-                    band < generated::legacy_event_max_band[candidate];
-            const bool available = generated::legacy_event_instance_limits[candidate] < 0 ||
-                    _legacy_remaining[candidate] > 0;
-            const bool unique_available = ! unique_celestial_event(candidate) ||
-                    ! (_spawned_celestial_events & celestial_event_flag(candidate));
-            if(in_band && available && unique_available &&
-               _legacy_random(100) < generated::legacy_event_spawn_chance[candidate])
-            {
-                type = candidate;
-                break;
-            }
         }
     }
 
@@ -413,26 +347,14 @@ void ConstructionBackdrop::_spawn_legacy_event(
     // in the source's 1/8-pixel space until House.e-style projection below.
     if(speed == 0 || _legacy_random(2) == 0)
     {
-        // Stationary showcase objects use Java top-left screen coordinates.
-        // Keep large planets/whales fully inside the 240px viewport instead
-        // of allowing their composite to be clipped on the right.
-        const generated::LegacySkyEventAsset& asset = generated::legacy_sky_event_assets[type];
-        const int half_width = asset.width / 2;
-        constexpr int margin = 4;
-        const int min_x = half_width + margin;
-        const int max_x = 240 - half_width - margin;
-        const int source_x = max_x > min_x ? min_x + _legacy_random(max_x - min_x + 1) : 120;
-        slot.x_eighths = source_x * 8;
+        slot.x_eighths = _legacy_random(legacy_screen_width_eighths);
         slot.y_eighths = camera_three_quarters + extent + _legacy_random(512);
     }
     else
     {
         slot.x_eighths = speed > 0 ? -extent : legacy_screen_width_eighths + extent;
-        // Moving clouds, balloons, birds, flyers and planes should enter in
-        // the upper part of the viewport. That leaves several block rises for
-        // the player to see them instead of spawning near the bottom and
-        // disappearing with the next camera movement.
-        slot.y_eighths = camera_three_quarters + 96 + _legacy_random(352);
+        slot.y_eighths = camera_three_quarters - legacy_screen_height_eighths / 2 - 512 +
+                _legacy_random(1024);
     }
     slot.type = type;
     // A finite *simultaneous* spawn limit alone allows an identical planet to
@@ -470,7 +392,8 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
         }
 
         const int type = slot.type;
-        const generated::LegacySkyEventAsset& event_asset = generated::legacy_sky_event_assets[type];
+        const generated::LegacySkyEventAsset& event_asset = _visual_theme == VisualTheme::Christmas ?
+                generated::christmas_sky_event_assets[type] : generated::legacy_sky_event_assets[type];
         const int extent = generated::legacy_event_extent_eighths[type];
         slot.x_eighths += generated::legacy_event_x_speed[type] * movement_steps;
 
@@ -493,7 +416,7 @@ void ConstructionBackdrop::_update_legacy_events(int camera_y, int clock_ms)
         //   (v + 32 * x) >> 8, (w - 32 * (y - 3*camera/4)) >> 8.
         // After specializing v/w to the 240x160 GBA viewport, subtract the
         // screen centre once to convert those coordinates to Butano's origin.
-        const int source_screen_x = slot.x_eighths >> 3;
+        const int source_screen_x = screen_half_width + (slot.x_eighths >> 3);
         const int source_screen_y = screen_half_height + ((camera_three_quarters - slot.y_eighths) >> 3);
         const int x = source_screen_x - screen_half_width;
         const int y = source_screen_y - screen_half_height;

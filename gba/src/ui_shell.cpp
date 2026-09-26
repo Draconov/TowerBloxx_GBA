@@ -12,6 +12,7 @@
 #include "generated/tower_font.h"
 #include "generated/tower_localization.h"
 #include "generated/tower_ui_assets.h"
+#include "generated/christmas_assets.h"
 
 namespace tb
 {
@@ -21,6 +22,16 @@ constexpr int instructions_indices[] = {91, 92};
 constexpr int lines_per_page = 5;
 constexpr char name_grid[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.";
 constexpr int name_grid_size = int(sizeof(name_grid)) - 1;
+constexpr const char* theme_labels[] = {
+    "Theme", "Thème", "Tema", "Thema", "Tema",
+};
+constexpr const char* classic_theme_names[] = {
+    "Classic", "Classique", "Classico", "Klassisch", "Clásico",
+};
+constexpr const char* christmas_theme_names[] = {
+    "Christmas", "Noël", "Natale", "Weihnachten", "Navidad",
+};
+
 constexpr const char* title_prompt_lines[] = {
     "Press any key to play",
     "Appuyez sur une touche pour jouer",
@@ -41,29 +52,10 @@ constexpr const generated::UiCompositeAsset* menu_worker_red_frames[] = {
     &generated::menu_worker_red_f6, &generated::menu_worker_red_f7, &generated::menu_worker_red_f8,
     &generated::menu_worker_red_f9,
 };
-constexpr const generated::UiCompositeAsset* christmas_menu_worker_a_frames[] = {
-    &generated::christmas_menu_worker_a_f0, &generated::christmas_menu_worker_a_f1, &generated::christmas_menu_worker_a_f2,
-    &generated::christmas_menu_worker_a_f3, &generated::christmas_menu_worker_a_f4, &generated::christmas_menu_worker_a_f5,
-    &generated::christmas_menu_worker_a_f6, &generated::christmas_menu_worker_a_f7, &generated::christmas_menu_worker_a_f8,
-    &generated::christmas_menu_worker_a_f9,
-};
-constexpr const generated::UiCompositeAsset* christmas_menu_worker_b_frames[] = {
-    &generated::christmas_menu_worker_b_f0, &generated::christmas_menu_worker_b_f1, &generated::christmas_menu_worker_b_f2,
-    &generated::christmas_menu_worker_b_f3, &generated::christmas_menu_worker_b_f4, &generated::christmas_menu_worker_b_f5,
-    &generated::christmas_menu_worker_b_f6, &generated::christmas_menu_worker_b_f7, &generated::christmas_menu_worker_b_f8,
-    &generated::christmas_menu_worker_b_f9,
-};
-constexpr const char* theme_label[] = {
-    "Theme", "Theme", "Tema", "Thema", "Tema",
-};
-constexpr const char* classic_theme_name[] = {
-    "Classic", "Classique", "Classico", "Klassisch", "Clasico",
-};
-constexpr const char* christmas_theme_name[] = {
-    "Christmas", "Noel", "Natale", "Weihnachten", "Navidad",
-};
 constexpr int menu_worker_width = 19;
 constexpr int menu_worker_height = 23;
+constexpr int christmas_worker_width = 21;
+constexpr int christmas_worker_height = 28;
 constexpr int menu_cloud_large_width = 105;
 constexpr int menu_cloud_large_height = 27;
 constexpr int menu_cloud_small_width = 54;
@@ -201,7 +193,7 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
 
     const int language = int(controller.language());
     const int sound = controller.sound_enabled() ? 1 : 0;
-    const int theme = controller.theme() == GameTheme::Christmas ? 1 : 0;
+    const int visual_theme = int(controller.visual_theme());
     const int name_cursor = controller.name_cursor();
     const uint32_t pending_score = controller.pending_score();
     uint64_t name_signature = 1469598103934665603ULL;
@@ -212,7 +204,8 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
     }
     const bool name_screen = scene == UiScene::NameEntry;
     if(_first_update || page_changed || title_blink_changed || worker_advanced || cloud_advanced || scene != _last_scene ||
-       controller.selection() != _last_selection || language != _last_language || sound != _last_sound || theme != _last_theme ||
+       controller.selection() != _last_selection || language != _last_language || sound != _last_sound ||
+       visual_theme != _last_visual_theme ||
        (name_screen && (name_cursor != _last_name_cursor || pending_score != _last_pending_score ||
                         name_signature != _last_name_signature)))
     {
@@ -222,7 +215,7 @@ void UiShell::update(const UiController& controller, const SaveData& save, const
         _last_selection = controller.selection();
         _last_language = language;
         _last_sound = sound;
-        _last_theme = theme;
+        _last_visual_theme = visual_theme;
         _last_name_cursor = name_cursor;
         _last_pending_score = pending_score;
         _last_name_signature = name_signature;
@@ -240,7 +233,7 @@ void UiShell::_rebuild(const UiController& controller, const SaveData& save)
     switch(controller.scene())
     {
     case UiScene::PublisherSplash: _show_publisher_splash(); break;
-    case UiScene::Title: _show_title(controller.language(), controller.theme()); break;
+    case UiScene::Title: _show_title(controller); break;
     case UiScene::MainMenu: _show_root_menu(controller); break;
     case UiScene::OverwriteGameConfirm: _show_overwrite_confirm(controller); break;
     case UiScene::Settings: _show_settings(controller); break;
@@ -284,11 +277,12 @@ void UiShell::_show_publisher_splash()
     _show_composite(generated::digital_chocolate_logo, 0, 0);
 }
 
-void UiShell::_show_title(int language, GameTheme theme)
+void UiShell::_show_title(const UiController& controller)
 {
-    if(theme == GameTheme::Christmas)
+    const int language = controller.language();
+    if(controller.visual_theme() == VisualTheme::Christmas)
     {
-        _show_composite(generated::christmas_title_logo, 0, -20);
+        _show_composite(generated::christmas_tower_logo, 0, -24);
     }
     else
     {
@@ -319,7 +313,7 @@ void UiShell::_show_menu(const char* const* labels, int count, int selection)
     }
 }
 
-void UiShell::_show_menu_workers(GameTheme theme)
+void UiShell::_show_menu_workers(VisualTheme theme)
 {
     for(int index = 0; index < MenuWorkerField::worker_count; ++index)
     {
@@ -327,18 +321,21 @@ void UiShell::_show_menu_workers(GameTheme theme)
         if(worker.y_fixed >= _menu_workers.height_fixed()) continue;
         const int screen_x = (22 * worker.x_fixed) >> 8;
         const int screen_y = (22 * worker.y_fixed) >> 8;
-        if(screen_x <= -menu_worker_width || screen_x >= 240 ||
-           screen_y <= -menu_worker_height || screen_y >= 160)
+        const int worker_width = theme == VisualTheme::Christmas ? christmas_worker_width : menu_worker_width;
+        const int worker_height = theme == VisualTheme::Christmas ? christmas_worker_height : menu_worker_height;
+        if(screen_x <= -worker_width || screen_x >= 240 ||
+           screen_y <= -worker_height || screen_y >= 160)
         {
             continue;
         }
 
         const int frame = MenuWorkerField::display_frame(worker.animation_state);
-        const generated::UiCompositeAsset& asset = theme == GameTheme::Christmas ?
-                (worker.variant == 1 ? *christmas_menu_worker_a_frames[frame] : *christmas_menu_worker_b_frames[frame]) :
+        const generated::UiCompositeAsset& asset = theme == VisualTheme::Christmas ?
+                (worker.variant == 1 ? *generated::christmas_worker_blue_frames[frame] :
+                                       *generated::christmas_worker_red_frames[frame]) :
                 (worker.variant == 1 ? *menu_worker_blue_frames[frame] : *menu_worker_red_frames[frame]);
-        const int center_x = screen_x - 120 + menu_worker_width / 2;
-        const int center_y = screen_y - 80 + menu_worker_height / 2;
+        const int center_x = screen_x - 120 + worker_width / 2;
+        const int center_y = screen_y - 80 + worker_height / 2;
         _show_composite(asset, center_x, center_y, 50);
     }
 }
@@ -381,8 +378,14 @@ void UiShell::_show_root_menu(const UiController& controller)
     const int count = controller.root_menu_count();
     const int top = -30;
     constexpr int spacing = 16;
-    _show_composite(controller.theme() == GameTheme::Christmas ? generated::christmas_menu_logo : generated::tower_bloxx_logo,
-            0, controller.theme() == GameTheme::Christmas ? -50 : -64);
+    if(controller.visual_theme() == VisualTheme::Christmas)
+    {
+        _show_composite(generated::christmas_tower_logo, 0, -60);
+    }
+    else
+    {
+        _show_composite(generated::tower_bloxx_logo, 0, -64);
+    }
 
     for(int row = 0; row < count; ++row)
     {
@@ -411,7 +414,7 @@ void UiShell::_show_root_menu(const UiController& controller)
     }
 
     _show_menu_clouds();
-    _show_menu_workers(controller.theme());
+    _show_menu_workers(controller.visual_theme());
     _show_softkeys(language, false, false);
 }
 
@@ -431,15 +434,17 @@ void UiShell::_show_settings(const UiController& controller)
     const char* labels[4] = {
         generated::localized_strings[language][24],
         generated::localized_strings[language][27],
-        theme_label[language],
+        theme_labels[language],
         generated::localized_strings[language][81],
     };
     _show_menu(labels, 4, controller.selection());
-    (void) _text_generator.generate_optional(70, -18,
+    constexpr int top = -18;
+    (void) _text_generator.generate_optional(70, top,
             generated::localized_strings[language][controller.sound_enabled() ? 13 : 14], _sprites);
-    (void) _text_generator.generate_optional(70, 6, generated::locale_names[language], _sprites);
-    (void) _text_generator.generate_optional(70, 30,
-            controller.theme() == GameTheme::Christmas ? christmas_theme_name[language] : classic_theme_name[language], _sprites);
+    (void) _text_generator.generate_optional(70, top + 24, generated::locale_names[language], _sprites);
+    const char* theme_name = controller.visual_theme() == VisualTheme::Christmas ?
+            christmas_theme_names[language] : classic_theme_names[language];
+    (void) _text_generator.generate_optional(70, top + 48, theme_name, _sprites);
     _show_softkeys(language, false, true);
 }
 

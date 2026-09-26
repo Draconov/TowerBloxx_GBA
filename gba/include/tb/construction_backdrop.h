@@ -7,7 +7,7 @@
 #include "bn_vector.h"
 #include <cstdint>
 
-#include "tb/theme.h"
+#include "tb/visual_theme.h"
 
 namespace tb
 {
@@ -25,7 +25,7 @@ class ConstructionBackdrop
 {
 public:
     // Preserve unique sky encounters when restoring a suspended scene.
-    void start(int camera_y, int clock_ms, GameTheme theme, bool new_run = true);
+    void start(int camera_y, int clock_ms, bool new_run = true, VisualTheme visual_theme = VisualTheme::Classic);
     void update(int camera_y, int clock_ms);
     void reset();
 
@@ -34,7 +34,6 @@ private:
     void _update_scenery(int camera_y);
     void _update_blinks(int camera_y, int clock_ms);
     void _update_legacy_events(int camera_y, int clock_ms);
-    void _update_christmas_decor(int camera_y);
     void _spawn_legacy_event(LegacySkyEventSlot& slot, int band, int camera_pixels, int clock_ms);
     void _clear_legacy_event(LegacySkyEventSlot& slot, int clock_ms);
     int _legacy_random(int bound);
@@ -42,14 +41,13 @@ private:
     bn::optional<bn::regular_bg_ptr> _sky_background;
     bn::optional<bn::regular_bg_ptr> _scenery_background;
     bn::vector<bn::sprite_ptr, 12> _blink_sprites;
-    bn::vector<bn::sprite_ptr, 2> _christmas_tree_sprites;
     bn::vector<LegacySkyEventSlot, 9> _legacy_events;
     int _legacy_remaining[29] = {};
     uint32_t _spawned_celestial_events = 0;
     uint32_t _legacy_rng = 0x1337B10Cu;
     int _legacy_event_clock_ms = 0;
     int _legacy_event_step_accumulator_ms = 0;
-    GameTheme _theme = GameTheme::Classic;
+    VisualTheme _visual_theme = VisualTheme::Classic;
     int _sky_index = -1;
     int _scenery_chunk = -1;
 };
