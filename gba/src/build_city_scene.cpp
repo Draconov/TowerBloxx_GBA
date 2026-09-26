@@ -36,6 +36,7 @@ constexpr int selector_screen_top = grid_screen_top + 2;
 
 constexpr int building_widths[4] = {15, 16, 17, 19};
 constexpr int building_heights[4] = {14, 16, 17, 19};
+constexpr int trophy_population_thresholds[4] = {70, 250, 550, 1000};
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
 // A valid-lot pulse is a floor marker, not an overlay on placed buildings.
@@ -205,6 +206,33 @@ bn::string<96> flatten_city_instruction(bn::string_view template_text, int value
         {
             result.append(template_text[index]);
         }
+    }
+    return result;
+}
+
+bn::string<96> format_trophy_instruction(
+        bn::string_view template_text, bn::string_view tower_name, int population)
+{
+    bn::string<96> result;
+    for(int index = 0; index < template_text.size(); ++index)
+    {
+        if(template_text[index] == '%' && index + 2 < template_text.size() &&
+           template_text[index + 2] == 'U')
+        {
+            if(template_text[index + 1] == '0')
+            {
+                result.append(tower_name);
+                index += 2;
+                continue;
+            }
+            if(template_text[index + 1] == '1')
+            {
+                result.append(bn::to_string<12>(population));
+                index += 2;
+                continue;
+            }
+        }
+        result.append(template_text[index]);
     }
     return result;
 }
@@ -990,6 +1018,15 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
                     generated::localized_strings[_language][63], snapshot.selected_unlock_population);
             (void) _text_generator.generate_optional(0, 68, locked, _sprites);
         }
+        else if(snapshot.selected_building_type <= snapshot.max_trophy_building_type)
+        {
+            const int type_index = snapshot.selected_building_type - 1;
+            const bn::string<96> trophy = format_trophy_instruction(
+                    generated::localized_strings[_language][62],
+                    generated::localized_strings[_language][83 + type_index],
+                    trophy_population_thresholds[type_index]);
+            show_instruction(trophy);
+        }
         else
         {
             show_instruction(generated::localized_strings[_language][99 + snapshot.selected_building_type - 1]);
@@ -997,11 +1034,67 @@ void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot&
     }
     else if(snapshot.placement_transition_ms == 0)
     {
-        const char* instruction = snapshot.cursor_column < 0 ?
-                generated::localized_strings[_language][64] :
-                generated::localized_strings[_language][
-                        (snapshot.placement_committing || snapshot.placement_valid) ? 65 : 66];
-        show_instruction(instruction);
+        if(snapshot.placement_committing && snapshot.cursor_column >= 0)
+        {
+            bn::string<96> population_result;
+            if(snapshot.last_population_delta > 0)
+            {
+                population_result = flatten_city_instruction(
+                        generated::localized_strings[_language][67], snapshot.last_population_delta);
+            }
+            else if(snapshot.last_population_delta < 0)
+            {
+                population_result = flatten_city_instruction(
+                        generated::localized_strings[_language][69], -snapshot.last_population_delta);
+            }
+            else
+            {
+                population_result = generated::localized_strings[_language][68];
+            }
+
+            // The JAR shows this result throughout the three-second placement
+            // commit animation. Keep short strings on one line; wrap longer
+            // localized messages into the same two-line bottom panel.
+            if(population_result.size() <= 46)
+            {
+                (void) _text_generator.generate_optional(0, 68, population_result, _sprites);
+            }
+            else
+            {
+                int split = 46;
+                while(split > 0 && population_result[split] != ' ')
+                {
+                    --split;
+                }
+                if(split <= 0)
+                {
+                    split = population_result.size() / 2;
+                }
+
+                bn::string<96> first_line;
+                bn::string<96> second_line;
+                for(int index = 0; index < population_result.size(); ++index)
+                {
+                    if(index < split)
+                    {
+                        first_line.append(population_result[index]);
+                    }
+                    else if(index > split || population_result[index] != ' ')
+                    {
+                        second_line.append(population_result[index]);
+                    }
+                }
+                (void) _text_generator.generate_optional(0, 63, first_line, _sprites);
+                (void) _text_generator.generate_optional(0, 73, second_line, _sprites);
+            }
+        }
+        else
+        {
+            const char* instruction = snapshot.cursor_column < 0 ?
+                    generated::localized_strings[_language][64] :
+                    generated::localized_strings[_language][snapshot.placement_valid ? 65 : 66];
+            show_instruction(instruction);
+        }
     }
 
 }

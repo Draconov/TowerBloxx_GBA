@@ -170,6 +170,18 @@ def test_build_city_top_hud_uses_valid_assets_and_wiring() -> None:
     assert "generated::city_comparison_panel_active" in source
     assert "generated::city_milestone_badge_empty" in source
     assert "generated::city_milestone_badge" in source
+    # JAR parity: unlocked tower selector switches to trophy-roof information
+    # once that tower type's special roof is available.
+    assert "snapshot.selected_building_type <= snapshot.max_trophy_building_type" in source
+    assert "generated::localized_strings[_language][62]" in source
+    assert "trophy_population_thresholds" in source
+
+    # JAR parity: during the three-second placement commit, show the exact
+    # population increase/no-change/decrease result instead of the placement hint.
+    assert "snapshot.placement_committing && snapshot.cursor_column >= 0" in source
+    assert "generated::localized_strings[_language][67]" in source
+    assert "generated::localized_strings[_language][68]" in source
+    assert "generated::localized_strings[_language][69]" in source
     # On an occupied lot the pulsing floor marker must remain behind its
     # already placed tower, including when that cell can be replaced.
     assert "constexpr int valid_lot_ring_z_order = 1" in source
