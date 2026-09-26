@@ -566,7 +566,7 @@ def test_construction_cosmetics_never_preempt_required_sprite_allocations() -> N
     # before recreating star effects; stars then use only remaining slots.
     start = source.index("void TowerConstructionScene::start(")
     update = source.index("TowerConstructionSceneUpdateResult TowerConstructionScene::update(")
-    resume = source.index("void TowerConstructionScene::resume_presentation()")
+    resume = source.index("void TowerConstructionScene::resume_presentation(")
     discard = source.index("void TowerConstructionScene::discard()")
     for section in (source[start:update], source[update:resume], source[resume:discard]):
         assert section.index("_rebuild_hud(snapshot);") < section.index("_update_perfect_landing_effect(snapshot);")
@@ -651,10 +651,38 @@ def test_christmas_theme_is_self_contained_and_wired() -> None:
     assert "game_theme(const SaveData& save)" in save_header
     assert "christmas_title_logo_parts" in generated
 
-    allowed_sizes = {(16, 32), (32, 64), (64, 64), (64, 32)}
+    allowed_frame_sizes = {(16, 32), (32, 32), (32, 64), (64, 64), (64, 32)}
     for bmp in graphics.glob("*.bmp"):
+        manifest = bmp.with_suffix(".json")
+        data = json.loads(manifest.read_text(encoding="utf-8"))
         with Image.open(bmp) as image:
             assert image.mode == "P"
-            assert image.size in allowed_sizes
             assert max(image.get_flattened_data()) <= 15
+            frame_size = (data.get("width", image.width), data.get("height", image.height))
+            assert frame_size in allowed_frame_sizes
+            assert image.width % frame_size[0] == 0
+            assert image.height % frame_size[1] == 0
+
+    christmas_header = theme_root / "include" / "tb" / "christmas_theme_assets.h"
+    assert christmas_header.is_file()
+    header_text = christmas_header.read_text(encoding="utf-8")
+    assert "christmas_floor_graphics_index" in header_text
+    assert "christmas_tower_item" in header_text
+    assert "christmas_roof_item" in header_text
+    assert "Frame 12 is centred" in header_text
+
+    quick_scene = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    construction_scene = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    assert "christmas_tower_item(quick_building_type)" in quick_scene
+    assert "christmas_roof_item(_request.building_type)" in construction_scene
+    assert "christmas_construction_tree" in backdrop
+
+    for building_type in range(1, 5):
+        tower = graphics / f"christmas_tower_type_{building_type}.bmp"
+        roof = graphics / f"christmas_roof_type_{building_type}.bmp"
+        with Image.open(tower) as image:
+            assert image.size == (32, 32 * 24)
+        with Image.open(roof) as image:
+            assert image.size == (32, 64 * 2)
 

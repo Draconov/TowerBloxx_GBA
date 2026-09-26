@@ -1,5 +1,6 @@
 #include "tb/construction_backdrop.h"
 #include "tb/sky_event_policy.h"
+#include "tb/christmas_theme_assets.h"
 
 #include "bn_sprites.h"
 
@@ -123,9 +124,10 @@ void position_legacy_event_sprites(
 
 }
 
-void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run)
+void ConstructionBackdrop::start(int camera_y, int clock_ms, GameTheme theme, bool new_run)
 {
     reset();
+    _theme = theme;
     if(new_run)
     {
         _spawned_celestial_events = 0;
@@ -143,6 +145,22 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run)
             blink->set_z_order(100);
             blink->set_visible(false);
             _blink_sprites.push_back(*blink);
+        }
+    }
+
+    if(_theme == GameTheme::Christmas)
+    {
+        for(int frame = 0; frame < 2; ++frame)
+        {
+            bn::optional<bn::sprite_ptr> tree =
+                    bn::sprite_items::christmas_construction_tree.create_sprite_optional(0, 0, frame);
+            if(! tree)
+            {
+                break;
+            }
+            tree->set_bg_priority(3);
+            tree->set_z_order(90);
+            _christmas_tree_sprites.push_back(*tree);
         }
     }
 
@@ -170,6 +188,7 @@ void ConstructionBackdrop::update(int camera_y, int clock_ms)
     _update_sky(camera_y);
     _update_scenery(camera_y);
     _update_blinks(camera_y, clock_ms);
+    _update_christmas_decor(camera_y);
     _update_legacy_events(camera_y, clock_ms);
 }
 
@@ -178,6 +197,7 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
+    _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -284,6 +304,31 @@ void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
     }
 }
 
+
+void ConstructionBackdrop::_update_christmas_decor(int camera_y)
+{
+    if(_theme != GameTheme::Christmas || _christmas_tree_sprites.empty())
+    {
+        return;
+    }
+
+    // The Santa JAR decorates the low construction skyline with lit trees.
+    // Keep them attached to the ground layer so they leave the viewport as the
+    // tower rises instead of behaving like HUD decorations.
+    const int camera_pixels = (22 * camera_y) >> 8;
+    const int y = 38 + camera_pixels;
+    constexpr int tree_x[2] = { -88, 88 };
+    for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
+    {
+        bn::sprite_ptr& tree = _christmas_tree_sprites[index];
+        const bool visible = y > -64 && y < 112;
+        tree.set_visible(visible);
+        if(visible)
+        {
+            tree.set_position(tree_x[index], y);
+        }
+    }
+}
 
 
 int ConstructionBackdrop::_legacy_random(int bound)

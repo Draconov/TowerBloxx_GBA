@@ -15,6 +15,7 @@
 #include "tb/life_indicator_animation.h"
 #include "tb/quick_game.h"
 #include "tb/save_data.h"
+#include "tb/theme.h"
 
 namespace tb
 {
@@ -32,11 +33,11 @@ class QuickGameScene
 public:
     QuickGameScene();
 
-    void start(int language);
+    void start(int language, GameTheme theme);
     [[nodiscard]] QuickGameSceneUpdateResult update(const InputFrame& input, SaveData& save);
     [[nodiscard]] bool active() const;
     void suspend_presentation();
-    void resume_presentation();
+    void resume_presentation(GameTheme theme);
     void discard();
 
 private:
@@ -82,10 +83,13 @@ private:
     int _perfect_landing_floor_index = -1;
     int _perfect_landing_seed = 0;
     int _language = 0;
+    GameTheme _theme = GameTheme::Classic;
     int _frame_phase = 0;
     int _rendered_floor_count = -1;
     int _visible_floor_start = 0;
     int _rendered_current_mesh_id = -1;
+    int _rendered_christmas_current_frame = -1;
+    int _christmas_floor_frames[5] = { -1, -1, -1, -1, -1 };
     int _rendered_tumble_stage = 0;
     bool _rendered_tumble_z_negative = false;
     bool _rendered_tumble_y_negative = false;
