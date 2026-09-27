@@ -1316,8 +1316,9 @@ void QuickGameScene::_rebuild_hud(const QuickGameSnapshot& snapshot)
     if(snapshot.combo_meter_ms > 0)
     {
         show_ui_composite(
-                generated::quick_combo_meter_frame, combo_meter_frame_x, combo_meter_frame_y,
-                _hud_sprites, -101);
+                _visual_theme == VisualTheme::Christmas ? generated::christmas_quick_combo_meter_frame :
+                                                         generated::quick_combo_meter_frame,
+                combo_meter_frame_x, combo_meter_frame_y, _hud_sprites, -101);
     }
 
     // The source combo readout uses resource 15: cell 11 is the x marker,

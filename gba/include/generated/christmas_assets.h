@@ -216,6 +216,8 @@
 #include "bn_sprite_items_christmas_city_status_browse_p0.h"
 #include "bn_sprite_items_christmas_city_status_aux_p0.h"
 #include "bn_sprite_items_christmas_quick_counter_frame_p0.h"
+#include "bn_sprite_items_christmas_quick_combo_meter_frame_p0.h"
+#include "bn_sprite_items_christmas_quick_combo_meter_frame_p1.h"
 // END CHRISTMAS PHASE 9 INCLUDES
 
 #include "bn_sprite_items_christmas_city_milestone_badge_left_p0.h"
@@ -1208,6 +1210,12 @@ inline const UiSpritePartAsset christmas_quick_counter_frame_parts[] = {
     { &bn::sprite_items::christmas_quick_counter_frame_p0, 2, 2 },
 };
 inline const UiCompositeAsset christmas_quick_counter_frame = { christmas_quick_counter_frame_parts, 1 };
+
+inline const UiSpritePartAsset christmas_quick_combo_meter_frame_parts[] = {
+    { &bn::sprite_items::christmas_quick_combo_meter_frame_p0, -31, 12 },
+    { &bn::sprite_items::christmas_quick_combo_meter_frame_p1, 33, 12 },
+};
+inline const UiCompositeAsset christmas_quick_combo_meter_frame = { christmas_quick_combo_meter_frame_parts, 2 };
 // END CHRISTMAS PHASE 9
 
 // BEGIN CHRISTMAS BUILD CITY FULL THEME

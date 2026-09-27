@@ -1277,3 +1277,28 @@ def test_christmas_phase17_ports_santa_missed_block_snow_burst() -> None:
                     scene.index("void TowerConstructionScene::resume_presentation")]
     assert "_christmas_miss_snow_sprite.reset();" in suspend
     assert "_christmas_miss_snow_elapsed_ms = -1;" in suspend
+
+
+def test_christmas_phase19_og_canyon_and_combo_meter():
+    root = Path(__file__).resolve().parents[1]
+    backgrounds = root / "gba" / "graphics" / "christmas" / "backgrounds"
+    ui = root / "gba" / "graphics" / "christmas" / "ui"
+
+    # OG Santa construction uses dark-blue depth, never a pure-black canyon void.
+    for index in range(17):
+        image = Image.open(backgrounds / f"christmas_construction_sky_{index:02d}.bmp").convert("RGB")
+        colors = image.getcolors(maxcolors=image.width * image.height) or []
+        assert all(color != (0, 0, 0) for _, color in colors)
+
+    # Christmas uses the same proven geometry as the Classic combo frame,
+    # but the OG Santa border is light/white rather than Classic yellow.
+    for part in ("p0", "p1"):
+        image = Image.open(ui / f"christmas_quick_combo_meter_frame_{part}.bmp")
+        assert image.size == (64, 32)
+        palette = image.getpalette()
+        assert tuple(palette[13 * 3:13 * 3 + 3]) == (248, 248, 248)
+
+    qg = (root / "gba" / "src" / "quick_game_scene.cpp").read_text()
+    tc = (root / "gba" / "src" / "tower_construction_scene.cpp").read_text()
+    assert "generated::christmas_quick_combo_meter_frame" in qg
+    assert "generated::christmas_quick_combo_meter_frame" in tc
