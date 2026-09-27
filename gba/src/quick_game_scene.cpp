@@ -594,6 +594,10 @@ void QuickGameScene::suspend_presentation()
     _perfect_star_sprites.clear();
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
+    // Combo/block sparkle sprites are gameplay-only transient effects.  They
+    // must be destroyed before the UI scene is shown or they survive the
+    // suspended Quick Game and draw over the root menu.
+    _block_sparkle_sprites.clear();
 }
 
 void QuickGameScene::resume_presentation(const SaveData& save)

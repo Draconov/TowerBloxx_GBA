@@ -54,8 +54,8 @@ constexpr const generated::UiCompositeAsset* menu_worker_red_frames[] = {
 };
 constexpr int menu_worker_width = 19;
 constexpr int menu_worker_height = 23;
-constexpr int christmas_worker_width = 21;
-constexpr int christmas_worker_height = 28;
+constexpr int christmas_worker_width = 19;
+constexpr int christmas_worker_height = 23;
 constexpr int menu_cloud_large_width = 105;
 constexpr int menu_cloud_large_height = 27;
 constexpr int menu_cloud_small_width = 54;
@@ -380,7 +380,7 @@ void UiShell::_show_root_menu(const UiController& controller)
     constexpr int spacing = 16;
     if(controller.visual_theme() == VisualTheme::Christmas)
     {
-        _show_composite(generated::christmas_tower_logo, 0, -60);
+        _show_composite(generated::christmas_tower_logo, 0, -62);
     }
     else
     {

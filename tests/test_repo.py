@@ -617,6 +617,115 @@ def test_all_sprite_palette_indices_fit_declared_bpp() -> None:
             assert max(image.get_flattened_data()) < 16, f"{bmp}: BPP4 sprite references palette index >= 16"
 
 
+def test_quick_game_suspend_destroys_transient_landing_effects() -> None:
+    source = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    start = source.index("void QuickGameScene::suspend_presentation()")
+    end = source.index("void QuickGameScene::resume_presentation", start)
+    body = source[start:end]
+    # Suspended gameplay reuses the same process while the root menu is shown.
+    # Every transient star/sparkle sprite must therefore be destroyed here.
+    for cleanup in (
+        "_perfect_star_sprites.clear();",
+        "_combo_star_sprites.clear();",
+        "_block_sparkle_sprites.clear();",
+    ):
+        assert cleanup in body
+
+
+def test_christmas_visuals_keep_classic_geometry_envelopes() -> None:
+    classic_ui = GBA / "graphics" / "ui"
+    christmas_ui = GBA / "graphics" / "christmas" / "ui"
+    classic_gameplay = GBA / "graphics" / "gameplay"
+    christmas_gameplay = GBA / "graphics" / "christmas" / "gameplay"
+
+    # These are the high-risk assets visible in the real-ROM screenshots.
+    # Christmas art may have different pixels, but it must occupy the same GBA
+    # object canvas as the Classic layout/physics counterpart.
+    ui_pairs = []
+    for building in range(1, 5):
+        for frame in range(4):
+            ui_pairs.append((
+                classic_ui / f"city_building_{building}_f{frame}_p0.bmp",
+                christmas_ui / f"christmas_city_building_{building}_f{frame}_p0.bmp",
+            ))
+    for frame in range(5):
+        ui_pairs.append((
+            classic_ui / f"construction_target_badge_f{frame}_p0.bmp",
+            christmas_ui / f"christmas_construction_target_badge_f{frame}_p0.bmp",
+        ))
+    for frame in range(3):
+        ui_pairs.append((
+            classic_ui / f"accuracy_star_f{frame}_p0.bmp",
+            christmas_ui / f"christmas_accuracy_star_f{frame}_p0.bmp",
+        ))
+
+    for classic, christmas in ui_pairs:
+        assert classic.is_file(), classic
+        assert christmas.is_file(), christmas
+        with Image.open(classic) as classic_image, Image.open(christmas) as christmas_image:
+            assert christmas_image.size == classic_image.size, (classic.name, christmas.name)
+
+    mesh_pairs = [
+        ("tb_mesh_007_p0.bmp", "christmas_tb_mesh_007_p0.bmp"),
+        ("tb_mesh_008_p0.bmp", "christmas_tb_mesh_008_p0.bmp"),
+        ("tb_mesh_008_p1.bmp", "christmas_tb_mesh_008_p1.bmp"),
+        ("tb_mesh_010_p0.bmp", "christmas_tb_mesh_010_p0.bmp"),
+        ("tb_mesh_020_p0.bmp", "christmas_tb_mesh_020_p0.bmp"),
+        ("tb_mesh_030_p0.bmp", "christmas_tb_mesh_030_p0.bmp"),
+        ("tb_mesh_040_p0.bmp", "christmas_tb_mesh_040_p0.bmp"),
+        ("crane_hook_pose_00_p0.bmp", "christmas_crane_hook_pose_00_p0.bmp"),
+        ("tb_mesh_008_p0.bmp", "christmas_crane_hook_pose_24_p0.bmp"),
+        ("tb_mesh_008_p1.bmp", "christmas_crane_hook_pose_24_p1.bmp"),
+        ("crane_hook_pose_48_p0.bmp", "christmas_crane_hook_pose_48_p0.bmp"),
+        ("tumble_m010_c0_s01_p0.bmp", "christmas_tumble_m010_c0_s01_p0.bmp"),
+        ("tumble_m023_c3_s12_p0.bmp", "christmas_tumble_m023_c3_s12_p0.bmp"),
+    ]
+    for classic_name, christmas_name in mesh_pairs:
+        classic = classic_gameplay / classic_name
+        christmas = christmas_gameplay / christmas_name
+        assert classic.is_file(), classic
+        assert christmas.is_file(), christmas
+        with Image.open(classic) as classic_image, Image.open(christmas) as christmas_image:
+            assert christmas_image.size == classic_image.size, (classic_name, christmas_name)
+
+    # Composite offsets are just as important as pixel dimensions: a correct
+    # sprite with the old Santa-JAR anchor still appears shifted on hardware.
+    classic_header = (GBA / "include" / "generated" / "tower_mesh_assets.h").read_text(encoding="utf-8")
+    christmas_header = (GBA / "include" / "generated" / "christmas_tower_mesh_assets.h").read_text(encoding="utf-8")
+
+    def offsets(text: str, symbol: str) -> list[tuple[int, int]]:
+        match = re.search(
+            rf"inline const MeshPartAsset {re.escape(symbol)}\[\] = \{{(.*?)\n\}};",
+            text,
+            re.S,
+        )
+        assert match, symbol
+        return [(int(x), int(y)) for x, y in re.findall(r",\s*(-?\d+),\s*(-?\d+)\s*\}", match.group(1))]
+
+    for symbol in (
+        "mesh_007_parts",
+        "mesh_008_parts",
+        "mesh_010_parts",
+        "mesh_020_parts",
+        "mesh_030_parts",
+        "mesh_040_parts",
+        "crane_hook_pose_00_parts",
+        "crane_hook_pose_24_parts",
+        "crane_hook_pose_48_parts",
+        "tumble_m010_c0_s01_parts",
+        "tumble_m023_c3_s12_parts",
+    ):
+        assert offsets(christmas_header, symbol) == offsets(classic_header, symbol), symbol
+
+    shell = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    assert "constexpr int christmas_worker_width = 19;" in shell
+    assert "constexpr int christmas_worker_height = 23;" in shell
+    assert "_show_composite(generated::christmas_tower_logo, 0, -62);" in shell
+    city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    assert "constexpr int christmas_building_widths[4] = {15, 16, 17, 19};" in city
+    assert "constexpr int christmas_building_heights[4] = {14, 16, 17, 19};" in city
+
+
 def test_one_time_planets_and_direct_special_roof_transition() -> None:
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     quick_scene = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")

@@ -37,8 +37,8 @@ constexpr int selector_screen_top = grid_screen_top + 2;
 
 constexpr int building_widths[4] = {15, 16, 17, 19};
 constexpr int building_heights[4] = {14, 16, 17, 19};
-constexpr int christmas_building_widths[4] = {22, 22, 24, 25};
-constexpr int christmas_building_heights[4] = {20, 22, 24, 25};
+constexpr int christmas_building_widths[4] = {15, 16, 17, 19};
+constexpr int christmas_building_heights[4] = {14, 16, 17, 19};
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
 // A valid-lot pulse is a floor marker, not an overlay on placed buildings.

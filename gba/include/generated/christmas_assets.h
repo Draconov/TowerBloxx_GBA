@@ -327,27 +327,27 @@ inline const UiSpritePartAsset christmas_worker_red_f9_parts[] = {
 inline const UiCompositeAsset christmas_worker_red_f9 = { christmas_worker_red_f9_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_1_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_building_1_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_1_f0_p0, 1, 2 },
 };
 inline const UiCompositeAsset christmas_city_building_1_f0 = { christmas_city_building_1_f0_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_1_f1_parts[] = {
-    { &bn::sprite_items::christmas_city_building_1_f1_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_1_f1_p0, 1, 1 },
 };
 inline const UiCompositeAsset christmas_city_building_1_f1 = { christmas_city_building_1_f1_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_1_f2_parts[] = {
-    { &bn::sprite_items::christmas_city_building_1_f2_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_1_f2_p0, 1, 1 },
 };
 inline const UiCompositeAsset christmas_city_building_1_f2 = { christmas_city_building_1_f2_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_1_f3_parts[] = {
-    { &bn::sprite_items::christmas_city_building_1_f3_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_1_f3_p0, 1, 1 },
 };
 inline const UiCompositeAsset christmas_city_building_1_f3 = { christmas_city_building_1_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_2_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_building_2_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_2_f0_p0, 0, 2 },
 };
 inline const UiCompositeAsset christmas_city_building_2_f0 = { christmas_city_building_2_f0_parts, 1 };
 
@@ -367,97 +367,97 @@ inline const UiSpritePartAsset christmas_city_building_2_f3_parts[] = {
 inline const UiCompositeAsset christmas_city_building_2_f3 = { christmas_city_building_2_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_3_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_building_3_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_3_f0_p0, 0, 2 },
 };
 inline const UiCompositeAsset christmas_city_building_3_f0 = { christmas_city_building_3_f0_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_3_f1_parts[] = {
-    { &bn::sprite_items::christmas_city_building_3_f1_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_3_f1_p0, 8, 8 },
 };
 inline const UiCompositeAsset christmas_city_building_3_f1 = { christmas_city_building_3_f1_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_3_f2_parts[] = {
-    { &bn::sprite_items::christmas_city_building_3_f2_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_3_f2_p0, 8, 8 },
 };
 inline const UiCompositeAsset christmas_city_building_3_f2 = { christmas_city_building_3_f2_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_3_f3_parts[] = {
-    { &bn::sprite_items::christmas_city_building_3_f3_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_3_f3_p0, 8, 8 },
 };
 inline const UiCompositeAsset christmas_city_building_3_f3 = { christmas_city_building_3_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_4_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_building_4_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_4_f0_p0, -1, 2 },
 };
 inline const UiCompositeAsset christmas_city_building_4_f0 = { christmas_city_building_4_f0_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_4_f1_parts[] = {
-    { &bn::sprite_items::christmas_city_building_4_f1_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_4_f1_p0, 7, 7 },
 };
 inline const UiCompositeAsset christmas_city_building_4_f1 = { christmas_city_building_4_f1_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_4_f2_parts[] = {
-    { &bn::sprite_items::christmas_city_building_4_f2_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_4_f2_p0, 7, 7 },
 };
 inline const UiCompositeAsset christmas_city_building_4_f2 = { christmas_city_building_4_f2_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_building_4_f3_parts[] = {
-    { &bn::sprite_items::christmas_city_building_4_f3_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_building_4_f3_p0, 7, 7 },
 };
 inline const UiCompositeAsset christmas_city_building_4_f3 = { christmas_city_building_4_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_lot_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_lot_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_lot_f0_p0, 5, 10 },
 };
 inline const UiCompositeAsset christmas_city_lot_f0 = { christmas_city_lot_f0_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_lot_f1_parts[] = {
-    { &bn::sprite_items::christmas_city_lot_f1_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_lot_f1_p0, 5, 8 },
 };
 inline const UiCompositeAsset christmas_city_lot_f1 = { christmas_city_lot_f1_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_lot_f2_parts[] = {
-    { &bn::sprite_items::christmas_city_lot_f2_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_lot_f2_p0, 5, 7 },
 };
 inline const UiCompositeAsset christmas_city_lot_f2 = { christmas_city_lot_f2_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_lot_f3_parts[] = {
-    { &bn::sprite_items::christmas_city_lot_f3_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_lot_f3_p0, 5, 5 },
 };
 inline const UiCompositeAsset christmas_city_lot_f3 = { christmas_city_lot_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_lot_f4_parts[] = {
-    { &bn::sprite_items::christmas_city_lot_f4_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_lot_f4_p0, -3, 6 },
 };
 inline const UiCompositeAsset christmas_city_lot_f4 = { christmas_city_lot_f4_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f0_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f0_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f0_p0, 6, 6 },
 };
 inline const UiCompositeAsset christmas_city_effect_f0 = { christmas_city_effect_f0_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f1_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f1_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f1_p0, 6, 6 },
 };
 inline const UiCompositeAsset christmas_city_effect_f1 = { christmas_city_effect_f1_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f2_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f2_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f2_p0, 7, 6 },
 };
 inline const UiCompositeAsset christmas_city_effect_f2 = { christmas_city_effect_f2_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f3_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f3_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f3_p0, 6, 6 },
 };
 inline const UiCompositeAsset christmas_city_effect_f3 = { christmas_city_effect_f3_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f4_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f4_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f4_p0, 6, 5 },
 };
 inline const UiCompositeAsset christmas_city_effect_f4 = { christmas_city_effect_f4_parts, 1 };
 
 inline const UiSpritePartAsset christmas_city_effect_f5_parts[] = {
-    { &bn::sprite_items::christmas_city_effect_f5_p0, 0, 0 },
+    { &bn::sprite_items::christmas_city_effect_f5_p0, 5, 5 },
 };
 inline const UiCompositeAsset christmas_city_effect_f5 = { christmas_city_effect_f5_parts, 1 };
 

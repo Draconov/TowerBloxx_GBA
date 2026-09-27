@@ -507,64 +507,64 @@
 namespace tb::generated::christmas
 {
 inline const MeshPartAsset mesh_007_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_007_p0, 6, -19 },
+    { &bn::sprite_items::christmas_tb_mesh_007_p0, 5, -18 },
 };
 
 inline const MeshPartAsset mesh_008_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_008_p0, 15, -64 },
-    { &bn::sprite_items::christmas_tb_mesh_008_p1, 2, -16 },
+    { &bn::sprite_items::christmas_tb_mesh_008_p0, 10, -48 },
+    { &bn::sprite_items::christmas_tb_mesh_008_p1, 2, -8 },
 };
 
 inline const MeshPartAsset mesh_010_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_010_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_010_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_011_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_011_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_011_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_012_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_012_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_012_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_013_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_013_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_013_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_020_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_020_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_020_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_021_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_021_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_021_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_022_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_022_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_022_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_023_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_023_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_023_p0, 3, 4 },
 };
 
 inline const MeshPartAsset mesh_030_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_030_p0, 1, 2 },
+    { &bn::sprite_items::christmas_tb_mesh_030_p0, 0, 2 },
 };
 
 inline const MeshPartAsset mesh_031_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_031_p0, 0, 4 },
+    { &bn::sprite_items::christmas_tb_mesh_031_p0, 15, 5 },
 };
 
 inline const MeshPartAsset mesh_032_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_032_p0, 1, 4 },
+    { &bn::sprite_items::christmas_tb_mesh_032_p0, 15, 5 },
 };
 
 inline const MeshPartAsset mesh_033_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_033_p0, 1, 10 },
+    { &bn::sprite_items::christmas_tb_mesh_033_p0, 0, 10 },
 };
 
 inline const MeshPartAsset mesh_040_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_040_p0, 2, -3 },
+    { &bn::sprite_items::christmas_tb_mesh_040_p0, 1, 5 },
 };
 
 inline const MeshPartAsset mesh_041_parts[] = {
@@ -572,11 +572,11 @@ inline const MeshPartAsset mesh_041_parts[] = {
 };
 
 inline const MeshPartAsset mesh_042_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_042_p0, 3, 1 },
+    { &bn::sprite_items::christmas_tb_mesh_042_p0, 2, 1 },
 };
 
 inline const MeshPartAsset mesh_043_parts[] = {
-    { &bn::sprite_items::christmas_tb_mesh_043_p0, 0, 3 },
+    { &bn::sprite_items::christmas_tb_mesh_043_p0, 14, 3 },
 };
 
 inline const MeshAsset meshes[] = {
@@ -614,248 +614,248 @@ inline const MeshAsset* mesh_by_id(int mesh_id)
 }
 
 inline const MeshPartAsset crane_hook_pose_00_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_00_p0, 25, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_00_p1, 4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_00_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_00_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_01_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_01_p0, 24, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_01_p1, 4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_01_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_01_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_02_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_02_p0, 24, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_02_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_02_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_02_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_03_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_03_p0, 24, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_03_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_03_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_03_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_04_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_04_p0, 23, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_04_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_04_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_04_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_05_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_05_p0, 23, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_05_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_05_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_05_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_06_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_06_p0, 22, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_06_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_06_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_06_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_07_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_07_p0, 22, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_07_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_07_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_07_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_08_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_08_p0, 22, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_08_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_08_p0, 12, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_08_p1, 12, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_09_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_09_p0, 21, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_09_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_09_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_09_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_10_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_10_p0, 21, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_10_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_10_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_10_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_11_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_11_p0, 20, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_11_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_11_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_11_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_12_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_12_p0, 20, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_12_p1, 3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_12_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_12_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_13_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_13_p0, 20, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_13_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_13_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_13_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_14_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_14_p0, 19, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_14_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_14_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_14_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_15_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_15_p0, 19, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_15_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_15_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_15_p1, 11, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_16_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_16_p0, 18, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_16_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_16_p0, 11, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_16_p1, 3, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_17_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_17_p0, 18, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_17_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_17_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_17_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_18_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_18_p0, 18, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_18_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_18_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_18_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_19_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_19_p0, 17, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_19_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_19_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_19_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_20_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_20_p0, 17, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_20_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_20_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_20_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_21_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_21_p0, 17, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_21_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_21_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_21_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_22_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_22_p0, 16, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_22_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_22_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_22_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_23_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_23_p0, 16, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_23_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_23_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_23_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_24_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_24_p0, 15, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_24_p1, 2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_24_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_24_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_25_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_25_p0, 14, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_25_p1, 1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_25_p0, 10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_25_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_26_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_26_p0, 13, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_26_p1, 1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_26_p0, 9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_26_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_27_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_27_p0, 12, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_27_p1, 1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_27_p0, 9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_27_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_28_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_28_p0, 11, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_28_p1, 1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_28_p0, 9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_28_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_29_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_29_p0, 10, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_29_p1, 0, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_29_p0, 9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_29_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_30_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_30_p0, 9, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_30_p1, 0, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_30_p0, 9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_30_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_31_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_31_p0, 8, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_31_p1, 0, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_31_p0, 8, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_31_p1, 0, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_32_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_32_p0, 7, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_32_p1, 0, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_32_p0, 7, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_32_p1, -1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_33_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_33_p0, 5, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_33_p1, -1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_33_p0, 6, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_33_p1, -2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_34_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_34_p0, 4, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_34_p1, -1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_34_p0, 5, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_34_p1, -3, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_35_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_35_p0, 3, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_35_p1, -1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_35_p0, 4, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_35_p1, 4, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_36_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_36_p0, 2, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_36_p1, -1, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_36_p0, 3, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_36_p1, 3, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_37_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_37_p0, 1, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_37_p1, -2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_37_p0, 2, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_37_p1, 2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_38_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_38_p0, 0, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_38_p1, -2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_38_p0, 1, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_38_p1, 1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_39_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_39_p0, -1, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_39_p1, -2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_39_p0, 0, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_39_p1, 0, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_40_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_40_p0, -3, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_40_p1, -2, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_40_p0, -1, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_40_p1, -1, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_41_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_41_p0, -4, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_41_p1, -3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_41_p0, -2, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_41_p1, -2, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_42_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_42_p0, -5, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_42_p1, -3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_42_p0, -3, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_42_p1, -3, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_43_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_43_p0, -6, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_43_p1, -3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_43_p0, -4, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_43_p1, -4, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_44_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_44_p0, -7, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_44_p1, -3, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_44_p0, -6, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_44_p1, -6, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_45_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_45_p0, -8, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_45_p1, -4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_45_p0, -7, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_45_p1, -7, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_46_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_46_p0, -10, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_46_p1, -4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_46_p0, -8, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_46_p1, -8, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_47_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_47_p0, -11, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_47_p1, -4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_47_p0, -9, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_47_p1, -9, -8 },
 };
 
 inline const MeshPartAsset crane_hook_pose_48_parts[] = {
-    { &bn::sprite_items::christmas_crane_hook_pose_48_p0, -12, -64 },
-    { &bn::sprite_items::christmas_crane_hook_pose_48_p1, -4, -16 },
+    { &bn::sprite_items::christmas_crane_hook_pose_48_p0, -10, -48 },
+    { &bn::sprite_items::christmas_crane_hook_pose_48_p1, -10, -8 },
 };
 
 inline const CraneHookFrameAsset crane_hook_frames[] = {
@@ -919,15 +919,15 @@ inline const CraneHookFrameAsset& crane_hook_frame_for_step(int step)
 }
 
 inline const MeshPartAsset tumble_m010_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s04_parts[] = {
@@ -935,83 +935,83 @@ inline const MeshPartAsset tumble_m010_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m010_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s01_parts[] = {
@@ -1019,107 +1019,107 @@ inline const MeshPartAsset tumble_m010_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m010_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m010_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m010_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m010_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s04_parts[] = {
@@ -1127,83 +1127,83 @@ inline const MeshPartAsset tumble_m011_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m011_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s01_parts[] = {
@@ -1211,107 +1211,107 @@ inline const MeshPartAsset tumble_m011_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m011_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m011_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m011_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m011_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s04_parts[] = {
@@ -1319,83 +1319,83 @@ inline const MeshPartAsset tumble_m012_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m012_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s01_parts[] = {
@@ -1403,107 +1403,107 @@ inline const MeshPartAsset tumble_m012_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m012_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m012_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m012_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m012_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s04_parts[] = {
@@ -1511,83 +1511,83 @@ inline const MeshPartAsset tumble_m013_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m013_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s01_parts[] = {
@@ -1595,107 +1595,107 @@ inline const MeshPartAsset tumble_m013_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m013_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m013_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m013_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m013_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s04_parts[] = {
@@ -1703,83 +1703,83 @@ inline const MeshPartAsset tumble_m020_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m020_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s01_parts[] = {
@@ -1787,107 +1787,107 @@ inline const MeshPartAsset tumble_m020_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m020_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m020_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m020_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m020_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s04_parts[] = {
@@ -1895,83 +1895,83 @@ inline const MeshPartAsset tumble_m021_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m021_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s01_parts[] = {
@@ -1979,107 +1979,107 @@ inline const MeshPartAsset tumble_m021_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m021_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m021_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m021_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m021_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s04_parts[] = {
@@ -2087,83 +2087,83 @@ inline const MeshPartAsset tumble_m022_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m022_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s01_parts[] = {
@@ -2171,107 +2171,107 @@ inline const MeshPartAsset tumble_m022_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m022_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m022_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m022_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m022_c3_s12_p0, 12, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s01_p0, 2, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s01_p0, 2, 3 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s02_p0, 1, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s04_parts[] = {
@@ -2279,83 +2279,83 @@ inline const MeshPartAsset tumble_m023_c0_s04_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m023_c0_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s05_p0, 13, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s05_p0, 13, 0 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s06_p0, 13, 16 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s06_p0, 12, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s08_p0, 12, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s10_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c0_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c0_s12_p0, 14, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c0_s12_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s01_p0, 3, 3 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s02_p0, -1, 3 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s04_p0, 16, 0 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s04_p0, 12, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s05_p0, 15, 0 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s05_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s06_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s06_p0, 11, 16 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s08_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s10_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c1_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c1_s12_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c1_s12_p0, 12, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s01_parts[] = {
@@ -2363,95 +2363,95 @@ inline const MeshPartAsset tumble_m023_c2_s01_parts[] = {
 };
 
 inline const MeshPartAsset tumble_m023_c2_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s02_p0, 0, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s02_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s03_p0, -1, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s03_p0, 15, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s04_p0, 14, 0 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s04_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s05_p0, 13, 0 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s05_p0, 13, 1 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s06_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s06_p0, 12, 16 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s07_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s08_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s08_p0, 11, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s10_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s10_p0, 10, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s11_p0, 13, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c2_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c2_s12_p0, 14, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c2_s12_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s01_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s01_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s01_p0, 1, 3 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s02_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s02_p0, 3, 2 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s02_p0, -1, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s03_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s03_p0, 1, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s03_p0, 14, 2 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s04_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s04_p0, 16, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s04_p0, 12, 1 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s05_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s05_p0, 15, 1 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s05_p0, 12, 0 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s06_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s06_p0, 14, 16 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s06_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s07_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s07_p0, 14, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s07_p0, 11, 15 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s08_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s08_p0, 13, 15 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s08_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s09_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s09_p0, 12, 14 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s09_p0, 10, 14 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s10_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s10_p0, 12, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s10_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s11_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s11_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s11_p0, 11, 13 },
 };
 
 inline const MeshPartAsset tumble_m023_c3_s12_parts[] = {
-    { &bn::sprite_items::christmas_tumble_m023_c3_s12_p0, 13, 13 },
+    { &bn::sprite_items::christmas_tumble_m023_c3_s12_p0, 12, 14 },
 };
 
 inline const TumblePoseAsset tumble_poses[] = {
