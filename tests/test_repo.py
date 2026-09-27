@@ -53,6 +53,20 @@ def test_release_repo_has_no_archaeology() -> None:
     assert not any("parity" in name or "extract" in name or "m3g_analysis" in name for name in lower_names)
 
 
+
+def test_all_graphics_json_manifests_declare_type() -> None:
+    missing = []
+    invalid = []
+    for manifest in sorted((GBA / "graphics").rglob("*.json")):
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        asset_type = data.get("type")
+        if asset_type is None:
+            missing.append(manifest.relative_to(ROOT).as_posix())
+        elif asset_type not in {"sprite", "regular_bg", "affine_bg", "palette"}:
+            invalid.append((manifest.relative_to(ROOT).as_posix(), asset_type))
+    assert not missing, f"graphics JSON manifests missing required type field: {missing}"
+    assert not invalid, f"graphics JSON manifests have unsupported type values: {invalid}"
+
 def test_only_two_permanent_test_sources_remain() -> None:
     files = sorted(
         path.relative_to(ROOT).as_posix()
