@@ -1132,12 +1132,13 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
     assert "christmas_construction_cloud_small" in generated
     assert "generated::christmas_construction_cloud_large" in source
     assert "generated::christmas_construction_cloud_small" in source
-    assert "actually the two moving cloud sprites" in source
+    assert "The two Santa PNG resources are wispy construction clouds" in source
     assert "_christmas_scenery_sprites.size() == 8" in source
     assert "band <= 5" in source
 
-    # Both decorated Christmas tree variants are promoted from staging and are
-    # world-anchored only at the low-altitude construction ground.
+    # The original extracted tree frames remain in the source pack, but Phase
+    # 18 folds the exact low-altitude street/tree composition into the authored
+    # ground BG so duplicate tree sprites must not be instantiated at runtime.
     for frame in range(2):
         bmp = gameplay / f"christmas_construction_tree_f{frame}.bmp"
         manifest = gameplay / f"christmas_construction_tree_f{frame}.json"
@@ -1145,10 +1146,9 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
         with Image.open(bmp) as image:
             assert image.mode == "P" and image.size == (64, 64)
             assert max(image.tobytes()) < 16
-    assert "christmas_construction_tree_f0.create_sprite_optional" in source
-    assert "christmas_construction_tree_f1.create_sprite_optional" in source
-    assert "_christmas_tree_sprites" in header
-    assert "trees_visible = scroll >= -80 && scroll <= 96" in source
+    assert "christmas_construction_tree_f0.create_sprite_optional" not in source
+    assert "christmas_construction_tree_f1.create_sprite_optional" not in source
+    assert "_christmas_tree_sprites" not in header
 
     # The Christmas event table covers all 1..28 source event slots. Type 13
     # deliberately shares the Classic 8x8 star-dot because the Santa resource
@@ -1175,44 +1175,63 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
         assert "bn::sprite_items::crane_special_cable_segment" in scene
 
 
-def test_christmas_phase16_restores_low_altitude_cityscape() -> None:
+def test_christmas_phase16_cityscape_asset_is_not_forced_into_gameplay() -> None:
     source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
-    header = (GBA / "include" / "tb" / "construction_backdrop.h").read_text(encoding="utf-8")
     scenery = GBA / "graphics" / "christmas" / "scenery"
 
-    # Santa's low-altitude city is MBAC model 46, not one of the PNG cloud
-    # resources.  The pre-render is split into four legal GBA OBJ pieces.
-    expected_sizes = {
-        0: (64, 64),
-        1: (64, 64),
-        2: (64, 32),
-        3: (64, 32),
-    }
-    palettes = []
-    for part, expected_size in expected_sizes.items():
+    # The older Phase 16 MBAC model-46 pre-render remains in the source pack
+    # for reference/build compatibility, but OG gameplay captures prove it is
+    # not the persistent construction backdrop. The runtime must no longer
+    # instantiate it as the low-altitude skyline.
+    for part in range(4):
         stem = f"christmas_construction_cityscape_p{part}"
-        bmp = scenery / f"{stem}.bmp"
-        manifest = scenery / f"{stem}.json"
-        assert bmp.is_file() and manifest.is_file(), stem
+        assert (scenery / f"{stem}.bmp").is_file()
+        assert (scenery / f"{stem}.json").is_file()
+        assert f"bn::sprite_items::{stem}" not in source
+
+    assert "_christmas_cityscape_sprites" not in source
+    assert "MBAC model 46 is not the persistent" in source
+
+
+def test_christmas_phase18_matches_og_night_city_composition() -> None:
+    source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    backgrounds = GBA / "graphics" / "christmas" / "backgrounds"
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+
+    # The 17 Christmas sky bands are no longer flat colour fields: they carry
+    # the dark blue vertical city-canyon silhouettes and embedded snowfall
+    # seen in the original Santa gameplay captures.
+    palettes = []
+    for index in range(17):
+        bmp = backgrounds / f"christmas_construction_sky_{index:02d}.bmp"
         with Image.open(bmp) as image:
             assert image.mode == "P"
-            assert image.size == expected_size
-            assert max(image.tobytes()) < 16
+            assert image.size == (256, 512)
+            assert len(image.getcolors(maxcolors=1_000_000) or []) >= 8
             palettes.append(tuple(image.getpalette() or ()))
-        assert f"bn::sprite_items::{stem}" in source
     assert all(palette == palettes[0] for palette in palettes[1:])
 
-    assert "_christmas_cityscape_sprites" in header
-    assert "cityscape_relevant = scroll >= -96 && scroll <= 180" in source
-    assert "_christmas_cityscape_sprites.size() == 4" in source
-    assert "const int city_y = 26 + scroll" in source
-    assert "sprite.set_z_order(124)" in source
+    ground = backgrounds / "christmas_construction_ground.bmp"
+    ground_json = backgrounds / "christmas_construction_ground.json"
+    assert ground.is_file() and ground_json.is_file()
+    with Image.open(ground) as image:
+        assert image.mode == "P" and image.size == (256, 256)
+        assert len(image.getcolors(maxcolors=1_000_000) or []) > 100
 
-    # The Christmas cityscape replaces, rather than re-enabling, the Classic
-    # regular-BG scenery path.
-    branch = source[source.index("if(_visual_theme == VisualTheme::Christmas)"):]
-    assert "_scenery_background.reset();" in branch
-    assert "christmas_construction_cityscape_p0.create_sprite_optional" in branch
+    snow = gameplay / "christmas_snowflake_p0.bmp"
+    snow_json = gameplay / "christmas_snowflake_p0.json"
+    assert snow.is_file() and snow_json.is_file()
+    with Image.open(snow) as image:
+        assert image.mode == "P" and image.size == (8, 8)
+        assert max(image.tobytes()) < 16
+
+    assert "bn::regular_bg_items::christmas_construction_ground" in source
+    assert "bn::sprite_items::christmas_snowflake_p0" in source
+    assert "ground_visible = scroll >= -80 && scroll <= 150" in source
+    assert "_scenery_background->set_y(scroll + 44)" in source
+    assert "continuous screen-space snowfall" in source
+    assert "Deterministic falling snow in screen space" in source
+    assert "MBAC model 46 is not the persistent" in source
 
 
 def test_christmas_phase17_ports_santa_missed_block_snow_burst() -> None:

@@ -40,12 +40,8 @@
 #include "bn_regular_bg_items_christmas_construction_sky_14.h"
 #include "bn_regular_bg_items_christmas_construction_sky_15.h"
 #include "bn_regular_bg_items_christmas_construction_sky_16.h"
-#include "bn_sprite_items_christmas_construction_cityscape_p0.h"
-#include "bn_sprite_items_christmas_construction_cityscape_p1.h"
-#include "bn_sprite_items_christmas_construction_cityscape_p2.h"
-#include "bn_sprite_items_christmas_construction_cityscape_p3.h"
-#include "bn_sprite_items_christmas_construction_tree_f0.h"
-#include "bn_sprite_items_christmas_construction_tree_f1.h"
+#include "bn_regular_bg_items_christmas_construction_ground.h"
+#include "bn_sprite_items_christmas_snowflake_p0.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
 
 #include "generated/construction_background_data.h"
@@ -128,6 +124,11 @@ bn::optional<bn::regular_bg_ptr> create_scenery_background(int index)
     case 1: return bn::regular_bg_items::construction_scenery_1.create_bg_optional(0, 0);
     default: return bn::regular_bg_items::construction_scenery_2.create_bg_optional(0, 0);
     }
+}
+
+bn::optional<bn::regular_bg_ptr> create_christmas_ground_background()
+{
+    return bn::regular_bg_items::christmas_construction_ground.create_bg_optional(0, 0);
 }
 
 void create_legacy_event_sprites(
@@ -213,19 +214,38 @@ void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run, Visua
     {
         _spawned_celestial_events = 0;
     }
-    for(const generated::ConstructionBackgroundDecoration& decoration :
-        generated::construction_background_decorations)
+    if(_visual_theme == VisualTheme::Christmas)
     {
-        if(decoration.kind == 1)
+        // The Santa construction scene has continuous screen-space snowfall.
+        // Reuse the existing 12-slot decoration pool so the effect has a hard
+        // OBJ budget and cannot starve the crane/floors/HUD.
+        for(int index = 0; index < _blink_sprites.max_size(); ++index)
         {
-            if(_blink_sprites.size() >= _blink_sprites.max_size()) { continue; }
-            bn::optional<bn::sprite_ptr> blink =
-                    bn::sprite_items::construction_high_blink_p0.create_sprite_optional(0, 0);
-            if(! blink) { continue; }
-            blink->set_bg_priority(3);
-            blink->set_z_order(100);
-            blink->set_visible(false);
-            _blink_sprites.push_back(*blink);
+            bn::optional<bn::sprite_ptr> snow =
+                    bn::sprite_items::christmas_snowflake_p0.create_sprite_optional(0, 0);
+            if(! snow) { break; }
+            snow->set_bg_priority(3);
+            snow->set_z_order(104);
+            snow->set_visible(false);
+            _blink_sprites.push_back(*snow);
+        }
+    }
+    else
+    {
+        for(const generated::ConstructionBackgroundDecoration& decoration :
+            generated::construction_background_decorations)
+        {
+            if(decoration.kind == 1)
+            {
+                if(_blink_sprites.size() >= _blink_sprites.max_size()) { continue; }
+                bn::optional<bn::sprite_ptr> blink =
+                        bn::sprite_items::construction_high_blink_p0.create_sprite_optional(0, 0);
+                if(! blink) { continue; }
+                blink->set_bg_priority(3);
+                blink->set_z_order(100);
+                blink->set_visible(false);
+                _blink_sprites.push_back(*blink);
+            }
         }
     }
 
@@ -262,8 +282,6 @@ void ConstructionBackdrop::reset()
     _scenery_background.reset();
     _blink_sprites.clear();
     _christmas_scenery_sprites.clear();
-    _christmas_cityscape_sprites.clear();
-    _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -296,68 +314,44 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     const int scroll = ((camera_y - 512) * 22) / 256;
     if(_visual_theme == VisualTheme::Christmas)
     {
-        // Santa's construction resources previously called "mountains" in the
-        // generated pack are actually the two moving cloud sprites from the
-        // Christmas JAR.  They belong in the sky, not pinned to the ground.
-        _scenery_background.reset();
-        _scenery_chunk = -1;
-
+        // Phase 18 follows the actual Santa gameplay composition: a dark
+        // vertical city canyon in the sky BG, with a separate snowy street
+        // foreground at ground level. MBAC model 46 is not the persistent
+        // gameplay skyline seen in the original reference captures.
+        
         const int scaled = (2 * camera_y) / 3;
         const int band = scaled / 2048;
 
-        // Santa's original construction scene also renders MBAC mesh 46 at
-        // the tower base.  Earlier Christmas passes only ported the PNG sky
-        // resources, which left the lower scene empty after Classic scenery
-        // was disabled.  Keep this cityscape world-anchored so it naturally
-        // slides below the viewport as the tower climbs.
-        const bool cityscape_relevant = scroll >= -96 && scroll <= 180;
-        if(cityscape_relevant)
+        const bool ground_visible = scroll >= -80 && scroll <= 150;
+        if(ground_visible)
         {
-            if(_christmas_cityscape_sprites.empty() && bn::sprites::available_items_count() >= 20)
+            if(! _scenery_background)
             {
-                bn::optional<bn::sprite_ptr> p0 =
-                        bn::sprite_items::christmas_construction_cityscape_p0.create_sprite_optional(0, 0);
-                bn::optional<bn::sprite_ptr> p1 =
-                        bn::sprite_items::christmas_construction_cityscape_p1.create_sprite_optional(0, 0);
-                bn::optional<bn::sprite_ptr> p2 =
-                        bn::sprite_items::christmas_construction_cityscape_p2.create_sprite_optional(0, 0);
-                bn::optional<bn::sprite_ptr> p3 =
-                        bn::sprite_items::christmas_construction_cityscape_p3.create_sprite_optional(0, 0);
-                if(p0 && p1 && p2 && p3)
+                _scenery_background = create_christmas_ground_background();
+                if(_scenery_background)
                 {
-                    _christmas_cityscape_sprites.push_back(*p0);
-                    _christmas_cityscape_sprites.push_back(*p1);
-                    _christmas_cityscape_sprites.push_back(*p2);
-                    _christmas_cityscape_sprites.push_back(*p3);
-                    for(bn::sprite_ptr& sprite : _christmas_cityscape_sprites)
-                    {
-                        sprite.set_bg_priority(3);
-                        sprite.set_z_order(124);
-                    }
-                }
-                else
-                {
-                    _christmas_cityscape_sprites.clear();
+                    _scenery_background->set_priority(3);
+                    _scenery_background->set_z_order(construction_scenery_bg_z_order);
+                    _scenery_chunk = 0;
                 }
             }
-
-            if(_christmas_cityscape_sprites.size() == 4)
+            if(_scenery_background)
             {
-                const int city_y = 26 + scroll;
-                _christmas_cityscape_sprites[0].set_position(-29, city_y - 8);
-                _christmas_cityscape_sprites[1].set_position(35, city_y - 8);
-                _christmas_cityscape_sprites[2].set_position(-29, city_y + 40);
-                _christmas_cityscape_sprites[3].set_position(35, city_y + 40);
+                // At camera_y=0 scroll is -44, so +44 keeps the original
+                // street at its authored low-altitude position. It then moves
+                // down naturally as the tower/camera rises.
+                _scenery_background->set_y(scroll + 44);
             }
         }
         else
         {
-            _christmas_cityscape_sprites.clear();
+            _scenery_background.reset();
+            _scenery_chunk = -1;
         }
 
-        // Four source-style drifting cloud composites.  Keep them through the
-        // low/mid atmosphere and release the OBJ budget once space events take
-        // over at high altitude.
+        // The two Santa PNG resources are wispy construction clouds. Keep
+        // them in the low/mid atmosphere; the canyon + snowfall persist
+        // behind them, matching the OG night construction scene.
         if(band <= 5)
         {
             if(_christmas_scenery_sprites.empty())
@@ -394,46 +388,10 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
         {
             _christmas_scenery_sprites.clear();
         }
-
-        // The decorated trees are world-anchored ground scenery.  They scroll
-        // away naturally when the camera climbs and never leak into mid/high
-        // altitude bands.
-        const bool trees_visible = scroll >= -80 && scroll <= 96;
-        if(trees_visible)
-        {
-            if(_christmas_tree_sprites.empty() && bn::sprites::available_items_count() >= 16)
-            {
-                bn::optional<bn::sprite_ptr> left =
-                        bn::sprite_items::christmas_construction_tree_f0.create_sprite_optional(0, 0);
-                bn::optional<bn::sprite_ptr> right =
-                        bn::sprite_items::christmas_construction_tree_f1.create_sprite_optional(0, 0);
-                if(left && right)
-                {
-                    left->set_bg_priority(3);
-                    right->set_bg_priority(3);
-                    left->set_z_order(118);
-                    right->set_z_order(118);
-                    _christmas_tree_sprites.push_back(*left);
-                    _christmas_tree_sprites.push_back(*right);
-                }
-            }
-            if(_christmas_tree_sprites.size() == 2)
-            {
-                const int tree_y = 48 + scroll;
-                _christmas_tree_sprites[0].set_position(-86, tree_y);
-                _christmas_tree_sprites[1].set_position(86, tree_y + 2);
-            }
-        }
-        else
-        {
-            _christmas_tree_sprites.clear();
-        }
         return;
     }
 
     _christmas_scenery_sprites.clear();
-    _christmas_cityscape_sprites.clear();
-    _christmas_tree_sprites.clear();
     if(scroll > generated::construction_scenery_max_scroll)
     {
         _scenery_background.reset();
@@ -484,6 +442,24 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
 
 void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)
 {
+    if(_visual_theme == VisualTheme::Christmas)
+    {
+        // Deterministic falling snow in screen space. Speeds and phases vary
+        // by slot to avoid rigid columns while keeping the update allocation-free.
+        for(int index = 0; index < _blink_sprites.size(); ++index)
+        {
+            bn::sprite_ptr& snow = _blink_sprites[index];
+            const int fall_divisor = 20 + (index % 4) * 5;
+            const int drift_divisor = 70 + (index % 3) * 19;
+            const int y = ((index * 47 + clock_ms / fall_divisor) % 184) - 92;
+            const int x = ((index * 61 + clock_ms / drift_divisor +
+                           ((index & 1) ? y / 5 : -y / 7)) % 272) - 136;
+            snow.set_visible(true);
+            snow.set_position(x, y);
+        }
+        return;
+    }
+
     int blink_index = 0;
     const bool scenery_visible = _scenery_background.has_value();
     const int camera_pixels = (22 * camera_y) >> 8;

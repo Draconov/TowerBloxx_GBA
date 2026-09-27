@@ -44,10 +44,6 @@ private:
     // Four two-part Christmas cloud composites (legacy generated filenames
     // still say mountain_large/mountain_small).
     bn::vector<bn::sprite_ptr, 8> _christmas_scenery_sprites;
-    // Santa MBAC mesh 46, pre-rendered as four GBA-safe sprite parts.  This is
-    // the low-altitude icy cityscape that sits behind the tower base.
-    bn::vector<bn::sprite_ptr, 4> _christmas_cityscape_sprites;
-    bn::vector<bn::sprite_ptr, 2> _christmas_tree_sprites;
     bn::vector<LegacySkyEventSlot, 9> _legacy_events;
     int _legacy_remaining[29] = {};
     uint32_t _spawned_celestial_events = 0;
