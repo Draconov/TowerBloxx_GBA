@@ -291,12 +291,11 @@ const generated::TumblePoseAsset& tumble_pose_for(
     return generated::tumble_pose_for(mesh_id, stage, z_negative, y_negative);
 }
 
-const generated::CraneHookFrameAsset& crane_hook_frame_for_step(VisualTheme visual_theme, int step)
+// The normal swinging rope/hook geometry is deliberately shared by both
+// visual themes. The Christmas special/intro crane is safe to theme because
+// its mesh and boom were normalized to the Classic GBA footprint in Phase 12.
+const generated::CraneHookFrameAsset& crane_hook_frame_for_step(int step)
 {
-    if(visual_theme == VisualTheme::Christmas)
-    {
-        return generated::christmas::crane_hook_frame_for_step(step);
-    }
     return generated::crane_hook_frame_for_step(step);
 }
 
@@ -859,7 +858,7 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
     }
 
     const int rotation_step = snapshot.crane_x >> 4;
-    const generated::CraneHookFrameAsset& frame = crane_hook_frame_for_step(_visual_theme, rotation_step);
+    const generated::CraneHookFrameAsset& frame = crane_hook_frame_for_step(rotation_step);
     if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != crane_hook_mesh_id ||
        _rendered_crane_rotation_step != frame.rotation_step)
     {
@@ -914,12 +913,19 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
 
     if(_special_boom_sprites.empty())
     {
-        const auto& p0_item = _visual_theme == VisualTheme::Christmas ?
-                bn::sprite_items::christmas_crane_special_boom_p0 : bn::sprite_items::crane_special_boom_p0;
-        const auto& p1_item = _visual_theme == VisualTheme::Christmas ?
-                bn::sprite_items::christmas_crane_special_boom_p1 : bn::sprite_items::crane_special_boom_p1;
-        const auto& p2_item = _visual_theme == VisualTheme::Christmas ?
-                bn::sprite_items::christmas_crane_special_boom_p2 : bn::sprite_items::crane_special_boom_p2;
+        // Keep the proven Classic cable/hook geometry, but let the one-off
+        // intro/special crane use the red Christmas boom. Phase 12 normalized
+        // these three parts to the exact Classic canvas and cable endpoints.
+        const bool christmas_crane = _visual_theme == VisualTheme::Christmas;
+        const auto& p0_item = christmas_crane ?
+                bn::sprite_items::christmas_crane_special_boom_p0 :
+                bn::sprite_items::crane_special_boom_p0;
+        const auto& p1_item = christmas_crane ?
+                bn::sprite_items::christmas_crane_special_boom_p1 :
+                bn::sprite_items::crane_special_boom_p1;
+        const auto& p2_item = christmas_crane ?
+                bn::sprite_items::christmas_crane_special_boom_p2 :
+                bn::sprite_items::crane_special_boom_p2;
         bn::optional<bn::sprite_ptr> p0 = p0_item.create_sprite_optional(0, 0);
         bn::optional<bn::sprite_ptr> p1 = p1_item.create_sprite_optional(0, 0);
         bn::optional<bn::sprite_ptr> p2 = p2_item.create_sprite_optional(0, 0);
@@ -1036,7 +1042,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         else
         {
             const generated::CraneHookFrameAsset& frame =
-                    crane_hook_frame_for_step(_visual_theme, snapshot.crane_x >> 4);
+                    crane_hook_frame_for_step(snapshot.crane_x >> 4);
             position_crane_hook_frame_sprites(frame, crane_x, crane_y, _crane_hook_sprites);
         }
     }

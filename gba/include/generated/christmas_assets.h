@@ -218,6 +218,24 @@
 #include "bn_sprite_items_christmas_quick_counter_frame_p0.h"
 // END CHRISTMAS PHASE 9 INCLUDES
 
+#include "bn_sprite_items_christmas_city_milestone_badge_left_p0.h"
+#include "bn_sprite_items_christmas_city_milestone_badge_right_p0.h"
+#include "bn_sprite_items_christmas_city_milestone_badge_empty_left_p0.h"
+#include "bn_sprite_items_christmas_city_milestone_badge_empty_right_p0.h"
+#include "bn_sprite_items_christmas_city_comparison_panel_active_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f0_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f1_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f2_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f3_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f4_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f5_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f6_p0.h"
+#include "bn_sprite_items_christmas_city_progress_f7_p0.h"
+#include "bn_sprite_items_christmas_city_type_badge_1_p0.h"
+#include "bn_sprite_items_christmas_city_type_badge_2_p0.h"
+#include "bn_sprite_items_christmas_city_type_badge_3_p0.h"
+#include "bn_sprite_items_christmas_city_type_badge_4_p0.h"
+
 namespace tb::generated
 {
 inline const UiSpritePartAsset christmas_tower_logo_parts[] = {
@@ -1184,6 +1202,86 @@ inline const UiSpritePartAsset christmas_quick_counter_frame_parts[] = {
 };
 inline const UiCompositeAsset christmas_quick_counter_frame = { christmas_quick_counter_frame_parts, 1 };
 // END CHRISTMAS PHASE 9
+
+// BEGIN CHRISTMAS BUILD CITY FULL THEME
+inline const UiSpritePartAsset christmas_city_milestone_badge_parts[] = {
+    { &bn::sprite_items::christmas_city_milestone_badge_left_p0, -8, 0 },
+    { &bn::sprite_items::christmas_city_milestone_badge_right_p0, 16, 0 },
+};
+inline const UiCompositeAsset christmas_city_milestone_badge = { christmas_city_milestone_badge_parts, 2 };
+
+inline const UiSpritePartAsset christmas_city_milestone_badge_empty_parts[] = {
+    { &bn::sprite_items::christmas_city_milestone_badge_empty_left_p0, -8, 0 },
+    { &bn::sprite_items::christmas_city_milestone_badge_empty_right_p0, 16, 0 },
+};
+inline const UiCompositeAsset christmas_city_milestone_badge_empty = { christmas_city_milestone_badge_empty_parts, 2 };
+
+inline const UiSpritePartAsset christmas_city_comparison_panel_active_parts[] = {
+    { &bn::sprite_items::christmas_city_comparison_panel_active_p0, 4, 4 },
+};
+inline const UiCompositeAsset christmas_city_comparison_panel_active = { christmas_city_comparison_panel_active_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_progress_segment_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f0_p0, 0, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_segment = { christmas_city_progress_segment_parts, 1 };
+
+inline const UiSpritePartAsset christmas_city_progress_tail_f1_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f1_p0, 4, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f1 = { christmas_city_progress_tail_f1_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f2_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f2_p0, 3, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f2 = { christmas_city_progress_tail_f2_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f3_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f3_p0, 3, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f3 = { christmas_city_progress_tail_f3_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f4_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f4_p0, 2, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f4 = { christmas_city_progress_tail_f4_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f5_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f5_p0, 2, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f5 = { christmas_city_progress_tail_f5_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f6_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f6_p0, 1, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f6 = { christmas_city_progress_tail_f6_parts, 1 };
+inline const UiSpritePartAsset christmas_city_progress_tail_f7_parts[] = {
+    { &bn::sprite_items::christmas_city_progress_f7_p0, 1, 4 },
+};
+inline const UiCompositeAsset christmas_city_progress_tail_f7 = { christmas_city_progress_tail_f7_parts, 1 };
+inline const UiCompositeAsset* const christmas_city_progress_tails[7] = {
+    &christmas_city_progress_tail_f1, &christmas_city_progress_tail_f2,
+    &christmas_city_progress_tail_f3, &christmas_city_progress_tail_f4,
+    &christmas_city_progress_tail_f5, &christmas_city_progress_tail_f6,
+    &christmas_city_progress_tail_f7
+};
+
+inline const UiSpritePartAsset christmas_city_type_badge_1_parts[] = {
+    { &bn::sprite_items::christmas_city_type_badge_1_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_city_type_badge_1 = { christmas_city_type_badge_1_parts, 1 };
+inline const UiSpritePartAsset christmas_city_type_badge_2_parts[] = {
+    { &bn::sprite_items::christmas_city_type_badge_2_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_city_type_badge_2 = { christmas_city_type_badge_2_parts, 1 };
+inline const UiSpritePartAsset christmas_city_type_badge_3_parts[] = {
+    { &bn::sprite_items::christmas_city_type_badge_3_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_city_type_badge_3 = { christmas_city_type_badge_3_parts, 1 };
+inline const UiSpritePartAsset christmas_city_type_badge_4_parts[] = {
+    { &bn::sprite_items::christmas_city_type_badge_4_p0, 2, 1 },
+};
+inline const UiCompositeAsset christmas_city_type_badge_4 = { christmas_city_type_badge_4_parts, 1 };
+inline const UiCompositeAsset* const christmas_city_type_badges[4] = {
+    &christmas_city_type_badge_1, &christmas_city_type_badge_2,
+    &christmas_city_type_badge_3, &christmas_city_type_badge_4
+};
+// END CHRISTMAS BUILD CITY FULL THEME
 
 }
 

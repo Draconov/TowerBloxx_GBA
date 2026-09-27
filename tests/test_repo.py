@@ -765,7 +765,7 @@ def test_christmas_theme_assets_are_isolated_and_wired() -> None:
     assert "generated::christmas_sky_event_assets" in backdrop
 
 
-def test_christmas_construction_meshes_are_generated_and_theme_wired() -> None:
+def test_christmas_construction_meshes_are_generated_with_hybrid_crane() -> None:
     gameplay = GBA / "graphics" / "christmas" / "gameplay"
     assert gameplay.is_dir()
     for name in (
@@ -799,7 +799,12 @@ def test_christmas_construction_meshes_are_generated_and_theme_wired() -> None:
         assert '#include "generated/christmas_tower_mesh_assets.h"' in source
         assert "generated::christmas::mesh_by_id(mesh_id)" in source
         assert "generated::christmas::tumble_pose_for" in source
-        assert "generated::christmas::crane_hook_frame_for_step" in source
+        # Christmas keeps its blocks/tumbles and may theme the one-off
+        # special/intro crane mesh, but the normal swing rope/hook remains the
+        # proven Classic GBA geometry.
+        assert "generated::christmas::crane_hook_frame_for_step" not in source
+        assert "return generated::crane_hook_frame_for_step(step);" in source
+        assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
         assert "VisualTheme::Christmas" in source
 
 
@@ -947,7 +952,7 @@ def test_christmas_phase7_ui_palette_budgets_are_stable() -> None:
     assert all(palette16(path) == worker_palette for path in menu_files)
 
 
-def test_christmas_phase8_construction_scenery_crane_and_city_chrome_are_wired() -> None:
+def test_christmas_phase8_scenery_city_chrome_and_hybrid_crane_are_wired() -> None:
     gameplay = GBA / "graphics" / "christmas" / "gameplay"
     ui = GBA / "graphics" / "christmas" / "ui"
     for name in (
@@ -965,10 +970,19 @@ def test_christmas_phase8_construction_scenery_crane_and_city_chrome_are_wired()
 
     for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
         source = (GBA / "src" / source_name).read_text(encoding="utf-8")
-        assert "christmas_crane_special_boom_p0" in source
-        assert "christmas_crane_special_boom_p1" in source
-        assert "christmas_crane_special_boom_p2" in source
-        assert "_visual_theme == VisualTheme::Christmas" in source
+        # Hybrid crane contract: the special/intro crane may use its red
+        # Christmas mesh and boom, because Phase 12 normalized their geometry,
+        # while the normal swinging rope/hook and cable stay on the proven
+        # Classic GBA presentation.
+        assert "bn::sprite_items::christmas_crane_special_boom_p0" in source
+        assert "bn::sprite_items::christmas_crane_special_boom_p1" in source
+        assert "bn::sprite_items::christmas_crane_special_boom_p2" in source
+        assert "bn::sprite_items::crane_special_boom_p0" in source
+        assert "bn::sprite_items::crane_special_boom_p1" in source
+        assert "bn::sprite_items::crane_special_boom_p2" in source
+        assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
+        assert "return generated::crane_hook_frame_for_step(step);" in source
+        assert "bn::sprite_items::crane_special_cable_segment" in source
 
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     assert "generated::christmas_mountain_large" in backdrop
@@ -1053,3 +1067,36 @@ def test_christmas_theme_switches_the_three_distinct_santa_music_tracks() -> Non
     assert not (audio_dir / "christmas_normal_roof.mod").exists()
     assert not (audio_dir / "christmas_trophy_roof.mod").exists()
     assert not (audio_dir / "christmas_construction_fail.mod").exists()
+
+
+def test_christmas_build_city_uses_full_theme_background_and_chrome() -> None:
+    source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    makefile = (GBA / "Makefile").read_text(encoding="utf-8")
+    christmas_bg = GBA / "graphics" / "christmas" / "backgrounds"
+    christmas_ui = GBA / "graphics" / "christmas" / "ui"
+
+    assert "graphics/christmas/backgrounds" in makefile
+    for index in range(4):
+        assert (christmas_bg / f"christmas_city_bg_theme_{index}.bmp").is_file()
+        assert (christmas_bg / f"christmas_city_bg_theme_{index}.json").is_file()
+        assert f"bn::regular_bg_items::christmas_city_bg_theme_{index}" in source
+
+    for name in (
+        "christmas_city_milestone_badge_left_p0.bmp",
+        "christmas_city_milestone_badge_right_p0.bmp",
+        "christmas_city_milestone_badge_empty_left_p0.bmp",
+        "christmas_city_milestone_badge_empty_right_p0.bmp",
+        "christmas_city_comparison_panel_active_p0.bmp",
+        "christmas_city_progress_f0_p0.bmp",
+        "christmas_city_progress_f7_p0.bmp",
+        "christmas_city_type_badge_1_p0.bmp",
+        "christmas_city_type_badge_4_p0.bmp",
+    ):
+        assert (christmas_ui / name).is_file(), name
+
+    assert "generated::christmas_city_milestone_badge" in source
+    assert "generated::christmas_city_milestone_badge_empty" in source
+    assert "generated::christmas_city_comparison_panel_active" in source
+    assert "generated::christmas_city_progress_segment" in source
+    assert "generated::christmas_city_progress_tails" in source
+    assert "generated::christmas_city_type_badges" in source
