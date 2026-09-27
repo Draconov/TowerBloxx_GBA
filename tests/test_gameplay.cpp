@@ -330,6 +330,17 @@ void test_roof_phase_uses_stationary_camera_lowering()
     assert(snapshot.camera_y == fixed_camera_y);
     assert(snapshot.block_state == tb::TowerConstructionBlockState::Attached);
     assert(snapshot.rope_length == 1664);
+
+    // Lowering is over: the special roof must resume the normal crane swing.
+    const int centered_x = snapshot.crane_x;
+    bool resumed_swing = false;
+    for(int elapsed = 0; elapsed < 500 && ! resumed_swing; elapsed += 25)
+    {
+        construction.update(25, no_input());
+        snapshot = construction.snapshot();
+        resumed_swing = snapshot.crane_x != centered_x;
+    }
+    assert(resumed_swing);
 }
 
 
