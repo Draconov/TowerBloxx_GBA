@@ -1153,6 +1153,13 @@ inline const UiSpritePartAsset christmas_mountain_small_parts[] = {
     { &bn::sprite_items::christmas_mountain_small_p1, 21, 1 },
 };
 inline const UiCompositeAsset christmas_mountain_small = { christmas_mountain_small_parts, 2 };
+
+// These two resources were initially misidentified as mountains during the
+// first Santa asset pass.  They are the moving construction cloud sprites.
+// Keep the old symbols for patch compatibility and expose correct semantic
+// aliases for runtime code.
+inline const UiCompositeAsset& christmas_construction_cloud_large = christmas_mountain_large;
+inline const UiCompositeAsset& christmas_construction_cloud_small = christmas_mountain_small;
 // END CHRISTMAS PHASE 8
 
 

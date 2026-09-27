@@ -23,6 +23,25 @@
 #include "bn_regular_bg_items_construction_sky_14.h"
 #include "bn_regular_bg_items_construction_sky_15.h"
 #include "bn_regular_bg_items_construction_sky_16.h"
+#include "bn_regular_bg_items_christmas_construction_sky_00.h"
+#include "bn_regular_bg_items_christmas_construction_sky_01.h"
+#include "bn_regular_bg_items_christmas_construction_sky_02.h"
+#include "bn_regular_bg_items_christmas_construction_sky_03.h"
+#include "bn_regular_bg_items_christmas_construction_sky_04.h"
+#include "bn_regular_bg_items_christmas_construction_sky_05.h"
+#include "bn_regular_bg_items_christmas_construction_sky_06.h"
+#include "bn_regular_bg_items_christmas_construction_sky_07.h"
+#include "bn_regular_bg_items_christmas_construction_sky_08.h"
+#include "bn_regular_bg_items_christmas_construction_sky_09.h"
+#include "bn_regular_bg_items_christmas_construction_sky_10.h"
+#include "bn_regular_bg_items_christmas_construction_sky_11.h"
+#include "bn_regular_bg_items_christmas_construction_sky_12.h"
+#include "bn_regular_bg_items_christmas_construction_sky_13.h"
+#include "bn_regular_bg_items_christmas_construction_sky_14.h"
+#include "bn_regular_bg_items_christmas_construction_sky_15.h"
+#include "bn_regular_bg_items_christmas_construction_sky_16.h"
+#include "bn_sprite_items_christmas_construction_tree_f0.h"
+#include "bn_sprite_items_christmas_construction_tree_f1.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
 
 #include "generated/construction_background_data.h"
@@ -70,6 +89,30 @@ bn::optional<bn::regular_bg_ptr> create_sky_background(int index)
     case 14: return bn::regular_bg_items::construction_sky_14.create_bg_optional(0, 0);
     case 15: return bn::regular_bg_items::construction_sky_15.create_bg_optional(0, 0);
     default: return bn::regular_bg_items::construction_sky_16.create_bg_optional(0, 0);
+    }
+}
+
+bn::optional<bn::regular_bg_ptr> create_christmas_sky_background(int index)
+{
+    switch(index)
+    {
+    case 0: return bn::regular_bg_items::christmas_construction_sky_00.create_bg_optional(0, 0);
+    case 1: return bn::regular_bg_items::christmas_construction_sky_01.create_bg_optional(0, 0);
+    case 2: return bn::regular_bg_items::christmas_construction_sky_02.create_bg_optional(0, 0);
+    case 3: return bn::regular_bg_items::christmas_construction_sky_03.create_bg_optional(0, 0);
+    case 4: return bn::regular_bg_items::christmas_construction_sky_04.create_bg_optional(0, 0);
+    case 5: return bn::regular_bg_items::christmas_construction_sky_05.create_bg_optional(0, 0);
+    case 6: return bn::regular_bg_items::christmas_construction_sky_06.create_bg_optional(0, 0);
+    case 7: return bn::regular_bg_items::christmas_construction_sky_07.create_bg_optional(0, 0);
+    case 8: return bn::regular_bg_items::christmas_construction_sky_08.create_bg_optional(0, 0);
+    case 9: return bn::regular_bg_items::christmas_construction_sky_09.create_bg_optional(0, 0);
+    case 10: return bn::regular_bg_items::christmas_construction_sky_10.create_bg_optional(0, 0);
+    case 11: return bn::regular_bg_items::christmas_construction_sky_11.create_bg_optional(0, 0);
+    case 12: return bn::regular_bg_items::christmas_construction_sky_12.create_bg_optional(0, 0);
+    case 13: return bn::regular_bg_items::christmas_construction_sky_13.create_bg_optional(0, 0);
+    case 14: return bn::regular_bg_items::christmas_construction_sky_14.create_bg_optional(0, 0);
+    case 15: return bn::regular_bg_items::christmas_construction_sky_15.create_bg_optional(0, 0);
+    default: return bn::regular_bg_items::christmas_construction_sky_16.create_bg_optional(0, 0);
     }
 }
 
@@ -215,6 +258,7 @@ void ConstructionBackdrop::reset()
     _scenery_background.reset();
     _blink_sprites.clear();
     _christmas_scenery_sprites.clear();
+    _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -232,7 +276,8 @@ void ConstructionBackdrop::_update_sky(int camera_y)
     {
         _sky_background.reset();
         _sky_index = -1;
-        _sky_background = create_sky_background(index);
+        _sky_background = _visual_theme == VisualTheme::Christmas ?
+                create_christmas_sky_background(index) : create_sky_background(index);
         if(! _sky_background) { return; } // Wait for BG VRAM reclamation.
         _sky_background->set_priority(3);
         _sky_background->set_z_order(construction_sky_bg_z_order);
@@ -246,37 +291,93 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     const int scroll = ((camera_y - 512) * 22) / 256;
     if(_visual_theme == VisualTheme::Christmas)
     {
-        // Santa's Tower Bloxx uses resources 68/69 as its low-altitude mountain
-        // skyline. Keep it as OBJ scenery so we preserve the source pixels and
-        // don't spend another regular-BG palette/map slot.
+        // Santa's construction resources previously called "mountains" in the
+        // generated pack are actually the two moving cloud sprites from the
+        // Christmas JAR.  They belong in the sky, not pinned to the ground.
         _scenery_background.reset();
         _scenery_chunk = -1;
-        if(scroll > 96)
-        {
-            _christmas_scenery_sprites.clear();
-            return;
-        }
 
-        if(_christmas_scenery_sprites.empty())
+        const int scaled = (2 * camera_y) / 3;
+        const int band = scaled / 2048;
+
+        // Four source-style drifting cloud composites.  Keep them through the
+        // low/mid atmosphere and release the OBJ budget once space events take
+        // over at high altitude.
+        if(band <= 5)
         {
-            if(bn::sprites::available_items_count() < 18 ||
-               ! append_christmas_scenery(generated::christmas_mountain_large, _christmas_scenery_sprites) ||
-               ! append_christmas_scenery(generated::christmas_mountain_small, _christmas_scenery_sprites) ||
-               ! append_christmas_scenery(generated::christmas_mountain_large, _christmas_scenery_sprites))
+            if(_christmas_scenery_sprites.empty())
             {
-                _christmas_scenery_sprites.clear();
-                return;
+                if(bn::sprites::available_items_count() >= 20 &&
+                   append_christmas_scenery(generated::christmas_construction_cloud_large, _christmas_scenery_sprites) &&
+                   append_christmas_scenery(generated::christmas_construction_cloud_small, _christmas_scenery_sprites) &&
+                   append_christmas_scenery(generated::christmas_construction_cloud_large, _christmas_scenery_sprites) &&
+                   append_christmas_scenery(generated::christmas_construction_cloud_small, _christmas_scenery_sprites))
+                {
+                    // Created successfully.
+                }
+                else
+                {
+                    _christmas_scenery_sprites.clear();
+                }
+            }
+
+            if(_christmas_scenery_sprites.size() == 8)
+            {
+                const int drift = _legacy_event_clock_ms / 90;
+                const int parallax = (camera_y / 64) % 32;
+                const int x0 = ((drift + 24) % 360) - 180;
+                const int x1 = ((drift + 136) % 360) - 180;
+                const int x2 = ((drift + 248) % 360) - 180;
+                const int x3 = ((drift + 320) % 360) - 180;
+                position_christmas_scenery(generated::christmas_construction_cloud_large, 0, x0, -54 + parallax / 4, _christmas_scenery_sprites);
+                position_christmas_scenery(generated::christmas_construction_cloud_small, 2, x1, -16 + parallax / 6, _christmas_scenery_sprites);
+                position_christmas_scenery(generated::christmas_construction_cloud_large, 4, x2, 18 + parallax / 5, _christmas_scenery_sprites);
+                position_christmas_scenery(generated::christmas_construction_cloud_small, 6, x3, 48 + parallax / 7, _christmas_scenery_sprites);
             }
         }
+        else
+        {
+            _christmas_scenery_sprites.clear();
+        }
 
-        const int ground_y = 64 + scroll;
-        position_christmas_scenery(generated::christmas_mountain_large, 0, -68, ground_y, _christmas_scenery_sprites);
-        position_christmas_scenery(generated::christmas_mountain_small, 2, 0, ground_y + 7, _christmas_scenery_sprites);
-        position_christmas_scenery(generated::christmas_mountain_large, 4, 68, ground_y, _christmas_scenery_sprites);
+        // The decorated trees are world-anchored ground scenery.  They scroll
+        // away naturally when the camera climbs and never leak into mid/high
+        // altitude bands.
+        const bool trees_visible = scroll >= -80 && scroll <= 96;
+        if(trees_visible)
+        {
+            if(_christmas_tree_sprites.empty() && bn::sprites::available_items_count() >= 16)
+            {
+                bn::optional<bn::sprite_ptr> left =
+                        bn::sprite_items::christmas_construction_tree_f0.create_sprite_optional(0, 0);
+                bn::optional<bn::sprite_ptr> right =
+                        bn::sprite_items::christmas_construction_tree_f1.create_sprite_optional(0, 0);
+                if(left && right)
+                {
+                    left->set_bg_priority(3);
+                    right->set_bg_priority(3);
+                    left->set_z_order(118);
+                    right->set_z_order(118);
+                    _christmas_tree_sprites.push_back(*left);
+                    _christmas_tree_sprites.push_back(*right);
+                }
+            }
+            if(_christmas_tree_sprites.size() == 2)
+            {
+                const int tree_y = 48 + scroll;
+                _christmas_tree_sprites[0].set_position(-86, tree_y);
+                _christmas_tree_sprites[1].set_position(86, tree_y + 2);
+            }
+        }
+        else
+        {
+            _christmas_tree_sprites.clear();
+        }
         return;
     }
 
     _christmas_scenery_sprites.clear();
+    _christmas_tree_sprites.clear();
     if(scroll > generated::construction_scenery_max_scroll)
     {
         _scenery_background.reset();

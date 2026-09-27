@@ -985,8 +985,8 @@ def test_christmas_phase8_scenery_city_chrome_and_hybrid_crane_are_wired() -> No
         assert "bn::sprite_items::crane_special_cable_segment" in source
 
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
-    assert "generated::christmas_mountain_large" in backdrop
-    assert "generated::christmas_mountain_small" in backdrop
+    assert "generated::christmas_construction_cloud_large" in backdrop
+    assert "generated::christmas_construction_cloud_small" in backdrop
     assert "_christmas_scenery_sprites" in backdrop
     assert "_scenery_background.reset()" in backdrop
 
@@ -1100,3 +1100,76 @@ def test_christmas_build_city_uses_full_theme_background_and_chrome() -> None:
     assert "generated::christmas_city_progress_segment" in source
     assert "generated::christmas_city_progress_tails" in source
     assert "generated::christmas_city_type_badges" in source
+
+
+
+def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
+    source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    header = (GBA / "include" / "tb" / "construction_backdrop.h").read_text(encoding="utf-8")
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    backgrounds = GBA / "graphics" / "christmas" / "backgrounds"
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+
+    # The Santa JAR has its own 17-colour construction sky sequence.  Every
+    # band must be live and selected by VisualTheme::Christmas.
+    palettes = []
+    for index in range(17):
+        stem = f"christmas_construction_sky_{index:02d}"
+        bmp = backgrounds / f"{stem}.bmp"
+        manifest = backgrounds / f"{stem}.json"
+        assert bmp.is_file() and manifest.is_file(), stem
+        assert f"bn::regular_bg_items::{stem}" in source
+        with Image.open(bmp) as image:
+            assert image.mode == "P" and image.size == (256, 512)
+            palettes.append(tuple(image.getpalette() or ()))
+    assert all(palette == palettes[0] for palette in palettes[1:])
+    assert "create_christmas_sky_background(index) : create_sky_background(index)" in source
+
+    # Resources initially mislabeled as mountains are really construction
+    # clouds.  The runtime must use the semantic aliases and must not pin them
+    # to the ground as a skyline.
+    assert "christmas_construction_cloud_large" in generated
+    assert "christmas_construction_cloud_small" in generated
+    assert "generated::christmas_construction_cloud_large" in source
+    assert "generated::christmas_construction_cloud_small" in source
+    assert "actually the two moving cloud sprites" in source
+    assert "_christmas_scenery_sprites.size() == 8" in source
+    assert "band <= 5" in source
+
+    # Both decorated Christmas tree variants are promoted from staging and are
+    # world-anchored only at the low-altitude construction ground.
+    for frame in range(2):
+        bmp = gameplay / f"christmas_construction_tree_f{frame}.bmp"
+        manifest = gameplay / f"christmas_construction_tree_f{frame}.json"
+        assert bmp.is_file() and manifest.is_file()
+        with Image.open(bmp) as image:
+            assert image.mode == "P" and image.size == (64, 64)
+            assert max(image.tobytes()) < 16
+    assert "christmas_construction_tree_f0.create_sprite_optional" in source
+    assert "christmas_construction_tree_f1.create_sprite_optional" in source
+    assert "_christmas_tree_sprites" in header
+    assert "trees_visible = scroll >= -80 && scroll <= 96" in source
+
+    # The Christmas event table covers all 1..28 source event slots. Type 13
+    # deliberately shares the Classic 8x8 star-dot because the Santa resource
+    # table has no distinct counterpart for that slot.
+    for event_type in range(1, 29):
+        if event_type == 13:
+            continue
+        assert f"christmas_sky_type_{event_type}_frames" in generated
+    assert "{ legacy_sky_type_13_frames, 1, 8, 8 }" in generated
+    assert "generated::christmas_sky_event_assets[type]" in source
+
+    # Christmas must not fall through to Classic city scenery at low/mid/high
+    # altitude.  The branch explicitly resets the Classic regular BG and
+    # returns before the Classic chunk-selection path.
+    christmas_branch = source.split("if(_visual_theme == VisualTheme::Christmas)", 1)[1]
+    christmas_branch = christmas_branch.split("_christmas_scenery_sprites.clear();", 1)[0]
+    assert "_scenery_background.reset();" in christmas_branch
+    assert "return;" in source[source.index("void ConstructionBackdrop::_update_scenery"):source.index("void ConstructionBackdrop::_update_blinks")]
+
+    # Phase 13 contract remains: normal swing hook/rope/cable are Classic.
+    for scene_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        scene = (GBA / "src" / scene_name).read_text(encoding="utf-8")
+        assert "return generated::crane_hook_frame_for_step(step);" in scene
+        assert "bn::sprite_items::crane_special_cable_segment" in scene
