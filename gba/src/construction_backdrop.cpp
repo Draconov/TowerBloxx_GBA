@@ -40,6 +40,10 @@
 #include "bn_regular_bg_items_christmas_construction_sky_14.h"
 #include "bn_regular_bg_items_christmas_construction_sky_15.h"
 #include "bn_regular_bg_items_christmas_construction_sky_16.h"
+#include "bn_sprite_items_christmas_construction_cityscape_p0.h"
+#include "bn_sprite_items_christmas_construction_cityscape_p1.h"
+#include "bn_sprite_items_christmas_construction_cityscape_p2.h"
+#include "bn_sprite_items_christmas_construction_cityscape_p3.h"
 #include "bn_sprite_items_christmas_construction_tree_f0.h"
 #include "bn_sprite_items_christmas_construction_tree_f1.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
@@ -258,6 +262,7 @@ void ConstructionBackdrop::reset()
     _scenery_background.reset();
     _blink_sprites.clear();
     _christmas_scenery_sprites.clear();
+    _christmas_cityscape_sprites.clear();
     _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
@@ -299,6 +304,56 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
 
         const int scaled = (2 * camera_y) / 3;
         const int band = scaled / 2048;
+
+        // Santa's original construction scene also renders MBAC mesh 46 at
+        // the tower base.  Earlier Christmas passes only ported the PNG sky
+        // resources, which left the lower scene empty after Classic scenery
+        // was disabled.  Keep this cityscape world-anchored so it naturally
+        // slides below the viewport as the tower climbs.
+        const bool cityscape_relevant = scroll >= -96 && scroll <= 180;
+        if(cityscape_relevant)
+        {
+            if(_christmas_cityscape_sprites.empty() && bn::sprites::available_items_count() >= 20)
+            {
+                bn::optional<bn::sprite_ptr> p0 =
+                        bn::sprite_items::christmas_construction_cityscape_p0.create_sprite_optional(0, 0);
+                bn::optional<bn::sprite_ptr> p1 =
+                        bn::sprite_items::christmas_construction_cityscape_p1.create_sprite_optional(0, 0);
+                bn::optional<bn::sprite_ptr> p2 =
+                        bn::sprite_items::christmas_construction_cityscape_p2.create_sprite_optional(0, 0);
+                bn::optional<bn::sprite_ptr> p3 =
+                        bn::sprite_items::christmas_construction_cityscape_p3.create_sprite_optional(0, 0);
+                if(p0 && p1 && p2 && p3)
+                {
+                    _christmas_cityscape_sprites.push_back(*p0);
+                    _christmas_cityscape_sprites.push_back(*p1);
+                    _christmas_cityscape_sprites.push_back(*p2);
+                    _christmas_cityscape_sprites.push_back(*p3);
+                    for(bn::sprite_ptr& sprite : _christmas_cityscape_sprites)
+                    {
+                        sprite.set_bg_priority(3);
+                        sprite.set_z_order(124);
+                    }
+                }
+                else
+                {
+                    _christmas_cityscape_sprites.clear();
+                }
+            }
+
+            if(_christmas_cityscape_sprites.size() == 4)
+            {
+                const int city_y = 26 + scroll;
+                _christmas_cityscape_sprites[0].set_position(-29, city_y - 8);
+                _christmas_cityscape_sprites[1].set_position(35, city_y - 8);
+                _christmas_cityscape_sprites[2].set_position(-29, city_y + 40);
+                _christmas_cityscape_sprites[3].set_position(35, city_y + 40);
+            }
+        }
+        else
+        {
+            _christmas_cityscape_sprites.clear();
+        }
 
         // Four source-style drifting cloud composites.  Keep them through the
         // low/mid atmosphere and release the OBJ budget once space events take
@@ -377,6 +432,7 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     }
 
     _christmas_scenery_sprites.clear();
+    _christmas_cityscape_sprites.clear();
     _christmas_tree_sprites.clear();
     if(scroll > generated::construction_scenery_max_scroll)
     {

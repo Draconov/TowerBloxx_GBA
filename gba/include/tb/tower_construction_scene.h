@@ -55,6 +55,7 @@ private:
     void _rebuild_hud(const TowerConstructionSnapshot& snapshot);
     void _update_combo_meter(const TowerConstructionSnapshot& snapshot);
     void _update_block_sparkle(const TowerConstructionSnapshot& snapshot);
+    void _update_christmas_miss_snow_effect();
     void _update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot);
     void _show_modal_backdrop(int line_count);
     void _show_modal(int localization_index);
@@ -86,10 +87,14 @@ private:
     bn::optional<bn::sprite_ptr> _combo_meter_fill_sprite;
     bn::optional<bn::sprite_ptr> _combo_meter_flash_sprite;
     bn::optional<bn::sprite_ptr> _perfect_seam_sprite;
+    bn::optional<bn::sprite_ptr> _christmas_miss_snow_sprite;
     PerfectLandingSeamPhase _perfect_seam_phase = PerfectLandingSeamPhase::Hidden;
     int _perfect_landing_elapsed_ms = -1;
     int _perfect_landing_floor_index = -1;
     int _perfect_landing_seed = 0;
+    int _christmas_miss_snow_elapsed_ms = -1;
+    int _christmas_miss_snow_frame = -1;
+    int _christmas_miss_snow_x = 0;
     BuildCityConstructionRequest _request{};
     int _language = 0;
     VisualTheme _visual_theme = VisualTheme::Classic;

@@ -17,6 +17,9 @@
 #include "bn_sprite_items_christmas_crane_special_boom_p0.h"
 #include "bn_sprite_items_christmas_crane_special_boom_p1.h"
 #include "bn_sprite_items_christmas_crane_special_boom_p2.h"
+#include "bn_sprite_items_christmas_miss_snow_f0.h"
+#include "bn_sprite_items_christmas_miss_snow_f1.h"
+#include "bn_sprite_items_christmas_miss_snow_f2.h"
 
 #include "generated/legacy_high_altitude_assets.h"
 #include "generated/tower_localization.h"
@@ -42,6 +45,10 @@ constexpr int crane_mesh_z_order = -10;
 constexpr int special_cable_z_order = -5;
 constexpr int special_boom_z_order = -4;
 constexpr int gameplay_worker_z_order = -30;
+constexpr int christmas_miss_snow_z_order = -16;
+constexpr int christmas_miss_snow_frame_ms = 100;
+constexpr int christmas_miss_snow_frame_count = 3;
+constexpr int christmas_miss_snow_duration_ms = christmas_miss_snow_frame_ms * christmas_miss_snow_frame_count;
 constexpr int construction_sky_band_step = 3072;
 constexpr int modal_backdrop_z_order = -90;
 constexpr int modal_line_spacing = 12;
@@ -443,6 +450,10 @@ void TowerConstructionScene::start(
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
+    _christmas_miss_snow_sprite.reset();
+    _christmas_miss_snow_elapsed_ms = -1;
+    _christmas_miss_snow_frame = -1;
+    _christmas_miss_snow_x = 0;
     _rebuild_floor_sprites();
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     _ensure_crane_sprites(snapshot);
@@ -505,6 +516,37 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     const TowerConstructionSnapshot snapshot = _construction.snapshot();
     const bool life_indicator_changed = _life_indicator_animation.advance(delta_ms, snapshot.chances_left);
     const bool floor_added = snapshot.floor_count > before.floor_count;
+    if(_christmas_miss_snow_elapsed_ms >= 0)
+    {
+        _christmas_miss_snow_elapsed_ms += delta_ms;
+        if(_christmas_miss_snow_elapsed_ms >= christmas_miss_snow_duration_ms)
+        {
+            _christmas_miss_snow_elapsed_ms = -1;
+            _christmas_miss_snow_frame = -1;
+            _christmas_miss_snow_sprite.reset();
+        }
+    }
+    if(_visual_theme == VisualTheme::Christmas &&
+       before.block_state != TowerConstructionBlockState::Missed &&
+       snapshot.block_state == TowerConstructionBlockState::Missed)
+    {
+        // Santa resource 39 is a 3 x 23px snow/ice burst sheet. The J2ME
+        // renderer clips one 23x33 frame at the bottom edge exactly when a
+        // missed block leaves the viewport. Keep the same bottom-edge anchor.
+        int miss_x = _screen_x(snapshot.current_x);
+        if(miss_x < -108)
+        {
+            miss_x = -108;
+        }
+        else if(miss_x > 108)
+        {
+            miss_x = 108;
+        }
+        _christmas_miss_snow_x = miss_x;
+        _christmas_miss_snow_elapsed_ms = 0;
+        _christmas_miss_snow_frame = -1;
+        _christmas_miss_snow_sprite.reset();
+    }
     if(_perfect_landing_elapsed_ms >= 0)
     {
         _perfect_landing_elapsed_ms += delta_ms;
@@ -621,6 +663,7 @@ TowerConstructionSceneUpdateResult TowerConstructionScene::update(const InputFra
     _update_combo_meter(snapshot);
     _update_perfect_landing_effect(snapshot);
     _update_block_sparkle(snapshot);
+    _update_christmas_miss_snow_effect();
     _backdrop.update(snapshot.presentation_camera_y, _background_clock_ms);
     return result;
 }
@@ -650,6 +693,9 @@ void TowerConstructionScene::suspend_presentation()
     _combo_star_sprites.clear();
     _combo_star_frame = -1;
     _block_sparkle_sprites.clear();
+    _christmas_miss_snow_sprite.reset();
+    _christmas_miss_snow_elapsed_ms = -1;
+    _christmas_miss_snow_frame = -1;
     _rendered_current_mesh_id = -1;
     _rendered_tumble_stage = 0;
     _rendered_crane_mesh_id = -1;
@@ -1209,6 +1255,55 @@ void TowerConstructionScene::_update_block_sparkle(const TowerConstructionSnapsh
                               _block_sparkle_sprites, -19);
         }
     }
+}
+
+void TowerConstructionScene::_update_christmas_miss_snow_effect()
+{
+    if(_visual_theme != VisualTheme::Christmas || _christmas_miss_snow_elapsed_ms < 0)
+    {
+        _christmas_miss_snow_sprite.reset();
+        _christmas_miss_snow_frame = -1;
+        return;
+    }
+
+    int frame = _christmas_miss_snow_elapsed_ms / christmas_miss_snow_frame_ms;
+    if(frame >= christmas_miss_snow_frame_count)
+    {
+        _christmas_miss_snow_sprite.reset();
+        _christmas_miss_snow_frame = -1;
+        return;
+    }
+
+    if(! _christmas_miss_snow_sprite || frame != _christmas_miss_snow_frame)
+    {
+        _christmas_miss_snow_sprite.reset();
+        bn::optional<bn::sprite_ptr> sprite;
+        switch(frame)
+        {
+        case 0:
+            sprite = bn::sprite_items::christmas_miss_snow_f0.create_sprite_optional(0, 0);
+            break;
+        case 1:
+            sprite = bn::sprite_items::christmas_miss_snow_f1.create_sprite_optional(0, 0);
+            break;
+        default:
+            sprite = bn::sprite_items::christmas_miss_snow_f2.create_sprite_optional(0, 0);
+            break;
+        }
+        if(! sprite)
+        {
+            _christmas_miss_snow_frame = -1;
+            return;
+        }
+        sprite->set_z_order(christmas_miss_snow_z_order);
+        _christmas_miss_snow_sprite = *sprite;
+        _christmas_miss_snow_frame = frame;
+    }
+
+    // Each imported frame is bottom-aligned inside a 32x64 canvas. Butano
+    // positions sprites by their centre, so y=48 puts the source frame bottom
+    // exactly on the 160px viewport edge (Butano y=+80).
+    _christmas_miss_snow_sprite->set_position(_christmas_miss_snow_x, 48);
 }
 
 void TowerConstructionScene::_update_perfect_landing_effect(const TowerConstructionSnapshot& snapshot)

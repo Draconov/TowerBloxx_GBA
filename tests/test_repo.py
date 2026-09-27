@@ -1173,3 +1173,88 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
         scene = (GBA / "src" / scene_name).read_text(encoding="utf-8")
         assert "return generated::crane_hook_frame_for_step(step);" in scene
         assert "bn::sprite_items::crane_special_cable_segment" in scene
+
+
+def test_christmas_phase16_restores_low_altitude_cityscape() -> None:
+    source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    header = (GBA / "include" / "tb" / "construction_backdrop.h").read_text(encoding="utf-8")
+    scenery = GBA / "graphics" / "christmas" / "scenery"
+
+    # Santa's low-altitude city is MBAC model 46, not one of the PNG cloud
+    # resources.  The pre-render is split into four legal GBA OBJ pieces.
+    expected_sizes = {
+        0: (64, 64),
+        1: (64, 64),
+        2: (64, 32),
+        3: (64, 32),
+    }
+    palettes = []
+    for part, expected_size in expected_sizes.items():
+        stem = f"christmas_construction_cityscape_p{part}"
+        bmp = scenery / f"{stem}.bmp"
+        manifest = scenery / f"{stem}.json"
+        assert bmp.is_file() and manifest.is_file(), stem
+        with Image.open(bmp) as image:
+            assert image.mode == "P"
+            assert image.size == expected_size
+            assert max(image.tobytes()) < 16
+            palettes.append(tuple(image.getpalette() or ()))
+        assert f"bn::sprite_items::{stem}" in source
+    assert all(palette == palettes[0] for palette in palettes[1:])
+
+    assert "_christmas_cityscape_sprites" in header
+    assert "cityscape_relevant = scroll >= -96 && scroll <= 180" in source
+    assert "_christmas_cityscape_sprites.size() == 4" in source
+    assert "const int city_y = 26 + scroll" in source
+    assert "sprite.set_z_order(124)" in source
+
+    # The Christmas cityscape replaces, rather than re-enabling, the Classic
+    # regular-BG scenery path.
+    branch = source[source.index("if(_visual_theme == VisualTheme::Christmas)"):]
+    assert "_scenery_background.reset();" in branch
+    assert "christmas_construction_cityscape_p0.create_sprite_optional" in branch
+
+
+def test_christmas_phase17_ports_santa_missed_block_snow_burst() -> None:
+    scene = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    header = (GBA / "include" / "tb" / "tower_construction_scene.h").read_text(encoding="utf-8")
+    gameplay = GBA / "graphics" / "christmas" / "gameplay"
+
+    # Santa image 39 is a 69x33 sheet of three 23px-wide snow/ice burst
+    # frames. House draws the selected frame in a 23x34 bottom-edge clip when
+    # a missed block leaves the viewport; it is not a static floor icicle.
+    palettes = []
+    for frame in range(3):
+        stem = f"christmas_miss_snow_f{frame}"
+        bmp = gameplay / f"{stem}.bmp"
+        manifest = gameplay / f"{stem}.json"
+        assert bmp.is_file() and manifest.is_file(), stem
+        with Image.open(bmp) as image:
+            assert image.mode == "P"
+            assert image.size == (32, 64)
+            assert max(image.tobytes()) < 16
+            palettes.append(tuple((image.getpalette() or [])[: 16 * 3]))
+            # Content is bottom-aligned so y=48 places its source bottom at
+            # Butano screen y=+80, matching the Java bottom-edge clip.
+            bbox = image.getbbox()
+            assert bbox is not None
+            assert bbox[1] >= 31
+            assert bbox[3] <= 64
+    assert all(palette == palettes[0] for palette in palettes[1:])
+
+    assert "before.block_state != TowerConstructionBlockState::Missed" in scene
+    assert "snapshot.block_state == TowerConstructionBlockState::Missed" in scene
+    assert "christmas_miss_snow_frame_ms = 100" in scene
+    assert "christmas_miss_snow_f0.create_sprite_optional" in scene
+    assert "christmas_miss_snow_f1.create_sprite_optional" in scene
+    assert "christmas_miss_snow_f2.create_sprite_optional" in scene
+    assert "_christmas_miss_snow_sprite->set_position(_christmas_miss_snow_x, 48)" in scene
+    assert "_update_christmas_miss_snow_effect();" in scene
+    assert "_christmas_miss_snow_sprite" in header
+
+    # Presentation teardown must remove the burst as well, otherwise a miss on
+    # the last construction frame could leak a Christmas sprite into menus.
+    suspend = scene[scene.index("void TowerConstructionScene::suspend_presentation"):
+                    scene.index("void TowerConstructionScene::resume_presentation")]
+    assert "_christmas_miss_snow_sprite.reset();" in suspend
+    assert "_christmas_miss_snow_elapsed_ms = -1;" in suspend
