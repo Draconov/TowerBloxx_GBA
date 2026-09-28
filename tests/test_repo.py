@@ -1328,3 +1328,159 @@ def test_christmas_phase19_combo_meter_style_is_preserved():
     tc = (root / "gba" / "src" / "tower_construction_scene.cpp").read_text()
     assert "generated::christmas_quick_combo_meter_frame" in qg
     assert "generated::christmas_quick_combo_meter_frame" in tc
+
+
+
+def test_christmas_phase22_menu_clouds_and_core_menu_icons_use_raw_santa_geometry() -> None:
+    source = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    originals = GBA / "themes" / "christmas" / "originals"
+    ui = GBA / "graphics" / "christmas" / "ui"
+
+    # Santa resources 81/82 are the dedicated 105x27 and 54x14 menu clouds,
+    # matching the Classic menu-cloud envelopes exactly. They must be used
+    # directly instead of borrowing construction cloud events.
+    assert "menu_cloud_asset(VisualTheme theme, bool large)" in source
+    assert "generated::christmas_menu_cloud_large" in source
+    assert "generated::christmas_menu_cloud_small" in source
+    assert "_show_menu_clouds(controller.visual_theme())" in source
+    for stem in (
+        "christmas_menu_cloud_large_p0",
+        "christmas_menu_cloud_large_p1",
+        "christmas_menu_cloud_small_p0",
+    ):
+        assert (ui / f"{stem}.bmp").is_file()
+        assert (ui / f"{stem}.json").is_file()
+    assert "christmas_menu_cloud_large_parts" in generated
+    assert "christmas_menu_cloud_small_parts" in generated
+
+    # Core Santa root-menu icons are resources 6..10. Keep their original
+    # 20x12 pixel geometry; only transparent GBA-safe padding is allowed.
+    icon_sources = {
+        "christmas_menu_continue_icon_p0": 6,
+        "christmas_menu_build_city_icon_p0": 7,
+        "christmas_menu_quick_game_icon_p0": 8,
+        "christmas_menu_settings_icon_p0": 9,
+        "christmas_menu_exit_icon_p0": 10,
+    }
+    for stem, resource_id in icon_sources.items():
+        with Image.open(originals / f"resource_{resource_id:03d}.png").convert("RGBA") as src, \
+             Image.open(ui / f"{stem}.bmp") as packed:
+            assert packed.mode == "P"
+            assert packed.size == (32, 16)
+            packed_mask = [value != 0 for value in packed.tobytes()]
+            src_mask = [px[3] != 0 for px in src.get_flattened_data()]
+            # Packed source pixels are written at the top-left without scaling.
+            for y in range(src.height):
+                for x in range(src.width):
+                    assert packed_mask[y * packed.width + x] == src_mask[y * src.width + x]
+
+
+def test_christmas_phase22_all_sky_events_match_raw_santa_pixel_geometry() -> None:
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    originals = GBA / "themes" / "christmas" / "originals"
+    ui = GBA / "graphics" / "christmas" / "ui"
+
+    mapping = {event: event + 53 for event in range(1, 13)}
+    mapping.update({event: event + 52 for event in range(14, 29)})
+    multi = {6: ("h", 2), 12: ("h", 2), 28: ("v", 2)}
+
+    def packed_part(stem: str) -> Image.Image:
+        image = Image.open(ui / f"{stem}.bmp")
+        assert image.mode == "P"
+        assert max(image.tobytes()) < 16
+        return image
+
+    for event, resource_id in mapping.items():
+        source_sheet = Image.open(originals / f"resource_{resource_id:03d}.png").convert("RGBA")
+        direction, frame_count = multi.get(event, ("single", 1))
+        if frame_count == 1:
+            frames = [source_sheet]
+        elif direction == "h":
+            width = source_sheet.width // frame_count
+            frames = [source_sheet.crop((index * width, 0, (index + 1) * width, source_sheet.height))
+                      for index in range(frame_count)]
+        else:
+            height = source_sheet.height // frame_count
+            frames = [source_sheet.crop((0, index * height, source_sheet.width, (index + 1) * height))
+                      for index in range(frame_count)]
+
+        for frame_index, source in enumerate(frames):
+            part_name = f"christmas_sky_type_{event}_f{frame_index}_parts"
+            match = re.search(
+                rf"inline const UiSpritePartAsset {part_name}\[\] = \{{(.*?)\}};",
+                generated,
+                re.S,
+            )
+            assert match, part_name
+            parts = re.findall(
+                r"&bn::sprite_items::([A-Za-z0-9_]+),\s*(-?\d+),\s*(-?\d+)",
+                match.group(1),
+            )
+            assert 1 <= len(parts) <= 4
+            rendered = [[False] * source.width for _ in range(source.height)]
+            for stem, x_text, y_text in parts:
+                packed = packed_part(stem)
+                x = int(x_text)
+                y = int(y_text)
+                left = source.width // 2 + x - packed.width // 2
+                top = source.height // 2 + y - packed.height // 2
+                values = list(packed.tobytes())
+                for py in range(packed.height):
+                    for px in range(packed.width):
+                        if values[py * packed.width + px] == 0:
+                            continue
+                        sx = left + px
+                        sy = top + py
+                        if 0 <= sx < source.width and 0 <= sy < source.height:
+                            rendered[sy][sx] = True
+            source_mask = [[False] * source.width for _ in range(source.height)]
+            for y in range(source.height):
+                for x in range(source.width):
+                    source_mask[y][x] = source.getpixel((x, y))[3] != 0
+            assert rendered == source_mask, f"Christmas sky event {event} frame {frame_index} geometry drifted"
+
+        width, height = frames[0].size
+        frame_symbol = f"christmas_sky_type_{event}_frames"
+        expected_count = len(frames)
+        assert f"{{ {frame_symbol}, {expected_count}, {width}, {height} }}," in generated
+
+    # Type 13 has no separate Santa image and intentionally keeps the tiny
+    # shared Classic star-dot.
+    assert "{ legacy_sky_type_13_frames, 1, 8, 8 }," in generated
+
+
+def test_christmas_phase22_key_hud_strips_keep_santa_source_geometry() -> None:
+    originals = GBA / "themes" / "christmas" / "originals"
+    ui = GBA / "graphics" / "christmas" / "ui"
+
+    # Target badges are five 13x14 frames from resource 26.
+    target = Image.open(originals / "resource_026.png").convert("RGBA")
+    for frame in range(5):
+        src = target.crop((frame * 13, 0, (frame + 1) * 13, 14))
+        packed = Image.open(ui / f"christmas_construction_target_badge_f{frame}_p0.bmp")
+        assert packed.mode == "P" and packed.size == (16, 16)
+        for y in range(14):
+            for x in range(13):
+                assert (packed.getpixel((x, y)) != 0) == (src.getpixel((x, y))[3] != 0)
+
+    # Brown runtime frames are digits 0-9, plus, x from raw resource 28.
+    brown = Image.open(originals / "resource_028.png").convert("RGBA")
+    source_indices = list(range(11)) + [13]
+    for frame, source_index in enumerate(source_indices):
+        src = brown.crop((source_index * 6, 0, (source_index + 1) * 6, 9))
+        packed = Image.open(ui / f"christmas_hud_brown_digit_f{frame}_p0.bmp")
+        assert packed.mode == "P" and packed.size == (8, 16)
+        for y in range(9):
+            for x in range(6):
+                assert (packed.getpixel((x, y)) != 0) == (src.getpixel((x, y))[3] != 0)
+
+    # Red runtime frames are the exact 0-9/minus strip from resource 29.
+    red = Image.open(originals / "resource_029.png").convert("RGBA")
+    for frame in range(11):
+        src = red.crop((frame * 7, 0, (frame + 1) * 7, 9))
+        packed = Image.open(ui / f"christmas_hud_red_digit_f{frame}_p0.bmp")
+        assert packed.mode == "P" and packed.size == (8, 16)
+        for y in range(9):
+            for x in range(7):
+                assert (packed.getpixel((x, y)) != 0) == (src.getpixel((x, y))[3] != 0)

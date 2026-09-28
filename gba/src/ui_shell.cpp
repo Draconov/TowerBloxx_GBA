@@ -82,6 +82,15 @@ int root_string_index(RootMenuItem item)
     }
     return 18;
 }
+
+const generated::UiCompositeAsset& menu_cloud_asset(VisualTheme theme, bool large)
+{
+    if(theme == VisualTheme::Christmas)
+    {
+        return large ? generated::christmas_menu_cloud_large : generated::christmas_menu_cloud_small;
+    }
+    return large ? generated::menu_cloud_large : generated::menu_cloud_small;
+}
 }
 
 UiShell::UiShell() :
@@ -340,7 +349,7 @@ void UiShell::_show_menu_workers(VisualTheme theme)
     }
 }
 
-void UiShell::_show_menu_clouds()
+void UiShell::_show_menu_clouds(VisualTheme theme)
 {
     for(int index = 0; index < MenuCloudField::cloud_count; ++index)
     {
@@ -356,8 +365,7 @@ void UiShell::_show_menu_clouds()
             continue;
         }
 
-        const generated::UiCompositeAsset& asset = large ? generated::menu_cloud_large :
-                                                           generated::menu_cloud_small;
+        const generated::UiCompositeAsset& asset = menu_cloud_asset(theme, large);
         _show_composite(asset, screen_x - 120, screen_y - 80, menu_cloud_z_order);
     }
 }
@@ -426,7 +434,7 @@ void UiShell::_show_root_menu(const UiController& controller)
         }
     }
 
-    _show_menu_clouds();
+    _show_menu_clouds(controller.visual_theme());
     _show_menu_workers(controller.visual_theme());
     _show_softkeys(language, false, false);
 }
