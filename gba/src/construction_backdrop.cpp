@@ -178,6 +178,7 @@ void position_legacy_event_sprites(
     }
 }
 
+}
 
 void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run, VisualTheme visual_theme)
 {

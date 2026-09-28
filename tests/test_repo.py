@@ -1484,3 +1484,14 @@ def test_christmas_phase22_key_hud_strips_keep_santa_source_geometry() -> None:
         for y in range(9):
             for x in range(7):
                 assert (packed.getpixel((x, y)) != 0) == (src.getpixel((x, y))[3] != 0)
+
+
+def test_construction_backdrop_closes_helper_namespace_before_member_definitions() -> None:
+    source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+
+    # Helper functions live in tb::{anonymous}, but ConstructionBackdrop member
+    # definitions must live directly in namespace tb. A missing closing brace
+    # compiles nowhere in devkitARM and previously escaped host-only tests.
+    marker = "\n}\n\nvoid ConstructionBackdrop::start("
+    assert marker in source
+    assert source.index(marker) < source.index("void ConstructionBackdrop::update(")
