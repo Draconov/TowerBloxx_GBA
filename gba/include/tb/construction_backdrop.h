@@ -32,6 +32,7 @@ public:
 private:
     void _update_sky(int camera_y);
     void _update_scenery(int camera_y);
+    void _update_christmas_tree(int camera_y, int clock_ms);
     void _update_blinks(int camera_y, int clock_ms);
     void _update_legacy_events(int camera_y, int clock_ms);
     void _spawn_legacy_event(LegacySkyEventSlot& slot, int band, int camera_pixels, int clock_ms);
@@ -41,9 +42,8 @@ private:
     bn::optional<bn::regular_bg_ptr> _sky_background;
     bn::optional<bn::regular_bg_ptr> _scenery_background;
     bn::vector<bn::sprite_ptr, 12> _blink_sprites;
-    // Four two-part Christmas cloud composites (legacy generated filenames
-    // still say mountain_large/mountain_small).
-    bn::vector<bn::sprite_ptr, 8> _christmas_scenery_sprites;
+    // Two exact frames from Santa resource_048; visible only at street level.
+    bn::vector<bn::sprite_ptr, 2> _christmas_tree_sprites;
     bn::vector<LegacySkyEventSlot, 9> _legacy_events;
     int _legacy_remaining[29] = {};
     uint32_t _spawned_celestial_events = 0;

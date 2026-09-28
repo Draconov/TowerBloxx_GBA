@@ -40,8 +40,12 @@
 #include "bn_regular_bg_items_christmas_construction_sky_14.h"
 #include "bn_regular_bg_items_christmas_construction_sky_15.h"
 #include "bn_regular_bg_items_christmas_construction_sky_16.h"
-#include "bn_regular_bg_items_christmas_construction_ground.h"
+#include "bn_regular_bg_items_christmas_construction_scenery_0.h"
+#include "bn_regular_bg_items_christmas_construction_scenery_1.h"
+#include "bn_regular_bg_items_christmas_construction_scenery_2.h"
 #include "bn_sprite_items_christmas_snowflake_p0.h"
+#include "bn_sprite_items_christmas_construction_tree_f0.h"
+#include "bn_sprite_items_christmas_construction_tree_f1.h"
 #include "bn_sprite_items_construction_high_blink_p0.h"
 
 #include "generated/construction_background_data.h"
@@ -126,9 +130,14 @@ bn::optional<bn::regular_bg_ptr> create_scenery_background(int index)
     }
 }
 
-bn::optional<bn::regular_bg_ptr> create_christmas_ground_background()
+bn::optional<bn::regular_bg_ptr> create_christmas_scenery_background(int index)
 {
-    return bn::regular_bg_items::christmas_construction_ground.create_bg_optional(0, 0);
+    switch(index)
+    {
+    case 0: return bn::regular_bg_items::christmas_construction_scenery_0.create_bg_optional(0, 0);
+    case 1: return bn::regular_bg_items::christmas_construction_scenery_1.create_bg_optional(0, 0);
+    default: return bn::regular_bg_items::christmas_construction_scenery_2.create_bg_optional(0, 0);
+    }
 }
 
 void create_legacy_event_sprites(
@@ -169,42 +178,6 @@ void position_legacy_event_sprites(
     }
 }
 
-bool append_christmas_scenery(
-        const generated::UiCompositeAsset& asset, bn::ivector<bn::sprite_ptr>& output)
-{
-    if(output.size() + asset.part_count > output.max_size() ||
-       bn::sprites::available_items_count() < asset.part_count + 12)
-    {
-        return false;
-    }
-    for(int index = 0; index < asset.part_count; ++index)
-    {
-        const generated::UiSpritePartAsset& part = asset.parts[index];
-        bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(0, 0);
-        if(! sprite)
-        {
-            return false;
-        }
-        sprite->set_bg_priority(3);
-        sprite->set_z_order(120);
-        output.push_back(*sprite);
-    }
-    return true;
-}
-
-void position_christmas_scenery(
-        const generated::UiCompositeAsset& asset, int first_sprite, int x, int y,
-        bn::ivector<bn::sprite_ptr>& sprites)
-{
-    if(first_sprite + asset.part_count > sprites.size()) { return; }
-    for(int index = 0; index < asset.part_count; ++index)
-    {
-        const generated::UiSpritePartAsset& part = asset.parts[index];
-        sprites[first_sprite + index].set_position(x + part.x, y + part.y);
-    }
-}
-
-}
 
 void ConstructionBackdrop::start(int camera_y, int clock_ms, bool new_run, VisualTheme visual_theme)
 {
@@ -272,6 +245,7 @@ void ConstructionBackdrop::update(int camera_y, int clock_ms)
     }
     _update_sky(camera_y);
     _update_scenery(camera_y);
+    _update_christmas_tree(camera_y, clock_ms);
     _update_blinks(camera_y, clock_ms);
     _update_legacy_events(camera_y, clock_ms);
 }
@@ -281,7 +255,7 @@ void ConstructionBackdrop::reset()
     _sky_background.reset();
     _scenery_background.reset();
     _blink_sprites.clear();
-    _christmas_scenery_sprites.clear();
+    _christmas_tree_sprites.clear();
     _legacy_events.clear();
     _legacy_event_clock_ms = 0;
     _legacy_event_step_accumulator_ms = 0;
@@ -311,87 +285,15 @@ void ConstructionBackdrop::_update_sky(int camera_y)
 
 void ConstructionBackdrop::_update_scenery(int camera_y)
 {
+    // Use the exact same three-chunk world/parallax path for both themes.
+    // This is the important structural rule from the working Classic port:
+    // the sky colour bands and the city/ground scenery are independent BGs.
+    // Santa's Tower Bloxx does the same thing in House.i/l: its sky is drawn
+    // first, then the dark city canyon is rendered as a separate scrolling
+    // layer. Baking the canyon into the sky (the old Phase 18 approach) makes
+    // the two layers scroll at the wrong rates and causes visible vertical
+    // seams and repeated ground strips.
     const int scroll = ((camera_y - 512) * 22) / 256;
-    if(_visual_theme == VisualTheme::Christmas)
-    {
-        // Phase 18 follows the actual Santa gameplay composition: a dark
-        // vertical city canyon in the sky BG, with a separate snowy street
-        // foreground at ground level. MBAC model 46 is not the persistent
-        // gameplay skyline seen in the original reference captures.
-        
-        const int scaled = (2 * camera_y) / 3;
-        const int band = scaled / 2048;
-
-        const bool ground_visible = scroll >= -80 && scroll <= 150;
-        if(ground_visible)
-        {
-            if(! _scenery_background)
-            {
-                _scenery_background = create_christmas_ground_background();
-                if(_scenery_background)
-                {
-                    _scenery_background->set_priority(3);
-                    _scenery_background->set_z_order(construction_scenery_bg_z_order);
-                    _scenery_chunk = 0;
-                }
-            }
-            if(_scenery_background)
-            {
-                // At camera_y=0 scroll is -44, so +44 keeps the original
-                // street at its authored low-altitude position. It then moves
-                // down naturally as the tower/camera rises.
-                _scenery_background->set_y(scroll + 44);
-            }
-        }
-        else
-        {
-            _scenery_background.reset();
-            _scenery_chunk = -1;
-        }
-
-        // The two Santa PNG resources are wispy construction clouds. Keep
-        // them in the low/mid atmosphere; the canyon + snowfall persist
-        // behind them, matching the OG night construction scene.
-        if(band <= 5)
-        {
-            if(_christmas_scenery_sprites.empty())
-            {
-                if(bn::sprites::available_items_count() >= 20 &&
-                   append_christmas_scenery(generated::christmas_construction_cloud_large, _christmas_scenery_sprites) &&
-                   append_christmas_scenery(generated::christmas_construction_cloud_small, _christmas_scenery_sprites) &&
-                   append_christmas_scenery(generated::christmas_construction_cloud_large, _christmas_scenery_sprites) &&
-                   append_christmas_scenery(generated::christmas_construction_cloud_small, _christmas_scenery_sprites))
-                {
-                    // Created successfully.
-                }
-                else
-                {
-                    _christmas_scenery_sprites.clear();
-                }
-            }
-
-            if(_christmas_scenery_sprites.size() == 8)
-            {
-                const int drift = _legacy_event_clock_ms / 90;
-                const int parallax = (camera_y / 64) % 32;
-                const int x0 = ((drift + 24) % 360) - 180;
-                const int x1 = ((drift + 136) % 360) - 180;
-                const int x2 = ((drift + 248) % 360) - 180;
-                const int x3 = ((drift + 320) % 360) - 180;
-                position_christmas_scenery(generated::christmas_construction_cloud_large, 0, x0, -54 + parallax / 4, _christmas_scenery_sprites);
-                position_christmas_scenery(generated::christmas_construction_cloud_small, 2, x1, -16 + parallax / 6, _christmas_scenery_sprites);
-                position_christmas_scenery(generated::christmas_construction_cloud_large, 4, x2, 18 + parallax / 5, _christmas_scenery_sprites);
-                position_christmas_scenery(generated::christmas_construction_cloud_small, 6, x3, 48 + parallax / 7, _christmas_scenery_sprites);
-            }
-        }
-        else
-        {
-            _christmas_scenery_sprites.clear();
-        }
-        return;
-    }
-
-    _christmas_scenery_sprites.clear();
     if(scroll > generated::construction_scenery_max_scroll)
     {
         _scenery_background.reset();
@@ -429,7 +331,8 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     {
         _scenery_background.reset();
         _scenery_chunk = -1;
-        _scenery_background = create_scenery_background(chunk);
+        _scenery_background = _visual_theme == VisualTheme::Christmas ?
+                create_christmas_scenery_background(chunk) : create_scenery_background(chunk);
         if(! _scenery_background) { return; } // Retry after core::update().
         _scenery_background->set_priority(3);
         _scenery_background->set_z_order(construction_scenery_bg_z_order);
@@ -438,6 +341,59 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
 
     const int chunk_center = generated::construction_scenery_chunk_centers[chunk];
     _scenery_background->set_y(scroll - chunk_center);
+}
+
+void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
+{
+    if(_visual_theme != VisualTheme::Christmas)
+    {
+        _christmas_tree_sprites.clear();
+        return;
+    }
+
+    const int scroll = ((camera_y - 512) * 22) / 256;
+    // The tree belongs to the authored street at the base only. Explicitly
+    // destroy it before OBJ coordinates can wrap at higher altitude.
+    if(scroll < -80 || scroll > 72 || _scenery_chunk != 0)
+    {
+        _christmas_tree_sprites.clear();
+        return;
+    }
+
+    if(_christmas_tree_sprites.empty())
+    {
+        if(bn::sprites::available_items_count() < 14)
+        {
+            return;
+        }
+        bn::optional<bn::sprite_ptr> frame0 =
+                bn::sprite_items::christmas_construction_tree_f0.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> frame1 =
+                bn::sprite_items::christmas_construction_tree_f1.create_sprite_optional(0, 0);
+        if(! frame0 || ! frame1)
+        {
+            _christmas_tree_sprites.clear();
+            return;
+        }
+        frame0->set_bg_priority(3);
+        frame1->set_bg_priority(3);
+        frame0->set_z_order(90);
+        frame1->set_z_order(90);
+        _christmas_tree_sprites.push_back(*frame0);
+        _christmas_tree_sprites.push_back(*frame1);
+    }
+
+    // resource_048 contains the two OG tree frames. Keep their authored
+    // 400-ish ms blink and anchor them to the same world scroll as scenery 0.
+    const int visible_frame = (clock_ms / 400) & 1;
+    const int tree_x = 82;
+    const int tree_y = 88 + scroll;
+    for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
+    {
+        bn::sprite_ptr& tree = _christmas_tree_sprites[index];
+        tree.set_position(tree_x, tree_y);
+        tree.set_visible(index == visible_frame);
+    }
 }
 
 void ConstructionBackdrop::_update_blinks(int camera_y, int clock_ms)

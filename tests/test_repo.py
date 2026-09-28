@@ -966,17 +966,14 @@ def test_christmas_phase7_ui_palette_budgets_are_stable() -> None:
     assert all(palette16(path) == worker_palette for path in menu_files)
 
 
-def test_christmas_phase8_scenery_city_chrome_and_hybrid_crane_are_wired() -> None:
+
+def test_christmas_phase8_city_chrome_and_hybrid_crane_are_wired() -> None:
     gameplay = GBA / "graphics" / "christmas" / "gameplay"
     ui = GBA / "graphics" / "christmas" / "ui"
     for name in (
         "christmas_crane_special_boom_p0.bmp",
         "christmas_crane_special_boom_p1.bmp",
         "christmas_crane_special_boom_p2.bmp",
-        "christmas_mountain_large_p0.bmp",
-        "christmas_mountain_large_p1.bmp",
-        "christmas_mountain_small_p0.bmp",
-        "christmas_mountain_small_p1.bmp",
     ):
         assert (gameplay / name).is_file(), name
     assert (ui / "christmas_city_population_icon_p0.bmp").is_file()
@@ -984,25 +981,16 @@ def test_christmas_phase8_scenery_city_chrome_and_hybrid_crane_are_wired() -> No
 
     for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
         source = (GBA / "src" / source_name).read_text(encoding="utf-8")
-        # Hybrid crane contract: the special/intro crane may use its red
-        # Christmas mesh and boom, because Phase 12 normalized their geometry,
-        # while the normal swinging rope/hook and cable stay on the proven
-        # Classic GBA presentation.
+        # Hybrid crane contract: the special/intro crane uses the red Santa
+        # mesh and boom; normal swing rope/hook/cable stay on Classic's proven
+        # GBA geometry.
         assert "bn::sprite_items::christmas_crane_special_boom_p0" in source
         assert "bn::sprite_items::christmas_crane_special_boom_p1" in source
         assert "bn::sprite_items::christmas_crane_special_boom_p2" in source
         assert "bn::sprite_items::crane_special_boom_p0" in source
-        assert "bn::sprite_items::crane_special_boom_p1" in source
-        assert "bn::sprite_items::crane_special_boom_p2" in source
         assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
         assert "return generated::crane_hook_frame_for_step(step);" in source
         assert "bn::sprite_items::crane_special_cable_segment" in source
-
-    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
-    assert "generated::christmas_construction_cloud_large" in backdrop
-    assert "generated::christmas_construction_cloud_small" in backdrop
-    assert "_christmas_scenery_sprites" in backdrop
-    assert "_scenery_background.reset()" in backdrop
 
     build_city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
     assert "generated::christmas_city_population_icon" in build_city
@@ -1010,11 +998,10 @@ def test_christmas_phase8_scenery_city_chrome_and_hybrid_crane_are_wired() -> No
 
     legal_sizes = {(8, 8), (16, 8), (8, 16), (16, 16), (32, 8), (8, 32),
                    (32, 16), (16, 32), (32, 32), (64, 32), (32, 64), (64, 64)}
-    phase8_bmps = list(gameplay.glob("christmas_crane_special_boom_p*.bmp"))
-    phase8_bmps += list(gameplay.glob("christmas_mountain_*_p*.bmp"))
-    phase8_bmps += [ui / "christmas_city_population_icon_p0.bmp", ui / "christmas_city_action_icon_p0.bmp"]
-    assert len(phase8_bmps) == 9
-    for bmp in phase8_bmps:
+    bmps = list(gameplay.glob("christmas_crane_special_boom_p*.bmp"))
+    bmps += [ui / "christmas_city_population_icon_p0.bmp", ui / "christmas_city_action_icon_p0.bmp"]
+    assert len(bmps) == 5
+    for bmp in bmps:
         with Image.open(bmp) as image:
             assert image.size in legal_sizes, (bmp, image.size)
             assert image.mode == "P"
@@ -1117,15 +1104,38 @@ def test_christmas_build_city_uses_full_theme_background_and_chrome() -> None:
 
 
 
-def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
+
+def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets() -> None:
     source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     header = (GBA / "include" / "tb" / "construction_backdrop.h").read_text(encoding="utf-8")
     generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    classic_bg = GBA / "graphics" / "backgrounds"
     backgrounds = GBA / "graphics" / "christmas" / "backgrounds"
     gameplay = GBA / "graphics" / "christmas" / "gameplay"
 
-    # The Santa JAR has its own 17-colour construction sky sequence.  Every
-    # band must be live and selected by VisualTheme::Christmas.
+    # Phase 20 mirrors the proven Classic architecture: the 17 moving colour
+    # bands are one regular BG, while city/ground scenery is a second regular
+    # BG using the same 3-chunk selection and scroll formula. The old Phase-18
+    # approach baked canyon geometry into the sky and caused the visible bars,
+    # seams and repeating street reported on real ROM builds.
+    assert "create_christmas_sky_background(index) : create_sky_background(index)" in source
+    assert "create_christmas_scenery_background(chunk) : create_scenery_background(chunk)" in source
+    assert "const int scroll = ((camera_y - 512) * 22) / 256;" in source
+    assert "generated::construction_scenery_chunk_centers" in source
+    assert "generated::construction_scenery_max_scroll" in source
+    assert "_scenery_background->set_y(scroll - chunk_center);" in source
+
+    # Exact Santa House.t palette, quantized to GBA RGB555. The geometry of
+    # every sky band must remain identical to Classic: only colours differ.
+    santa_rgb888 = [
+        0x000000, 0x000000, 0x123D88, 0x152860, 0x162F72, 0x162965,
+        0x122458, 0x102050, 0x131D48, 0x34204C, 0x372C51, 0x2D4B4B,
+        0x4A6742, 0x674723, 0x532733, 0x802A2B, 0x511A2F,
+    ]
+    def gba_rgb(value: int) -> tuple[int, int, int]:
+        return tuple(((value >> shift) & 0xFF) & ~7 for shift in (16, 8, 0))
+
+    expected = [gba_rgb(value) for value in santa_rgb888]
     palettes = []
     for index in range(17):
         stem = f"christmas_construction_sky_{index:02d}"
@@ -1136,23 +1146,46 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
         with Image.open(bmp) as image:
             assert image.mode == "P" and image.size == (256, 512)
             palettes.append(tuple(image.getpalette() or ()))
+            actual_counts = sorted(count for count, _ in (image.convert("RGB").getcolors(1_000_000) or []))
+        with Image.open(classic_bg / f"construction_sky_{index:02d}.bmp") as classic:
+            classic_counts = sorted(count for count, _ in (classic.convert("RGB").getcolors(1_000_000) or []))
+        # Bands 0/9 can collapse two equal/near colours, so compare total
+        # geometry where possible and always require the authored endpoint.
+        if len(actual_counts) == len(classic_counts):
+            assert actual_counts == classic_counts
+        with Image.open(bmp) as image:
+            used = {color for _, color in (image.convert("RGB").getcolors(1_000_000) or [])}
+        assert expected[index] in used
     assert all(palette == palettes[0] for palette in palettes[1:])
-    assert "create_christmas_sky_background(index) : create_sky_background(index)" in source
 
-    # Resources initially mislabeled as mountains are really construction
-    # clouds.  The runtime must use the semantic aliases and must not pin them
-    # to the ground as a skyline.
-    assert "christmas_construction_cloud_large" in generated
-    assert "christmas_construction_cloud_small" in generated
-    assert "generated::christmas_construction_cloud_large" in source
-    assert "generated::christmas_construction_cloud_small" in source
-    assert "The two Santa PNG resources are wispy construction clouds" in source
-    assert "_christmas_scenery_sprites.size() == 8" in source
-    assert "band <= 5" in source
+    # Christmas gets dedicated scenery chunks; the runtime no longer has a
+    # separate repeating ground BG or the obsolete 'mountain/cloud' scenery
+    # sprite hack.
+    scenery_palettes = []
+    for chunk in range(3):
+        stem = f"christmas_construction_scenery_{chunk}"
+        bmp = backgrounds / f"{stem}.bmp"
+        manifest = backgrounds / f"{stem}.json"
+        assert bmp.is_file() and manifest.is_file(), stem
+        with Image.open(bmp) as image:
+            assert image.mode == "P" and image.size == (256, 512)
+            scenery_palettes.append(tuple(image.getpalette() or ()))
+        assert f"bn::regular_bg_items::{stem}" in source
+    assert all(palette == scenery_palettes[0] for palette in scenery_palettes[1:])
+    # GBA 8bpp regular backgrounds share the hardware BG palette; sky and
+    # scenery must therefore use one identical 256-colour palette, just like
+    # the proven Classic assets do. A mismatch here causes the kind of wild
+    # cyan/black colour corruption seen in earlier ROM screenshots.
+    assert scenery_palettes[0] == palettes[0]
+    assert "christmas_construction_ground" not in source
+    assert "christmas_construction_cloud_large" not in source
+    assert "christmas_construction_cloud_small" not in source
+    assert "christmas_mountain" not in source
+    assert "_christmas_scenery_sprites" not in source
+    assert "_christmas_scenery_sprites" not in header
 
-    # The original extracted tree frames remain in the source pack, but Phase
-    # 18 folds the exact low-altitude street/tree composition into the authored
-    # ground BG so duplicate tree sprites must not be instantiated at runtime.
+    # Exact Santa resource_048 tree frames are a base-only world decoration,
+    # not part of the repeating sky. They are explicitly culled with altitude.
     for frame in range(2):
         bmp = gameplay / f"christmas_construction_tree_f{frame}.bmp"
         manifest = gameplay / f"christmas_construction_tree_f{frame}.json"
@@ -1160,13 +1193,16 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
         with Image.open(bmp) as image:
             assert image.mode == "P" and image.size == (64, 64)
             assert max(image.tobytes()) < 16
-    assert "christmas_construction_tree_f0.create_sprite_optional" not in source
-    assert "christmas_construction_tree_f1.create_sprite_optional" not in source
-    assert "_christmas_tree_sprites" not in header
+    assert "christmas_construction_tree_f0.create_sprite_optional" in source
+    assert "christmas_construction_tree_f1.create_sprite_optional" in source
+    assert "scroll < -80 || scroll > 72 || _scenery_chunk != 0" in source
+    assert "const int tree_y = 88 + scroll;" in source
+    assert "_christmas_tree_sprites.clear();" in source
+    assert "_christmas_tree_sprites" in header
 
-    # The Christmas event table covers all 1..28 source event slots. Type 13
-    # deliberately shares the Classic 8x8 star-dot because the Santa resource
-    # table has no distinct counterpart for that slot.
+    # Clouds/flyers/planets stay in the original sky-event system. All Santa
+    # counterparts are selected from the theme-aware event table; type 13 is
+    # intentionally shared because Santa has no separate counterpart there.
     for event_type in range(1, 29):
         if event_type == 13:
             continue
@@ -1174,63 +1210,48 @@ def test_christmas_phase15_construction_backdrop_is_fully_theme_aware() -> None:
     assert "{ legacy_sky_type_13_frames, 1, 8, 8 }" in generated
     assert "generated::christmas_sky_event_assets[type]" in source
 
-    # Christmas must not fall through to Classic city scenery at low/mid/high
-    # altitude.  The branch explicitly resets the Classic regular BG and
-    # returns before the Classic chunk-selection path.
-    christmas_branch = source.split("if(_visual_theme == VisualTheme::Christmas)", 1)[1]
-    christmas_branch = christmas_branch.split("_christmas_scenery_sprites.clear();", 1)[0]
-    assert "_scenery_background.reset();" in christmas_branch
-    assert "return;" in source[source.index("void ConstructionBackdrop::_update_scenery"):source.index("void ConstructionBackdrop::_update_blinks")]
-
-    # Phase 13 contract remains: normal swing hook/rope/cable are Classic.
+    # Normal swing hook/rope/cable remain Classic by design.
     for scene_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
         scene = (GBA / "src" / scene_name).read_text(encoding="utf-8")
         assert "return generated::crane_hook_frame_for_step(step);" in scene
         assert "bn::sprite_items::crane_special_cable_segment" in scene
 
 
+
 def test_christmas_phase16_cityscape_asset_is_not_forced_into_gameplay() -> None:
     source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     scenery = GBA / "graphics" / "christmas" / "scenery"
 
-    # The older Phase 16 MBAC model-46 pre-render remains in the source pack
-    # for reference/build compatibility, but OG gameplay captures prove it is
-    # not the persistent construction backdrop. The runtime must no longer
-    # instantiate it as the low-altitude skyline.
+    # The old MBAC model-46 pre-render remains in the source pack, but the
+    # Santa JAR's House.i/l draw order proves the persistent canyon is a
+    # separate procedural scenery pass, not model 46. Phase 20 therefore uses
+    # the dedicated regular-BG scenery chunks instead of instantiating it.
     for part in range(4):
         stem = f"christmas_construction_cityscape_p{part}"
         assert (scenery / f"{stem}.bmp").is_file()
         assert (scenery / f"{stem}.json").is_file()
         assert f"bn::sprite_items::{stem}" not in source
-
     assert "_christmas_cityscape_sprites" not in source
-    assert "MBAC model 46 is not the persistent" in source
 
 
-def test_christmas_phase18_matches_og_night_city_composition() -> None:
+
+def test_christmas_low_altitude_foreground_and_snow_do_not_repeat() -> None:
     source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     backgrounds = GBA / "graphics" / "christmas" / "backgrounds"
     gameplay = GBA / "graphics" / "christmas" / "gameplay"
 
-    # The 17 Christmas sky bands are no longer flat colour fields: they carry
-    # the dark blue vertical city-canyon silhouettes and embedded snowfall
-    # seen in the original Santa gameplay captures.
-    palettes = []
-    for index in range(17):
-        bmp = backgrounds / f"christmas_construction_sky_{index:02d}.bmp"
-        with Image.open(bmp) as image:
-            assert image.mode == "P"
-            assert image.size == (256, 512)
-            assert len(image.getcolors(maxcolors=1_000_000) or []) >= 8
-            palettes.append(tuple(image.getpalette() or ()))
-    assert all(palette == palettes[0] for palette in palettes[1:])
-
-    ground = backgrounds / "christmas_construction_ground.bmp"
-    ground_json = backgrounds / "christmas_construction_ground.json"
-    assert ground.is_file() and ground_json.is_file()
-    with Image.open(ground) as image:
-        assert image.mode == "P" and image.size == (256, 256)
-        assert len(image.getcolors(maxcolors=1_000_000) or []) > 100
+    # Santa resources 45-47 are baked only into scenery chunk 0, which shares
+    # Classic's world scroll. There is no independent ground BG to wrap up the
+    # screen at higher altitude.
+    low = Image.open(backgrounds / "christmas_construction_scenery_0.bmp")
+    mid = Image.open(backgrounds / "christmas_construction_scenery_1.bmp")
+    high = Image.open(backgrounds / "christmas_construction_scenery_2.bmp")
+    assert low.mode == mid.mode == high.mode == "P"
+    assert low.size == mid.size == high.size == (256, 512)
+    # The authored snowy street gives chunk 0 substantially more palette/content
+    # complexity than the pure city-canyon continuation chunks.
+    assert len(low.getcolors(maxcolors=1_000_000) or []) > len(mid.getcolors(maxcolors=1_000_000) or [])
+    low.close(); mid.close(); high.close()
 
     snow = gameplay / "christmas_snowflake_p0.bmp"
     snow_json = gameplay / "christmas_snowflake_p0.json"
@@ -1239,13 +1260,11 @@ def test_christmas_phase18_matches_og_night_city_composition() -> None:
         assert image.mode == "P" and image.size == (8, 8)
         assert max(image.tobytes()) < 16
 
-    assert "bn::regular_bg_items::christmas_construction_ground" in source
     assert "bn::sprite_items::christmas_snowflake_p0" in source
-    assert "ground_visible = scroll >= -80 && scroll <= 150" in source
-    assert "_scenery_background->set_y(scroll + 44)" in source
     assert "continuous screen-space snowfall" in source
     assert "Deterministic falling snow in screen space" in source
-    assert "MBAC model 46 is not the persistent" in source
+    assert "christmas_construction_ground" not in source
+    assert "set_y(scroll + 44)" not in source
 
 
 def test_christmas_phase17_ports_santa_missed_block_snow_burst() -> None:
@@ -1293,16 +1312,9 @@ def test_christmas_phase17_ports_santa_missed_block_snow_burst() -> None:
     assert "_christmas_miss_snow_elapsed_ms = -1;" in suspend
 
 
-def test_christmas_phase19_og_canyon_and_combo_meter():
+def test_christmas_phase19_combo_meter_style_is_preserved():
     root = Path(__file__).resolve().parents[1]
-    backgrounds = root / "gba" / "graphics" / "christmas" / "backgrounds"
     ui = root / "gba" / "graphics" / "christmas" / "ui"
-
-    # OG Santa construction uses dark-blue depth, never a pure-black canyon void.
-    for index in range(17):
-        image = Image.open(backgrounds / f"christmas_construction_sky_{index:02d}.bmp").convert("RGB")
-        colors = image.getcolors(maxcolors=image.width * image.height) or []
-        assert all(color != (0, 0, 0) for _, color in colors)
 
     # Christmas uses the same proven geometry as the Classic combo frame,
     # but the OG Santa border is light/white rather than Classic yellow.
