@@ -47,14 +47,19 @@ void GameAudio::update(bool enabled, AudioScene scene, VisualTheme theme)
     }
 }
 
-void GameAudio::play_construction_result(uint8_t roof)
+void GameAudio::play_construction_result(uint8_t roof, VisualTheme theme)
 {
     if(! _enabled)
     {
         return;
     }
 
-    // House stops resource 38 before starting the finite 40/41/42 player.
+    // House stops the looping tower track before starting the finite result
+    // player. Santa JAR resources 82-84 are byte-identical to the Classic
+    // result jingles, so the themes intentionally share these three modules.
+    // Keep the theme parameter explicit so this remains a verified fallback,
+    // not an accidental Classic leak if the audio pack changes later.
+    (void) theme;
     bn::music::stop();
     if(roof == 2)
     {

@@ -1222,14 +1222,13 @@ def test_christmas_phase16_cityscape_asset_is_not_forced_into_gameplay() -> None
     source = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     scenery = GBA / "graphics" / "christmas" / "scenery"
 
-    # The old MBAC model-46 pre-render remains in the source pack, but the
-    # Santa JAR's House.i/l draw order proves the persistent canyon is a
-    # separate procedural scenery pass, not model 46. Phase 20 therefore uses
-    # the dedicated regular-BG scenery chunks instead of instantiating it.
+    # The obsolete MBAC model-46 pre-render was never part of the live Santa
+    # canyon path. Phase 23 removes the dead source assets entirely now that
+    # Phase 20's dedicated regular-BG scenery pipeline is stable.
     for part in range(4):
         stem = f"christmas_construction_cityscape_p{part}"
-        assert (scenery / f"{stem}.bmp").is_file()
-        assert (scenery / f"{stem}.json").is_file()
+        assert not (scenery / f"{stem}.bmp").exists()
+        assert not (scenery / f"{stem}.json").exists()
         assert f"bn::sprite_items::{stem}" not in source
     assert "_christmas_cityscape_sprites" not in source
 
@@ -1495,3 +1494,128 @@ def test_construction_backdrop_closes_helper_namespace_before_member_definitions
     marker = "\n}\n\nvoid ConstructionBackdrop::start("
     assert marker in source
     assert source.index(marker) < source.index("void ConstructionBackdrop::update(")
+
+
+def test_christmas_phase23_results_navigation_and_city_continue_use_santa_assets() -> None:
+    ui_shell = (GBA / "src" / "ui_shell.cpp").read_text(encoding="utf-8")
+    city = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+    ui = GBA / "graphics" / "christmas" / "ui"
+
+    # Santa resource 5 supplies the red up/down navigation arrows used for
+    # paged support/instruction screens; resource 12 supplies the small
+    # continue arrow used by modal Build City presentation.
+    for stem in (
+        "christmas_support_nav_up_p0",
+        "christmas_support_nav_down_p0",
+        "christmas_city_continue_arrow_p0",
+    ):
+        bmp = ui / f"{stem}.bmp"
+        manifest = ui / f"{stem}.json"
+        assert bmp.is_file() and manifest.is_file()
+        with Image.open(bmp) as image:
+            assert image.mode == "P" and image.size == (8, 8)
+            assert max(image.tobytes()) < 16
+
+    assert "generated::christmas_support_nav_up" in ui_shell
+    assert "generated::christmas_support_nav_down" in ui_shell
+    assert "controller.visual_theme()" in ui_shell
+    assert "generated::christmas_city_continue_arrow" in city
+    assert "christmas_support_nav_up_parts" in generated
+    assert "christmas_support_nav_down_parts" in generated
+    assert "christmas_city_continue_arrow_parts" in generated
+
+
+def test_christmas_phase23_build_city_final_visual_palette_budget() -> None:
+    ui = GBA / "graphics" / "christmas" / "ui"
+    files = list(ui.glob("christmas_city_*.bmp")) + list(ui.glob("christmas_hud_*.bmp"))
+    assert files
+
+    # Audit every live Build City Christmas sprite against its manifest. The
+    # detailed city/building art intentionally uses bpp8 (up to 96 colours);
+    # small HUD chrome remains bpp4. This catches accidental palette growth
+    # without incorrectly forcing the bpp8 city art into a 16-colour bank.
+    for path in files:
+        manifest = path.with_suffix(".json")
+        assert manifest.is_file(), path.name
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        with Image.open(path) as image:
+            assert image.mode == "P", path.name
+            colors = len(image.getcolors(maxcolors=1_000_000) or [])
+            if data.get("bpp_mode") == "bpp_4":
+                assert colors <= 16, (path.name, colors)
+            else:
+                assert data.get("bpp_mode") == "bpp_8", path.name
+                assert colors <= int(data.get("colors_count", 256)), (path.name, colors)
+
+    source = (GBA / "src" / "build_city_scene.cpp").read_text(encoding="utf-8")
+    for symbol in (
+        "christmas_city_progress_segment",
+        "christmas_city_milestone_badge",
+        "christmas_city_milestone_badge_empty",
+        "christmas_city_population_icon",
+        "christmas_city_status_panel_frames",
+        "christmas_city_status_placement",
+        "christmas_city_status_browse",
+        "christmas_city_comparison_panel_active",
+        "christmas_city_type_badges",
+        "christmas_city_action_icon",
+        "christmas_city_continue_arrow",
+    ):
+        assert symbol in source
+
+
+def test_christmas_phase23_audio_result_fallback_is_explicit_and_no_fake_sfx_are_added() -> None:
+    audio_cpp = (GBA / "src" / "game_audio.cpp").read_text(encoding="utf-8")
+    audio_h = (GBA / "include" / "tb" / "game_audio.h").read_text(encoding="utf-8")
+    main = (GBA / "src" / "main.cpp").read_text(encoding="utf-8")
+    originals = GBA / "themes" / "christmas" / "originals"
+
+    # The Santa pack has six MIDI resources: three looping scene tracks and
+    # three finite result jingles. There are no WAV/AMR/sample resources in the
+    # extracted pack, so do not invent block/menu SFX that the source does not
+    # provide evidence for.
+    assert len(list(originals.glob("music_*.mid"))) == 6
+    assert not list(originals.glob("*.wav"))
+    assert not list(originals.glob("*.amr"))
+    assert not list(originals.glob("*.mp3"))
+
+    assert "play_construction_result(uint8_t roof, VisualTheme theme)" in audio_h
+    assert "Santa JAR resources 82-84 are byte-identical" in audio_cpp
+    assert "(void) theme;" in audio_cpp
+    assert "audio.play_construction_result(result.roof, tb::visual_theme(save));" in main
+
+
+def test_christmas_phase23_removes_obsolete_backdrop_assets_and_keeps_bg_budget_safe() -> None:
+    christmas = GBA / "graphics" / "christmas"
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text(encoding="utf-8")
+
+    obsolete = [
+        christmas / "backgrounds" / "christmas_construction_ground.bmp",
+        christmas / "backgrounds" / "christmas_construction_ground.json",
+        *(christmas / "gameplay" / f"christmas_mountain_{size}_p{part}.{ext}"
+          for size, parts in (("large", range(2)), ("small", range(2)))
+          for part in parts for ext in ("bmp", "json")),
+        *(christmas / "scenery" / f"christmas_construction_cityscape_p{part}.{ext}"
+          for part in range(4) for ext in ("bmp", "json")),
+    ]
+    assert all(not path.exists() for path in obsolete)
+    assert "christmas_mountain" not in generated
+    assert "christmas_construction_cloud_large" not in generated
+    assert "christmas_construction_cloud_small" not in generated
+
+    # Regular BG tile counts remain far below one 8bpp charblock's 256-tile
+    # budget for the active Christmas construction chunks.
+    bg_root = christmas / "backgrounds"
+    for path in sorted(bg_root.glob("christmas_construction_*.bmp")):
+        with Image.open(path) as image:
+            assert image.mode == "P" and image.size == (256, 512)
+            raw = image.tobytes()
+            width, height = image.size
+            tiles = set()
+            for y in range(0, height, 8):
+                for x in range(0, width, 8):
+                    tile = b"".join(raw[(y + row) * width + x:(y + row) * width + x + 8]
+                                    for row in range(8))
+                    tiles.add(tile)
+            assert len(tiles) <= 224, (path.name, len(tiles))

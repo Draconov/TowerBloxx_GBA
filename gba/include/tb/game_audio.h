@@ -18,7 +18,7 @@ class GameAudio
 {
 public:
     void update(bool enabled, AudioScene scene, VisualTheme theme);
-    void play_construction_result(uint8_t roof);
+    void play_construction_result(uint8_t roof, VisualTheme theme);
 
 private:
     void _play_scene(AudioScene scene, VisualTheme theme);

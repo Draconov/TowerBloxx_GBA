@@ -642,7 +642,7 @@ void UiShell::_show_instructions_menu(const UiController& controller)
     _show_softkeys(language, false, true);
 }
 
-void UiShell::_show_lines(const char* const* lines, int line_count, int page)
+void UiShell::_show_lines(const char* const* lines, int line_count, int page, VisualTheme theme)
 {
     const int start = page * lines_per_page;
     int end = start + lines_per_page;
@@ -657,11 +657,13 @@ void UiShell::_show_lines(const char* const* lines, int line_count, int page)
     const int pages = page_count(line_count);
     if(page > 0)
     {
-        _show_composite(generated::support_nav_f0, 98, -42);
+        _show_composite(theme == VisualTheme::Christmas ? generated::christmas_support_nav_up :
+                                                         generated::support_nav_f0, 98, -42);
     }
     if(page + 1 < pages)
     {
-        _show_composite(generated::support_nav_f1, 98, 42);
+        _show_composite(theme == VisualTheme::Christmas ? generated::christmas_support_nav_down :
+                                                         generated::support_nav_f1, 98, 42);
     }
 }
 
@@ -672,12 +674,12 @@ void UiShell::_show_instructions_page(const UiController& controller)
     if(controller.instructions_page() == 0)
     {
         _show_lines(generated::quick_game_instruction_lines[language],
-                    generated::quick_game_instruction_lines_line_counts[language], _content_page);
+                    generated::quick_game_instruction_lines_line_counts[language], _content_page, controller.visual_theme());
     }
     else
     {
         _show_lines(generated::build_city_instruction_lines[language],
-                    generated::build_city_instruction_lines_line_counts[language], _content_page);
+                    generated::build_city_instruction_lines_line_counts[language], _content_page, controller.visual_theme());
     }
     _show_softkeys(language, false, true);
 }
@@ -686,7 +688,7 @@ void UiShell::_show_about(const UiController& controller)
 {
     const int language = controller.language();
     _show_composite(generated::sumea_logo, 0, -68);
-    _show_lines(generated::about_lines[language], generated::about_lines_line_counts[language], _content_page);
+    _show_lines(generated::about_lines[language], generated::about_lines_line_counts[language], _content_page, controller.visual_theme());
     _show_softkeys(language, false, true);
 }
 

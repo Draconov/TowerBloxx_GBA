@@ -200,7 +200,7 @@ int main()
                 // result can leave the old construction graphics occupying OBJ
                 // VRAM until bn::core::update() processes their destruction.
                 pending_presentation = PendingPresentation::CityResume;
-                audio.play_construction_result(result.roof);
+                audio.play_construction_result(result.roof, tb::visual_theme(save));
                 session.return_to_build_city();
             }
             else if(result.exit)

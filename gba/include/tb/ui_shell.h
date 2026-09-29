@@ -47,7 +47,7 @@ private:
     void _show_menu(const char* const* labels, int count, int selection);
     void _show_menu_workers(VisualTheme theme);
     void _show_menu_clouds(VisualTheme theme);
-    void _show_lines(const char* const* lines, int line_count, int page);
+    void _show_lines(const char* const* lines, int line_count, int page, VisualTheme theme);
     void _show_composite(const generated::UiCompositeAsset& asset, int x, int y, int z_order = 0);
     [[nodiscard]] int _content_page_count(const UiController& controller) const;
 

@@ -1101,7 +1101,9 @@ void BuildCityScene::_show_event_modal(const BuildCityEvent& event)
         _show_composite(city_level_icon_asset(event.id - 24, _visual_theme), 0, 18, -100);
     }
     _show_composite(generated::support_nav_f2, 0, centered_y(134), -100);
-    _show_composite(generated::city_continue_arrow, centered_x(232), centered_y(152), -100);
+    _show_composite(_visual_theme == VisualTheme::Christmas ? generated::christmas_city_continue_arrow :
+                                                         generated::city_continue_arrow,
+                    centered_x(232), centered_y(152), -100);
 }
 
 void BuildCityScene::_rebuild(const SaveData& save)
