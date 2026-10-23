@@ -298,11 +298,15 @@ const generated::TumblePoseAsset& tumble_pose_for(
     return generated::tumble_pose_for(mesh_id, stage, z_negative, y_negative);
 }
 
-// The normal swinging rope/hook geometry is deliberately shared by both
-// visual themes. The Christmas special/intro crane is safe to theme because
-// its mesh and boom were normalized to the Classic GBA footprint in Phase 12.
-const generated::CraneHookFrameAsset& crane_hook_frame_for_step(int step)
+// The seasonal hook atlas has the same placement offsets as the Classic
+// 49-frame atlas. Switch sprite artwork without changing crane physics.
+const generated::CraneHookFrameAsset& crane_hook_frame_for_step(
+        VisualTheme visual_theme, int step)
 {
+    if(visual_theme == VisualTheme::Christmas)
+    {
+        return generated::christmas::crane_hook_frame_for_step(step);
+    }
     return generated::crane_hook_frame_for_step(step);
 }
 
@@ -904,7 +908,7 @@ void TowerConstructionScene::_ensure_crane_sprites(const TowerConstructionSnapsh
     }
 
     const int rotation_step = snapshot.crane_x >> 4;
-    const generated::CraneHookFrameAsset& frame = crane_hook_frame_for_step(rotation_step);
+    const generated::CraneHookFrameAsset& frame = crane_hook_frame_for_step(_visual_theme, rotation_step);
     if(_crane_hook_sprites.empty() || _rendered_crane_mesh_id != crane_hook_mesh_id ||
        _rendered_crane_rotation_step != frame.rotation_step)
     {
@@ -1088,7 +1092,7 @@ void TowerConstructionScene::_update_world_positions(const TowerConstructionSnap
         else
         {
             const generated::CraneHookFrameAsset& frame =
-                    crane_hook_frame_for_step(snapshot.crane_x >> 4);
+                    crane_hook_frame_for_step(_visual_theme, snapshot.crane_x >> 4);
             position_crane_hook_frame_sprites(frame, crane_x, crane_y, _crane_hook_sprites);
         }
     }

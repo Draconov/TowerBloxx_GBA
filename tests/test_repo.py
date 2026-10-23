@@ -813,10 +813,9 @@ def test_christmas_construction_meshes_are_generated_with_hybrid_crane() -> None
         assert '#include "generated/christmas_tower_mesh_assets.h"' in source
         assert "generated::christmas::mesh_by_id(mesh_id)" in source
         assert "generated::christmas::tumble_pose_for" in source
-        # Christmas keeps its blocks/tumbles and may theme the one-off
-        # special/intro crane mesh, but the normal swing rope/hook remains the
-        # proven Classic GBA geometry.
-        assert "generated::christmas::crane_hook_frame_for_step" not in source
+        # The themed normal hook reuses the proven per-part geometry.
+        assert "generated::christmas::crane_hook_frame_for_step(step)" in source
+        assert "crane_hook_frame_for_step(_visual_theme, rotation_step)" in source
         assert "return generated::crane_hook_frame_for_step(step);" in source
         assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
         assert "VisualTheme::Christmas" in source
@@ -1123,7 +1122,7 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
     assert "const int scroll = ((camera_y - 512) * 22) / 256;" in source
     assert "generated::construction_scenery_chunk_centers" in source
     assert "generated::construction_scenery_max_scroll" in source
-    assert "_scenery_background->set_y(scroll - chunk_center);" in source
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in source
 
     # Exact Santa House.t palette, quantized to GBA RGB555. The geometry of
     # every sky band must remain identical to Classic: only colours differ.
@@ -1195,8 +1194,8 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
             assert max(image.tobytes()) < 16
     assert "christmas_construction_tree_f0.create_sprite_optional" in source
     assert "christmas_construction_tree_f1.create_sprite_optional" in source
-    assert "scroll < -80 || scroll > 72 || _scenery_chunk != 0" in source
-    assert "const int tree_y = 88 + scroll;" in source
+    assert "scenery_scroll < -190 || scenery_scroll >= 14" in source
+    assert "const int tree_y = 88 + scenery_scroll;" in source
     assert "_christmas_tree_sprites.clear();" in source
     assert "_christmas_tree_sprites" in header
 
@@ -1619,3 +1618,52 @@ def test_christmas_phase23_removes_obsolete_backdrop_assets_and_keeps_bg_budget_
                                     for row in range(8))
                     tiles.add(tile)
             assert len(tiles) <= 224, (path.name, len(tiles))
+
+
+def test_christmas_construction_world_space_alignment() -> None:
+    """Holiday fence, skyline and tree must follow one world-space scroll."""
+    from pathlib import Path
+    from PIL import Image
+
+    repo = Path(__file__).resolve().parents[1]
+    classic = repo / "gba/graphics/backgrounds/construction_scenery_0.bmp"
+    christmas = repo / "gba/graphics/christmas/backgrounds/christmas_construction_scenery_0.bmp"
+
+    def last_detail_row(path: Path) -> int:
+        with Image.open(path) as bmp:
+            rgb = bmp.convert("RGB")
+            assert rgb.size == (256, 512)
+            for y in range(rgb.height - 1, -1, -1):
+                colors = {rgb.getpixel((x, y)) for x in range(rgb.width)}
+                if len(colors) >= 3:
+                    return y
+        raise AssertionError(f"No street art in {path}")
+
+    classic_bottom = last_detail_row(classic)
+    christmas_bottom = last_detail_row(christmas)
+    alignment = christmas_bottom - classic_bottom
+    assert alignment == 54  # Verified against original indexed background sprites.
+
+    source = (repo / "gba/src/construction_backdrop.cpp").read_text(encoding="utf-8")
+    assert f"constexpr int christmas_scenery_height_adjustment = {alignment};" in source
+    assert "int normalized_scroll = scenery_scroll;" in source
+    assert "if(scenery_scroll > generated::construction_scenery_max_scroll)" in source
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in source
+    assert "const int tree_y = 88 + scenery_scroll;" in source
+
+    # For any camera movement, street level is the same as Classic, while the
+    # skyline chunk selector and culling remain in the same coordinate frame.
+    for scroll in (-98, -54, 0, 128, 256, 512, 672):
+        assert christmas_bottom + scroll - alignment == classic_bottom + scroll
+
+    # The two Christmas chunks differ in a hidden patch below the switch.
+    # The visible 240x160 area must be pixel-identical at the switch boundary.
+    left = repo / "gba/graphics/christmas/backgrounds/christmas_construction_scenery_0.bmp"
+    right = repo / "gba/graphics/christmas/backgrounds/christmas_construction_scenery_1.bmp"
+    with Image.open(left) as left_bmp, Image.open(right) as right_bmp:
+        a = left_bmp.convert("RGB")
+        b = right_bmp.convert("RGB")
+        for y in range(160):
+            source_y = y + 176 - 128
+            for x in range(8, 248):
+                assert a.getpixel((x, source_y)) == b.getpixel((x, source_y + 256))

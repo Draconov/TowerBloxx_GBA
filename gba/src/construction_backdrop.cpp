@@ -62,6 +62,9 @@ constexpr int legacy_screen_width_eighths = 240 * 8;
 constexpr int legacy_screen_height_eighths = 160 * 8;
 constexpr int construction_sky_bg_z_order = 1;
 constexpr int construction_scenery_bg_z_order = 0;
+// Christmas fence/street art is lower in its 512px bitmap than Classic.
+// Compensate in world scroll, not by moving individual screen sprites.
+constexpr int christmas_scenery_height_adjustment = 54;
 
 int sky_color_index(int band)
 {
@@ -295,14 +298,16 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     // the two layers scroll at the wrong rates and causes visible vertical
     // seams and repeated ground strips.
     const int scroll = ((camera_y - 512) * 22) / 256;
-    if(scroll > generated::construction_scenery_max_scroll)
+    const int scenery_scroll = scroll - (_visual_theme == VisualTheme::Christmas ?
+            christmas_scenery_height_adjustment : 0);
+    if(scenery_scroll > generated::construction_scenery_max_scroll)
     {
         _scenery_background.reset();
         _scenery_chunk = -1;
         return;
     }
 
-    int normalized_scroll = scroll;
+    int normalized_scroll = scenery_scroll;
     if(normalized_scroll < 0)
     {
         normalized_scroll = 0;
@@ -341,7 +346,7 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     }
 
     const int chunk_center = generated::construction_scenery_chunk_centers[chunk];
-    _scenery_background->set_y(scroll - chunk_center);
+    _scenery_background->set_y(scenery_scroll - chunk_center);
 }
 
 void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
@@ -353,9 +358,11 @@ void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
     }
 
     const int scroll = ((camera_y - 512) * 22) / 256;
+    const int scenery_scroll = scroll - christmas_scenery_height_adjustment;
     // The tree belongs to the authored street at the base only. Explicitly
     // destroy it before OBJ coordinates can wrap at higher altitude.
-    if(scroll < -80 || scroll > 72 || _scenery_chunk != 0)
+    if(scenery_scroll < -190 || scenery_scroll >= 14 ||
+       _scenery_chunk != 0)
     {
         _christmas_tree_sprites.clear();
         return;
@@ -388,7 +395,7 @@ void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
     // 400-ish ms blink and anchor them to the same world scroll as scenery 0.
     const int visible_frame = (clock_ms / 400) & 1;
     const int tree_x = 82;
-    const int tree_y = 88 + scroll;
+    const int tree_y = 88 + scenery_scroll;
     for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
     {
         bn::sprite_ptr& tree = _christmas_tree_sprites[index];
