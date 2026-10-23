@@ -560,7 +560,8 @@ QuickGameSceneUpdateResult QuickGameScene::update(const InputFrame& input, SaveD
     const int current_combo_bonus_bucket = combo_bonus_blink_bucket(snapshot);
     if(life_indicator_changed || snapshot.floor_count != _last_hud_floor_count || snapshot.chances_left != _last_hud_chances ||
        snapshot.population != _last_hud_population || snapshot.combo_count != _last_hud_combo_count ||
-       current_combo_bucket != _last_hud_combo_bucket || current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
+       (current_combo_bucket > 0) != (_last_hud_combo_bucket > 0) ||
+       current_combo_bonus_bucket != _last_hud_combo_bonus_bucket ||
        snapshot.status != _last_hud_status)
     {
         _rebuild_hud(snapshot);
@@ -1129,7 +1130,11 @@ void QuickGameScene::_update_block_sparkle(const QuickGameSnapshot& snapshot)
     }
 
     const int animation_bucket = _background_clock_ms / 100;
-    for(int floor_index = snapshot.floor_count - 1; floor_index >= first_floor; --floor_index)
+    int decorated_floors = 0;
+    const int sparkle_floor_limit = _visual_theme == VisualTheme::Christmas ? 3 : 5;
+    for(int floor_index = snapshot.floor_count - 1;
+        floor_index >= first_floor && decorated_floors < sparkle_floor_limit;
+        --floor_index, ++decorated_floors)
     {
         const QuickFloor& floor = _game.floor(floor_index);
         const int visible_slot = floor_index - _visible_floor_start;
@@ -1201,7 +1206,8 @@ void QuickGameScene::_update_perfect_landing_effect(const QuickGameSnapshot& sna
 
     // Sample the line behind every head without overflowing OAM or the fixed
     // perfect-star vector. No game state is altered if a dot is omitted.
-    for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count; ++trail_index)
+    for(int trail_index = 0; trail_index < perfect_landing_trail_sample_count;
+        trail_index += _visual_theme == VisualTheme::Christmas ? 2 : 1)
     {
         const int trail_elapsed = perfect_landing_star_trail_elapsed(_perfect_landing_elapsed_ms, trail_index);
         if(trail_elapsed <= 0) { continue; }

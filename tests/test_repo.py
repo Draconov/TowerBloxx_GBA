@@ -1195,7 +1195,7 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
     assert "christmas_construction_tree_f0.create_sprite_optional" in source
     assert "christmas_construction_tree_f1.create_sprite_optional" in source
     assert "scenery_scroll < -190 || scenery_scroll >= 14" in source
-    assert "const int tree_y = 88 + scenery_scroll;" in source
+    assert "const int tree_y = 82 + scenery_scroll;" in source
     assert "_christmas_tree_sprites.clear();" in source
     assert "_christmas_tree_sprites" in header
 
@@ -1649,7 +1649,7 @@ def test_christmas_construction_world_space_alignment() -> None:
     assert "int normalized_scroll = scenery_scroll;" in source
     assert "if(scenery_scroll > generated::construction_scenery_max_scroll)" in source
     assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in source
-    assert "const int tree_y = 88 + scenery_scroll;" in source
+    assert "const int tree_y = 82 + scenery_scroll;" in source
 
     # For any camera movement, street level is the same as Classic, while the
     # skyline chunk selector and culling remain in the same coordinate frame.
@@ -1739,3 +1739,68 @@ def test_christmas_hook_reuses_exact_classic_sprite_part_anchors():
     christmas = hook_offsets(generated / "christmas_tower_mesh_assets.h")
     assert len(classic) == len(christmas) == 49
     assert classic == christmas
+
+
+def test_christmas_classic_geometry_numbers_use_one_shared_hud_palette() -> None:
+    """The Santa JAR sprites stay untouched; runtime digits fit legacy anchors."""
+    classic = GBA / "graphics" / "ui"
+    christmas = GBA / "graphics" / "christmas" / "ui"
+    generated = (GBA / "include" / "generated" / "christmas_assets.h").read_text()
+    reference = None
+    for color, count in (("brown", 12), ("red", 11)):
+        for index in range(count):
+            classic_name = f"hud_{color}_digit_f{index}_p0.bmp"
+            name = f"christmas_classic_hud_{color}_digit_f{index}_p0"
+            with Image.open(classic / classic_name) as old, Image.open(christmas / f"{name}.bmp") as new:
+                assert old.size == new.size == (8, 8)
+                assert old.mode == new.mode == "P"
+                assert new.getbbox() == old.getbbox()
+                assert tuple(bool(i) for i in old.get_flattened_data()) == tuple(bool(i) for i in new.get_flattened_data())
+                assert max(new.get_flattened_data()) < 16
+                palette = tuple((new.getpalette() or [])[:48])
+                if reference is None:
+                    reference = palette
+                assert palette == reference, name
+            manifest = json.loads((christmas / f"{name}.json").read_text())
+            assert manifest["bpp_mode"] == "bpp_4"
+            assert f"bn_sprite_items_{name}.h" in generated
+            assert f"&bn::sprite_items::{name}, 2, 1" in generated
+
+
+def test_christmas_build_city_ui_prioritizes_essential_sprites() -> None:
+    source = (GBA / "src" / "build_city_scene.cpp").read_text()
+    assert source.index("_show_city_tiles(save, snapshot);") < source.index("_show_progress_line(snapshot);", source.index("void BuildCityScene::_rebuild("))
+    assert "reserved_essential_sprites = 16" in source
+    # Placement and modal overlays must not be hidden by saved towers.
+    assert "constexpr int saved_building_z_order = 0" in source
+    assert "constexpr int placement_cursor_z_order = -2" in source
+    assert "constexpr int placement_pending_z_order = -4" in source
+    assert "constexpr int discard_effect_z_order = -5" in source
+    assert "generated::christmas_city_selector_active_slot" in source
+    assert "0);  // Behind the selected outline (-2) and tower (-3)." in source
+
+    classic = GBA / "graphics" / "ui" / "city_selector_active_slot_p0.bmp"
+    christmas = GBA / "graphics" / "christmas" / "ui" / "christmas_city_selector_active_slot_p0.bmp"
+    with Image.open(classic) as old, Image.open(christmas) as new:
+        assert old.size == new.size == (16, 16)
+        assert tuple(bool(x) for x in old.get_flattened_data()) == tuple(bool(x) for x in new.get_flattened_data())
+        assert max(new.get_flattened_data()) < 16
+
+
+def test_christmas_perfect_combo_optional_sprite_budget() -> None:
+    for filename in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        source = (GBA / "src" / filename).read_text()
+        assert "_visual_theme == VisualTheme::Christmas ? 3 : 5" in source
+        assert "trail_index += _visual_theme == VisualTheme::Christmas ? 2 : 1" in source
+        # The meter's fill is drawn by _update_combo_meter, not by rebuilding
+        # the entire static HUD on each 1/8th transition.
+        assert "(current_combo_bucket > 0) != (_last_hud_combo_bucket > 0)" in source
+        assert "_update_combo_meter(snapshot);" in source
+        assert "perfect_landing_star_count" in source
+
+
+def test_christmas_street_tree_avoids_foundation_intrusion() -> None:
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text()
+    assert "const int tree_y = 82 + scenery_scroll;" in backdrop
+    assert "const int scenery_scroll = scroll - christmas_scenery_height_adjustment;" in backdrop
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in backdrop

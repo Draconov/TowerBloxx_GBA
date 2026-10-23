@@ -48,6 +48,9 @@ constexpr int modal_line_spacing = 12;
 // A valid-lot pulse is a floor marker, not an overlay on placed buildings.
 // In Butano lower sprite z-order values draw in front of higher values.
 constexpr int valid_lot_ring_z_order = 1;
+// Background items must never cover a preview, pending tower or dialog.
+constexpr int saved_building_z_order = 0;
+constexpr int placement_cursor_z_order = -2;
 constexpr int selected_preview_outline_z_order = -2;
 constexpr int selected_preview_tower_z_order = -3;
 constexpr int placement_pending_z_order = -4;
@@ -615,7 +618,13 @@ void BuildCityScene::_show_valid_lot_ring(
     for(int index = 0; index < asset.part_count; ++index)
     {
         const generated::UiSpritePartAsset& part = asset.parts[index];
-        if(_sprites.size() >= _sprites.max_size()) { return; }
+        // Keep headroom for the selected tower, placement cursor and HUD.
+        constexpr int reserved_essential_sprites = 16;
+        if(_sprites.max_size() - _sprites.size() < reserved_essential_sprites + 1 ||
+           bn::sprites::available_items_count() < reserved_essential_sprites + 1)
+        {
+            return;
+        }
         bn::optional<bn::sprite_ptr> sprite = part.item->create_sprite_optional(
                 centered_x(screen_x + part.x), centered_y(screen_y + part.y));
         if(! sprite) { return; }
@@ -666,7 +675,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         _show_composite(
                 building_asset(tile.type, tile.roof, _visual_theme),
                 building_center_x(tile.type, tile.roof, screen_left, _visual_theme),
-                building_center_y(tile.type, tile.roof, screen_baseline, _visual_theme));
+                building_center_y(tile.type, tile.roof, screen_baseline, _visual_theme),
+                saved_building_z_order);
     }
 
     if(pulse_building_type != 0)
@@ -714,9 +724,12 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
                 const int slot_left = selector_screen_left + 2;
                 const int slot_top = selector_screen_top + 2 + (selected - 1) * 16;
                 _show_composite(
-                        generated::city_selector_active_slot,
+                        _visual_theme == VisualTheme::Christmas ?
+                                generated::christmas_city_selector_active_slot :
+                                generated::city_selector_active_slot,
                         centered_x(slot_left + 7),
-                        centered_y(slot_top + 7));
+                        centered_y(slot_top + 7),
+                        0);  // Behind the selected outline (-2) and tower (-3).
             }
         }
 
@@ -772,7 +785,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         _show_composite(
                 _visual_theme == VisualTheme::Christmas ? generated::christmas_city_action_icon :
                                                          generated::city_action_icon,
-                centered_x(discard_cell_center_x), centered_y(discard_cell_center_y));
+                centered_x(discard_cell_center_x), centered_y(discard_cell_center_y),
+                saved_building_z_order);
     }
 
     if(snapshot.cursor_column < 0)
@@ -822,7 +836,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         _show_composite(
                 lot_asset(4, _visual_theme),
                 centered_x(cursor_canvas_left + 11),
-                centered_y(cursor_canvas_top + 11));
+                centered_y(cursor_canvas_top + 11),
+                placement_cursor_z_order);
     }
 
     const bool target_is_grid_cell = snapshot.cursor_column >= 0 && snapshot.cursor_row >= 0;
@@ -847,7 +862,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         _show_composite(
                 building_asset(snapshot.pending_building_type, snapshot.pending_roof, _visual_theme),
                 building_center_x(snapshot.pending_building_type, snapshot.pending_roof, screen_left, _visual_theme),
-                building_center_y(snapshot.pending_building_type, snapshot.pending_roof, screen_baseline, _visual_theme));
+                building_center_y(snapshot.pending_building_type, snapshot.pending_roof, screen_baseline, _visual_theme),
+                placement_pending_z_order);
     }
 
     if(snapshot.placement_committing && snapshot.placement_timer_ms >= 0)
@@ -857,7 +873,8 @@ void BuildCityScene::_show_city_tiles(const SaveData& save, const BuildCitySnaps
         const int effect_frame = build_city_placement_effect_frame(replacing, snapshot.placement_timer_ms);
         if(effect_frame >= 0)
         {
-            _show_composite(city_effect_asset(effect_frame, _visual_theme), centered_x(cell_center_x), centered_y(cell_center_y));
+            _show_composite(city_effect_asset(effect_frame, _visual_theme), centered_x(cell_center_x), centered_y(cell_center_y),
+                            discard_effect_z_order);
         }
     }
 }
@@ -901,8 +918,7 @@ void BuildCityScene::_show_progress_line(const BuildCitySnapshot& snapshot)
 
 void BuildCityScene::_show_status(const SaveData& save, const BuildCitySnapshot& snapshot)
 {
-    _show_progress_line(snapshot);
-
+    // Keep numbers/panels ahead of cosmetic progress sprites in the OBJ budget.
     const generated::UiCompositeAsset* const* active_white_digits =
             _visual_theme == VisualTheme::Christmas ? generated::christmas_hud_white_digit_frames : white_digits;
     const generated::UiCompositeAsset* const* active_brown_digits =
@@ -1205,6 +1221,9 @@ void BuildCityScene::_rebuild(const SaveData& save)
     }
     _show_status(save, snapshot);
     _show_city_tiles(save, snapshot);
+    // The segmented progress line can need 30 OAM items near completion.
+    // Allocate it LAST so it cannot hide HUD digits, selectors or buildings.
+    _show_progress_line(snapshot);
     _last_snapshot = snapshot;
     _has_snapshot = true;
 }

@@ -395,7 +395,9 @@ void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
     // 400-ish ms blink and anchor them to the same world scroll as scenery 0.
     const int visible_frame = (clock_ms / 400) & 1;
     const int tree_x = 82;
-    const int tree_y = 88 + scenery_scroll;
+    // Christmas tree art has 22 opaque pixels beneath its sprite center.
+    // Lift its trunk above the solid ground while keeping world scroll locked.
+    const int tree_y = 82 + scenery_scroll;
     for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
     {
         bn::sprite_ptr& tree = _christmas_tree_sprites[index];
