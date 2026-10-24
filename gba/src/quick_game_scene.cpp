@@ -14,9 +14,6 @@
 #include "bn_sprite_items_crane_special_boom_p0.h"
 #include "bn_sprite_items_crane_special_boom_p1.h"
 #include "bn_sprite_items_crane_special_boom_p2.h"
-#include "bn_sprite_items_christmas_crane_special_boom_p0.h"
-#include "bn_sprite_items_christmas_crane_special_boom_p1.h"
-#include "bn_sprite_items_christmas_crane_special_boom_p2.h"
 
 #include "generated/tower_localization.h"
 #include "generated/tower_mesh_assets.h"
@@ -199,7 +196,7 @@ int draw_source_number(int value, int min_digits, int right_x, int top_y,
 
 const generated::MeshAsset& mesh_by_id(VisualTheme visual_theme, int mesh_id)
 {
-    if(visual_theme == VisualTheme::Christmas)
+    if(visual_theme == VisualTheme::Christmas && mesh_id != special_crane_mesh_id)
     {
         if(const generated::MeshAsset* christmas_mesh = generated::christmas::mesh_by_id(mesh_id))
         {
@@ -236,15 +233,13 @@ const generated::TumblePoseAsset& tumble_pose_for(
     return generated::tumble_pose_for(mesh_id, stage, z_negative, y_negative);
 }
 
-// The seasonal hook atlas has the same placement offsets as the Classic
-// 49-frame atlas. Switch sprite artwork without changing crane physics.
+// The Classic 49-frame atlas already has the correct cable and hook geometry.
+// Share the exact same rendering path in both themes to prevent a second hook
+// palette/VRAM allocation and avoid the Christmas replacement's art offsets.
 const generated::CraneHookFrameAsset& crane_hook_frame_for_step(
         VisualTheme visual_theme, int step)
 {
-    if(visual_theme == VisualTheme::Christmas)
-    {
-        return generated::christmas::crane_hook_frame_for_step(step);
-    }
+    (void) visual_theme;
     return generated::crane_hook_frame_for_step(step);
 }
 
@@ -854,22 +849,14 @@ void QuickGameScene::_rebuild_special_cable(const QuickGameSnapshot& snapshot, C
 
     if(_special_boom_sprites.empty())
     {
-        // Keep the proven Classic cable/hook geometry, but let the one-off
-        // intro/special crane use the red Christmas boom. Phase 12 normalized
-        // these three parts to the exact Classic canvas and cable endpoints.
-        const bool christmas_crane = _visual_theme == VisualTheme::Christmas;
-        const auto& p0_item = christmas_crane ?
-                bn::sprite_items::christmas_crane_special_boom_p0 :
-                bn::sprite_items::crane_special_boom_p0;
-        const auto& p1_item = christmas_crane ?
-                bn::sprite_items::christmas_crane_special_boom_p1 :
-                bn::sprite_items::crane_special_boom_p1;
-        const auto& p2_item = christmas_crane ?
-                bn::sprite_items::christmas_crane_special_boom_p2 :
-                bn::sprite_items::crane_special_boom_p2;
-        bn::optional<bn::sprite_ptr> p0 = p0_item.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p1 = p1_item.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p2 = p2_item.create_sprite_optional(0, 0);
+        // The intro/special boom now uses the proven Classic parts in both themes.
+        // Do not allocate the separate Christmas boom palette.
+        bn::optional<bn::sprite_ptr> p0 =
+                bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p1 =
+                bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
+        bn::optional<bn::sprite_ptr> p2 =
+                bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
         if(p0 && p1 && p2)
         {
             p0->set_z_order(special_boom_z_order);

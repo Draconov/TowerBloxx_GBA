@@ -65,6 +65,10 @@ constexpr int construction_scenery_bg_z_order = 0;
 // Christmas fence/street art is lower in its 512px bitmap than Classic.
 // Compensate in world scroll, not by moving individual screen sprites.
 constexpr int christmas_scenery_height_adjustment = 54;
+// At the initial camera height the bottom row clips presents and tree roots.
+// Shift the authored street (and ONLY the street) up within the viewport;
+// preserve the original per-altitude parallax and chunk-selection formula.
+constexpr int christmas_street_viewport_lift = 16;
 
 int sky_color_index(int band)
 {
@@ -346,7 +350,8 @@ void ConstructionBackdrop::_update_scenery(int camera_y)
     }
 
     const int chunk_center = generated::construction_scenery_chunk_centers[chunk];
-    _scenery_background->set_y(scenery_scroll - chunk_center);
+    _scenery_background->set_y(scenery_scroll - chunk_center -
+                               (_visual_theme == VisualTheme::Christmas ? christmas_street_viewport_lift : 0));
 }
 
 void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
@@ -397,7 +402,7 @@ void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
     const int tree_x = 82;
     // Christmas tree art has 22 opaque pixels beneath its sprite center.
     // Lift its trunk above the solid ground while keeping world scroll locked.
-    const int tree_y = 82 + scenery_scroll;
+    const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;
     for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
     {
         bn::sprite_ptr& tree = _christmas_tree_sprites[index];

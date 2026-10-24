@@ -814,7 +814,7 @@ def test_christmas_construction_meshes_are_generated_with_hybrid_crane() -> None
         assert "generated::christmas::mesh_by_id(mesh_id)" in source
         assert "generated::christmas::tumble_pose_for" in source
         # The themed normal hook reuses the proven per-part geometry.
-        assert "generated::christmas::crane_hook_frame_for_step(step)" in source
+        assert "generated::christmas::crane_hook_frame_for_step(step)" not in source
         assert "crane_hook_frame_for_step(_visual_theme, rotation_step)" in source
         assert "return generated::crane_hook_frame_for_step(step);" in source
         assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
@@ -983,9 +983,9 @@ def test_christmas_phase8_city_chrome_and_hybrid_crane_are_wired() -> None:
         # Hybrid crane contract: the special/intro crane uses the red Santa
         # mesh and boom; normal swing rope/hook/cable stay on Classic's proven
         # GBA geometry.
-        assert "bn::sprite_items::christmas_crane_special_boom_p0" in source
-        assert "bn::sprite_items::christmas_crane_special_boom_p1" in source
-        assert "bn::sprite_items::christmas_crane_special_boom_p2" in source
+        assert "bn::sprite_items::christmas_crane_special_boom_p0" not in source
+        assert "bn::sprite_items::christmas_crane_special_boom_p1" not in source
+        assert "bn::sprite_items::christmas_crane_special_boom_p2" not in source
         assert "bn::sprite_items::crane_special_boom_p0" in source
         assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
         assert "return generated::crane_hook_frame_for_step(step);" in source
@@ -1122,7 +1122,7 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
     assert "const int scroll = ((camera_y - 512) * 22) / 256;" in source
     assert "generated::construction_scenery_chunk_centers" in source
     assert "generated::construction_scenery_max_scroll" in source
-    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in source
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in source
 
     # Exact Santa House.t palette, quantized to GBA RGB555. The geometry of
     # every sky band must remain identical to Classic: only colours differ.
@@ -1195,7 +1195,7 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
     assert "christmas_construction_tree_f0.create_sprite_optional" in source
     assert "christmas_construction_tree_f1.create_sprite_optional" in source
     assert "scenery_scroll < -190 || scenery_scroll >= 14" in source
-    assert "const int tree_y = 82 + scenery_scroll;" in source
+    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in source
     assert "_christmas_tree_sprites.clear();" in source
     assert "_christmas_tree_sprites" in header
 
@@ -1648,8 +1648,8 @@ def test_christmas_construction_world_space_alignment() -> None:
     assert f"constexpr int christmas_scenery_height_adjustment = {alignment};" in source
     assert "int normalized_scroll = scenery_scroll;" in source
     assert "if(scenery_scroll > generated::construction_scenery_max_scroll)" in source
-    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in source
-    assert "const int tree_y = 82 + scenery_scroll;" in source
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in source
+    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in source
 
     # For any camera movement, street level is the same as Classic, while the
     # skyline chunk selector and culling remain in the same coordinate frame.
@@ -1801,6 +1801,40 @@ def test_christmas_perfect_combo_optional_sprite_budget() -> None:
 
 def test_christmas_street_tree_avoids_foundation_intrusion() -> None:
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text()
-    assert "const int tree_y = 82 + scenery_scroll;" in backdrop
+    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in backdrop
     assert "const int scenery_scroll = scroll - christmas_scenery_height_adjustment;" in backdrop
-    assert "_scenery_background->set_y(scenery_scroll - chunk_center);" in backdrop
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in backdrop
+
+
+def test_christmas_ui_and_crane_reuse_classic_geometry_without_extra_palette():
+    from PIL import Image
+    tc = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
+    qg = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
+    for code in (tc, qg):
+        assert "mesh_id != special_crane_mesh_id" in code
+        assert "return generated::crane_hook_frame_for_step(step);" in code
+        assert "return generated::christmas::crane_hook_frame_for_step(step);" not in code
+        assert "bn::sprite_items::crane_special_boom_p0.create_sprite_optional" in code
+        assert "bn::sprite_items::christmas_crane_special_boom_p0" not in code
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
+    assert "constexpr int christmas_street_viewport_lift = 16;" in backdrop
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in backdrop
+    assert "tree_y = 82 + scenery_scroll - christmas_street_viewport_lift" in backdrop
+    for theme in range(4):
+        path = GBA / "graphics" / "christmas" / "backgrounds" / f"christmas_city_bg_theme_{theme}.bmp"
+        with Image.open(path) as im:
+            assert im.mode == "P" and im.size == (256, 256)
+            rgb = im.convert("RGB")
+            assert rgb.getpixel((78, 100)) != (166, 166, 166)
+            assert rgb.getpixel((120, 190)) != (248, 248, 248)
+    selector = GBA / "graphics" / "christmas" / "ui" / "christmas_city_selector_active_slot_p0.bmp"
+    with Image.open(selector) as im:
+        assert im.size == (16, 16) and im.mode == "P"
+        assert 13 not in im.get_flattened_data()
+        assert 5 in im.get_flattened_data()
+    with Image.open(GBA / "graphics" / "christmas" / "ui" / "christmas_city_action_icon_p0.bmp") as im:
+        assert im.mode == "P" and im.size == (32, 32)
+        # Cooler blue/ice base with retained gold construction icon.
+        palette = im.getpalette()
+        assert tuple(palette[3*3:3*3+3]) == (30, 92, 130)
+        assert tuple(palette[1*3:1*3+3]) == (255, 180, 0)
