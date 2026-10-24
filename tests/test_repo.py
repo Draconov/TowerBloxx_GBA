@@ -1832,9 +1832,8 @@ def test_christmas_ui_and_crane_reuse_classic_geometry_without_extra_palette():
         assert im.size == (16, 16) and im.mode == "P"
         assert 13 not in im.get_flattened_data()
         assert 5 in im.get_flattened_data()
+    # The Christmas action icon is artist-authored. Validate hardware
+    # compatibility, not arbitrary RGB colors or palette assignments.
     with Image.open(GBA / "graphics" / "christmas" / "ui" / "christmas_city_action_icon_p0.bmp") as im:
         assert im.mode == "P" and im.size == (32, 32)
-        # Cooler blue/ice base with retained gold construction icon.
-        palette = im.getpalette()
-        assert tuple(palette[3*3:3*3+3]) == (30, 92, 130)
-        assert tuple(palette[1*3:1*3+3]) == (255, 180, 0)
+        assert max(im.get_flattened_data()) < 16
