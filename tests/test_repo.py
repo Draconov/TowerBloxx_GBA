@@ -980,13 +980,12 @@ def test_christmas_phase8_city_chrome_and_hybrid_crane_are_wired() -> None:
 
     for source_name in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
         source = (GBA / "src" / source_name).read_text(encoding="utf-8")
-        # Hybrid crane contract: the special/intro crane uses the red Santa
-        # mesh and boom; normal swing rope/hook/cable stay on Classic's proven
-        # GBA geometry.
-        assert "bn::sprite_items::christmas_crane_special_boom_p0" not in source
-        assert "bn::sprite_items::christmas_crane_special_boom_p1" not in source
-        assert "bn::sprite_items::christmas_crane_special_boom_p2" not in source
-        assert "bn::sprite_items::crane_special_boom_p0" in source
+        # Classic swing frames remain shared, but special intro/roof crane
+        # selects Christmas boom sprites only in the Christmas theme.
+        assert "if(_visual_theme == VisualTheme::Christmas)" in source
+        for part in range(3):
+            assert f"bn::sprite_items::christmas_crane_special_boom_p{part}.create_sprite_optional" in source
+            assert f"bn::sprite_items::crane_special_boom_p{part}.create_sprite_optional" in source
         assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in source
         assert "return generated::crane_hook_frame_for_step(step);" in source
         assert "bn::sprite_items::crane_special_cable_segment" in source
@@ -1195,7 +1194,8 @@ def test_christmas_construction_backdrop_uses_classic_pipeline_with_santa_assets
     assert "christmas_construction_tree_f0.create_sprite_optional" in source
     assert "christmas_construction_tree_f1.create_sprite_optional" in source
     assert "scenery_scroll < -190 || scenery_scroll >= 14" in source
-    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in source
+    assert "christmas_tree_above_fence_lift" in source
+    assert "christmas_tree_screen_x" in source
     assert "_christmas_tree_sprites.clear();" in source
     assert "_christmas_tree_sprites" in header
 
@@ -1649,7 +1649,8 @@ def test_christmas_construction_world_space_alignment() -> None:
     assert "int normalized_scroll = scenery_scroll;" in source
     assert "if(scenery_scroll > generated::construction_scenery_max_scroll)" in source
     assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in source
-    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in source
+    assert "christmas_tree_above_fence_lift" in source
+    assert "christmas_tree_screen_x" in source
 
     # For any camera movement, street level is the same as Classic, while the
     # skyline chunk selector and culling remain in the same coordinate frame.
@@ -1801,7 +1802,8 @@ def test_christmas_perfect_combo_optional_sprite_budget() -> None:
 
 def test_christmas_street_tree_avoids_foundation_intrusion() -> None:
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text()
-    assert "const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;" in backdrop
+    assert "christmas_tree_above_fence_lift" in backdrop
+    assert "christmas_tree_screen_x" in backdrop
     assert "const int scenery_scroll = scroll - christmas_scenery_height_adjustment;" in backdrop
     assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in backdrop
 
@@ -1811,15 +1813,16 @@ def test_christmas_ui_and_crane_reuse_classic_geometry_without_extra_palette():
     tc = (GBA / "src" / "tower_construction_scene.cpp").read_text(encoding="utf-8")
     qg = (GBA / "src" / "quick_game_scene.cpp").read_text(encoding="utf-8")
     for code in (tc, qg):
-        assert "mesh_id != special_crane_mesh_id" in code
+        assert "if(visual_theme == VisualTheme::Christmas)" in code
         assert "return generated::crane_hook_frame_for_step(step);" in code
         assert "return generated::christmas::crane_hook_frame_for_step(step);" not in code
+        assert "if(_visual_theme == VisualTheme::Christmas)" in code
         assert "bn::sprite_items::crane_special_boom_p0.create_sprite_optional" in code
-        assert "bn::sprite_items::christmas_crane_special_boom_p0" not in code
+        assert "bn::sprite_items::christmas_crane_special_boom_p0.create_sprite_optional" in code
     backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text(encoding="utf-8")
     assert "constexpr int christmas_street_viewport_lift = 16;" in backdrop
     assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in backdrop
-    assert "tree_y = 82 + scenery_scroll - christmas_street_viewport_lift" in backdrop
+    assert "christmas_tree_above_fence_lift" in backdrop
     for theme in range(4):
         path = GBA / "graphics" / "christmas" / "backgrounds" / f"christmas_city_bg_theme_{theme}.bmp"
         with Image.open(path) as im:
@@ -1837,3 +1840,26 @@ def test_christmas_ui_and_crane_reuse_classic_geometry_without_extra_palette():
     with Image.open(GBA / "graphics" / "christmas" / "ui" / "christmas_city_action_icon_p0.bmp") as im:
         assert im.mode == "P" and im.size == (32, 32)
         assert max(im.get_flattened_data()) < 16
+
+
+def test_christmas_special_crane_and_ground_geometry_are_theme_correct() -> None:
+    game = GBA / "graphics" / "gameplay"
+    santa = GBA / "graphics" / "christmas" / "gameplay"
+    for part in range(3):
+        with Image.open(game / f"crane_special_boom_p{part}.bmp") as classic, \
+             Image.open(santa / f"christmas_crane_special_boom_p{part}.bmp") as christmas:
+            # Custom colors allowed. Only rendering-compatible sprite shapes matter.
+            assert christmas.size == classic.size
+            assert christmas.mode == "P" and max(christmas.get_flattened_data()) < 16
+
+    backdrop = (GBA / "src" / "construction_backdrop.cpp").read_text()
+    # Viewport adjustment affects the OBJ tree alone, never the scenery chunks
+    # or gifts embedded in the user-authored BG bitmap.
+    assert "constexpr int christmas_tree_above_fence_lift = 28;" in backdrop
+    assert "constexpr int christmas_tree_screen_x = 70;" in backdrop
+    assert "_scenery_background->set_y(scenery_scroll - chunk_center -" in backdrop
+    for source_file in ("quick_game_scene.cpp", "tower_construction_scene.cpp"):
+        code = (GBA / "src" / source_file).read_text()
+        assert "return generated::crane_hook_frame_for_step(step);" in code
+        assert "mesh_by_id(_visual_theme, special_crane_mesh_id)" in code
+        assert "if(mode != CranePresentationMode::Special)" in code

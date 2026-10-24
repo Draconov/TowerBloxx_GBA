@@ -14,6 +14,9 @@
 #include "bn_sprite_items_crane_special_boom_p0.h"
 #include "bn_sprite_items_crane_special_boom_p1.h"
 #include "bn_sprite_items_crane_special_boom_p2.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p0.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p1.h"
+#include "bn_sprite_items_christmas_crane_special_boom_p2.h"
 #include "bn_sprite_items_christmas_miss_snow_f0.h"
 #include "bn_sprite_items_christmas_miss_snow_f1.h"
 #include "bn_sprite_items_christmas_miss_snow_f2.h"
@@ -258,7 +261,7 @@ bn::string<128> format_construction_modal_line(bn::string_view text)
 
 const generated::MeshAsset& mesh_by_id(VisualTheme visual_theme, int mesh_id)
 {
-    if(visual_theme == VisualTheme::Christmas && mesh_id != special_crane_mesh_id)
+    if(visual_theme == VisualTheme::Christmas)
     {
         if(const generated::MeshAsset* christmas_mesh = generated::christmas::mesh_by_id(mesh_id))
         {
@@ -959,14 +962,25 @@ void TowerConstructionScene::_rebuild_special_cable(const TowerConstructionSnaps
 
     if(_special_boom_sprites.empty())
     {
-        // The intro/special boom now uses the proven Classic parts in both themes.
-        // Do not allocate the separate Christmas boom palette.
-        bn::optional<bn::sprite_ptr> p0 =
-                bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p1 =
-                bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
-        bn::optional<bn::sprite_ptr> p2 =
-                bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
+        // The ordinary swinging hook/rope is shared with Classic, but the
+        // special intro/roof boom has distinct red-and-snow Christmas artwork.
+        // The three Christmas pieces retain Classic's 64/64/32px canvases and
+        // boom anchor offsets; only this Special presentation is themed.
+        bn::optional<bn::sprite_ptr> p0;
+        bn::optional<bn::sprite_ptr> p1;
+        bn::optional<bn::sprite_ptr> p2;
+        if(_visual_theme == VisualTheme::Christmas)
+        {
+            p0 = bn::sprite_items::christmas_crane_special_boom_p0.create_sprite_optional(0, 0);
+            p1 = bn::sprite_items::christmas_crane_special_boom_p1.create_sprite_optional(0, 0);
+            p2 = bn::sprite_items::christmas_crane_special_boom_p2.create_sprite_optional(0, 0);
+        }
+        else
+        {
+            p0 = bn::sprite_items::crane_special_boom_p0.create_sprite_optional(0, 0);
+            p1 = bn::sprite_items::crane_special_boom_p1.create_sprite_optional(0, 0);
+            p2 = bn::sprite_items::crane_special_boom_p2.create_sprite_optional(0, 0);
+        }
         if(p0 && p1 && p2)
         {
             p0->set_z_order(special_boom_z_order);

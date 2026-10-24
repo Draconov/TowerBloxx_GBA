@@ -69,6 +69,12 @@ constexpr int christmas_scenery_height_adjustment = 54;
 // Shift the authored street (and ONLY the street) up within the viewport;
 // preserve the original per-altitude parallax and chunk-selection formula.
 constexpr int christmas_street_viewport_lift = 16;
+// On GBA's 160px viewport the animated tree must stand ABOVE the snowy
+// fence instead of burying most of its trunk inside the fence/ground layer.
+// This affects the tree sprite only; the presents and fence stay in their
+// authored background bitmap with the original chunk/parallax coordinates.
+constexpr int christmas_tree_above_fence_lift = 28;
+constexpr int christmas_tree_screen_x = 70;
 
 int sky_color_index(int band)
 {
@@ -399,10 +405,11 @@ void ConstructionBackdrop::_update_christmas_tree(int camera_y, int clock_ms)
     // resource_048 contains the two OG tree frames. Keep their authored
     // 400-ish ms blink and anchor them to the same world scroll as scenery 0.
     const int visible_frame = (clock_ms / 400) & 1;
-    const int tree_x = 82;
-    // Christmas tree art has 22 opaque pixels beneath its sprite center.
-    // Lift its trunk above the solid ground while keeping world scroll locked.
-    const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift;
+    const int tree_x = christmas_tree_screen_x;
+    // Keep the tree's base at the snowy fence line rather than almost at
+    // the solid foundation. Follow the same parallax when the camera rises.
+    const int tree_y = 82 + scenery_scroll - christmas_street_viewport_lift -
+                       christmas_tree_above_fence_lift;
     for(int index = 0; index < _christmas_tree_sprites.size(); ++index)
     {
         bn::sprite_ptr& tree = _christmas_tree_sprites[index];
